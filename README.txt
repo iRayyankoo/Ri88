@@ -1,33 +1,23 @@
-Rayyan Portal (Bilingual AR/EN) — Glassmorphism + Saudi Touch
-----------------------------------------------------------------
-What you get:
-- A modern landing page (index) with search + categories + featured cards.
-- Separate pages for each tool (tools/*.html) sharing a single UI system (assets/app.css + assets/app.js).
-- Language toggle (AR/EN) + persistent preference (localStorage).
-- Currency converter supports BOTH: Live API + Manual rate mode.
-- Hijri/Gregorian converter supports API mode (default) + manual toggle.
+Rayyan Portal (Bilingual AR/EN) — Glassmorphism + Saudi Touch (C)
+-----------------------------------------------------------------------
+This is a static HTML portal with multiple utility tools, designed for Saudi users.
 
-How to run:
-1) Put these files in a folder as shown.
-2) Open index.html (or serve with any static server).
-   - Recommended: VS Code Live Server, or any nginx/apache.
-3) If you host on HTTPS, APIs will work normally.
+Folders:
+- index.html
+- assets/app.css  (shared UI)
+- assets/app.js   (shared logic: i18n, tools, calculators, API calls)
+- tools/*.html    (one page per tool)
 
-API endpoints (editable in assets/app.js):
-- Currency (default): https://open.er-api.com/v6/latest/{base}
-  You can replace with any provider you prefer.
-- Hijri conversion (default): https://api.aladhan.com/v1/gToH?date=DD-MM-YYYY and hToG
-  You can replace with another provider.
+Run locally:
+- Open index.html in your browser (or serve via a static server).
+Host on GitHub Pages:
+- Put files at repo root
+- Settings → Pages → Deploy from a branch → main → /(root)
 
-Important notes:
-- Some work-related calculators are estimators and include a visible disclaimer.
-- You can add/remove tools by editing TOOLS array in assets/app.js and adding a corresponding tools/{id}.html page.
+APIs (editable inside assets/app.js):
+- Currency: https://open.er-api.com/v6/latest/{BASE}
+- Hijri converter (Aladhan): https://api.aladhan.com/v1/gToH?date=DD-MM-YYYY , hToG
+- QR generator: https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=...
 
-Saudi touch palette (suggested):
-- Background: #070818 → #050612
-- Accent Green: #00B67A (soft Saudi green)
-- Accent Teal:  #05ADAD (fresh)
-- Support Purple: #7C5CFF (subtle, not dominant)
-- Warm Highlight: #FFB86B (very light use)
-
-
+Notes:
+- Work-related calculators (Retirement / End of Service) are simplified estimators and show a disclaimer.
