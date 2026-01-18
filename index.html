@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ar">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,6 +12,7 @@
   -->
   <link rel="stylesheet" href="assets/app.css" />
 </head>
+
 <body dir="rtl">
   <div class="container">
     <div class="nav">
@@ -19,89 +21,30 @@
         <div data-i18n="brand">ريان</div>
       </div>
 
-      <div class="navlinks">
-        <a href="#tools" data-i18n="nav_tools">الأدوات</a>
-        <a href="#finance" data-i18n="nav_fin">المال والتمويل</a>
-        <a href="#time" data-i18n="nav_time">الوقت والتاريخ</a>
-        <a href="#text" data-i18n="nav_text">أدوات نصية</a>
-      </div>
+
 
       <div class="actions">
-        <button class="btn" id="langBtn" type="button">AR/EN</button>
+        <button class="btn glass-btn" id="langBtn" type="button">
+          <svg style="width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2" viewBox="0 0 24 24">
+            <path
+              d="M12 22c5.523 0 10-5 10-10S17.523 2 12 2 2 7 2 12s4.477 10 10 10zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span id="langTxt">English</span>
+        </button>
         <div class="pill" title="Saudi Touch">
           <div class="k"></div>
-          <span style="font-size:13px; color: rgba(255,255,255,.72);">Glass + Saudi</span>
         </div>
       </div>
     </div>
 
-    <div class="hero">
-      <div class="glass heroCard">
-        <h1 class="hTitle"><span data-i18n="featured_title">أدوات مفيدة للمستخدم السعودي</span></h1>
-        <p class="hSub" data-i18n="featured_sub">سريعة، واضحة، ومناسبة للجوال.</p>
-
-        <div class="heroCTA">
-          <a class="btn primary" href="#tools" data-i18n="cta_primary">استعراض الأدوات</a>
-          <a class="btn ghost" href="#most" data-i18n="cta_secondary">الأكثر استخداماً</a>
-        </div>
-
-        <div class="searchWrap glass soft" style="margin-top:18px;">
-          <span aria-hidden="true">🔎</span>
-          <input id="q" data-i18n-ph="search_ph" placeholder="ابحث عن أداة..." />
-          <button class="btn" type="button" onclick="document.getElementById('q').value=''; window.renderIndex();">✕</button>
-        </div>
-
-        <div class="note" style="margin-top:12px;">
-          <span data-i18n="api_note">ملاحظة: يمكن تغيير مزوّد الـ API من ملف assets/app.js.</span>
-        </div>
-      </div>
-
-      <div class="glass heroArt">
-        <div class="floatGrid">
-          <div class="float big">
-            <strong>💱 Currency • Live/Manual</strong>
-            <span>SAR-first, fast & clean</span>
-          </div>
-          <div class="float">
-            <strong>🗓️ Hijri ↔ Gregorian</strong>
-            <span>API + fallback</span>
-          </div>
-          <div class="float">
-            <strong>💳 Loan Payments</strong>
-            <span>Monthly estimator</span>
-          </div>
-          <div class="float">
-            <strong>📝 Text Tools</strong>
-            <span>Copy-ready</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="most">
-      <div class="sectionHead">
-        <div>
-          <h2 data-i18n="cta_secondary">الأكثر استخداماً</h2>
-          <p class="small">Shortcuts</p>
-        </div>
-      </div>
-      <div class="chips">
-        <a class="chip" href="tools/currency.html">💱</a>
-        <a class="chip" href="tools/hijri.html">🗓️</a>
-        <a class="chip" href="tools/loan.html">💳</a>
-        <a class="chip" href="tools/vat.html">🧾</a>
-        <a class="chip" href="tools/words.html">📝</a>
-        <a class="chip" href="tools/qr.html">🔳</a>
-      </div>
-    </div>
 
     <div class="section" id="tools">
-      <div class="sectionHead">
+      <div class="sectionHead" style="align-items: center;">
         <div>
           <h2 data-i18n="nav_tools">الأدوات</h2>
-          <p data-i18n="search_ph">ابحث عن أداة...</p>
         </div>
-        <div id="toast" style="opacity:0; transition:opacity .2s ease; color:rgba(255,255,255,.75); font-size:12px;"></div>
+        <div id="toast" style="opacity:0; transition:opacity .2s ease; color:rgba(255,255,255,.75); font-size:12px;">
+        </div>
       </div>
 
       <div class="grid" id="toolGrid"></div>
@@ -115,6 +58,5 @@
   <script src="assets/app.js"></script>
   <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
+
 </html>
-
-
