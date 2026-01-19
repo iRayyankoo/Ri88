@@ -35,7 +35,7 @@ body {
     color: var(--text-main);
     overflow-x: hidden;
     /* Ambient Glow Background */
-    background:
+    background-image:
         radial-gradient(circle at 10% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
     background-attachment: fixed;
@@ -381,6 +381,7 @@ body[dir="rtl"] .search-input {
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -532,3 +533,19 @@ body[dir="rtl"] .modal-close {
     background: conic-gradient(rgba(255, 255, 255, 0.05) 0% 100%);
     box-shadow: 0 0 30px rgba(124, 58, 237, 0.15);
 }
+/* Speed Test Gauge (Restored) */
+.st-container { display: flex; flex-direction: column; align-items: center; padding: 10px; }
+.st-gauge { position: relative; width: 200px; height: 200px; border-radius: 50%; background: conic-gradient(rgba(255, 255, 255, 0.05) 0% 100%); box-shadow: 0 0 40px rgba(124, 58, 237, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
+.st-gauge::after { content: ''; position: absolute; inset: 10px; border-radius: 50%; background: var(--bg-deep); z-index: 1; }
+.st-progress-svg { position: absolute; top: 0; left: 0; width: 200px; height: 200px; transform: rotate(-90deg); z-index: 2; pointer-events: none; }
+.st-progress-circle { fill: none; stroke-linecap: round; width: 100%; height: 100%; }
+#st-prog { stroke-dasharray: 565; stroke-dashoffset: 565; transition: stroke-dashoffset 0.1s linear; }
+.st-value { position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; text-align: center; }
+#st-num { font-size: 3rem; font-weight: 800; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+#st-unit { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; text-transform: uppercase; }
+.st-stats { display: flex; justify-content: space-around; width: 100%; gap: 15px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; }
+.st-stats > div { display: flex; flex-direction: column; align-items: center; }
+.st-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; }
+.st-stat-val { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+.st-active { box-shadow: 0 0 50px rgba(124, 58, 237, 0.3); }
+

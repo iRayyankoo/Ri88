@@ -84,95 +84,179 @@
     </div>
 
     <!-- The Tools Hub -->
-    <!-- The Tools Hub (DASHBOARD) -->
+    <!-- Featured Row -->
+    <div class="grid-section">
+      <h2 data-i18n="feat_title" data-en="Featured & Most Used" data-ar="المميزة والأكثر استخداماً">Featured & Most Used
+      </h2>
+    </div>
+    <div class="feat-grid">
+      <!-- Most Used Lists (Dynamic Logic Placeholder) -->
+      <div class="feat-card glass" id="feat-list">
+        <h3 style="color:var(--accent); margin-top:0;">Top Tools Today</h3>
+        <ul style="padding-left:20px; color:var(--text-muted); line-height:1.8;" id="daily-list">
+          <li>Loading daily picks...</li>
+        </ul>
+      </div>
+
+      <!-- Large Card: Speed Test -->
+      <div class="feat-card large glass" onclick="RiTools.openModal('speedtest')">
+        <div style="font-size:3rem; margin-bottom:10px;">🚀</div>
+        <h3 data-en="Internet Speed" data-ar="سرعة النت">Internet Speed</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;">Test your connection ping, upload, and download instantly.
+        </p>
+      </div>
+
+      <!-- Large Card: Date Converter -->
+      <div class="feat-card glass" onclick="RiTools.openModal('hijri-gregorian')">
+        <div style="font-size:2.5rem; margin-bottom:10px;">📅</div>
+        <h3 data-en="Hijri Converter" data-ar="تحويل التاريخ">Hijri Converter</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;">Accurate Hijri to Gregorian conversion.</p>
+      </div>
+    </div>
+
+
+    <!-- Main Tools Grid -->
+    <div class="grid-section">
+      <h2 data-i18n="all_tools" data-en="All Tools" data-ar="كافة الأدوات">All Tools</h2>
+    </div>
+
     <div id="toolGrid" class="grid">
 
-      <!-- FINANCE CARDS -->
+      <!-- FINANCE -->
       <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('loan-calculator')">
-        <div class="card-icon">💸</div>
-        <h3 data-en="Loan Calculator" data-ar="حاسبة القروض">Loan Calculator</h3>
+        <div class="tool-icon">💸</div>
+        <div class="tool-info">
+          <h3 data-en="Loan Calculator" data-ar="حاسبة القروض">Loan Calculator</h3>
+          <p data-en="Calculate monthly payments & total interest" data-ar="حساب الدفعات الشهرية وإجمالي الفوائد">
+            Calculate payments</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('vat-15')">
-        <div class="card-icon">🧾</div>
-        <h3 data-en="VAT Calculator" data-ar="حاسبة الضريبة">VAT Calculator</h3>
+        <div class="tool-icon">🧾</div>
+        <div class="tool-info">
+          <h3 data-en="VAT Calculator" data-ar="حاسبة الضريبة">VAT Calculator</h3>
+          <p data-en="Add or remove 15% VAT instantly" data-ar="إضافة أو خصم ضريبة 15% فوراً">VAT calculation</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('net-salary')">
-        <div class="card-icon">💵</div>
-        <h3 data-en="Net Salary" data-ar="صافي الراتب">Net Salary</h3>
+        <div class="tool-icon">💵</div>
+        <div class="tool-info">
+          <h3 data-en="Net Salary" data-ar="صافي الراتب">Net Salary</h3>
+          <p data-en="Calculate net income after deductions" data-ar="حساب الصافي بعد الخصميات">Net income calc</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('currency-converter')">
-        <div class="card-icon">💱</div>
-        <h3 data-en="Currency" data-ar="تحويل عملات">Currency</h3>
+        <div class="tool-icon">💱</div>
+        <div class="tool-info">
+          <h3 data-en="Currency" data-ar="تحويل عملات">Currency</h3>
+          <p data-en="Convert between major global currencies" data-ar="التحويل بين العملات العالمية">Currency convert
+          </p>
+        </div>
       </div>
       <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('savings-goal')">
-        <div class="card-icon">💰</div>
-        <h3 data-en="Savings Goal" data-ar="هدف الادخار">Savings Goal</h3>
+        <div class="tool-icon">💰</div>
+        <div class="tool-info">
+          <h3 data-en="Savings Goal" data-ar="هدف الادخار">Savings Goal</h3>
+          <p data-en="Plan how long to reach your target" data-ar="خطط للوصول لهدفك المالي">Savings planner</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('zakat-simple')">
-        <div class="card-icon">🌙</div>
-        <h3 data-en="Zakat Calc" data-ar="حاسبة الزكاة">Zakat Calc</h3>
+        <div class="tool-icon">🌙</div>
+        <div class="tool-info">
+          <h3 data-en="Zakat Calc" data-ar="حاسبة الزكاة">Zakat Calc</h3>
+          <p data-en="Calculate Zakat on cash and assets" data-ar="حساب زكاة المال والأسهم">Zakat calculation</p>
+        </div>
       </div>
 
-      <!-- TIME CARDS -->
-      <div class="tool-card ri-cat-time" onclick="RiTools.openModal('hijri-gregorian')">
-        <div class="card-icon">📅</div>
-        <h3 data-en="Hijri Converter" data-ar="تحويل التاريخ">Hijri Converter</h3>
-      </div>
+      <!-- TIME -->
       <div class="tool-card ri-cat-time" onclick="RiTools.openModal('date-diff')">
-        <div class="card-icon">⏳</div>
-        <h3 data-en="Date Diff" data-ar="فرق الأيام">Date Diff</h3>
+        <div class="tool-icon">⏳</div>
+        <div class="tool-info">
+          <h3 data-en="Date Diff" data-ar="فرق الأيام">Date Diff</h3>
+          <p data-en="Calculate days between two dates" data-ar="حساب عدد الأيام بين تاريخين">Days between dates</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-time" onclick="RiTools.openModal('timers')">
-        <div class="card-icon">⏱️</div>
-        <h3 data-en="Stopwatch" data-ar="ساعة إيقاف">Stopwatch</h3>
+        <div class="tool-icon">⏱️</div>
+        <div class="tool-info">
+          <h3 data-en="Stopwatch" data-ar="ساعة إيقاف">Stopwatch</h3>
+          <p data-en="Simple stopwatch with lap functionality" data-ar="ساعة إيقاف بسيطة ودقيقة">Track time</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-time" onclick="RiTools.openModal('timezone')">
-        <div class="card-icon">🌍</div>
-        <h3 data-en="World Time" data-ar="توقيت العالم">World Time</h3>
+        <div class="tool-icon">🌍</div>
+        <div class="tool-info">
+          <h3 data-en="World Time" data-ar="توقيت العالم">World Time</h3>
+          <p data-en="Check current time in major cities" data-ar="معرفة الوقت في مدن العالم">Global cities time</p>
+        </div>
       </div>
 
-      <!-- TEXT CARDS -->
+      <!-- TEXT -->
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('arabic-adobe')">
-        <div class="card-icon">🎨</div>
-        <h3 data-en="Arabic Adobe" data-ar="نصوص فوتوشوب">Arabic Adobe</h3>
+        <div class="tool-icon">🎨</div>
+        <div class="tool-info">
+          <h3 data-en="Arabic Adobe" data-ar="نصوص فوتوشوب">Arabic Adobe</h3>
+          <p data-en="Fix reversed Arabic text for Photoshop" data-ar="إصلاح النص العربي المعكوس">Fix text direction</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('password')">
-        <div class="card-icon">🔒</div>
-        <h3 data-en="Password Gen" data-ar="توليد كلمات سر">Password Gen</h3>
+        <div class="tool-icon">🔒</div>
+        <div class="tool-info">
+          <h3 data-en="Password Gen" data-ar="توليد كلمات سر">Password Gen</h3>
+          <p data-en="Create strong, random passwords" data-ar="إنشاء كلمات مرور قوية">Secure passwords</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('text-cleaner')">
-        <div class="card-icon">🧹</div>
-        <h3 data-en="Text Cleaner" data-ar="تنظيف النص">Text Cleaner</h3>
+        <div class="tool-icon">🧹</div>
+        <div class="tool-info">
+          <h3 data-en="Text Cleaner" data-ar="تنظيف النص">Text Cleaner</h3>
+          <p data-en="Remove duplicates and empty lines" data-ar="إزالة التكرار والأسطر الفارغة">Clean text data</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('case-converter')">
-        <div class="card-icon">🔠</div>
-        <h3 data-en="Case Converter" data-ar="حالة الأحرف">Case Converter</h3>
+        <div class="tool-icon">🔠</div>
+        <div class="tool-info">
+          <h3 data-en="Case Converter" data-ar="حالة الأحرف">Case Converter</h3>
+          <p data-en="Convert text to UPPER or lower case" data-ar="تحويل النص إلى أحرف كبيرة/صغيرة">Change letter case
+          </p>
+        </div>
       </div>
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('hashtags')">
-        <div class="card-icon">#️⃣</div>
-        <h3 data-en="Hashtags" data-ar="هاشتاقات">Hashtags</h3>
+        <div class="tool-icon">#️⃣</div>
+        <div class="tool-info">
+          <h3 data-en="Hashtags" data-ar="هاشتاقات">Hashtags</h3>
+          <p data-en="Convert words into social hashtags" data-ar="تحويل الكلمات إلى وسوم للتواصل">Social tags gen</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('utm-builder')">
-        <div class="card-icon">🔗</div>
-        <h3 data-en="UTM Builder" data-ar="بناء روابط">UTM Builder</h3>
+        <div class="tool-icon">🔗</div>
+        <div class="tool-info">
+          <h3 data-en="UTM Builder" data-ar="بناء روابط">UTM Builder</h3>
+          <p data-en="Create tracking URLs for marketing" data-ar="إنشاء روابط تتبع للحملات">Marketing links</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-text" onclick="RiTools.openModal('signature')">
-        <div class="card-icon">✍️</div>
-        <h3 data-en="Signature" data-ar="توقيع">Signature</h3>
+        <div class="tool-icon">✍️</div>
+        <div class="tool-info">
+          <h3 data-en="Signature" data-ar="توقيع">Signature</h3>
+          <p data-en="Generate professional email signatures" data-ar="إنشاء توقيع بريد احترافي">Email branding</p>
+        </div>
       </div>
 
-      <!-- PRODUCTIVITY CARDS -->
+      <!-- PRODUCTIVITY -->
       <div class="tool-card ri-cat-prod" onclick="RiTools.openModal('qr')">
-        <div class="card-icon">📱</div>
-        <h3 data-en="QR Code" data-ar="رمز QR">QR Code</h3>
-      </div>
-      <div class="tool-card ri-cat-prod" onclick="RiTools.openModal('speedtest')">
-        <div class="card-icon">🚀</div>
-        <h3 data-en="Speed Test" data-ar="سرعة النت">Speed Test</h3>
+        <div class="tool-icon">📱</div>
+        <div class="tool-info">
+          <h3 data-en="QR Code" data-ar="رمز QR">QR Code</h3>
+          <p data-en="Generate QR codes for any link" data-ar="إنشاء رمز QR لأي رابط">Link to QR</p>
+        </div>
       </div>
       <div class="tool-card ri-cat-prod" onclick="RiTools.openModal('unit-converter')">
-        <div class="card-icon">⚖️</div>
-        <h3 data-en="Unit Convert" data-ar="تحويل وحدات">Unit Convert</h3>
+        <div class="tool-icon">⚖️</div>
+        <div class="tool-info">
+          <h3 data-en="Unit Convert" data-ar="تحويل وحدات">Unit Convert</h3>
+          <p data-en="Convert Weight and Distance units" data-ar="تحويل وحدات الوزن والمسافة">Simple unit calc</p>
+        </div>
       </div>
 
     </div>
@@ -600,6 +684,100 @@
         else el.style.display = 'none';
       });
     }
+    // --- DAILY LOGIC (SAUDI TIME) ---
+    function initDailyShuffle() {
+      // 1. Generate Seed from Riyadh Date
+      const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' });
+      const [{ value: mo }, , { value: da }, , { value: ye }] = fmt.formatToParts(new Date());
+      const dateStr = `${ye}${mo}${da}`;
+      let seed = parseInt(dateStr); // E.g., 20261025
+
+      // PRNG (Mulberry32-ish for simplicity)
+      const random = () => {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+
+      // 2. Define Candidates (IDs must match HTML)
+      // Exclude Featured Fixed Tools: 'speedtest', 'hijri-gregorian'
+      const pools = {
+        finance: ['loan-calculator', 'vat-15', 'net-salary', 'currency-converter', 'savings-goal', 'zakat-simple'],
+        time: ['date-diff', 'timers', 'timezone'], // Hijri is featured
+        text: ['arabic-adobe', 'password', 'text-cleaner', 'case-converter', 'hashtags', 'utm-builder', 'signature']
+      };
+
+      // 3. Select "Most Used Today" (2 Finance + 2 Time + 2 Text)
+      const pick = (arr, n) => {
+        const shuffled = [...arr].sort(() => random() - 0.5);
+        return shuffled.slice(0, n);
+      };
+
+      const dailyPicks = [
+        ...pick(pools.finance, 2),
+        ...pick(pools.time, 2),
+        ...pick(pools.text, 2)
+      ];
+
+      // Render "Most Used" List
+      const listEl = document.getElementById('daily-list');
+      listEl.innerHTML = '';
+      dailyPicks.forEach(id => {
+        // Find tool Title
+        const card = document.querySelector(`.tool-card[onclick*="'${id}'"]`);
+        if (card) {
+          const h3 = card.querySelector('h3');
+          const titleEn = h3.getAttribute('data-en');
+          const titleAr = h3.getAttribute('data-ar');
+          const descEn = card.querySelector('p').getAttribute('data-en');
+          const descAr = card.querySelector('p').getAttribute('data-ar');
+
+          const li = document.createElement('li');
+          li.style.marginBottom = '8px';
+          li.style.cursor = 'pointer';
+          li.onclick = () => RiTools.openModal(id);
+          li.innerHTML = `<strong class="auto-lang" data-en="${titleEn}" data-ar="${titleAr}">${titleEn}</strong>
+                            <span style="font-size:0.85em; opacity:0.7; display:block;" class="auto-lang" data-en="${descEn}" data-ar="${descAr}">${descEn}</span>`;
+          listEl.appendChild(li);
+        }
+      });
+
+      // 4. Shuffle Main Grid Categories
+      const grid = document.getElementById('toolGrid');
+
+      // Capture ALL cards from the DOM *before* clearing the grid
+      const allCards = Array.from(document.querySelectorAll('.tool-card'));
+
+      // Group by Category
+      const grouped = {
+        'ri-cat-finance': [], 'ri-cat-time': [], 'ri-cat-text': [], 'ri-cat-prod': []
+      };
+
+      allCards.forEach(c => {
+        for (let cat in grouped) {
+          if (c.classList.contains(cat)) {
+            grouped[cat].push(c);
+            break;
+          }
+        }
+      });
+
+      // Clear the grid now that we have the references
+      grid.innerHTML = '';
+
+      // Shuffle & Rebuild
+      for (let cat in grouped) {
+        // Shuffle within category
+        grouped[cat].sort(() => random() - 0.5);
+        // Append back
+        grouped[cat].forEach(c => grid.appendChild(c));
+      }
+
+    }
+
+    // Init
+    initDailyShuffle();
   </script>
 </body>
 
