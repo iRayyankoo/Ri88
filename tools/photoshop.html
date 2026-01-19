@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rayyan | Arabic for Photoshop</title>
+    <link rel="stylesheet" href="../assets/app.css" />
+    <style>
+        /* Scoped CSS for the Photoshop Tool Module */
+        .ps-module {
+            display: grid;
+            gap: 20px;
+        }
+
+        .ps-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .ps-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .ps-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .ps-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .ps-areas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .ps-areas {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ps-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ps-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-pink);
+            margin-left: 5px;
+        }
+
+        .ps-textarea {
+            width: 100%;
+            height: 180px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-size: 18px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .ps-textarea:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .ps-textarea[readonly] {
+            background: rgba(255, 255, 255, 0.03);
+            cursor: default;
+        }
+
+        .ps-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ps-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex-grow: 1;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .ps-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .ps-check input {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .ps-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .ps-toast {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .ps-toast.show {
+            opacity: 1;
+            top: 10px;
+        }
+    </style>
+</head>
+
+<body data-tool-id="photoshop">
+
+    <!-- Background Art -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2" style="top:auto; bottom:0;"></div>
+
+    <div class="container" style="min-height:100vh; display:flex; flex-direction:column; padding-bottom:40px;">
+
+        <!-- Nav -->
+        <div class="nav-shell">
+            <nav class="glass nav-bar">
+                <div class="brand">
+                    <a href="../index.html" class="brand-icon" style="color:#fff; text-decoration:none;">R</a>
+                    <a href="../index.html" style="font-weight:700;">Rayyan</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-glass" id="langBtn" style="padding:8px 16px; font-size:13px;"><span
+                            id="langTxt">العربية</span></button>
+                    <a href="../index.html" class="btn btn-primary" style="padding:8px 20px; font-size:13px;">Back</a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Tool Container -->
+        <div class="toolShell" style="max-width: 900px;">
+
+            <!-- The Embedded Module Start -->
+            <div class="glass ps-card">
+                <div class="ps-toast" id="psToast">Copied!</div>
+
+                <div class="ps-header">
+                    <div class="ps-title">Arabic Text for Photoshop | نصوص عربية للفوتوشوب</div>
+                    <div class="ps-desc">Fix Arabic text issues for Adobe apps (Photoshop / Illustrator / AE)</div>
+                </div>
+
+                <div class="ps-areas">
+                    <div class="ps-box">
+                        <span class="ps-label">Input (Paste here)</span>
+                        <textarea class="ps-textarea" id="psInput" placeholder="أدخل النص العربي هنا..."></textarea>
+                    </div>
+                    <div class="ps-box">
+                        <span class="ps-label">Fixed Output (Copy from here)</span>
+                        <textarea class="ps-textarea" id="psOutput" readonly
+                            placeholder="النتيجة للتطبيقات..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ps-controls">
+                    <div class="ps-options">
+                        <label class="ps-check">
+                            <input type="checkbox" id="psRev" checked>
+                            <span>Adobe Fix (Reverse)</span>
+                        </label>
+                        <label class="ps-check">
+                            <input type="checkbox" id="psNums">
+                            <span>Hindi Numbers (١٢٣)</span>
+                        </label>
+                    </div>
+
+                    <div class="ps-btns">
+                        <button class="btn btn-glass" id="psClear">Clear</button>
+                        <button class="btn btn-primary" id="psCopy">Copy Output</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Module End -->
+
+        </div>
+
+        <footer class="footer" style="margin-top:auto; border:none;">
+            <div>Rayyan Portal • Premium Tools</div>
+        </footer>
+    </div>
+
+    <script src="../assets/app.js"></script>
+
+    <!-- Scoped Module Script -->
+    <script>
+        (function () {
+            // ——— Arabic Reshaping Logic (Simplified for Embed) ———
+            // Maps for forms: [Isolated, Initial, Medial, Final]
+            const MAP = {
+                0x0622: ['ﺁ', 'ﺁ', 'ﺂ', 'ﺂ'], // Alif Madda
+                0x0623: ['ﺃ', 'ﺃ', 'ﺄ', 'ﺄ'], // Alif Hamza Above
+                0x0624: ['ﺅ', 'ﺅ', 'ﺆ', 'ﺆ'], // Waw Hamza
+                0x0625: ['ﺇ', 'ﺇ', 'ﺈ', 'ﺈ'], // Alif Hamza Below
+                0x0626: ['ﺉ', 'ﺋ', 'ﺌ', 'ﺊ'], // Yeh Hamza
+                0x0627: ['ﺍ', 'ﺍ', 'ﺎ', 'ﺎ'], // Alif
+                0x0628: ['ﺏ', 'ﺑ', 'ﺒ', 'ﺐ'], // Beh
+                0x0629: ['ﺓ', 'ﺓ', 'ﺔ', 'ﺔ'], // Teh Marbuta
+                0x062A: ['ﺕ', 'ﺗ', 'ﺘ', 'ﺖ'], // Teh
+                0x062B: ['ﺙ', 'ﺛ', 'ﺜ', 'ﺚ'], // Theh
+                0x062C: ['ﺝ', 'ﺟ', 'ﺠ', 'ﺞ'], // Jeem
+                0x062D: ['ﺡ', 'ﺣ', 'ﺤ', 'ﺢ'], // Hah
+                0x062E: ['ﺥ', 'ﺧ', 'ﺨ', 'ﺦ'], // Khah
+                0x062F: ['ﺩ', 'ﺩ', 'ﺪ', 'ﺪ'], // Dal
+                0x0630: ['ﺫ', 'ﺫ', 'ﺬ', 'ﺬ'], // Thal
+                0x0631: ['ﺭ', 'ﺭ', 'ﺮ', 'ﺮ'], // Reh
+                0x0632: ['ﺯ', 'ﺯ', 'ﺰ', 'ﺰ'], // Zain
+                0x0633: ['ﺱ', 'ﺳ', 'ﺴ', 'ﺲ'], // Seen
+                0x0634: ['ﺵ', 'ﺷ', 'ﺸ', 'ﺶ'], // Sheen
+                0x0635: ['ﺹ', 'ﺻ', 'ﺼ', 'ﺺ'], // Sad
+                0x0636: ['ﺽ', 'ﺿ', 'ﻀ', 'ﺾ'], // Dad
+                0x0637: ['ﻁ', 'ﻃ', 'ﻄ', 'ﻂ'], // Tah
+                0x0638: ['ﻅ', 'ﻇ', 'ﻈ', 'ﻆ'], // Zah
+                0x0639: ['ﻉ', 'ﻋ', 'ﻌ', 'ﻊ'], // Ain
+                0x063A: ['ﻍ', 'ﻏ', 'ﻐ', 'ﻎ'], // Ghain
+                0x0641: ['ﻑ', 'ﻓ', 'ﻔ', 'ﻒ'], // Feh
+                0x0642: ['ﻕ', 'ﻗ', 'ﻘ', 'ﻖ'], // Qaf
+                0x0643: ['ﻙ', 'ﻛ', 'ﻜ', 'ﻚ'], // Kaf
+                0x0644: ['ﻝ', 'ﻟ', 'ﻠ', 'ﻞ'], // Lam
+                0x0645: ['ﻡ', 'ﻣ', 'ﻤ', 'ﻢ'], // Meem
+                0x0646: ['ﻥ', 'ﻧ', 'ﻨ', 'ﻦ'], // Noon
+                0x0647: ['ﻩ', 'ﻫ', 'ﻬ', 'ﻪ'], // Heh
+                0x0648: ['ﻭ', 'ﻭ', 'ﻮ', 'ﻮ'], // Waw
+                0x0649: ['ﻯ', 'ﻯ', 'ﻰ', 'ﻰ'], // Alef Maksura
+                0x064A: ['ﻱ', 'ﻳ', 'ﻴ', 'ﻲ'], // Yeh
+                // Ligatures
+                lam_alif: {
+                    iso: 'ﻻ', fin: 'ﻼ'
+                },
+                lam_alif_hamza_above: {
+                    iso: 'ﻷ', fin: 'ﻸ'
+                },
+                lam_alif_hamza_below: {
+                    iso: 'ﻹ', fin: 'ﻺ'
+                },
+                lam_alif_madda: {
+                    iso: 'ﻵ', fin: 'ﻶ'
+                }
+            };
+
+            // Chars that connect from the right but NOT to the left (Breakers)
+            // Alif, Dal, Thal, Reh, Zain, Waw, etc.
+            const BREAKERS = [0x0622, 0x0623, 0x0625, 0x0627, 0x062F, 0x0630, 0x0631, 0x0632, 0x0648, 0x0624, 0x0629, 0x0649];
+
+            function isArabic(char) {
+                const c = char.charCodeAt(0);
+                return (c >= 0x0600 && c <= 0x06FF);
+            }
+
+            function getReshaped(text) {
+                if (!text) return "";
+                let res = [];
+                for (let i = 0; i < text.length; i++) {
+                    let code = text.charCodeAt(i);
+                    if (!MAP[code]) {
+                        res.push({ char: text[i], code: code, ar: false });
+                        continue;
+                    }
+
+                    // Determine form logic
+                    // Prev connects?
+                    let prev = i > 0 ? text.charCodeAt(i - 1) : null;
+                    let next = i < text.length - 1 ? text.charCodeAt(i + 1) : null;
+
+                    let prevConnects = false;
+                    if (prev && MAP[prev] && !BREAKERS.includes(prev)) prevConnects = true;
+
+                    let nextConnects = false;
+                    if (next && MAP[next]) nextConnects = true;
+
+                    // Form Index: 0=Iso, 1=Init, 2=Med, 3=Fin
+                    let form = 0;
+                    if (prevConnects && nextConnects) form = 2;
+                    else if (prevConnects) form = 3;
+                    else if (nextConnects) form = 1;
+                    else form = 0;
+
+                    // Special Case: Lam-Alef
+                    if (code === 0x0644 && next) {
+                        const alifs = { 0x0622: 'lam_alif_madda', 0x0623: 'lam_alif_hamza_above', 0x0625: 'lam_alif_hamza_below', 0x0627: 'lam_alif' };
+                        if (alifs[next]) {
+                            let lig = MAP[alifs[next]];
+                            let ligChar = prevConnects ? lig.fin : lig.iso;
+                            res.push({ char: ligChar, code: -1, ar: true });
+                            i++; // Skip Alef
+                            continue;
+                        }
+                    }
+
+                    res.push({ char: MAP[code][form], code: code, ar: true });
+                }
+                return res;
+            }
+
+            function processText() {
+                const input = document.getElementById('psInput').value;
+                const doRev = document.getElementById('psRev').checked;
+                const doNums = document.getElementById('psNums').checked;
+
+                // 1. Convert Numbers if needed
+                let txt = input;
+                if (doNums) {
+                    const nums = { '0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤', '5': '٥', '6': '٦', '7': '٧', '8': '٨', '9': '٩' };
+                    txt = txt.replace(/[0-9]/g, m => nums[m]);
+                }
+
+                // 2. Reshape
+                // We split by lines to preserve paragraphs
+                const lines = txt.split('\\n');
+                const processedLines = lines.map(line => {
+                    let words = line.split(' '); // Basic tokenization
+
+                    if (!doRev) {
+                        // Just Reshape Characters in place (Logical Visual) - Rare use case but sometimes needed
+                        // For standard copy paste, usually we want standard logic.
+                        // But if we want "Adobe Fix", we usually mean "Reverse everything so it pastes left-to-right correctly".
+                    }
+
+                    // Simple approach: Reshape the whole line string
+                    // If we want to reverse, we reverse the whole result string?
+                    // No, Adobe issues usually mean it types LTR so:
+                    // "Hello" -> "olleH" visually.
+                    // Correct Arabic: "مرحبا" (RTL).
+                    // Bad Adobe: "ا ب ح ر م" (LTR).
+                    // So we want to produce reversed characters so when Adobe puts them LTR, they look RTL.
+
+                    let shapedObjs = getReshaped(line);
+                    let final = "";
+
+                    if (doRev) {
+                        // Reverse the order of Arabic parts, keep English parts? 
+                        // Simple reversal is usually 90% solution for old Adobe versions.
+                        // We reverse the array.
+                        shapedObjs.reverse();
+                        final = shapedObjs.map(x => x.char).join("");
+                    } else {
+                        final = shapedObjs.map(x => x.char).join("");
+                    }
+                    return final;
+                });
+
+                document.getElementById('psOutput').value = processedLines.join('\\n');
+            }
+
+            // ——— UI Bindings ———
+            const inp = document.getElementById('psInput');
+            const rev = document.getElementById('psRev');
+            const nums = document.getElementById('psNums');
+            const clr = document.getElementById('psClear');
+            const cpy = document.getElementById('psCopy');
+            const toast = document.getElementById('psToast');
+
+            function val() { processText(); }
+
+            inp.addEventListener('input', val);
+            rev.addEventListener('change', val);
+            nums.addEventListener('change', val);
+
+            clr.addEventListener('click', () => {
+                inp.value = "";
+                val();
+            });
+
+            cpy.addEventListener('click', () => {
+                const out = document.getElementById('psOutput');
+                out.select();
+                document.execCommand('copy');
+
+                toast.className = "ps-toast show";
+                setTimeout(() => toast.className = "ps-toast", 2000);
+            });
+
+        })();
+    </script>
+</body>
+
+</html>

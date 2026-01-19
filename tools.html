@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rayyan Tools Suite</title>
+    <link rel="stylesheet" href="assets/tools.css">
+</head>
+
+<body style="background:var(--ri-bg); color:white; padding:40px;">
+
+    <!-- Language Toggle For Demo -->
+    <div style="text-align:center; margin-bottom:40px;">
+        <button class="ri-btn" onclick="RiTools.setLang('en')">English</button>
+        <button class="ri-btn" onclick="RiTools.setLang('ar')">العربية</button>
+    </div>
+
+    <!-- --- CATEGORY: FINANCE --- -->
+    <h2 style="text-align:center; color:#fff; margin-bottom:20px;">Finance Tools</h2>
+    <div class="ri-grid">
+
+        <!-- 1.1 Loan Calculator -->
+        <section class="ri-tool" data-tool="loan-calculator">
+            <div class="ri-head">
+                <div>
+                    <h3 class="ri-title" data-en="Loan Calculator" data-ar="حاسبة القروض">Loan Calculator</h3>
+                    <p class="ri-desc" data-en="Estimate monthly payments" data-ar="تقدير الدفعات الشهرية">Estimate
+                        monthly payments</p>
+                </div>
+            </div>
+            <div class="ri-grid" style="grid-template-columns: 1fr 1fr;">
+                <div><label class="ri-label">Amount</label><input type="number" id="lc-amount" class="ri-input"
+                        placeholder="100000"></div>
+                <div><label class="ri-label">Rate (%)</label><input type="number" id="lc-rate" class="ri-input"
+                        placeholder="5" value="5"></div>
+                <div><label class="ri-label">Years</label><input type="number" id="lc-term" class="ri-input"
+                        placeholder="5" value="5"></div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row"><span data-en="Monthly" data-ar="شهرياً">Monthly</span> <span
+                        id="lc-pay">0.00</span></div>
+                <div class="ri-res-row"><span data-en="Interest" data-ar="الفوائد">Interest</span> <span
+                        id="lc-int">0.00</span></div>
+                <div class="ri-res-row total"><span data-en="Total" data-ar="الإجمالي">Total</span> <span
+                        id="lc-tot">0.00</span></div>
+            </div>
+            <div class="ri-actions">
+                <button class="ri-btn btn-copy" data-en="Copy Summary" data-ar="نسخ الملخص">Copy Summary</button>
+            </div>
+        </section>
+
+        <!-- 1.2 Net Salary -->
+        <section class="ri-tool" data-tool="net-salary">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Net Salary" data-ar="صافي الراتب">Net Salary</h3>
+            </div>
+            <div class="ri-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="ri-col-full"><label class="ri-label">Basic Salary</label><input type="number" id="ns-basic"
+                        class="ri-input"></div>
+                <div><label class="ri-label">Housing</label><input type="number" id="ns-house" class="ri-input"></div>
+                <div><label class="ri-label">Transport</label><input type="number" id="ns-trans" class="ri-input"></div>
+                <div class="ri-col-full"><label class="ri-label">Deductions</label><input type="number" id="ns-ded"
+                        class="ri-input"></div>
+                <div class="ri-col-full">
+                    <label class="ri-toggle-wrap">
+                        <input type="checkbox" id="ns-gosi" class="ri-toggle" checked> <span
+                            data-en="Deduct GOSI (9.75%)" data-ar="خصم التأمينات">Deduct GOSI (9.75%)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row"><span>Gross</span> <span id="ns-gross">0.00</span></div>
+                <div class="ri-res-row"><span>GOSI</span> <span id="ns-gosi-val">0.00</span></div>
+                <div class="ri-res-row total"><span>Net Salary</span> <span id="ns-net">0.00</span></div>
+            </div>
+        </section>
+
+        <!-- 1.3 VAT -->
+        <section class="ri-tool" data-tool="vat-15">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="VAT Calculator" data-ar="حاسبة الضريبة">VAT Calculator</h3>
+            </div>
+            <div class="ri-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="ri-col-full"><label class="ri-label">Amount</label><input type="number" id="vat-amt"
+                        class="ri-input"></div>
+                <div><label class="ri-label">Rate %</label><input type="number" id="vat-rate" class="ri-input"
+                        value="15"></div>
+                <div><label class="ri-label">Mode</label>
+                    <select id="vat-mode" class="ri-select">
+                        <option value="add">Add VAT</option>
+                        <option value="sub">Remove VAT</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row"><span>VAT Amount</span> <span id="vat-val">0.00</span></div>
+                <div class="ri-res-row total"><span id="vat-lbl">Total</span> <span id="vat-tot">0.00</span></div>
+            </div>
+        </section>
+
+        <!-- 1.4 Currency -->
+        <section class="ri-tool" data-tool="currency-converter">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Currency Converter" data-ar="تحويل العملات">Currency</h3>
+            </div>
+            <div class="ri-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="ri-col-full"><label class="ri-label">Amount</label><input type="number" id="cc-amt"
+                        class="ri-input"></div>
+                <div><label class="ri-label">Ex. Rate</label><input type="number" id="cc-rate" class="ri-input"
+                        value="3.75"></div>
+                <div style="display:flex; align-items:flex-end;"><button class="ri-btn ri-btn-sm" id="cc-swap">Swap
+                        Rate</button></div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row total"><span>Result</span> <span id="cc-res">0.00</span></div>
+            </div>
+        </section>
+
+        <!-- 1.5 Savings -->
+        <section class="ri-tool" data-tool="savings-goal">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Savings Goal" data-ar="هدف الادخار">Savings Goal</h3>
+            </div>
+            <div class="ri-grid">
+                <div><label class="ri-label">Goal Amount</label><input type="number" id="sg-target" class="ri-input">
+                </div>
+                <div><label class="ri-label">Current Saved</label><input type="number" id="sg-curr" class="ri-input">
+                </div>
+                <div><label class="ri-label">Monthly Contrib.</label><input type="number" id="sg-month"
+                        class="ri-input"></div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row total"><span>Time to Goal</span> <span id="sg-res">--</span></div>
+            </div>
+        </section>
+
+        <!-- 1.6 Zakat -->
+        <section class="ri-tool" data-tool="zakat-simple">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Zakat (Est)" data-ar="زكاة المال">Zakat Est.</h3>
+            </div>
+            <div class="ri-grid">
+                <div><label class="ri-label">Cash & Bank</label><input type="number" id="zk-cash" class="ri-input">
+                </div>
+                <div><label class="ri-label">Investments</label><input type="number" id="zk-inv" class="ri-input"></div>
+                <div><label class="ri-label">Debts (to sub)</label><input type="number" id="zk-debt" class="ri-input">
+                </div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row total"><span>Zakat Due (2.5%)</span> <span id="zk-res">0.00</span></div>
+            </div>
+            <p style="font-size:0.7em; opacity:0.5; margin-top:10px;">* Disclaimer: Simplified estimate. Consult
+                scholars.</p>
+        </section>
+
+    </div>
+
+    <!-- --- CATEGORY: TIME --- -->
+    <h2 style="text-align:center; color:#fff; margin-top:40px; margin-bottom:20px;">Time & Date</h2>
+    <div class="ri-grid">
+
+        <!-- 2.1 Hijri -->
+        <section class="ri-tool" data-tool="hijri-gregorian">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Hijri Converter" data-ar="تحويل التاريخ الهجري">Hijri Date</h3>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="date" id="hij-inp" class="ri-input">
+                <button class="ri-btn" id="hij-today">Today</button>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row"><span>Gregorian</span> <span id="hij-greg">--</span></div>
+                <div class="ri-res-row"><span>Hijri</span> <span id="hij-hijri">--</span></div>
+            </div>
+        </section>
+
+        <!-- 2.2 Date Diff -->
+        <section class="ri-tool" data-tool="date-diff">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Date Difference" data-ar="فرق الأيام">Date Diff</h3>
+            </div>
+            <div class="ri-grid" style="grid-template-columns:1fr 1fr;">
+                <div><label class="ri-label">Start</label><input type="date" id="dd-start" class="ri-input"></div>
+                <div><label class="ri-label">End</label><input type="date" id="dd-end" class="ri-input"></div>
+            </div>
+            <div class="ri-result-box">
+                <div class="ri-res-row total"><span id="dd-res">0 Days</span></div>
+                <div style="font-size:0.8em; opacity:0.7; margin-top:5px;" id="dd-detail"></div>
+            </div>
+        </section>
+
+        <!-- 2.3 Timer -->
+        <section class="ri-tool" data-tool="timers">
+            <div class="ri-head">
+                <h3 class="ri-title">Stopwatch</h3>
+            </div>
+            <div style="font-size:3em; font-weight:800; text-align:center; margin:20px 0; font-family:monospace;"
+                id="tm-disp">00:00</div>
+            <div class="ri-actions" style="justify-content:center;">
+                <button class="ri-btn ri-btn-primary" id="tm-start">Start</button>
+                <button class="ri-btn" id="tm-stop">Stop</button>
+                <button class="ri-btn" id="tm-reset">Reset</button>
+            </div>
+        </section>
+
+        <!-- 2.4 Timezone -->
+        <section class="ri-tool" data-tool="timezone">
+            <div class="ri-head">
+                <h3 class="ri-title">Global Times</h3>
+            </div>
+            <div id="tz-list" style="font-size:0.9em;">Loading...</div>
+        </section>
+    </div>
+
+    <!-- --- CATEGORY: TEXT --- -->
+    <h2 style="text-align:center; color:#fff; margin-top:40px; margin-bottom:20px;">Text Tools</h2>
+    <div class="ri-grid">
+
+        <!-- 3.1 Arabic Adobe -->
+        <section class="ri-tool" data-tool="arabic-adobe">
+            <div class="ri-head">
+                <h3 class="ri-title" data-en="Arabic for Adobe" data-ar="نصوص عربية للفوتوشوب">Arabic for Adobe</h3>
+            </div>
+            <textarea id="aa-in" class="ri-textarea" placeholder="Paste Arabic text here..."></textarea>
+            <div style="margin:10px 0; display:flex; gap:15px; font-size:0.85em;">
+                <label><input type="checkbox" id="aa-rev" checked> Adobe Fix (Reverse)</label>
+                <label><input type="checkbox" id="aa-num"> Hindi Numbers</label>
+            </div>
+            <textarea id="aa-out" class="ri-textarea" readonly placeholder="Output..."></textarea>
+            <div class="ri-actions"><button class="ri-btn ri-btn-primary" id="aa-copy">Copy Fixed Text</button></div>
+        </section>
+
+        <!-- 3.2 Cleaner -->
+        <section class="ri-tool" data-tool="text-cleaner">
+            <div class="ri-head">
+                <h3 class="ri-title">Text Cleaner</h3>
+            </div>
+            <textarea id="tc-in" class="ri-textarea" placeholder="Paste messy text..."></textarea>
+            <div style="margin:10px 0; display:flex; gap:10px; flex-wrap:wrap; font-size:0.85em;">
+                <label><input type="checkbox" id="tc-dup" checked> Remove Duplicates</label>
+                <label><input type="checkbox" id="tc-empty" checked> Remove Empty Lines</label>
+                <label><input type="checkbox" id="tc-trim" checked> Trim Lines</label>
+            </div>
+            <div class="ri-actions"><button class="ri-btn" id="tc-go">Clean Text</button></div>
+        </section>
+
+        <!-- 3.3 Case -->
+        <section class="ri-tool" data-tool="case-converter">
+            <div class="ri-head">
+                <h3 class="ri-title">Case Converter</h3>
+            </div>
+            <textarea id="cc-in" class="ri-textarea" placeholder="Enter text..."></textarea>
+            <div class="ri-actions">
+                <button class="ri-btn ri-btn-sm cc-btn" data-mode="upper">UPPER</button>
+                <button class="ri-btn ri-btn-sm cc-btn" data-mode="lower">lower</button>
+                <button class="ri-btn ri-btn-sm cc-btn" data-mode="title">Title Case</button>
+            </div>
+        </section>
+
+        <!-- 3.4 Hashtags -->
+        <section class="ri-tool" data-tool="hashtags">
+            <div class="ri-head">
+                <h3 class="ri-title">Hashtag Gen</h3>
+            </div>
+            <input type="text" id="ht-in" class="ri-input" placeholder="Enter keywords...">
+            <div class="ri-result-box" id="ht-out" style="font-size:0.9em; min-height:60px;">#...</div>
+            <div class="ri-actions"><button class="ri-btn" id="ht-go">Generate</button></div>
+        </section>
+
+        <!-- 3.5 UTM -->
+        <section class="ri-tool" data-tool="utm-builder">
+            <div class="ri-head">
+                <h3 class="ri-title">UTM Builder</h3>
+            </div>
+            <div class="ri-grid" style="grid-template-columns:1fr 1fr;">
+                <div class="ri-col-full"><input type="text" id="utm-url" class="ri-input" placeholder="Website URL">
+                </div>
+                <div><input type="text" id="utm-src" class="ri-input" placeholder="Source (google)"></div>
+                <div><input type="text" id="utm-med" class="ri-input" placeholder="Medium (cpc)"></div>
+                <div><input type="text" id="utm-camp" class="ri-input" placeholder="Campaign"></div>
+            </div>
+            <div class="ri-result-box" style="word-break:break-all; font-size:0.8em;" id="utm-out">...</div>
+            <div class="ri-actions"><button class="ri-btn" id="utm-copy">Copy URL</button></div>
+        </section>
+    </div>
+
+    <!-- --- CATEGORY: PRODUCTIVITY --- -->
+    <h2 style="text-align:center; color:#fff; margin-top:40px; margin-bottom:20px;">Productivity & Content</h2>
+    <div class="ri-grid">
+
+        <!-- 4.1 QR -->
+        <section class="ri-tool" data-tool="qr">
+            <div class="ri-head">
+                <h3 class="ri-title">QR Code</h3>
+            </div>
+            <input type="text" id="qr-in" class="ri-input" placeholder="Text or URL...">
+            <div style="text-align:center; margin:20px 0;"><img id="qr-img"
+                    style="background:white; padding:10px; border-radius:8px;" width="150" height="150"></div>
+            <div class="ri-actions"><button class="ri-btn" id="qr-gen">Generate</button></div>
+        </section>
+
+        <!-- 4.2 Speed -->
+        <section class="ri-tool" data-tool="speedtest">
+            <div class="ri-head">
+                <h3 class="ri-title">Speed Test</h3>
+            </div>
+            <div style="text-align:center; padding:20px;">
+                <div style="font-size:2em; font-weight:bold; color:var(--ri-primary);" id="st-res">-- Mbps</div>
+            </div>
+            <div class="ri-actions" style="justify-content:center;"><button class="ri-btn ri-btn-primary"
+                    id="st-go">Start Test</button></div>
+        </section>
+
+        <!-- 4.3 Unit -->
+        <section class="ri-tool" data-tool="unit-converter">
+            <div class="ri-head">
+                <h3 class="ri-title">Unit Converter</h3>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="uc-val" class="ri-input" placeholder="Value">
+                <select id="uc-type" class="ri-select">
+                    <option value="km-mi">Km to Miles</option>
+                    <option value="kg-lb">Kg to Lbs</option>
+                </select>
+            </div>
+            <div class="ri-result-box"><span id="uc-res">0.00</span></div>
+        </section>
+
+        <!-- 4.4 Password -->
+        <section class="ri-tool" data-tool="password">
+            <div class="ri-head">
+                <h3 class="ri-title">Password Gen</h3>
+            </div>
+            <input type="text" id="pw-out" class="ri-input" readonly>
+            <div class="ri-actions"><button class="ri-btn" id="pw-gen">Generate New</button></div>
+        </section>
+
+        <!-- 5.2 Captions -->
+        <section class="ri-tool" data-tool="captions">
+            <div class="ri-head">
+                <h3 class="ri-title">Caption Ideas</h3>
+            </div>
+            <div class="ri-grid" style="grid-template-columns:1fr 1fr;">
+                <div><select id="cap-tone" class="ri-select">
+                        <option>Friendly</option>
+                        <option>Formal</option>
+                    </select></div>
+                <div><input type="text" id="cap-topic" class="ri-input" placeholder="Topic"></div>
+            </div>
+            <div class="ri-result-box" style="white-space:pre-wrap; font-size:0.85em;" id="cap-out">...</div>
+            <div class="ri-actions"><button class="ri-btn" id="cap-gen">Draft</button></div>
+        </section>
+
+        <!-- 5.3 Ideas -->
+        <section class="ri-tool" data-tool="content-ideas">
+            <div class="ri-head">
+                <h3 class="ri-title">Content Ideas</h3>
+            </div>
+            <input type="text" id="ci-topic" class="ri-input" placeholder="Industry/Niche...">
+            <ul id="ci-out" style="margin-top:15px; padding-left:20px; font-size:0.9em; line-height:1.6;"></ul>
+            <div class="ri-actions"><button class="ri-btn" id="ci-gen">Get Ideas</button></div>
+        </section>
+
+    </div>
+
+    <script src="assets/tools.js"></script>
+</body>
+
+</html>

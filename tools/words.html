@@ -1,51 +1,43 @@
 ﻿<!doctype html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ريان | Tool</title>
+  <title>Rayyan | words</title>
   <link rel="stylesheet" href="../assets/app.css" />
 </head>
-<body dir="rtl" data-tool-id="words">
-  <div class="container">
-    <div class="nav">
-      <div class="brand">
-        <div class="dot" aria-hidden="true"></div>
-        <a href="../index.html" style="text-decoration:none; font-weight:800;" data-i18n="brand">ريان</a>
-      </div>
+<body data-tool-id="words">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2" style="top:auto; bottom:0;"></div>
 
-<div class="navlinks">
-        <a href="../index.html#tools" data-i18n="nav_tools">الأدوات</a>
-        <a href="../index.html#tools" data-i18n="nav_fin">المال والتمويل</a>
-        <a href="../index.html#tools" data-i18n="nav_time">الوقت والتاريخ</a>
-        <a href="../index.html#tools" data-i18n="nav_text">أدوات نصية</a>
-      </div>
-
-
-      <div class="actions">
-        <button class="btn glass-btn" id="langBtn" type="button">
-          <svg style="width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-5 10-10S17.523 2 12 2 2 7 2 12s4.477 10 10 10zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span id="langTxt">English</span>
-        </button>
-        <button class="btn ghost" id="backBtn" type="button" data-i18n="back">رجوع</button>
-      </div>
+  <div class="container" style="min-height:100vh; display:flex; flex-direction:column; padding-bottom:40px;">
+    
+    <!-- Nav -->
+    <div class="nav-shell">
+       <nav class="glass nav-bar">
+         <div class="brand">
+           <a href="../index.html" class="brand-icon" style="color:#fff; text-decoration:none;">R</a>
+           <a href="../index.html" style="font-weight:700;">Rayyan</a>
+         </div>
+         <div class="nav-actions">
+           <button class="btn btn-glass" id="langBtn" style="padding:8px 16px; font-size:13px;"><span id="langTxt">ط§ظ„ط¹ط±ط¨ظٹط©</span></button>
+           <a href="../index.html" class="btn btn-primary" style="padding:8px 20px; font-size:13px;">Back</a>
+         </div>
+       </nav>
     </div>
 
-    <div class="toolShell">
-      <div class="glass panel">
-        <h1 id="toolTitle">—</h1>
-        <p class="desc" id="toolDesc">—</p>
-        <div id="toolMount"></div>
-      </div>
+    <!-- Tool Content -->
+    <div class="glass" style="width:100%; max-width:700px; margin:0 auto; padding:40px; position:relative;">
+       <h1 id="toolTitle" style="font-size:32px; margin-bottom:10px; text-align:center;">Loading...</h1>
+       <p id="toolDesc" style="color:var(--text-muted); margin-bottom:40px; text-align:center;">...</p>
+       <div id="toolMount"></div>
     </div>
 
-    <div class="footer">
-      <div>Return to <a href="../index.html#tools">Tools</a></div>
-    </div>
+    <footer class="footer" style="margin-top:auto; border:none;">
+       <div>Rayyan Portal â€¢ Premium Tools</div>
+    </footer>
   </div>
 
   <script src="../assets/app.js"></script>
 </body>
-
 </html>
-

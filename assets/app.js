@@ -110,6 +110,11 @@ const TOOLS = [
     id: "eos", cat: "Work", icon: "📄",
     name_ar: "مكافأة نهاية الخدمة", desc_ar: "حسب نظام العمل السعودي.",
     name_en: "End of Service", desc_en: "Saudi Labor Law benefits."
+  },
+  {
+    id: "photoshop", cat: "Text", icon: "🎨",
+    name_ar: "نصوص عربية للفوتوشوب", desc_ar: "إصلاح مشاكل الكتابة في تطبيقات أدوبي.",
+    name_en: "Arabic for Photoshop", desc_en: "Fix text issues in Adobe apps."
   }
 ];
 
@@ -123,6 +128,10 @@ const I18N = {
     search_ph: "ابحث عن أداة...", open_tool: "فتح", back: "رجوع", copy: "نسخ", copied: "تم النسخ",
     calc: "احسب", result: "النتيجة", reset: "إعادة تعيين",
     // Hero
+    hero_t1: "أدوات ذكية", hero_t2: "لحياتك اليومية",
+    hero_sub: "مجموعة مميزة من الحاسبات والأدوات المصممة للمستخدم العصري. مجانية، سريعة، وآمنة.",
+    cta_primary: "تصفح الأدوات", footer_note: "صمم للمستخدم السعودي",
+    // Old Hero (keeping for safety if used elsewhere)
     featured_title: "أدوات مفيدة للمستخدم السعودي", featured_sub: "سريعة، واضحة، ومناسبة للجوال.",
     cta_primary: "استعراض الأدوات", cta_secondary: "الأكثر استخداماً",
     api_note: "ملاحظة: البيانات المالية يتم تحديثها تلقائياً.",
@@ -153,6 +162,10 @@ const I18N = {
     search_ph: "Search...", open_tool: "Open", back: "Back", copy: "Copy", copied: "Copied",
     calc: "Calculate", result: "Result", reset: "Reset",
     // Hero
+    hero_t1: "Smart Tools", hero_t2: "For Everyday Life",
+    hero_sub: "A premium collection of calculators, converters, and utilities designed for the modern user. Free, fast, and private.",
+    cta_primary: "Browse Tools", footer_note: "Designed for Saudi Users",
+    // Old Hero
     featured_title: "Useful Tools for Saudi Users", featured_sub: "Fast, clear, and mobile-friendly.",
     cta_primary: "Browse Tools", cta_secondary: "Most Used",
     api_note: "Note: Financial data uses live APIs.",
@@ -240,28 +253,53 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* -------------------- Index Page -------------------- */
+/* -------------------- Index Page -------------------- */
 function renderIndex() {
   const grid = document.getElementById("toolGrid");
   const qField = document.getElementById("q");
+  const chips = document.querySelectorAll(".cat-chip");
+  let activeFilter = "all";
+
+  // Chip Logic
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      chips.forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      activeFilter = chip.dataset.filter;
+      draw();
+    });
+  });
 
   const draw = () => {
     const q = (qField?.value || "").toLowerCase();
+
     const matches = TOOLS.filter(tl => {
+      // 1. Filter by Text
       const txt = (tl.name_ar + tl.name_en + tl.id).toLowerCase();
-      return txt.includes(q);
+      const matchText = txt.includes(q);
+
+      // 2. Filter by Category
+      const matchCat = activeFilter === "all" || tl.cat === activeFilter;
+
+      return matchText && matchCat;
     });
 
     grid.innerHTML = matches.map(tl => {
       const name = isAr() ? tl.name_ar : tl.name_en;
       const desc = isAr() ? tl.desc_ar : tl.desc_en;
+
       return `
-        <a class="glass card" href="tools/${tl.id}.html">
-          <div class="cardTop">
-            <div class="icon">${tl.icon}</div>
-            <div class="badge">${tl.cat}</div>
+        <a class="glass tool-card" href="tools/${tl.id}.html">
+          <div class="tc-top">
+            <div class="tc-icon">${tl.icon}</div>
+            <div class="tc-cat">${tl.cat}</div>
           </div>
           <h3>${name}</h3>
           <p>${desc}</p>
+          <div class="tc-action">
+             ${t("open_tool")} 
+             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </div>
         </a>`;
     }).join("");
   };
