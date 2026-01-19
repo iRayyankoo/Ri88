@@ -16,62 +16,70 @@
 <body>
 
   <!-- Nav -->
-  <div class="nav-shell">
+  <div class="container nav-shell">
     <nav class="glass nav-bar">
       <a href="#" class="brand">
-        <div class="brand-icon">R</div>
-        <span data-i18n="brand">RayyanTools</span>
+        <span>✦</span> <span data-i18n="brand">RayyanTools</span>
       </a>
-      <div class="nav-links">
-        <a href="#cat-finance" data-i18n="nav_fin">Finance</a>
-        <a href="#cat-time" data-i18n="nav_time">Time</a>
-        <a href="#cat-text" data-i18n="nav_text">Text</a>
-        <a href="#cat-prod" data-i18n="nav_prod">Productivity</a>
-      </div>
+
       <div class="nav-actions">
-        <button class="btn btn-glass" id="langBtn" onclick="toggleLang()">
+        <!-- New Profile / Language Area -->
+        <button class="nav-btn" id="langBtn" onclick="toggleLang()">
           <span id="langTxt">العربية</span>
         </button>
+        <div style="width:32px; height:32px; background:linear-gradient(135deg, #7c3aed, #06b6d4); border-radius:50%;">
+        </div>
       </div>
     </nav>
   </div>
 
   <!-- Hero -->
   <div class="container hero">
-    <div class="hero-content" style="text-align:center; margin:0 auto; max-width:800px;">
-      <h1 class="text-gradient">
+    <div class="hero-content">
+      <h1>
         <span data-i18n="hero_t1">Smart Tools</span><br>
-        <span data-i18n="hero_t2">For Modern Life</span>
+        <span data-i18n="hero_t2" style="color:#fff;">For Modern Life</span>
       </h1>
       <p data-i18n="hero_sub">
         A premium collection of essential utilities for finance, content, and productivity.
         Free, fast, and private.
       </p>
-      <div class="hero-btns" style="justify-content:center;">
-        <a href="#toolGrid" class="btn btn-primary" data-i18n="cta_primary">Explore Utils</a>
-        <a href="#cat-finance" class="btn btn-glass" data-i18n="cta_sec">Finance Tools</a>
+      <div class="hero-btns" style="display:flex; gap:15px;">
+        <a href="#toolGrid" class="ri-btn" style="width:auto; padding:12px 30px;" data-i18n="cta_primary">Explore
+          Utils</a>
       </div>
+    </div>
+
+    <!-- Floating Cards Visual -->
+    <div class="hero-visual">
+      <div class="float-card">Speed Test 🚀</div>
+      <div class="float-card">Finance 💸</div>
+      <div class="float-card">Time ⏳</div>
     </div>
   </div>
 
 
-  <!-- Main Grid -->
-  <div class="container" style="padding-top:40px; padding-bottom:80px;">
+  <!-- Main Content -->
+  <div class="container">
 
-    <!-- Filters -->
-    <div class="filters-bar">
-      <div class="search-pill glass">
-        <span style="font-size:1.2em; opacity:0.5;">🔍</span>
-        <input type="text" id="toolSearch" placeholder="Search tools..." data-i18n-ph="search_ph">
-      </div>
-      <div class="category-chips">
-        <button class="cat-chip active" onclick="filterTools('all')" data-en="All" data-ar="الكل">All</button>
-        <button class="cat-chip" onclick="filterTools('ri-cat-finance')" data-en="Finance"
-          data-ar="المالية">Finance</button>
-        <button class="cat-chip" onclick="filterTools('ri-cat-time')" data-en="Time" data-ar="الوقت">Time</button>
-        <button class="cat-chip" onclick="filterTools('ri-cat-text')" data-en="Text" data-ar="النصوص">Text</button>
-        <button class="cat-chip" onclick="filterTools('ri-cat-prod')" data-en="Productivity"
-          data-ar="الإنتاجية">Productivity</button>
+    <!-- Sticky Control Bar -->
+    <div class="control-bar glass">
+      <div class="control-content">
+        <div class="category-chips">
+          <button class="chip active" onclick="filterTools('all')" data-en="All" data-ar="الكل">All</button>
+          <button class="chip" onclick="filterTools('ri-cat-finance')" data-en="Finance"
+            data-ar="المالية">Finance</button>
+          <button class="chip" onclick="filterTools('ri-cat-time')" data-en="Time" data-ar="الوقت">Time</button>
+          <button class="chip" onclick="filterTools('ri-cat-text')" data-en="Text" data-ar="النصوص">Text</button>
+          <button class="chip" onclick="filterTools('ri-cat-prod')" data-en="Productivity"
+            data-ar="الإنتاجية">Productivity</button>
+        </div>
+
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="toolSearch" class="search-input" placeholder="Search for a tool..."
+            data-i18n-ph="search_ph">
+        </div>
       </div>
     </div>
 
