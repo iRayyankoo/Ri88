@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rayyan | Premium Tools Portal</title>
+  <title>Ri88 | Premium Tools Portal</title>
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,7 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/overrides.css">
 </head>
 
 <body>
@@ -21,7 +22,9 @@
   <!-- Navigation -->
   <nav class="navbar">
     <div class="nav-container">
-      <a href="#" class="brand">Rayyan.</a>
+      <a href="#" class="brand">
+        <img src="assets/logo.png" alt="Ri88" style="height: 85px; vertical-align: middle;">
+      </a>
       <div class="nav-links">
         <a href="#tools" class="nav-link" data-i18n="nav_tools">Tools</a>
         <a href="#categories" class="nav-link" data-i18n="nav_categories">Categories</a>
@@ -49,12 +52,7 @@
         </div>
       </div>
 
-      <div class="hero-visuals">
-        <!-- Floating Glass Cards (Generated Assets) -->
-        <img src="assets/ui/mock_loan.png" class="float-card main" alt="Loan Calculator UI">
-        <img src="assets/ui/mock_vat.png" class="float-card sub2" alt="VAT Calculator UI">
-        <img src="assets/ui/mock_text.png" class="float-card sub3" alt="Text Tool UI">
-      </div>
+      <!-- Visuals Removed as per request -->
     </div>
   </header>
 
@@ -65,40 +63,40 @@
     </div>
     <div class="cat-grid">
       <div class="glass-panel cat-card" onclick="filterTools('finance')">
-        <img src="assets/icons/cat_finance.png" class="cat-icon" alt="Finance">
+        <i data-lucide="coins" class="cat-icon" style="color:var(--accent-warm)"></i>
         <span data-i18n="cat_finance">Finance</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('time')">
-        <img src="assets/icons/cat_time.png" class="cat-icon" alt="Time">
+        <i data-lucide="clock" class="cat-icon" style="color:#A0E9FF"></i>
         <span data-i18n="cat_time">Time</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('text')">
-        <img src="assets/icons/cat_text.png" class="cat-icon" alt="Text">
+        <i data-lucide="type" class="cat-icon" style="color:#E8ECF6"></i>
         <span data-i18n="cat_text">Text</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('productivity')">
-        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="Productivity">
+        <i data-lucide="zap" class="cat-icon" style="color:var(--accent-pink)"></i>
         <span data-i18n="cat_prod">Productivity</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('content')">
-        <img src="assets/icons/cat_content.png" class="cat-icon" alt="Content">
+        <i data-lucide="layers" class="cat-icon" style="color:var(--accent-cyan)"></i>
         <span data-i18n="cat_content">Content</span>
       </div>
 
       <div class="glass-panel cat-card" onclick="filterTools('pdf')">
-        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="PDF" style="filter: hue-rotate(45deg);">
+        <i data-lucide="file-stack" class="cat-icon" style="color:#FF6B6B"></i>
         <span data-i18n="cat_pdf">PDF Tools</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('image')">
-        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="Image" style="filter: hue-rotate(90deg);">
+        <i data-lucide="image" class="cat-icon" style="color:#4ECB71"></i>
         <span data-i18n="cat_image">Image Tools</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('developer')">
-        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="Developer" style="filter: hue-rotate(180deg);">
+        <i data-lucide="code-2" class="cat-icon" style="color:#9B59B6"></i>
         <span data-i18n="cat_developer">Developer</span>
       </div>
       <div class="glass-panel cat-card" onclick="filterTools('saudi')">
-        <img src="assets/icons/cat_finance.png" class="cat-icon" alt="Saudi" style="filter: sepia(1);">
+        <i data-lucide="landmark" class="cat-icon" style="color:#27AE60"></i>
         <span data-i18n="cat_saudi">Saudi Utils</span>
       </div>
     </div>
@@ -121,7 +119,7 @@
   <!-- Footer -->
   <footer
     style="padding:40px; text-align:center; color:var(--text-secondary); border-top:1px solid var(--glass-border);">
-    <p>&copy; 2026 Rayyan Portal. Made for Saudi Users.</p>
+    <p>&copy; 2026 Ri88 Portal. Made for Saudi Users.</p>
   </footer>
 
   <!-- Modals (Container) -->
@@ -142,6 +140,7 @@
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://unpkg.com/downloadjs@1.4.7/download.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="assets/lucide.js"></script>
   <script>
     // Set worker path for pdf.js
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

@@ -195,11 +195,8 @@ const PDFTools = {
             const loadingTask = pdfjsLib.getDocument({ data: bytes });
             const pdf = await loadingTask.promise;
 
-            const zip = new JSZip(); // Wait, I don't have JSZip linked. 
-            // Fallback: Download first page or allow selecting.
-            // Requirement says "Convert pages to PNG".
-            // Since I don't have JSZip in index.html, I should create a scrollable list of images to right-click save, or download one by one.
-            // I'll show images in result area.
+            // const zip = new JSZip(); // Removed to avoid dependency error
+            // Fallback: Show images in result area for individual download.
 
             const resDiv = document.getElementById('res_pdf2img');
             resDiv.innerHTML = '<div id="imgGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin-top:10px;"></div>';
@@ -452,7 +449,7 @@ const PDFTools = {
         const btn = document.getElementById(`dlBtn_${toolId}`);
 
         btn.onclick = () => download(titleOrBytes, filename, "application/pdf");
-    }
+    },
     // 11. Remove Pages
     renderRemPage: function (container) {
         this.renderUploadUI(container, 'remPg', 'Upload PDF', 'Remove Pages', 'PDFTools.runRemPg()', `<input type="text" id="remIdx" class="glass-input" placeholder="Page numbers to remove (e.g. 1, 3)">`);
@@ -537,10 +534,155 @@ const PDFTools = {
     // 14. Extract Text/Images
     renderExt: function (container) {
         container.innerHTML = `
-            <h3 style="margin-bottom:10px;">Extract Content</h3>
-            <p>Extracting text and images is complex client-side.</p>
-            <p>Use "PDF to Images" for visual extraction.</p>
+            <div class="tool-ui-group">
+                <div class="file-drop-area" id="dropArea_ext" style="border:2px dashed var(--glass-border); padding:30px; text-align:center; border-radius:12px;">
+                    <p style="color:#aaa;">Upload PDF to extract content</p>
+                    <input type="file" id="pdfInput_ext" accept=".pdf" style="display:none" onchange="PDFTools.handleFileSelect('ext')">
+                    <button onclick="document.getElementById('pdfInput_ext').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">Select PDF</button>
+                    <div id="fileList_ext" style="margin-top:10px; font-size:0.9em;"></div>
+                </div>
+
+                <div id="opts_ext" class="hidden" style="margin-top:16px; display:flex; gap:16px;">
+                    <button onclick="PDFTools.runExtract('text')" class="btn-primary" style="flex:1;">Extract Text</button>
+                    <button onclick="PDFTools.runExtract('images')" class="btn-primary" style="flex:1;">Extract Images</button>
+                </div>
+                
+                <!-- Results -->
+                <div id="res_ext_text" class="result-box hidden" style="margin-top:16px;">
+                    <textarea id="extTextOut" class="glass-input" rows="10" placeholder="Extracted text will appear here..." readonly></textarea>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button onclick="navigator.clipboard.writeText(document.getElementById('extTextOut').value)" class="tool-action">Copy Text</button>
+                        <button onclick="download(document.getElementById('extTextOut').value, 'extracted_text.txt', 'text/plain')" class="tool-action">Download .txt</button>
+                    </div>
+                </div>
+
+                <div id="res_ext_img" class="result-box hidden" style="margin-top:16px;">
+                    <p style="margin-bottom:10px;">Found Images:</p>
+                    <div id="extImgGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;"></div>
+                </div>
+            </div>
         `;
+    },
+
+    runExtract: async function (mode) {
+        const file = document.getElementById('pdfInput_ext').files[0];
+        if (!file) return;
+
+        // Reset
+        document.getElementById('res_ext_text').classList.add('hidden');
+        document.getElementById('res_ext_img').classList.add('hidden');
+        document.getElementById('extImgGrid').innerHTML = '';
+        document.getElementById('extTextOut').value = 'Processing...';
+
+        try {
+            const bytes = await this.readFile(file);
+            const loadingTask = pdfjsLib.getDocument({ data: bytes });
+            const pdf = await loadingTask.promise;
+
+            if (mode === 'text') {
+                document.getElementById('res_ext_text').classList.remove('hidden');
+                let fullText = "";
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += `--- Page ${i} ---\n${pageText}\n\n`;
+                }
+
+                document.getElementById('extTextOut').value = fullText;
+
+            } else if (mode === 'images') {
+                document.getElementById('res_ext_img').classList.remove('hidden');
+                const grid = document.getElementById('extImgGrid');
+                grid.innerHTML = '<p style="grid-column:1/-1;">Scanning pages... (This may take a moment)</p>';
+
+                let count = 0;
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const ops = await page.getOperatorList();
+                    const fns = ops.fnArray;
+                    const args = ops.argsArray;
+
+                    for (let j = 0; j < fns.length; j++) {
+                        if (fns[j] === pdfjsLib.OPS.paintImageXObject) {
+                            const imgName = args[j][0];
+                            try {
+                                const imgObj = await page.objs.get(imgName);
+                                // imgObj should have data, width, height
+                                if (imgObj && imgObj.width && imgObj.height) {
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = imgObj.width;
+                                    canvas.height = imgObj.height;
+                                    const ctx = canvas.getContext('2d');
+
+                                    // Make ImageData
+                                    // This part varies by pdf.js version internal structure
+                                    // simplified approach: use common properties
+                                    // if 'data' is Uint8ClampedArray (RGBA)
+                                    // or Uint8Array (RGB)
+
+                                    // Fallback: If we can't easily construct raw pixels,
+                                    // we skip or try simplistic gray/rgb handling.
+                                    // However, simpler approach for "App" level:
+                                    // Use 'page.render' but mask everything else? No.
+
+                                    // Actually, PDF.js object handling is tricky.
+                                    // Let's try drawing it if it's a bitmap.
+
+                                    if (imgObj.bitmap) {
+                                        ctx.drawImage(imgObj.bitmap, 0, 0);
+                                    } else if (imgObj.data) {
+                                        // Construct Raw Data
+                                        // Assuming RGBA for simplicity in this context or converting
+                                        // This is a known complex area.
+                                        // Hack: Draw 1x1 rect placeholder if complex
+                                        // Better Hack: render isolated?
+
+                                        // Best "working" client-side simplistic:
+                                        // Skip raw extraction if too hard, but let's try 
+                                        // basic RGBA putting.
+
+                                        const imgData = ctx.createImageData(canvas.width, canvas.height);
+                                        // Copy data... assuming RGBA 
+                                        if (imgObj.data.length === canvas.width * canvas.height * 4) {
+                                            imgData.data.set(imgObj.data);
+                                            ctx.putImageData(imgData, 0, 0);
+                                        } else if (imgObj.data.length === canvas.width * canvas.height * 3) {
+                                            // RGB to RGBA
+                                            for (let k = 0, p = 0; k < imgObj.data.length; k += 3, p += 4) {
+                                                imgData.data[p] = imgObj.data[k];
+                                                imgData.data[p + 1] = imgObj.data[k + 1];
+                                                imgData.data[p + 2] = imgObj.data[k + 2];
+                                                imgData.data[p + 3] = 255;
+                                            }
+                                            ctx.putImageData(imgData, 0, 0);
+                                        }
+                                    }
+
+                                    const imgUrl = canvas.toDataURL();
+                                    const div = document.createElement('div');
+                                    div.innerHTML = `<img src="${imgUrl}" style="width:100%; border-radius:8px; border:1px solid var(--glass-border);">
+                                                     <a href="${imgUrl}" download="image_${count}.png" style="font-size:10px; display:block; margin-top:4px;">Download</a>`;
+                                    grid.appendChild(div);
+                                    count++;
+                                }
+                            } catch (err) {
+                                console.warn("Image extract error", err);
+                            }
+                        }
+                    }
+                }
+                if (count === 0 && grid.innerText.includes('Scanning')) {
+                    grid.innerHTML = '<p style="grid-column:1/-1;">No straightforward images found or extraction format not supported.</p>';
+                } else if (camera = document.querySelector('#extImgGrid p')) {
+                    if (camera.innerText.includes('Scanning')) camera.remove();
+                }
+            }
+        } catch (e) {
+            alert('Error: ' + e.message);
+        }
     }
 };
 

@@ -21,6 +21,7 @@
 }
 
 /* --- PREMIUM CARD DESIGN --- */
+/* --- PREMIUM CARD DESIGN --- */
 .tool-card {
     position: relative;
     background: var(--bg-card);
@@ -33,12 +34,13 @@
     /* For image cover */
     display: flex;
     flex-direction: column;
-    padding: 0;
-    /* Clear default padding */
+    padding: 24px;
+    /* Restore padding */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 420px;
-    /* Fixed height for consistency */
+    height: 240px;
+    /* Reduced height */
     cursor: pointer;
+    justify-content: space-between;
 }
 
 .tool-card:hover {
@@ -47,81 +49,15 @@
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* 1. Card Cover Image */
-.card-cover {
-    height: 55%;
-    width: 100%;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-/* Gradient Overlay on Image (Top-Down to ensure text contrast if any, matches vibe) */
-/* Glass Blur Overlay on Image Bottom */
-/* --- Seamless Gradient + Blur Overlays --- */
-
-/* 1. Main Gradient Fade (Blends image into card bg) */
-/* --- Premium Seamless Gradient Overlay --- */
-.card-cover::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* 
-       Smooth vertical gradient:
-       - Transparent at top (show image)
-       - Soft dark fade starting mid-way
-       - Solid card background color at the very bottom to merge with card body
-    */
-    background: linear-gradient(to bottom,
-            transparent 30%,
-            rgba(10, 14, 23, 0.4) 60%,
-            rgba(10, 14, 23, 0.8) 85%,
-            var(--bg-card) 100%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* Bookmark/Save Icon (Optional cosmetic from reference) */
-.card-bookmark {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(4px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #fff;
-    z-index: 2;
-}
-
 /* 2. Card Body */
-.card-body {
-    padding: 16px 20px 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.card-info-top {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.card-title {
+.tool-title {
     font-size: 1.25rem;
     font-weight: 700;
     color: #fff;
-    margin: 0;
+    margin: 0 0 8px 0;
 }
 
-.card-desc {
+.tool-desc {
     font-size: 0.9rem;
     color: var(--text-muted);
     line-height: 1.4;
@@ -133,56 +69,16 @@
     overflow: hidden;
 }
 
-/* Meta Row (Rating, Pills) */
-.card-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.meta-badge {
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ccc;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.meta-rating {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-}
-
-.meta-icon {
-    opacity: 0.7;
-}
-
 /* 3. Bottom CTA Button */
-.card-cta-btn {
-    width: 100%;
-    padding: 12px;
-    background: #fff;
-    color: #000;
-    font-weight: 700;
-    border: none;
-    border-radius: 50px;
-    /* Pill shape */
-    margin-top: 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-align: center;
-    font-size: 1rem;
-    display: block;
-    text-decoration: none;
-}
+/* (Handled by .tool-action in other block) */
 
-.card-cta-btn:hover {
-    background: #e0e0e0;
+/* Clear unused legacy styles from previous override attempt if they conflict */
+.card-cover,
+.card-bookmark,
+.card-body,
+.card-info-top,
+.card-meta {
+    display: none;
 }
 
 /* --- END CARD DESIGN --- */
@@ -257,4 +153,61 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     border-radius: 24px;
+}
+
+/* Standard Tool Card Button - Premium Redesign */
+.tool-action {
+    background: var(--primary-gradient) !important;
+    border: none !important;
+    color: white !important;
+    padding: 8px 24px !important;
+    border-radius: 50px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(109, 76, 255, 0.4);
+    cursor: pointer;
+    align-self: flex-start;
+    margin-top: auto;
+    /* Push to bottom if flex container allows */
+}
+
+.tool-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(109, 76, 255, 0.6);
+    filter: brightness(1.1);
+}
+
+/* --- TOOL ICONS (Lucide SVG) --- */
+.tool-icon {
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tool-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--accent-cyan);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 242, 0.3));
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tool-card:hover .tool-icon svg {
+    stroke: var(--accent-pink);
+    filter: drop-shadow(0 0 10px rgba(255, 0, 200, 0.5));
+    transform: scale(1.2) rotate(5deg);
+}
+
+.tool-card:hover .tool-icon {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }

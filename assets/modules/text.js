@@ -95,7 +95,7 @@ const TextTools = {
         document.getElementById('clOutput').value = text;
         document.getElementById('clResult').classList.remove('hidden');
     }
-},
+    ,
 
     // 3. Case Converter
     // ----------------------------------------------------------------
@@ -113,28 +113,28 @@ const TextTools = {
         `;
     },
 
-convertCase: function (mode) {
-    const field = document.getElementById('caseInput');
-    let text = field.value;
-    if (!text) return;
+    convertCase: function (mode) {
+        const field = document.getElementById('caseInput');
+        let text = field.value;
+        if (!text) return;
 
-    if (mode === 'upper') {
-        text = text.toUpperCase();
-    } else if (mode === 'lower') {
-        text = text.toLowerCase();
-    } else if (mode === 'title') {
-        text = text.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    } else if (mode === 'sentence') {
-        text = text.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
-    }
+        if (mode === 'upper') {
+            text = text.toUpperCase();
+        } else if (mode === 'lower') {
+            text = text.toLowerCase();
+        } else if (mode === 'title') {
+            text = text.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        } else if (mode === 'sentence') {
+            text = text.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
+        }
 
-    field.value = text;
-},
+        field.value = text;
+    },
 
-// 4. Hashtag Generator
-// ----------------------------------------------------------------
-renderHashtag: function (container) {
-    container.innerHTML = `
+    // 4. Hashtag Generator
+    // ----------------------------------------------------------------
+    renderHashtag: function (container) {
+        container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
                     <label>Content Text</label>
@@ -148,28 +148,28 @@ renderHashtag: function (container) {
                 </div>
             </div>
         `;
-},
+    },
 
-genHashtags: function () {
-    const text = document.getElementById('hashInput').value;
-    if (!text) return;
+    genHashtags: function () {
+        const text = document.getElementById('hashInput').value;
+        if (!text) return;
 
-    // Simple logic: split words, remove special chars, add #
-    // Filter small words? Keep it simple.
-    const tags = text.replace(/[^\w\s\u0600-\u06FF]/g, '')
-        .split(/\s+/)
-        .filter(w => w.length > 2)
-        .map(w => '#' + w)
-        .join(' ');
+        // Simple logic: split words, remove special chars, add #
+        // Filter small words? Keep it simple.
+        const tags = text.replace(/[^\w\s\u0600-\u06FF]/g, '')
+            .split(/\s+/)
+            .filter(w => w.length > 2)
+            .map(w => '#' + w)
+            .join(' ');
 
-    document.getElementById('hashOutput').innerText = tags;
-    document.getElementById('hashResult').classList.remove('hidden');
-},
+        document.getElementById('hashOutput').innerText = tags;
+        document.getElementById('hashResult').classList.remove('hidden');
+    },
 
-// 5. UTM Builder
-// ----------------------------------------------------------------
-renderUTM: function (container) {
-    container.innerHTML = `
+    // 5. UTM Builder
+    // ----------------------------------------------------------------
+    renderUTM: function (container) {
+        container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row"><input type="text" id="utmUrl" placeholder="Website URL (e.g. google.com)" class="glass-input"></div>
                 <div class="input-row"><input type="text" id="utmSource" placeholder="Campaign Source (e.g. twitter)" class="glass-input"></div>
@@ -183,90 +183,91 @@ renderUTM: function (container) {
                 </div>
             </div>
         `;
-},
+    },
 
-buildUTM: function () {
-    let url = document.getElementById('utmUrl').value.trim();
-    const source = document.getElementById('utmSource').value.trim();
-    const medium = document.getElementById('utmMedium').value.trim();
-    const campaign = document.getElementById('utmName').value.trim();
+    buildUTM: function () {
+        let url = document.getElementById('utmUrl').value.trim();
+        const source = document.getElementById('utmSource').value.trim();
+        const medium = document.getElementById('utmMedium').value.trim();
+        const campaign = document.getElementById('utmName').value.trim();
 
-    if (!url) return;
-    if (!url.startsWith('http')) url = 'https://' + url;
+        if (!url) return;
+        if (!url.startsWith('http')) url = 'https://' + url;
 
-    const params = new URLSearchParams();
-    if (source) params.append('utm_source', source);
-    if (medium) params.append('utm_medium', medium);
-    if (campaign) params.append('utm_campaign', campaign);
+        const params = new URLSearchParams();
+        if (source) params.append('utm_source', source);
+        if (medium) params.append('utm_medium', medium);
+        if (campaign) params.append('utm_campaign', campaign);
 
-    const finalUrl = url + (params.toString() ? '?' + params.toString() : '');
+        const finalUrl = url + (params.toString() ? '?' + params.toString() : '');
 
-    document.getElementById('utmOutput').value = finalUrl;
-    document.getElementById('utmResult').classList.remove('hidden');
-}
-// 6. Link Extractor
-renderLinks: function(container) {
-    container.innerHTML = `
+        document.getElementById('utmOutput').value = finalUrl;
+        document.getElementById('utmResult').classList.remove('hidden');
+    },
+
+    // 6. Link Extractor
+    renderLinks: function (container) {
+        container.innerHTML = `
             <div class="tool-ui-group">
                 <textarea id="linkTxt" class="glass-input" style="height:100px;" placeholder="Paste text containing URLs..."></textarea>
                 <button onclick="TextTools.getLinks()" class="btn-primary full-width" style="margin-top:10px;">Extract Links</button>
                 <textarea id="linkOut" class="glass-input hidden" style="height:100px; margin-top:10px;" readonly></textarea>
             </div>
          `;
-},
-getLinks: function() {
-    const txt = document.getElementById('linkTxt').value;
-    const regex = /https?:\/\/[^\s]+/g;
-    const matches = txt.match(regex);
-    const out = document.getElementById('linkOut');
+    },
+    getLinks: function () {
+        const txt = document.getElementById('linkTxt').value;
+        const regex = /https?:\/\/[^\s]+/g;
+        const matches = txt.match(regex);
+        const out = document.getElementById('linkOut');
 
-    if (matches) {
-        out.value = [...new Set(matches)].join('\n');
-        out.classList.remove('hidden');
-    } else {
-        alert('No links found');
-    }
-},
+        if (matches) {
+            out.value = [...new Set(matches)].join('\n');
+            out.classList.remove('hidden');
+        } else {
+            alert('No links found');
+        }
+    },
 
-// 7. Arabic Punctuation
-renderPunc: function(container) {
-    container.innerHTML = `
+    // 7. Arabic Punctuation
+    renderPunc: function (container) {
+        container.innerHTML = `
             <div class="tool-ui-group">
                 <textarea id="puncIn" class="glass-input" style="height:100px;" placeholder="نص عربي..."></textarea>
                 <button onclick="TextTools.fixPunc()" class="btn-primary full-width" style="margin-top:10px;">Fix Punctuation</button>
                 <textarea id="puncOut" class="glass-input hidden" style="height:100px; margin-top:10px;" readonly></textarea>
             </div>
          `;
-},
-fixPunc: function() {
-    let txt = document.getElementById('puncIn').value;
-    // Basic mapping
-    txt = txt.replace(/,/g, '،');
-    txt = txt.replace(/\?/g, '؟');
-    txt = txt.replace(/;/g, '؛');
-    txt = txt.replace(/1/g, '١').replace(/2/g, '٢').replace(/3/g, '٣').replace(/4/g, '٤').replace(/5/g, '٥')
-        .replace(/6/g, '٦').replace(/7/g, '٧').replace(/8/g, '٨').replace(/9/g, '٩').replace(/0/g, '٠');
+    },
+    fixPunc: function () {
+        let txt = document.getElementById('puncIn').value;
+        // Basic mapping
+        txt = txt.replace(/,/g, '،');
+        txt = txt.replace(/\?/g, '؟');
+        txt = txt.replace(/;/g, '؛');
+        txt = txt.replace(/1/g, '١').replace(/2/g, '٢').replace(/3/g, '٣').replace(/4/g, '٤').replace(/5/g, '٥')
+            .replace(/6/g, '٦').replace(/7/g, '٧').replace(/8/g, '٨').replace(/9/g, '٩').replace(/0/g, '٠');
 
-    document.getElementById('puncOut').value = txt;
-    document.getElementById('puncOut').classList.remove('hidden');
-},
+        document.getElementById('puncOut').value = txt;
+        document.getElementById('puncOut').classList.remove('hidden');
+    },
 
-// 8. Diacritics Remover
-renderTashkeel: function(container) {
-    container.innerHTML = `
+    // 8. Diacritics Remover
+    renderTashkeel: function (container) {
+        container.innerHTML = `
             <div class="tool-ui-group">
                 <textarea id="diaIn" class="glass-input" style="height:100px;" placeholder="نص مُشَكَّل..."></textarea>
                 <button onclick="TextTools.remDia()" class="btn-primary full-width" style="margin-top:10px;">Remove Tashkeel</button>
                 <textarea id="diaOut" class="glass-input hidden" style="height:100px; margin-top:10px;" readonly></textarea>
             </div>
          `;
-},
-remDia: function() {
-    let txt = document.getElementById('diaIn').value;
-    txt = txt.replace(/[\u064B-\u065F\u0670]/g, ''); // Common Tashkeel range
-    document.getElementById('diaOut').value = txt;
-    document.getElementById('diaOut').classList.remove('hidden');
-}
+    },
+    remDia: function () {
+        let txt = document.getElementById('diaIn').value;
+        txt = txt.replace(/[\u064B-\u065F\u0670]/g, ''); // Common Tashkeel range
+        document.getElementById('diaOut').value = txt;
+        document.getElementById('diaOut').classList.remove('hidden');
+    }
 };
 
 window.TextTools = TextTools;
