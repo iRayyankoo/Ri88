@@ -2,783 +2,166 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rayyan | Premium Tools Portal</title>
-  <link rel="stylesheet" href="assets/portal.css">
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&family=Cairo:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap"
     rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
 
 <body>
 
-  <!-- Nav -->
-  <div class="container nav-shell">
-    <nav class="glass nav-bar">
-      <a href="#" class="brand">
-        <span>✦</span> <span data-i18n="brand">RayyanTools</span>
-      </a>
-
-      <div class="nav-actions">
-        <!-- New Profile / Language Area -->
-        <button class="nav-btn" id="langBtn" onclick="toggleLang()">
-          <span id="langTxt">العربية</span>
-        </button>
-        <div style="width:32px; height:32px; background:linear-gradient(135deg, #7c3aed, #06b6d4); border-radius:50%;">
-        </div>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">Rayyan.</a>
+      <div class="nav-links">
+        <a href="#tools" class="nav-link" data-i18n="nav_tools">Tools</a>
+        <a href="#categories" class="nav-link" data-i18n="nav_categories">Categories</a>
+        <a href="#" class="nav-link" data-i18n="nav_about" onclick="openAbout()">About</a>
       </div>
-    </nav>
-  </div>
+      <div style="display:flex; gap:16px; align-items:center;">
+        <button class="btn-primary" id="searchTrigger" style="padding: 8px 16px; font-size:14px;">🔍 Search</button>
+        <button id="langToggle"
+          style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding: 6px 12px; border-radius:12px; cursor:pointer;">EN/AR</button>
+      </div>
+    </div>
+  </nav>
 
-  <!-- Hero -->
-  <div class="container hero">
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-glow"></div>
     <div class="hero-content">
-      <h1>
-        <span data-i18n="hero_t1">Smart Tools</span><br>
-        <span data-i18n="hero_t2" style="color:#fff;">For Modern Life</span>
-      </h1>
-      <p data-i18n="hero_sub">
-        A premium collection of essential utilities for finance, content, and productivity.
-        Free, fast, and private.
-      </p>
-      <div class="hero-btns" style="display:flex; gap:15px;">
-        <a href="#toolGrid" class="ri-btn" style="width:auto; padding:12px 30px;" data-i18n="cta_primary">Explore
-          Utils</a>
+      <div class="hero-text">
+        <h1 data-i18n="hero_title">Smart tools for<br><span style="color:var(--accent-pink);">everyday use</span></h1>
+        <p data-i18n="hero_sub">A premium collection of essential utilities for finance, productivity, and content
+          creation. Free for everyone.</p>
+        <div style="display:flex; gap:16px;">
+          <button class="btn-primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})"
+            data-i18n="hero_cta">Explore Tools</button>
+        </div>
+      </div>
+
+      <div class="hero-visuals">
+        <!-- Floating Glass Cards (Generated Assets) -->
+        <img src="assets/ui/mock_loan.png" class="float-card main" alt="Loan Calculator UI">
+        <img src="assets/ui/mock_vat.png" class="float-card sub2" alt="VAT Calculator UI">
+        <img src="assets/ui/mock_text.png" class="float-card sub3" alt="Text Tool UI">
       </div>
     </div>
+  </header>
 
-    <!-- Floating Cards Visual -->
-    <div class="hero-visual">
-      <div class="float-card">Speed Test 🚀</div>
-      <div class="float-card">Finance 💸</div>
-      <div class="float-card">Time ⏳</div>
+  <!-- Categories -->
+  <section id="categories" class="categories-section">
+    <div class="section-header">
+      <h2 data-i18n="cat_title">Explore by Category</h2>
     </div>
-  </div>
-
-
-  <!-- Main Content -->
-  <div class="container">
-
-    <!-- Sticky Control Bar -->
-    <div class="control-bar glass">
-      <div class="control-content">
-        <div class="category-chips">
-          <button class="chip active" onclick="filterTools('all')" data-en="All" data-ar="الكل">All</button>
-          <button class="chip" onclick="filterTools('ri-cat-finance')" data-en="Finance"
-            data-ar="المالية">Finance</button>
-          <button class="chip" onclick="filterTools('ri-cat-time')" data-en="Time" data-ar="الوقت">Time</button>
-          <button class="chip" onclick="filterTools('ri-cat-text')" data-en="Text" data-ar="النصوص">Text</button>
-          <button class="chip" onclick="filterTools('ri-cat-prod')" data-en="Productivity"
-            data-ar="الإنتاجية">Productivity</button>
-        </div>
-
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="toolSearch" class="search-input" placeholder="Search for a tool..."
-            data-i18n-ph="search_ph">
-        </div>
+    <div class="cat-grid">
+      <div class="glass-panel cat-card" onclick="filterTools('finance')">
+        <img src="assets/icons/cat_finance.png" class="cat-icon" alt="Finance">
+        <span data-i18n="cat_finance">Finance</span>
       </div>
-    </div>
-
-    <!-- The Tools Hub -->
-    <!-- Featured Row -->
-    <div class="grid-section">
-      <h2 data-i18n="feat_title" data-en="Featured & Most Used" data-ar="المميزة والأكثر استخداماً">Featured & Most Used
-      </h2>
-    </div>
-    <div class="feat-grid">
-      <!-- Most Used Lists (Dynamic Logic Placeholder) -->
-      <div class="feat-card glass" id="feat-list">
-        <h3 style="color:var(--accent); margin-top:0;">Top Tools Today</h3>
-        <ul style="padding-left:20px; color:var(--text-muted); line-height:1.8;" id="daily-list">
-          <li>Loading daily picks...</li>
-        </ul>
+      <div class="glass-panel cat-card" onclick="filterTools('time')">
+        <img src="assets/icons/cat_time.png" class="cat-icon" alt="Time">
+        <span data-i18n="cat_time">Time</span>
+      </div>
+      <div class="glass-panel cat-card" onclick="filterTools('text')">
+        <img src="assets/icons/cat_text.png" class="cat-icon" alt="Text">
+        <span data-i18n="cat_text">Text</span>
+      </div>
+      <div class="glass-panel cat-card" onclick="filterTools('productivity')">
+        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="Productivity">
+        <span data-i18n="cat_prod">Productivity</span>
+      </div>
+      <div class="glass-panel cat-card" onclick="filterTools('content')">
+        <img src="assets/icons/cat_content.png" class="cat-icon" alt="Content">
+        <span data-i18n="cat_content">Content</span>
       </div>
 
-      <!-- Large Card: Speed Test -->
-      <div class="feat-card large glass" onclick="RiTools.openModal('speedtest')">
-        <div style="font-size:3rem; margin-bottom:10px;">🚀</div>
-        <h3 data-en="Internet Speed" data-ar="سرعة النت">Internet Speed</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem;">Test your connection ping, upload, and download instantly.
-        </p>
+      <div class="glass-panel cat-card" onclick="filterTools('pdf')">
+        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="PDF" style="filter: hue-rotate(45deg);">
+        <span data-i18n="cat_pdf">PDF Tools</span>
       </div>
-
-      <!-- Large Card: Date Converter -->
-      <div class="feat-card glass" onclick="RiTools.openModal('hijri-gregorian')">
-        <div style="font-size:2.5rem; margin-bottom:10px;">📅</div>
-        <h3 data-en="Hijri Converter" data-ar="تحويل التاريخ">Hijri Converter</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem;">Accurate Hijri to Gregorian conversion.</p>
+      <div class="glass-panel cat-card" onclick="filterTools('image')">
+        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="Image" style="filter: hue-rotate(90deg);">
+        <span data-i18n="cat_image">Image Tools</span>
+      </div>
+      <div class="glass-panel cat-card" onclick="filterTools('developer')">
+        <img src="assets/icons/cat_prod.png" class="cat-icon" alt="Developer" style="filter: hue-rotate(180deg);">
+        <span data-i18n="cat_developer">Developer</span>
+      </div>
+      <div class="glass-panel cat-card" onclick="filterTools('saudi')">
+        <img src="assets/icons/cat_finance.png" class="cat-icon" alt="Saudi" style="filter: sepia(1);">
+        <span data-i18n="cat_saudi">Saudi Utils</span>
       </div>
     </div>
+  </section>
 
-
-    <!-- Main Tools Grid -->
-    <div class="grid-section">
-      <h2 data-i18n="all_tools" data-en="All Tools" data-ar="كافة الأدوات">All Tools</h2>
+  <!-- Tool Grid Section -->
+  <section id="tools" class="categories-section">
+    <div class="section-header">
+      <h2 data-i18n="all_tools">All Tools <span id="totalToolsCount"
+          style="font-size:0.6em; opacity:0.7; margin-left:10px;">(59)</span></h2>
+      <input type="text" id="searchInput" placeholder="Search for tools..."
+        style="background:var(--glass-bg); border:1px solid var(--glass-border); color:white; padding:10px 20px; border-radius:50px; width:250px;">
     </div>
 
-    <div id="toolGrid" class="grid">
-
-      <!-- FINANCE -->
-      <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('loan-calculator')">
-        <div class="tool-icon">💸</div>
-        <div class="tool-info">
-          <h3 data-en="Loan Calculator" data-ar="حاسبة القروض">Loan Calculator</h3>
-          <p data-en="Calculate monthly payments & total interest" data-ar="حساب الدفعات الشهرية وإجمالي الفوائد">
-            Calculate payments</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('vat-15')">
-        <div class="tool-icon">🧾</div>
-        <div class="tool-info">
-          <h3 data-en="VAT Calculator" data-ar="حاسبة الضريبة">VAT Calculator</h3>
-          <p data-en="Add or remove 15% VAT instantly" data-ar="إضافة أو خصم ضريبة 15% فوراً">VAT calculation</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('net-salary')">
-        <div class="tool-icon">💵</div>
-        <div class="tool-info">
-          <h3 data-en="Net Salary" data-ar="صافي الراتب">Net Salary</h3>
-          <p data-en="Calculate net income after deductions" data-ar="حساب الصافي بعد الخصميات">Net income calc</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('currency-converter')">
-        <div class="tool-icon">💱</div>
-        <div class="tool-info">
-          <h3 data-en="Currency" data-ar="تحويل عملات">Currency</h3>
-          <p data-en="Convert between major global currencies" data-ar="التحويل بين العملات العالمية">Currency convert
-          </p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('savings-goal')">
-        <div class="tool-icon">💰</div>
-        <div class="tool-info">
-          <h3 data-en="Savings Goal" data-ar="هدف الادخار">Savings Goal</h3>
-          <p data-en="Plan how long to reach your target" data-ar="خطط للوصول لهدفك المالي">Savings planner</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-finance" onclick="RiTools.openModal('zakat-simple')">
-        <div class="tool-icon">🌙</div>
-        <div class="tool-info">
-          <h3 data-en="Zakat Calc" data-ar="حاسبة الزكاة">Zakat Calc</h3>
-          <p data-en="Calculate Zakat on cash and assets" data-ar="حساب زكاة المال والأسهم">Zakat calculation</p>
-        </div>
-      </div>
-
-      <!-- TIME -->
-      <div class="tool-card ri-cat-time" onclick="RiTools.openModal('date-diff')">
-        <div class="tool-icon">⏳</div>
-        <div class="tool-info">
-          <h3 data-en="Date Diff" data-ar="فرق الأيام">Date Diff</h3>
-          <p data-en="Calculate days between two dates" data-ar="حساب عدد الأيام بين تاريخين">Days between dates</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-time" onclick="RiTools.openModal('timers')">
-        <div class="tool-icon">⏱️</div>
-        <div class="tool-info">
-          <h3 data-en="Stopwatch" data-ar="ساعة إيقاف">Stopwatch</h3>
-          <p data-en="Simple stopwatch with lap functionality" data-ar="ساعة إيقاف بسيطة ودقيقة">Track time</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-time" onclick="RiTools.openModal('timezone')">
-        <div class="tool-icon">🌍</div>
-        <div class="tool-info">
-          <h3 data-en="World Time" data-ar="توقيت العالم">World Time</h3>
-          <p data-en="Check current time in major cities" data-ar="معرفة الوقت في مدن العالم">Global cities time</p>
-        </div>
-      </div>
-
-      <!-- TEXT -->
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('arabic-adobe')">
-        <div class="tool-icon">🎨</div>
-        <div class="tool-info">
-          <h3 data-en="Arabic Adobe" data-ar="نصوص فوتوشوب">Arabic Adobe</h3>
-          <p data-en="Fix reversed Arabic text for Photoshop" data-ar="إصلاح النص العربي المعكوس">Fix text direction</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('password')">
-        <div class="tool-icon">🔒</div>
-        <div class="tool-info">
-          <h3 data-en="Password Gen" data-ar="توليد كلمات سر">Password Gen</h3>
-          <p data-en="Create strong, random passwords" data-ar="إنشاء كلمات مرور قوية">Secure passwords</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('text-cleaner')">
-        <div class="tool-icon">🧹</div>
-        <div class="tool-info">
-          <h3 data-en="Text Cleaner" data-ar="تنظيف النص">Text Cleaner</h3>
-          <p data-en="Remove duplicates and empty lines" data-ar="إزالة التكرار والأسطر الفارغة">Clean text data</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('case-converter')">
-        <div class="tool-icon">🔠</div>
-        <div class="tool-info">
-          <h3 data-en="Case Converter" data-ar="حالة الأحرف">Case Converter</h3>
-          <p data-en="Convert text to UPPER or lower case" data-ar="تحويل النص إلى أحرف كبيرة/صغيرة">Change letter case
-          </p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('hashtags')">
-        <div class="tool-icon">#️⃣</div>
-        <div class="tool-info">
-          <h3 data-en="Hashtags" data-ar="هاشتاقات">Hashtags</h3>
-          <p data-en="Convert words into social hashtags" data-ar="تحويل الكلمات إلى وسوم للتواصل">Social tags gen</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('utm-builder')">
-        <div class="tool-icon">🔗</div>
-        <div class="tool-info">
-          <h3 data-en="UTM Builder" data-ar="بناء روابط">UTM Builder</h3>
-          <p data-en="Create tracking URLs for marketing" data-ar="إنشاء روابط تتبع للحملات">Marketing links</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-text" onclick="RiTools.openModal('signature')">
-        <div class="tool-icon">✍️</div>
-        <div class="tool-info">
-          <h3 data-en="Signature" data-ar="توقيع">Signature</h3>
-          <p data-en="Generate professional email signatures" data-ar="إنشاء توقيع بريد احترافي">Email branding</p>
-        </div>
-      </div>
-
-      <!-- PRODUCTIVITY -->
-      <div class="tool-card ri-cat-prod" onclick="RiTools.openModal('qr')">
-        <div class="tool-icon">📱</div>
-        <div class="tool-info">
-          <h3 data-en="QR Code" data-ar="رمز QR">QR Code</h3>
-          <p data-en="Generate QR codes for any link" data-ar="إنشاء رمز QR لأي رابط">Link to QR</p>
-        </div>
-      </div>
-      <div class="tool-card ri-cat-prod" onclick="RiTools.openModal('unit-converter')">
-        <div class="tool-icon">⚖️</div>
-        <div class="tool-info">
-          <h3 data-en="Unit Convert" data-ar="تحويل وحدات">Unit Convert</h3>
-          <p data-en="Convert Weight and Distance units" data-ar="تحويل وحدات الوزن والمسافة">Simple unit calc</p>
-        </div>
-      </div>
-
+    <div class="tools-grid" id="toolsGrid">
+      <!-- Tool Cards will be injected by JS -->
     </div>
+  </section>
 
-    <!-- HIDDEN TOOLS CONTAINER (Source for Modals) -->
-    <div id="toolsHidden" style="display:none;">
-
-      <!-- FINANCE -->
-      <section class="ri-tool" data-tool="loan-calculator">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Loan Calculator" data-ar="حاسبة القروض">Loan Calculator</h3>
-        </div>
-        <div class="ri-grid" style="grid-template-columns: 1fr 1fr;">
-          <div><label class="ri-label" data-en="Amount" data-ar="المبلغ">Amount</label><input type="number"
-              id="lc-amount" class="ri-input" placeholder="100000"></div>
-          <div><label class="ri-label" data-en="Rate (%)" data-ar="النسبة (%)">Rate (%)</label><input type="number"
-              id="lc-rate" class="ri-input" value="5">
-          </div>
-          <div><label class="ri-label" data-en="Years" data-ar="السنوات">Years</label><input type="number" id="lc-term"
-              class="ri-input" value="5"></div>
-        </div>
-        <div class="ri-result-box">
-          <div class="ri-res-row"><span data-en="Monthly" data-ar="شهرياً">Monthly</span> <span id="lc-pay"
-              style="color:var(--primary); font-weight:bold;">0.00</span></div>
-        </div>
-        <button class="ri-btn btn-copy" style="margin-top:10px; width:100%;" data-en="Copy Estimate"
-          data-ar="نسخ التقدير">Copy Estimate</button>
-      </section>
-
-      <section class="ri-tool" data-tool="vat-15">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="VAT Calculator" data-ar="حاسبة الضريبة">VAT (15%)</h3>
-        </div>
-        <div class="ri-grid">
-          <div><label class="ri-label" data-en="Amount" data-ar="المبلغ">Amount</label><input type="number" id="vat-amt"
-              class="ri-input"></div>
-          <div><select id="vat-mode" class="ri-select">
-              <option value="add" data-en="Add VAT" data-ar="إضافة ضريبة">Add VAT</option>
-              <option value="sub" data-en="Remove VAT" data-ar="خصم ضريبة">Remove VAT</option>
-            </select></div>
-        </div>
-        <div class="ri-result-box">
-          <div class="ri-res-row total"><span data-en="Result" data-ar="النتيجة">Result</span> <span
-              id="vat-tot">0.00</span></div>
-        </div>
-      </section>
-
-      <!-- NEW FINANCE TOOLS -->
-      <section class="ri-tool" data-tool="net-salary">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Net Salary" data-ar="صافي الراتب">Net Salary</h3>
-        </div>
-        <div class="ri-grid">
-          <div><label class="ri-label" data-en="Basic" data-ar="الأساسي">Basic</label><input type="number" id="ns-basic"
-              class="ri-input"></div>
-          <div><label class="ri-label" data-en="Housing" data-ar="بدل سكن">Housing</label><input type="number"
-              id="ns-house" class="ri-input"></div>
-          <div><label class="ri-label" data-en="Transport" data-ar="بدل نقل">Transport</label><input type="number"
-              id="ns-trans" class="ri-input"></div>
-          <div><label class="ri-label" data-en="Deductions" data-ar="خصومات">Deductions</label><input type="number"
-              id="ns-ded" class="ri-input"></div>
-        </div>
-        <div style="margin:10px 0;"><label><input type="checkbox" id="ns-gosi" checked> <span data-en="GOSI (9.75%)"
-              data-ar="تأمين اجتماعي">GOSI (9.75%)</span></label></div>
-        <div class="ri-result-box">
-          <div class="ri-res-row"><span data-en="Gross" data-ar="الإجمالي">Gross</span> <span id="ns-gross">0</span>
-          </div>
-          <div class="ri-res-row"><span data-en="GOSI" data-ar="التأمين">GOSI</span> <span id="ns-gosi-val">0</span>
-          </div>
-          <div class="ri-res-row total"><span data-en="Net" data-ar="الصافي">Net</span> <span id="ns-net">0</span></div>
-        </div>
-      </section>
-
-      <section class="ri-tool" data-tool="currency-converter">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Currency" data-ar="تحويل عملات">Currency</h3>
-        </div>
-        <div class="ri-grid" style="grid-template-columns: 1fr 1fr 50px;">
-          <div><label class="ri-label" data-en="Amount" data-ar="المبلغ">Amount</label><input type="number" id="cc-amt"
-              class="ri-input"></div>
-          <div><label class="ri-label" data-en="Rate" data-ar="السعر">Rate</label><input type="number" id="cc-rate"
-              class="ri-input" value="3.75">
-          </div>
-          <button id="cc-swap" class="ri-btn" style="margin-top:28px;">⇄</button>
-        </div>
-        <div class="ri-result-box"><span id="cc-res">0.00</span></div>
-      </section>
-
-      <section class="ri-tool" data-tool="savings-goal">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Savings Goal" data-ar="هدف الادخار">Savings Goal</h3>
-        </div>
-        <div class="ri-grid">
-          <div><label class="ri-label" data-en="Goal" data-ar="الهدف">Goal</label><input type="number" id="sg-target"
-              class="ri-input"></div>
-          <div><label class="ri-label" data-en="Current" data-ar="الحالي">Current</label><input type="number"
-              id="sg-curr" class="ri-input"></div>
-          <div><label class="ri-label" data-en="Monthly Save" data-ar="ادخار شهري">Monthly Save</label><input
-              type="number" id="sg-month" class="ri-input"></div>
-        </div>
-        <div class="ri-result-box"><span id="sg-res">-- Months</span></div>
-      </section>
-
-      <section class="ri-tool" data-tool="zakat-simple">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Zakat Calc" data-ar="حاسبة الزكاة">Zakat Calc</h3>
-        </div>
-        <div class="ri-grid">
-          <div><label class="ri-label" data-en="Cash" data-ar="نقد">Cash</label><input type="number" id="zk-cash"
-              class="ri-input"></div>
-          <div><label class="ri-label" data-en="Investments" data-ar="استثمارات">Investments</label><input type="number"
-              id="zk-inv" class="ri-input"></div>
-          <div><label class="ri-label" data-en="Debts" data-ar="ديون">Debts</label><input type="number" id="zk-debt"
-              class="ri-input"></div>
-        </div>
-        <div class="ri-result-box"><span data-en="Zakat: " data-ar="الزكاة: ">Zakat: </span><span id="zk-res"
-            style="color:gold;">0.00</span></div>
-      </section>
-
-      <!-- TIME -->
-      <section class="ri-tool" data-tool="hijri-gregorian">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Hijri Date" data-ar="تحويل التاريخ">Hijri Date</h3>
-        </div>
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-          <input type="date" id="hij-inp" class="ri-input">
-          <button class="ri-btn" id="hij-today" data-en="Today" data-ar="اليوم">Today</button>
-        </div>
-        <div class="ri-result-box"><span id="hij-hijri" style="font-size:0.9em;">--</span></div>
-      </section>
-
-      <section class="ri-tool" data-tool="date-diff">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Date Diff" data-ar="فرق الأيام">Date Diff</h3>
-        </div>
-        <div class="ri-grid" style="grid-template-columns:1fr 1fr;">
-          <input type="date" id="dd-start" class="ri-input">
-          <input type="date" id="dd-end" class="ri-input">
-        </div>
-        <div class="ri-result-box"><span id="dd-res">0 Days</span><span id="dd-detail"
-            style="display:block; font-size:0.8em; color:var(--text-muted);"></span></div>
-      </section>
-
-      <!-- NEW TIME TOOLS -->
-      <section class="ri-tool" data-tool="timers">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Stopwatch" data-ar="ساعة إيقاف">Stopwatch</h3>
-        </div>
-        <div class="ri-result-box" style="text-align:center; font-size:2em; font-family:monospace;" id="tm-disp">00:00
-        </div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <button class="ri-btn" id="tm-start" style="background:#10b981;" data-en="Start" data-ar="بدء">Start</button>
-          <button class="ri-btn" id="tm-stop" style="background:#ef4444;" data-en="Stop" data-ar="توقف">Stop</button>
-          <button class="ri-btn" id="tm-reset" style="background:#6b7280;" data-en="Reset"
-            data-ar="إعادة">Reset</button>
-        </div>
-      </section>
-
-      <section class="ri-tool" data-tool="timezone">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="World Time" data-ar="توقيت العالم">World Time</h3>
-        </div>
-        <div id="tz-list" style="max-height:200px; overflow-y:auto;"></div>
-      </section>
-
-      <!-- TEXT -->
-      <section class="ri-tool" data-tool="arabic-adobe">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Arabic for Adobe" data-ar="نصوص فوتوشوب">Arabic Adobe</h3>
-        </div>
-        <textarea id="aa-in" class="ri-textarea" style="height:80px;" placeholder="Input..." data-en-ph="Input..."
-          data-ar-ph="النص هنا..."></textarea>
-        <div style="margin:5px 0; font-size:0.8em;">
-          <label><input type="checkbox" id="aa-rev" checked> <span data-en="Fix Reverse" data-ar="عكس الأحرف">Fix
-              Reverse</span></label>
-          <label><input type="checkbox" id="aa-num"> <span data-en="Hindi Nums" data-ar="أرقام هندية">Hindi
-              Nums</span></label>
-        </div>
-        <textarea id="aa-out" class="ri-textarea" style="height:80px;" readonly placeholder="Output..."
-          data-en-ph="Output..." data-ar-ph="النتيجة..."></textarea>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <button class="ri-btn" id="aa-conv" style="background:var(--secondary); color:#000;" data-en="Convert"
-            data-ar="تحويل">Convert</button>
-          <button class="ri-btn" id="aa-copy" data-en="Copy" data-ar="نسخ">Copy</button>
-        </div>
-      </section>
-
-      <section class="ri-tool" data-tool="password">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Password Gen" data-ar="توليد كلمات سر">Password Gen</h3>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <input type="text" id="pw-out" class="ri-input" readonly>
-          <button class="ri-btn" id="pw-gen" data-en="Gen" data-ar="توليد">Gen</button>
-        </div>
-      </section>
-
-      <!-- NEW TEXT TOOLS -->
-      <section class="ri-tool" data-tool="text-cleaner">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Text Cleaner" data-ar="تنظيف النص">Text Cleaner</h3>
-        </div>
-        <textarea id="tc-in" class="ri-textarea" style="height:100px;" data-en-ph="Paste text here..."
-          data-ar-ph="الصق النص هنا..." placeholder="Paste text here..."></textarea>
-        <div style="margin:10px 0; display:flex; gap:10px; flex-wrap:wrap;">
-          <label><input type="checkbox" id="tc-dup" checked> <span data-en="Remove Duplicates"
-              data-ar="إزالة التكرار">Remove Duplicates</span></label>
-          <label><input type="checkbox" id="tc-empty" checked> <span data-en="Remove Empty Lines"
-              data-ar="إزالة الأسطر الفارغة">Remove Empty Lines</span></label>
-          <label><input type="checkbox" id="tc-trim" checked> <span data-en="Trim Whitespace"
-              data-ar="إزالة المسافات الزائدة">Trim Whitespace</span></label>
-        </div>
-        <button class="ri-btn" id="tc-go" data-en="Clean Text" data-ar="تنظيف النص">Clean Text</button>
-      </section>
-
-      <section class="ri-tool" data-tool="case-converter">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Case Converter" data-ar="حالة الأحرف">Case Converter</h3>
-        </div>
-        <textarea id="cc-in" class="ri-textarea" style="height:80px;" placeholder="Type here..."
-          data-en-ph="Type here..." data-ar-ph="اكتب هنا..."></textarea>
-        <div style="display:flex; gap:5px; margin-top:10px;">
-          <button class="ri-btn cc-btn" data-mode="upper" style="padding:5px;" data-en="UPPER"
-            data-ar="كبيرة">UPPER</button>
-          <button class="ri-btn cc-btn" data-mode="lower" style="padding:5px;" data-en="lower"
-            data-ar="صغيرة">lower</button>
-          <button class="ri-btn cc-btn" data-mode="title" style="padding:5px;" data-en="Title Case"
-            data-ar="عنوان">Title Case</button>
-        </div>
-      </section>
-
-      <section class="ri-tool" data-tool="hashtags">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Hashtags" data-ar="هاشتاقات">Hashtags</h3>
-        </div>
-        <input type="text" id="ht-in" class="ri-input" placeholder="Comms, separated, words"
-          data-en-ph="Comma, separated, words" data-ar-ph="كلمات، مفصول، بفاصلة">
-        <button class="ri-btn" id="ht-go" style="margin-top:10px;" data-en="#Hash #It" data-ar="#تحويل">#Hash
-          #It</button>
-        <div class="ri-result-box" id="ht-out"></div>
-      </section>
-
-      <section class="ri-tool" data-tool="utm-builder">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="UTM Builder" data-ar="بناء روابط">UTM Builder</h3>
-        </div>
-        <div class="ri-grid">
-          <input type="text" id="utm-url" class="ri-input" placeholder="https://site.com" data-en-ph="https://site.com"
-            data-ar-ph="https://site.com">
-          <input type="text" id="utm-src" class="ri-input" placeholder="Source (google)" data-en-ph="Source (google)"
-            data-ar-ph="المصدر (google)">
-          <input type="text" id="utm-med" class="ri-input" placeholder="Medium (cpc)" data-en-ph="Medium (cpc)"
-            data-ar-ph="الوسط (cpc)">
-          <input type="text" id="utm-camp" class="ri-input" placeholder="Campaign (summer_sale)"
-            data-en-ph="Campaign (summer_sale)" data-ar-ph="الحملة (summer_sale)">
-        </div>
-        <div class="ri-result-box" style="word-break:break-all;" id="utm-out"></div>
-        <button class="ri-btn" id="utm-copy" data-en="Copy URL" data-ar="نسخ الرابط">Copy URL</button>
-      </section>
-
-      <section class="ri-tool" data-tool="signature">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Email Signature" data-ar="توقيع بريد">Email Signature</h3>
-        </div>
-        <input type="text" id="sig-name" class="ri-input" placeholder="Name" data-en-ph="Name" data-ar-ph="الاسم">
-        <input type="text" id="sig-title" class="ri-input" placeholder="Job Title" style="margin-top:5px;"
-          data-en-ph="Job Title" data-ar-ph="المسمى الوظيفي">
-        <input type="text" id="sig-comp" class="ri-input" placeholder="Company" style="margin-top:5px;"
-          data-en-ph="Company" data-ar-ph="الشركة">
-
-        <div style="margin-top:15px; border:1px dashed #ccc; padding:10px;" id="sig-prev"><span data-en="Preview"
-            data-ar="معاينة">Preview</span></div>
-        <textarea id="sig-code" class="ri-textarea" style="height:60px; margin-top:10px;" readonly></textarea>
-      </section>
-
-      <!-- PRODUCTIVITY -->
-      <section class="ri-tool" data-tool="qr">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="QR Code" data-ar="رمز QR">QR Code</h3>
-        </div>
-        <input type="text" id="qr-in" class="ri-input" placeholder="URL..." data-en-ph="URL..." data-ar-ph="الرابط...">
-        <button class="ri-btn" id="qr-gen" style="width:100%; margin-top:10px;" data-en="Generate"
-          data-ar="توليد">Generate</button>
-        <div style="text-align:center; margin-top:10px;"><img id="qr-img" width="100" style="border-radius:8px;"></div>
-      </section>
-
-      <section class="ri-tool" data-tool="unit-converter">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Unit Convert" data-ar="تحويل وحدات">Unit Convert</h3>
-        </div>
-        <div style="display:flex; gap:5px;">
-          <input type="number" id="uc-val" class="ri-input">
-          <select id="uc-type" class="ri-select">
-            <option value="km-mi" data-en="Km→Mi" data-ar="كم→ميل">Km→Mi</option>
-            <option value="kg-lb" data-en="Kg→Lb" data-ar="كغ→باوند">Kg→Lb</option>
-          </select>
-        </div>
-        <div class="ri-result-box"><span id="uc-res">0.00</span></div>
-      </section>
-
-      <!-- NEW PROD TOOLS -->
-      <section class="ri-tool" data-tool="speedtest">
-        <div class="ri-head">
-          <h3 class="ri-title" data-en="Speed Test" data-ar="سرعة النت">Speed Test</h3>
-        </div>
-
-        <div class="st-container">
-          <div class="st-gauge">
-            <!-- SVG Circle for Progress -->
-            <svg class="st-progress-svg" width="200" height="200">
-              <defs>
-                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:var(--secondary);stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:var(--primary);stop-opacity:1" />
-                </linearGradient>
-              </defs>
-              <circle class="st-progress-circle" cx="100" cy="100" r="90" stroke="#333" stroke-width="8" />
-              <circle id="st-prog" class="st-progress-circle" cx="100" cy="100" r="90" stroke="url(#grad1)"
-                stroke-dashoffset="565" />
-            </svg>
-
-            <div class="st-ring" id="st-ring"></div>
-
-            <div class="st-value">
-              <span id="st-num">GO</span>
-              <span id="st-unit" style="display:none;">Mbps</span>
-            </div>
-          </div>
-
-          <div class="st-stats">
-            <div>
-              <span class="st-stat-label">PING</span>
-              <span class="st-stat-val" id="st-ping">--</span>
-              <span class="st-stat-unit">ms</span>
-            </div>
-            <div>
-              <span class="st-stat-label">DOWN</span>
-              <span class="st-stat-val" id="st-down">--</span>
-              <span class="st-stat-unit">Mbps</span>
-            </div>
-            <div>
-              <span class="st-stat-label">UP</span>
-              <span class="st-stat-val" id="st-up">--</span>
-              <span class="st-stat-unit">Mbps</span>
-            </div>
-          </div>
-
-          <button class="ri-btn" id="st-go" style="margin-top:25px; border-radius:50px; width:80%;" data-en="Start Test"
-            data-ar="بدء الفحص">Start Test</button>
-        </div>
-      </section>
-    </div>
-
-  </div>
-
-  <!-- MODAL OVERLAY -->
-  <div id="modalOverlay" class="modal-overlay" onclick="RiTools.closeModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="RiTools.closeModal()">×</button>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-  </div>
-
-  <footer class="container" style="text-align:center; padding:40px; color:var(--text-muted); font-size:0.9em;">
-    Rayyan Portal &copy; 2026 • Made for the Community
+  <!-- Footer -->
+  <footer
+    style="padding:40px; text-align:center; color:var(--text-secondary); border-top:1px solid var(--glass-border);">
+    <p>&copy; 2026 Rayyan Portal. Made for Saudi Users.</p>
   </footer>
 
-  <script src="assets/tools.js"></script>
+  <!-- Modals (Container) -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:24px;">
+        <h3 id="modalTitle">Tool Name</h3>
+        <button onclick="closeModal()"
+          style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <div id="modalBody">
+        <!-- Tool Module Content Loaded Here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://unpkg.com/downloadjs@1.4.7/download.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
-    // Portal Logic
-    function toggleLang() {
-      const cur = RiTools.lang;
-      const next = cur === 'en' ? 'ar' : 'en';
-      RiTools.setLang(next);
-      document.getElementById('langTxt').textContent = next === 'en' ? 'العربية' : 'English';
-
-      // Update static text on page (Legacy Map)
-      const map = {
-        'en': {
-          'brand': 'RayyanTools',
-          'nav_fin': 'Finance', 'nav_time': 'Time', 'nav_text': 'Text', 'nav_prod': 'Productivity',
-          'hero_t1': 'Smart Tools', 'hero_t2': 'For Modern Life',
-          'hero_sub': 'A premium collection of essential utilities for finance, content, and productivity. Free, fast, and private.',
-          'cta_primary': 'Explore Utils', 'cta_sec': 'Finance Tools',
-          'search_ph': 'Search tools...'
-        },
-        'ar': {
-          'brand': 'ريان للأدوات',
-          'nav_fin': 'المالية', 'nav_time': 'الوقت', 'nav_text': 'النصوص', 'nav_prod': 'الإنتاجية',
-          'hero_t1': 'أدوات ذكية', 'hero_t2': 'للحياة العصرية',
-          'hero_sub': 'مجموعة متميزة من الأدوات الأساسية. مجانية، سريعة، وخصوصية تامة.',
-          'cta_primary': 'تصفح الأدوات', 'cta_sec': 'أدوات المالية',
-          'search_ph': 'ابحث عن أداة...'
-        }
-      };
-      const t = map[next];
-      document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t[el.dataset.i18n]);
-      document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t[el.dataset.i18nPh]);
-
-      // DYNAMIC UPDATE for Cards & Chips
-      document.querySelectorAll('[data-en]').forEach(el => {
-        el.textContent = next === 'ar' ? el.dataset.ar : el.dataset.en;
-      });
-
-      document.body.dir = next === 'ar' ? 'rtl' : 'ltr';
-    }
-
-    // Search Filter
-    document.getElementById('toolSearch').addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase();
-      document.querySelectorAll('.tool-card').forEach(el => {
-        const txt = el.innerText.toLowerCase();
-        el.style.display = txt.includes(q) ? 'flex' : 'none';
-      });
-    });
-
-    // Category Filter
-    function filterTools(cat) {
-      document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-
-      document.querySelectorAll('.tool-card').forEach(el => {
-        if (cat === 'all' || el.classList.contains(cat)) el.style.display = 'flex';
-        else el.style.display = 'none';
-      });
-    }
-    // --- DAILY LOGIC (SAUDI TIME) ---
-    function initDailyShuffle() {
-      // 1. Generate Seed from Riyadh Date
-      const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' });
-      const [{ value: mo }, , { value: da }, , { value: ye }] = fmt.formatToParts(new Date());
-      const dateStr = `${ye}${mo}${da}`;
-      let seed = parseInt(dateStr); // E.g., 20261025
-
-      // PRNG (Mulberry32-ish for simplicity)
-      const random = () => {
-        let t = seed += 0x6D2B79F5;
-        t = Math.imul(t ^ (t >>> 15), t | 1);
-        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-
-      // 2. Define Candidates (IDs must match HTML)
-      // Exclude Featured Fixed Tools: 'speedtest', 'hijri-gregorian'
-      const pools = {
-        finance: ['loan-calculator', 'vat-15', 'net-salary', 'currency-converter', 'savings-goal', 'zakat-simple'],
-        time: ['date-diff', 'timers', 'timezone'], // Hijri is featured
-        text: ['arabic-adobe', 'password', 'text-cleaner', 'case-converter', 'hashtags', 'utm-builder', 'signature']
-      };
-
-      // 3. Select "Most Used Today" (2 Finance + 2 Time + 2 Text)
-      const pick = (arr, n) => {
-        const shuffled = [...arr].sort(() => random() - 0.5);
-        return shuffled.slice(0, n);
-      };
-
-      const dailyPicks = [
-        ...pick(pools.finance, 2),
-        ...pick(pools.time, 2),
-        ...pick(pools.text, 2)
-      ];
-
-      // Render "Most Used" List
-      const listEl = document.getElementById('daily-list');
-      listEl.innerHTML = '';
-      dailyPicks.forEach(id => {
-        // Find tool Title
-        const card = document.querySelector(`.tool-card[onclick*="'${id}'"]`);
-        if (card) {
-          const h3 = card.querySelector('h3');
-          const titleEn = h3.getAttribute('data-en');
-          const titleAr = h3.getAttribute('data-ar');
-          const descEn = card.querySelector('p').getAttribute('data-en');
-          const descAr = card.querySelector('p').getAttribute('data-ar');
-
-          const li = document.createElement('li');
-          li.style.marginBottom = '8px';
-          li.style.cursor = 'pointer';
-          li.onclick = () => RiTools.openModal(id);
-          li.innerHTML = `<strong class="auto-lang" data-en="${titleEn}" data-ar="${titleAr}">${titleEn}</strong>
-                            <span style="font-size:0.85em; opacity:0.7; display:block;" class="auto-lang" data-en="${descEn}" data-ar="${descAr}">${descEn}</span>`;
-          listEl.appendChild(li);
-        }
-      });
-
-      // 4. Shuffle Main Grid Categories
-      const grid = document.getElementById('toolGrid');
-
-      // Capture ALL cards from the DOM *before* clearing the grid
-      const allCards = Array.from(document.querySelectorAll('.tool-card'));
-
-      // Group by Category
-      const grouped = {
-        'ri-cat-finance': [], 'ri-cat-time': [], 'ri-cat-text': [], 'ri-cat-prod': []
-      };
-
-      allCards.forEach(c => {
-        for (let cat in grouped) {
-          if (c.classList.contains(cat)) {
-            grouped[cat].push(c);
-            break;
-          }
-        }
-      });
-
-      // Clear the grid now that we have the references
-      grid.innerHTML = '';
-
-      // Shuffle & Rebuild
-      for (let cat in grouped) {
-        // Shuffle within category
-        grouped[cat].sort(() => random() - 0.5);
-        // Append back
-        grouped[cat].forEach(c => grid.appendChild(c));
-      }
-
-    }
-
-    // Init
-    initDailyShuffle();
+    // Set worker path for pdf.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   </script>
+
+  <!-- Tool Modules -->
+  <script src="assets/modules/finance.js"></script>
+  <script src="assets/modules/time.js"></script>
+  <script src="assets/modules/text.js"></script>
+  <script src="assets/modules/productivity.js"></script>
+  <script src="assets/modules/content.js"></script>
+  <script src="assets/modules/pdf.js"></script>
+  <script src="assets/modules/image.js"></script>
+  <script src="assets/modules/developer.js"></script>
+  <script src="assets/modules/saudi.js"></script>
+
+  <!-- Main JS -->
+  <script src="assets/app.js"></script>
+
+
 </body>
 
 </html>

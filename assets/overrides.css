@@ -1,0 +1,260 @@
+/* === RAYYAN PORTAL PREMIUM OVERRIDES === */
+
+/* Enforce 4-column grid on Desktop */
+.grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+/* Tablet (max-width: 1024px) -> 2 columns */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile (max-width: 600px) -> 1 column */
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- PREMIUM CARD DESIGN --- */
+.tool-card {
+    position: relative;
+    background: var(--bg-card);
+    /* Keep existing dark bg */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Subtle border */
+    border-radius: 24px;
+    /* Large radius per reference */
+    overflow: hidden;
+    /* For image cover */
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    /* Clear default padding */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 420px;
+    /* Fixed height for consistency */
+    cursor: pointer;
+}
+
+.tool-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 1. Card Cover Image */
+.card-cover {
+    height: 55%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* Gradient Overlay on Image (Top-Down to ensure text contrast if any, matches vibe) */
+/* Glass Blur Overlay on Image Bottom */
+/* --- Seamless Gradient + Blur Overlays --- */
+
+/* 1. Main Gradient Fade (Blends image into card bg) */
+/* --- Premium Seamless Gradient Overlay --- */
+.card-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* 
+       Smooth vertical gradient:
+       - Transparent at top (show image)
+       - Soft dark fade starting mid-way
+       - Solid card background color at the very bottom to merge with card body
+    */
+    background: linear-gradient(to bottom,
+            transparent 30%,
+            rgba(10, 14, 23, 0.4) 60%,
+            rgba(10, 14, 23, 0.8) 85%,
+            var(--bg-card) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Bookmark/Save Icon (Optional cosmetic from reference) */
+.card-bookmark {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    z-index: 2;
+}
+
+/* 2. Card Body */
+.card-body {
+    padding: 16px 20px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-info-top {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Meta Row (Rating, Pills) */
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.meta-badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.meta-rating {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.meta-icon {
+    opacity: 0.7;
+}
+
+/* 3. Bottom CTA Button */
+.card-cta-btn {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: #000;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    /* Pill shape */
+    margin-top: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-align: center;
+    font-size: 1rem;
+    display: block;
+    text-decoration: none;
+}
+
+.card-cta-btn:hover {
+    background: #e0e0e0;
+}
+
+/* --- END CARD DESIGN --- */
+
+
+/* --- EXISTING SECTIONS (Keep these or adjust as needed) --- */
+/* Hero Section */
+.hero {
+    position: relative;
+    padding: 80px 0 60px;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(124, 58, 237, 0.15), transparent 70%);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #fff, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+}
+
+.cta-browse {
+    display: inline-block;
+    padding: 12px 30px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.cta-browse:hover {
+    transform: translateY(-2px);
+    background: #6025c0;
+}
+
+/* Featured Row Layout */
+.featured-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.featured-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    border-radius: 20px;
+    padding: 24px;
+    height: 100%;
+}
+
+/* Modal Enhancements */
+.modal-overlay {
+    backdrop-filter: blur(12px);
+    background: rgba(10, 14, 23, 0.6);
+}
+
+.modal-content {
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    border-radius: 24px;
+}

@@ -33,6 +33,9 @@ const RiTools = {
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden'; // Prevent background scroll
 
+        // LAZY LOAD: Init logic now if not already active
+        this.initTool(id);
+
         // Ensure I18n is correct for this tool (if dynamic)
         this.updateLang();
     },
@@ -59,20 +62,29 @@ const RiTools = {
     init: function () {
         // Expose globally
         window.RiTools = this;
+        // Note: Logic is now lazy-loaded in openModal()
+        this.updateLang();
+    },
 
-        // Auto-discover tools
-        document.querySelectorAll('.ri-tool').forEach(el => {
-            const id = el.dataset.tool;
-            if (this.modules[id]) {
-                try {
+    // Lazy load logic helper
+    initTool: function (id) {
+        if (this.activeTools[id]) return;
+
+        if (this.modules[id]) {
+            try {
+                // Find the tool element (it might be in modal or hidden)
+                const el = document.getElementById('modalBody').querySelector(`[data-tool="${id}"]`)
+                    || document.getElementById('toolsHidden').querySelector(`[data-tool="${id}"]`);
+                if (el) {
                     this.modules[id](el);
                     this.activeTools[id] = true;
-                } catch (err) {
-                    console.error(`Failed to init tool ${id}:`, err);
+                    // Re-apply current lang settings to the newly init tool
+                    this.updateLang();
                 }
+            } catch (err) {
+                console.error(`Failed to init tool ${id}:`, err);
             }
-        });
-        this.updateLang();
+        }
     },
 
     setLang: function (lang) {
