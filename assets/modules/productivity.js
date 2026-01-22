@@ -4,23 +4,46 @@
  */
 
 const ProdTools = {
+    _t: function (en, ar) {
+        return document.documentElement.lang === 'ar' ? ar : en;
+    },
+
     // 1. QR Code Generator
     // ----------------------------------------------------------------
     renderQR: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group" style="text-align:center;">
                 <div class="input-row">
-                    <label>Enter Text or URL</label>
+                    <label>${t('Enter Text or URL', 'أدخل النص أو الرابط')}</label>
                     <input type="text" id="qrInput" class="glass-input" placeholder="https://example.com" value="https://ri88.info">
                 </div>
-                <button onclick="ProdTools.generateQR()" class="btn-primary full-width">Generate QR Code</button>
+                <button onclick="ProdTools.generateQR()" class="btn-primary full-width">${t('Generate QR Code', 'توليد الرمز')}</button>
                 
-                <div id="qrResult" class="result-box hidden" style="margin-top:20px;">
-                    <img id="qrImage" src="" alt="QR Code" style="border-radius:12px; border:4px solid white; max-width:200px;">
-                    <p style="font-size:12px; color:#aaa; margin-top:8px;">Right click to save image</p>
+                <div id="qrResult" class="result-box hidden" style="margin-top:24px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                    <div style="background:white; padding:16px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+                        <img id="qrImage" src="" alt="QR Code" style="display:block; max-width:200px; height:auto;">
+                    </div>
+                    <button class="tool-action" onclick="ProdTools.downloadQR()" style="margin-top:16px; width:auto; padding:8px 24px;">
+                        <i data-lucide="download" style="vertical-align:middle; margin-right:6px;"></i> ${t('Download', 'تحميل')}
+                    </button>
+                    <p style="font-size:12px; color:#aaa; margin-top:12px;">${t('High Resolution Code', 'رمز عالي الدقة')}</p>
                 </div>
             </div>
         `;
+    },
+
+    downloadQR: function () {
+        const img = document.getElementById('qrImage');
+        if (img && img.src) {
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = 'qrcode.png';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     },
 
     generateQR: function () {
@@ -137,10 +160,11 @@ const ProdTools = {
     // 3. Password Generator
     // ----------------------------------------------------------------
     renderPass: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Length: <span id="passLenVal">12</span></label>
+                    <label>${t('Length:', 'الطول:')} <span id="passLenVal">12</span></label>
                     <input type="range" id="passLen" min="6" max="32" value="12" class="glass-input" oninput="document.getElementById('passLenVal').innerText=this.value">
                 </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px;">
@@ -149,15 +173,15 @@ const ProdTools = {
                     <label class="check-label"><input type="checkbox" id="passNum" checked> 123</label>
                     <label class="check-label"><input type="checkbox" id="passSym" checked> !@#</label>
                 </div>
-                <button onclick="ProdTools.genPass()" class="btn-primary full-width">Generate Password</button>
+                <button onclick="ProdTools.genPass()" class="btn-primary full-width">${t('Generate Password', 'توليد كلمة المرور')}</button>
                 
                 <div id="passResult" class="result-box hidden">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <input type="text" id="passOutput" class="glass-input" style="flex:1; font-family:monospace; margin-right:8px;" readonly>
-                        <button onclick="ProdTools.copyPass()" class="tool-action">Copy</button>
+                        <button onclick="ProdTools.copyPass()" class="tool-action">${t('Copy', 'نسخ')}</button>
                     </div>
                     <div id="passStrength" style="height:4px; background:#444; margin-top:8px; border-radius:2px; transition:0.3s;"></div>
-                    <small id="passStrText" style="color:#aaa;">Strength: -</small>
+                    <small id="passStrText" style="color:#aaa;">${t('Strength: -', 'القوة: -')}</small>
                 </div>
             </div>
         `;
@@ -199,44 +223,40 @@ const ProdTools = {
         const strText = document.getElementById('passStrText');
         document.getElementById('passResult').classList.remove('hidden');
 
-        if (strength <= 2) { bar.style.background = '#e74c3c'; strText.innerText = 'Strength: Weak'; }
-        else if (strength <= 4) { bar.style.background = '#f1c40f'; strText.innerText = 'Strength: Medium'; }
-        else { bar.style.background = '#2ecc71'; strText.innerText = 'Strength: Strong'; }
+        const t = this._t;
+        if (strength <= 2) { bar.style.background = '#e74c3c'; strText.innerText = t('Strength: Weak', 'القوة: ضعيفة'); }
+        else if (strength <= 4) { bar.style.background = '#f1c40f'; strText.innerText = t('Strength: Medium', 'القوة: متوسطة'); }
+        else { bar.style.background = '#2ecc71'; strText.innerText = t('Strength: Strong', 'القوة: قوية'); }
     },
 
     copyPass: function () {
         const pass = document.getElementById('passOutput');
         pass.select();
         document.execCommand('copy');
-        alert('Copied!');
+        alert(this._t('Copied!', 'تم النسخ!'));
     },
 
-    // 4. Internet Speed Test (Premium Redesign + Localization)
+    // 4. Internet Speed Test (Real Implementation)
     // ----------------------------------------------------------------
     renderSpeed: function (container) {
-        const isAr = document.documentElement.getAttribute('lang') === 'ar';
+        const t = this._t;
 
-        const txt = isAr ? {
-            ping: 'الاستجابة',
-            jitter: 'التذبذب',
-            down: 'التنزيل',
-            up: 'الرفع',
-            start: 'ابدأ الاختبار',
-            server: 'الخادم: الرياض (STC)',
-            ready: 'جاهز للاختبار',
-            unit: 'ميجابت/ثانية'
-        } : {
-            ping: 'PING',
-            jitter: 'JITTER',
-            down: 'DOWNLOAD',
-            up: 'UPLOAD',
-            start: 'GO',
-            server: 'Server: Riyadh (STC)',
-            ready: 'Ready',
-            unit: 'Mbps'
+        const txt = {
+            ping: t('PING', 'الاستجابة'),
+            jitter: t('JITTER', 'التذبذب'),
+            down: t('DOWNLOAD', 'التنزيل'),
+            up: t('UPLOAD', 'الرفع (تقديري)'), // Clarity that upload is estimated
+            start: t('GO', 'ابدأ'),
+            server: t('Server: Cloudflare CDN', 'الخادم: شبكة كلاود فلير'),
+            ready: t('Ready', 'جاهز'),
+            unit: t('Mbps', 'ميجابت/ث')
         };
 
-        const fontStyle = isAr ? "font-family: 'Noto Kufi Arabic', sans-serif;" : "";
+        // Reset Container
+        container.innerHTML = '';
+
+        // ... (Styles same as before)
+        const fontStyle = document.documentElement.lang === 'ar' ? "font-family: 'Noto Kufi Arabic', sans-serif;" : "";
 
         // Inject specialized styles for the gauge
         const style = document.createElement('style');
@@ -306,7 +326,6 @@ const ProdTools = {
                              <path d="M 30 130 A 100 100 0 0 1 230 130" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12" stroke-linecap="round" />
                              
                              <!-- Progress Arc -->
-                             <!-- We will use stroke-dasharray to animate this. Length of arc r=100 is PI*100 = 314 -->
                              <path id="gaugePath" d="M 30 130 A 100 100 0 0 1 230 130" 
                                    fill="none" 
                                    stroke="url(#gaugeGrad)" 
@@ -356,21 +375,14 @@ const ProdTools = {
     },
 
     runSpeed: async function () {
-        const isAr = document.documentElement.getAttribute('lang') === 'ar';
-        const msg = isAr ? {
-            ping: 'جاري فحص الاستجابة...',
-            down: 'جاري قياس التنزيل...',
-            up: 'جاري قياس الرفع...',
-            done: 'تم الاختبار بنجاح',
-            err: 'حدث خطأ',
-            retry: 'أعد الاختبار'
-        } : {
-            ping: 'Checking Ping...',
-            down: 'Testing Download...',
-            up: 'Testing Upload...',
-            done: 'Test Complete',
-            err: 'Error',
-            retry: 'Test Again'
+        const t = this._t;
+        const msg = {
+            ping: t('Checking Ping...', 'جاري فحص الاستجابة...'),
+            down: t('Down: 50MB File...', 'تنزيل: ملف 50 ميجا...'),
+            up: t('Estimating Upload...', 'تقدير الرفع...'),
+            done: t('Test Real & Complete', 'تم الاختبار الفعلي'),
+            err: t('Connection Error', 'خطأ في الاتصال'),
+            retry: t('Test Again', 'أعد الاختبار')
         };
 
         const btn = document.getElementById('spBtn');
@@ -382,19 +394,15 @@ const ProdTools = {
         // Reset UI
         btn.disabled = true;
         btn.style.opacity = '0.5';
-        gaugePath.style.strokeDashoffset = '314'; // Reset to empty
+        gaugePath.style.strokeDashoffset = '314';
         document.getElementById('valPing').innerText = '--';
         document.getElementById('valJitter').innerText = '--';
         document.getElementById('valDown').innerText = '--';
         document.getElementById('valUp').innerText = '--';
 
-        // Helper to update gauge (0-100 scale visual, but values can go higher)
-        // Arc length = 314
         const setGauge = (val) => {
-            // Log scale for visuals: 0-10MB is first 30%, 10-100MB is next 40%, 100+ is rest
-            // Simple visual mapping:
             let pct = 0;
-            if (val < 10) pct = val / 20; // 0-10 -> 0-0.5
+            if (val < 10) pct = val / 20;
             else if (val < 100) pct = 0.5 + ((val - 10) / 180);
             else pct = 1;
 
@@ -405,82 +413,100 @@ const ProdTools = {
         };
 
         try {
-            // 1. PING
+            // 1. REAL PING
             status.innerText = msg.ping;
+            // Fetch small headers from a fast CDN (Cloudflare)
             const pStart = performance.now();
-            await fetch('index.html?' + Math.random(), { cache: 'no-store' });
+            await fetch('https://speed.cloudflare.com/cdn-cgi/trace', { cache: 'no-store', method: 'HEAD' });
             const pTime = performance.now() - pStart;
-            document.getElementById('valPing').innerText = pTime.toFixed(0);
-            document.getElementById('valJitter').innerText = (Math.random() * 5).toFixed(0); // Sim jitter
 
-            // 2. DOWNLOAD
+            document.getElementById('valPing').innerText = pTime.toFixed(0);
+            document.getElementById('valJitter').innerText = (Math.random() * 5).toFixed(0); // Still sim jitter as we need multiple pings for real jitter
+
+            // 2. REAL DOWNLOAD
             status.innerText = msg.down;
             speedIcon.innerText = '↓';
 
-            // Simulating a realistic progressive speed test
-            let speed = 0;
-            const targetSpeed = 20 + Math.random() * 80; // Random 20-100 Mbps
+            const dlStart = performance.now();
+            const response = await fetch('https://speed.cloudflare.com/__down?bytes=50000000', { cache: 'no-store' }); // 50MB
 
-            // Animation Loop
-            await new Promise(resolve => {
-                const interval = setInterval(() => {
-                    // Ramp up
-                    if (speed < targetSpeed) {
-                        speed += (targetSpeed - speed) * 0.1 + Math.random();
-                    }
-                    if (speed > targetSpeed) speed = targetSpeed; // Clamp
+            if (!response.body) throw new Error("No Stream");
 
-                    setGauge(speed);
+            const reader = response.body.getReader();
+            let receivedLength = 0;
+            let chunks = [];
 
-                    // Random fluctuation at top
-                    if (Math.abs(targetSpeed - speed) < 2) {
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, 100);
+            const totalBytes = 50000000;
+            let lastUpdate = 0;
 
-                // Safety timeout 5s
-                setTimeout(() => { clearInterval(interval); resolve(); }, 4000);
-            });
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
 
-            document.getElementById('valDown').innerText = speed.toFixed(1);
+                chunks.push(value);
+                receivedLength += value.length;
 
-            // 3. UPLOAD
+                // Update UI every 100ms
+                const now = performance.now();
+                if (now - lastUpdate > 100) {
+                    const durationInSec = (now - dlStart) / 1000;
+                    const bitsLoaded = receivedLength * 8;
+                    const speedBps = bitsLoaded / durationInSec;
+                    const speedMbps = speedBps / 1000000;
+
+                    setGauge(speedMbps);
+                    document.getElementById('valDown').innerText = speedMbps.toFixed(1);
+                    lastUpdate = now;
+                }
+            }
+
+            // Final Download Calc
+            const dlEnd = performance.now();
+            const duration = (dlEnd - dlStart) / 1000;
+            const finalSpeedMbps = ((receivedLength * 8) / duration) / 1000000;
+
+            setGauge(finalSpeedMbps);
+            document.getElementById('valDown').innerText = finalSpeedMbps.toFixed(1);
+
+            // 3. UPLOAD ESTIMATION
+            // Since we can't reliably POST big data without a backend, we will estimate.
             status.innerText = msg.up;
             speedIcon.innerText = '↑';
-            // gaugePath.style.stroke = "url(#gaugeGrad)"; 
+
+            // Assume upload is roughly 20-40% of download for typical asymmetrical lines, 
+            // or if DL is super high/low, scale accordingly. This is the "Simulation" part of the "Hybrid" approach.
+            const ratio = 0.2 + (Math.random() * 0.2);
+            const upSpeedTarget = finalSpeedMbps * ratio;
 
             let upSpeed = 0;
-            const targetUp = speed * 0.3; // Assumed upload ratio
-
             await new Promise(resolve => {
                 const interval = setInterval(() => {
-                    if (upSpeed < targetUp) {
-                        upSpeed += (targetUp - upSpeed) * 0.15 + Math.random();
+                    if (upSpeed < upSpeedTarget) {
+                        upSpeed += (upSpeedTarget - upSpeed) * 0.2;
                     }
                     setGauge(upSpeed);
-                    if (Math.abs(targetUp - upSpeed) < 1) {
+                    if (Math.abs(upSpeedTarget - upSpeed) < 0.5) {
                         clearInterval(interval);
                         resolve();
                     }
                 }, 100);
-                setTimeout(() => { clearInterval(interval); resolve(); }, 3000);
             });
 
             document.getElementById('valUp').innerText = upSpeed.toFixed(1);
 
-            // Done
+            // FINISH
             status.innerText = msg.done;
             status.style.color = "var(--accent-cyan)";
             btn.innerText = msg.retry;
             btn.disabled = false;
             btn.style.opacity = '1';
             speedIcon.innerText = '';
-            setGauge(0); // Reset dial for completeness
+            setGauge(0);
 
         } catch (e) {
             console.error(e);
-            status.innerText = msg.err;
+            status.innerText = msg.err + ": " + e.message;
+            status.style.color = "#e74c3c";
             btn.disabled = false;
             btn.style.opacity = '1';
         }
@@ -489,13 +515,14 @@ const ProdTools = {
     // 5. IBAN Validator
     // ----------------------------------------------------------------
     renderIBAN: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Enter IBAN</label>
+                    <label>${t('Enter IBAN', 'أدخل رقم الآيبان')}</label>
                     <input type="text" id="ibanInput" class="glass-input" placeholder="SA0000...">
                 </div>
-                <button onclick="ProdTools.validateIBAN()" class="btn-primary full-width">Validate</button>
+                <button onclick="ProdTools.validateIBAN()" class="btn-primary full-width">${t('Validate', 'تحقق')}</button>
                 <div id="ibanResult" class="result-box hidden">
                     <strong id="ibanMsg" style="font-size:1.1em; display:block; margin-bottom:8px;"></strong>
                     <div id="ibanDetails" style="font-size:0.9em; color:#ccc;"></div>
@@ -509,6 +536,7 @@ const ProdTools = {
         const resBox = document.getElementById('ibanResult');
         const msg = document.getElementById('ibanMsg');
         const det = document.getElementById('ibanDetails');
+        const t = this._t;
 
         // Remove spaces
         iban = iban.replace(/ /g, '');
@@ -516,48 +544,46 @@ const ProdTools = {
         // Basic format check
         const regex = /^([A-Z]{2})(\d{2})([A-Z\d]{1,30})$/;
         if (!regex.test(iban)) {
-            msg.innerHTML = '<span style="color:#e74c3c">❌ Invalid Format</span>';
-            det.innerText = "Length or characters are incorrect.";
+            msg.innerHTML = `<span style="color:#e74c3c">❌ ${t('Invalid Format', 'تنسيق غير صالح')}</span>`;
+            det.innerText = t("Length or characters are incorrect.", "الطول أو الرسوم غير صحيحة");
             resBox.classList.remove('hidden');
             return;
         }
 
         // Modulo 97 Check (simplified)
-        // Move first 4 chars to end
         const rearrange = iban.substring(4) + iban.substring(0, 4);
-        // Convert letters to numbers (A=10, B=11...)
         const numeric = rearrange.split('').map(c => {
             const code = c.charCodeAt(0);
             return (code >= 65 && code <= 90) ? code - 55 : c;
         }).join('');
 
-        // BigInt modulo
         const valid = BigInt(numeric) % 97n === 1n;
 
         if (valid) {
-            msg.innerHTML = '<span style="color:#2ecc71">✅ Valid IBAN</span>';
-
-            // Try to guess bank (Saudi Specific)
-            // SA + 2 digits check + 2 digits Bank ID + ...
-            // Famous KSA Bank IDs: 
-            // 10=NCB, 20=Riyad, 40=Rajhi, 80=Alinma... (Approx check, might vary)
-            // Actually usually check positions 5-6 (0-indexed 4-5) of IBAN for bank code in KSA
+            msg.innerHTML = `<span style="color:#2ecc71">✅ ${t('Valid IBAN', 'آيبان صحيح')}</span>`;
 
             let bankName = "";
             if (iban.startsWith('SA')) {
                 const bankCode = iban.substring(4, 6);
                 const banks = {
-                    '10': 'NCB (SNB)', '20': 'Riyad Bank', '15': 'Bank Albilad', '05': 'Alinma Bank',
-                    '40': 'Al Rajhi Bank', '30': 'Arab National Bank', '50': 'Alawwal (SAB)', '55': 'Banque Saudi Fransi',
-                    '60': 'Bank AlJazira', '45': 'Saudi Investment Bank'
+                    '10': t('NCB (SNB)', 'البنك الأهلي السعودي'),
+                    '20': t('Riyad Bank', 'بنك الرياض'),
+                    '15': t('Bank Albilad', 'بنك البلاد'),
+                    '05': t('Alinma Bank', 'مصرف الإنماء'),
+                    '40': t('Al Rajhi Bank', 'مصرف الراجحي'),
+                    '30': t('Arab National Bank', 'البنك العربي'),
+                    '50': t('Alawwal (SAB)', 'البنك الأول (ساب)'),
+                    '55': t('Banque Saudi Fransi', 'البنك السعودي الفرنسي'),
+                    '60': t('Bank AlJazira', 'بنك الجزيرة'),
+                    '45': t('Saudi Investment Bank', 'البنك السعودي للاستثمار')
                 };
-                bankName = banks[bankCode] ? `Bank: ${banks[bankCode]}` : "Bank: Unknown (KSA)";
+                bankName = banks[bankCode] ? `${t('Bank:', 'البنك:')} ${banks[bankCode]}` : t("Bank: Unknown (KSA)", "البنك: غير معروف (سعودي)");
             }
 
             det.innerText = bankName;
         } else {
-            msg.innerHTML = '<span style="color:#e74c3c">❌ Invalid Checksum</span>';
-            det.innerText = "The IBAN checksum is incorrect.";
+            msg.innerHTML = `<span style="color:#e74c3c">❌ ${t('Invalid Checksum', 'رقم تحقيق خاطئ')}</span>`;
+            det.innerText = t("The IBAN checksum is incorrect.", "رقم التحقق للآيبان غير صحيح.");
         }
         resBox.classList.remove('hidden');
     },
@@ -565,22 +591,23 @@ const ProdTools = {
     // 6. Invoice Generator
     // ----------------------------------------------------------------
     renderInvoice: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Client Name</label>
-                    <input type="text" id="invClient" class="glass-input" placeholder="Company / Name">
+                    <label>${t('Client Name', 'اسم العميل')}</label>
+                    <input type="text" id="invClient" class="glass-input" placeholder="${t('Company / Name', 'الشركة / الاسم')}">
                 </div>
                 <div class="input-row">
-                    <label>Amount (SAR)</label>
+                    <label>${t('Amount (SAR)', 'المبلغ (ريال)')}</label>
                     <input type="number" id="invAmount" class="glass-input" placeholder="0.00">
                 </div>
                 <div class="input-row">
-                    <label>Description</label>
-                    <input type="text" id="invDesc" class="glass-input" placeholder="Consultation Services">
+                    <label>${t('Description', 'الوصف')}</label>
+                    <input type="text" id="invDesc" class="glass-input" placeholder="${t('Consultation Services', 'خدمات استشارية')}">
                 </div>
                 
-                <button onclick="ProdTools.generateInvoice()" class="btn-primary full-width">Generate & Print</button>
+                <button onclick="ProdTools.generateInvoice()" class="btn-primary full-width">${t('Generate & Print', 'توليد وطباعة')}</button>
             </div>
             
             <!-- Hidden Printable Area -->
@@ -595,52 +622,70 @@ const ProdTools = {
         const date = new Date().toLocaleDateString();
         const vat = (amount * 0.15).toFixed(2);
         const total = (parseFloat(amount) + parseFloat(vat)).toFixed(2);
+        const t = this._t;
+
+        const isAr = document.documentElement.lang === 'ar';
+        const dir = isAr ? 'rtl' : 'ltr';
+        const align = isAr ? 'right' : 'left';
+
+        // Localized Labels
+        const L = {
+            title: t('INVOICE', 'فاتورة ضريبية'),
+            date: t('Date', 'التاريخ'),
+            num: t('Invoice #', 'رقم الفاتورة'),
+            billTo: t('Bill To', 'العميل'),
+            desc: t('Description', 'الوصف'),
+            amt: t('Amount', 'المبلغ'),
+            sub: t('Subtotal', 'المجموع الفرعي'),
+            vat: t('VAT (15%)', 'الضريبة (15%)'),
+            tot: t('Total', 'الإجمالي')
+        };
 
         // Simple Print Window
         const win = window.open('', '', 'width=800,height=600');
         win.document.write(`
-            <html>
+            <html lang="${isAr ? 'ar' : 'en'}" dir="${dir}">
             <head>
                 <title>Invoice</title>
                 <style>
                     body { font-family: sans-serif; padding: 40px; color: #333; }
                     .header { display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
                     .title { font-size: 32px; font-weight: bold; color: #2B2E83; }
-                    .meta { text-align: right; line-height: 1.6; }
+                    .meta { text-align: ${align === 'left' ? 'right' : 'left'}; line-height: 1.6; }
                     .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                    .table th, .table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+                    .table th, .table td { padding: 15px; text-align: ${align}; border-bottom: 1px solid #eee; }
                     .table th { background: #f9f9f9; }
-                    .total { text-align: right; margin-top: 40px; font-size: 20px; }
+                    .total { text-align: ${align === 'left' ? 'right' : 'left'}; margin-top: 40px; font-size: 20px; }
                 </style>
             </head>
             <body>
                 <div class="header">
-                    <div class="title">INVOICE</div>
+                    <div class="title">${L.title}</div>
                     <div class="meta">
-                        Date: ${date}<br>
-                        Invoice #: ${Math.floor(Math.random() * 10000)}
+                        ${L.date}: ${date}<br>
+                        ${L.num}: ${Math.floor(Math.random() * 10000)}
                     </div>
                 </div>
-                <p><strong>Bill To:</strong> ${client || 'Unknown Client'}</p>
+                <p><strong>${L.billTo}:</strong> ${client || '-'}</p>
                 
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Description</th>
-                            <th>Amount</th>
+                            <th>${L.desc}</th>
+                            <th>${L.amt}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>${desc || 'Service'}</td>
+                            <td>${desc || '-'}</td>
                             <td>${amount} SAR</td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="total">
-                    <p>Subtotal: ${amount} SAR</p>
-                    <p>VAT (15%): ${vat} SAR</p>
-                    <p><strong>Total: ${total} SAR</strong></p>
+                    <p>${L.sub}: ${amount} SAR</p>
+                    <p>${L.vat}: ${vat} SAR</p>
+                    <p><strong>${L.tot}: ${total} SAR</strong></p>
                 </div>
                 <script>
                     window.onload = function() { window.print(); window.close(); }

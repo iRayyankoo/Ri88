@@ -5,6 +5,10 @@
  */
 
 const PDFTools = {
+    _t: function (en, ar) {
+        return document.documentElement.lang === 'ar' ? ar : en;
+    },
+
     // Helper: Read File as ArrayBuffer
     readFile: (file) => {
         return new Promise((resolve, reject) => {
@@ -17,12 +21,15 @@ const PDFTools = {
 
     // Helper: Common UI for File Input
     renderUploadUI: (container, toolId, label, btnText, btnAction, extraInputs = '') => {
+        const t = PDFTools._t;
+        const selText = document.documentElement.lang === 'ar' ? 'اختر الملفات' : 'Select Files';
+
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="file-drop-area" id="dropArea_${toolId}" style="border:2px dashed var(--glass-border); padding:30px; text-align:center; border-radius:12px; transition:0.3s;">
                     <p style="color:#aaa; margin-bottom:10px;">${label}</p>
                     <input type="file" id="pdfInput_${toolId}" accept=".pdf" multiple style="display:none" onchange="PDFTools.handleFileSelect('${toolId}')">
-                    <button onclick="document.getElementById('pdfInput_${toolId}').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">Select Files</button>
+                    <button onclick="document.getElementById('pdfInput_${toolId}').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">${selText}</button>
                     <div id="fileList_${toolId}" style="margin-top:10px; font-size:0.9em; color:var(--text-primary);"></div>
                 </div>
 
@@ -67,7 +74,12 @@ const PDFTools = {
     // 1. Merge PDFs
     // ----------------------------------------------------------------
     renderMerge: function (container) {
-        this.renderUploadUI(container, 'merge', 'Drag & Drop PDF files here', 'Merge PDFs', 'PDFTools.runMerge()');
+        const t = this._t;
+        this.renderUploadUI(container, 'merge',
+            t('Drag & Drop PDF files here', 'اسحب وأفلت ملفات PDF هنا'),
+            t('Merge PDFs', 'دمج الملفات'),
+            'PDFTools.runMerge()'
+        );
     },
 
     runMerge: async function () {
@@ -94,13 +106,18 @@ const PDFTools = {
     // 2. Split PDF
     // ----------------------------------------------------------------
     renderSplit: function (container) {
+        const t = this._t;
         const inputs = `
             <div class="input-row">
-                <label>Page Ranges (e.g. "1-3, 5, 7-9")</label>
-                <input type="text" id="splitRange" class="glass-input" placeholder="All pages if empty">
+                <label>${t('Page Ranges (e.g. "1-3, 5, 7-9")', 'نطاق الصفحات (مثلاً "1-3, 5")')}</label>
+                <input type="text" id="splitRange" class="glass-input" placeholder="${t('All pages if empty', 'اتركه فارغاً لكل الصفحات')}">
             </div>
         `;
-        this.renderUploadUI(container, 'split', 'Upload PDF to Split', 'Split PDF', 'PDFTools.runSplit()', inputs);
+        this.renderUploadUI(container, 'split',
+            t('Upload PDF to Split', 'ارفع ملف PDF للتقسيم'),
+            t('Split PDF', 'تقسيم الملف'),
+            'PDFTools.runSplit()', inputs
+        );
         document.getElementById('pdfInput_split').removeAttribute('multiple'); // Single file
     },
 
@@ -152,7 +169,12 @@ const PDFTools = {
     // 3. Compress (Optimize)
     // ----------------------------------------------------------------
     renderCompress: function (container) {
-        this.renderUploadUI(container, 'compress', 'Upload PDF to Optimize', 'Optimize PDF', 'PDFTools.runCompress()');
+        const t = this._t;
+        this.renderUploadUI(container, 'compress',
+            t('Upload PDF to Optimize', 'ارفع ملف PDF لضغطه'),
+            t('Optimize PDF', 'ضغط الملف'),
+            'PDFTools.runCompress()'
+        );
         document.getElementById('pdfInput_compress').removeAttribute('multiple');
     },
 
@@ -178,7 +200,12 @@ const PDFTools = {
     // 4. PDF to Images
     // ----------------------------------------------------------------
     renderToImages: function (container) {
-        this.renderUploadUI(container, 'pdf2img', 'Upload PDF', 'Convert to Images', 'PDFTools.runPdfToImg()');
+        const t = this._t;
+        this.renderUploadUI(container, 'pdf2img',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Convert to Images', 'تحويل إلى صور'),
+            'PDFTools.runPdfToImg()'
+        );
         document.getElementById('pdfInput_pdf2img').removeAttribute('multiple');
     },
 
@@ -187,16 +214,13 @@ const PDFTools = {
         if (!file) return;
 
         const btn = document.querySelector('#opts_pdf2img button');
-        btn.innerText = "Converting...";
+        btn.innerText = "Processing...";
         btn.disabled = true;
 
         try {
             const bytes = await this.readFile(file);
             const loadingTask = pdfjsLib.getDocument({ data: bytes });
             const pdf = await loadingTask.promise;
-
-            // const zip = new JSZip(); // Removed to avoid dependency error
-            // Fallback: Show images in result area for individual download.
 
             const resDiv = document.getElementById('res_pdf2img');
             resDiv.innerHTML = '<div id="imgGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin-top:10px;"></div>';
@@ -224,7 +248,7 @@ const PDFTools = {
                 wrap.prepend(img);
                 grid.appendChild(wrap);
             }
-            btn.innerText = "Convert to Images";
+            btn.innerText = "Convert";
             btn.disabled = false;
         } catch (e) {
             alert('Error converting: ' + e.message);
@@ -235,8 +259,12 @@ const PDFTools = {
     // 5. Images to PDF
     // ----------------------------------------------------------------
     renderToPDF: function (container) {
-        // Must allow images
-        this.renderUploadUI(container, 'img2pdf', 'Upload Images (PNG/JPG)', 'Create PDF', 'PDFTools.runImgToPdf()');
+        const t = this._t;
+        this.renderUploadUI(container, 'img2pdf',
+            t('Upload Images (PNG/JPG)', 'ارفع الصور (PNG/JPG)'),
+            t('Create PDF', 'إنشاء PDF'),
+            'PDFTools.runImgToPdf()'
+        );
         const inp = document.getElementById('pdfInput_img2pdf');
         inp.accept = "image/png, image/jpeg";
     },
@@ -269,7 +297,12 @@ const PDFTools = {
     // 6. Add Page Numbers
     // ----------------------------------------------------------------
     renderPageNum: function (container) {
-        this.renderUploadUI(container, 'pgnum', 'Upload PDF', 'Add Numbers', 'PDFTools.runPageNum()');
+        const t = this._t;
+        this.renderUploadUI(container, 'pgnum',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Add Numbers', 'إضافة الأرقام'),
+            'PDFTools.runPageNum()'
+        );
         document.getElementById('pdfInput_pgnum').removeAttribute('multiple');
     },
 
@@ -281,8 +314,6 @@ const PDFTools = {
             const bytes = await this.readFile(file);
             const pdf = await PDFLib.PDFDocument.load(bytes);
             const total = pdf.getPageCount();
-            // Need font
-            // const font = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
 
             const pages = pdf.getPages();
             pages.forEach((page, idx) => {
@@ -291,7 +322,6 @@ const PDFTools = {
                     x: width / 2,
                     y: 20,
                     size: 12,
-                    // font: font
                 });
             });
 
@@ -305,17 +335,22 @@ const PDFTools = {
     // 7. Rotate Pages
     // ----------------------------------------------------------------
     renderRotate: function (container) {
+        const t = this._t;
         const inputs = `
             <div class="input-row">
-                <label>Rotation</label>
+                <label>${t('Rotation', 'التدوير')}</label>
                 <select id="rotDeg" class="glass-input">
-                    <option value="90">90° Clockwise</option>
+                    <option value="90">${t('90° Clockwise', '90° مع العقارب')}</option>
                     <option value="180">180°</option>
-                    <option value="270">90° Counter-Clockwise</option>
+                    <option value="270">${t('90° Counter-Clockwise', '90° عكس العقارب')}</option>
                 </select>
             </div>
         `;
-        this.renderUploadUI(container, 'rotate', 'Upload PDF', 'Rotate All', 'PDFTools.runRotate()', inputs);
+        this.renderUploadUI(container, 'rotate',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Rotate All', 'تدوير الكل'),
+            'PDFTools.runRotate()', inputs
+        );
         document.getElementById('pdfInput_rotate').removeAttribute('multiple');
     },
 
@@ -342,13 +377,18 @@ const PDFTools = {
     // 8. Add Watermark
     // ----------------------------------------------------------------
     renderWatermark: function (container) {
+        const t = this._t;
         const inputs = `
             <div class="input-row">
-                <label>Watermark Text</label>
+                <label>${t('Watermark Text', 'نص العلامة المائية')}</label>
                 <input type="text" id="wmText" class="glass-input" placeholder="CONFIDENTIAL">
             </div>
         `;
-        this.renderUploadUI(container, 'wm', 'Upload PDF', 'Add Watermark', 'PDFTools.runWatermark()', inputs);
+        this.renderUploadUI(container, 'wm',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Add Watermark', 'إضافة العلامة'),
+            'PDFTools.runWatermark()', inputs
+        );
         document.getElementById('pdfInput_wm').removeAttribute('multiple');
     },
 
@@ -381,14 +421,19 @@ const PDFTools = {
     // 9. Protect PDF
     // ----------------------------------------------------------------
     renderProtect: function (container) {
+        const t = this._t;
         const inputs = `
             <div class="input-row">
-                <label>Set Password</label>
+                <label>${t('Set Password', 'تعيين كلمة مرور')}</label>
                 <input type="password" id="protPass" class="glass-input" placeholder="Password">
             </div>
-            <p style="color:#e74c3c; font-size:0.85em; margin-top:8px;">⚠️ Warning: No bypassing encryption/DRM. Use only on your own files.</p>
+            <p style="color:#e74c3c; font-size:0.85em; margin-top:8px;">⚠️ ${t('Warning: No bypassing encryption/DRM. Use only on your own files.', 'تنبيه: هذه الأداة لا تكسر الحماية. استخدمها لملفاتك الخاصة فقط.')}</p>
         `;
-        this.renderUploadUI(container, 'protect', 'Upload PDF', 'Encrypt', 'PDFTools.runProtect()', inputs);
+        this.renderUploadUI(container, 'protect',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Encrypt', 'تشفير'),
+            'PDFTools.runProtect()', inputs
+        );
         document.getElementById('pdfInput_protect').removeAttribute('multiple');
     },
 
@@ -412,15 +457,20 @@ const PDFTools = {
     // 10. Unlock PDF
     // ----------------------------------------------------------------
     renderUnlock: function (container) {
+        const t = this._t;
         const inputs = `
-            <p style="font-size:12px; color:#e74c3c; margin-bottom:8px;">*Only use if you own the file.</p>
+            <p style="font-size:12px; color:#e74c3c; margin-bottom:8px;">${t('*Only use if you own the file.', '*فقط للاستخدام الشخصي.')}</p>
             <div class="input-row">
-                <label>Current Password</label>
+                <label>${t('Current Password', 'كلمة المرور الحالية')}</label>
                 <input type="password" id="unlockPass" class="glass-input" placeholder="Password">
             </div>
-            <p style="color:#e74c3c; font-size:0.85em; margin-top:8px;">⚠️ Disclaimer: This tool requires the correct password. It does not crack or bypass DRM encryption.</p>
+            <p style="color:#e74c3c; font-size:0.85em; margin-top:8px;">⚠️ ${t('Disclaimer: This tool requires the correct password. It does not crack or bypass DRM encryption.', 'تنويه: يتطلب كلمة المرور الصحيحة. الأداة لا تقوم بكسر الحماية.')}</p>
         `;
-        this.renderUploadUI(container, 'unlock', 'Upload Encrypted PDF', 'Unlock', 'PDFTools.runUnlock()', inputs);
+        this.renderUploadUI(container, 'unlock',
+            t('Upload Encrypted PDF', 'ارفع الملف المشفر'),
+            t('Unlock', 'فك التشفير'),
+            'PDFTools.runUnlock()', inputs
+        );
         document.getElementById('pdfInput_unlock').removeAttribute('multiple');
     },
 
@@ -447,12 +497,23 @@ const PDFTools = {
         const resBox = document.getElementById(`res_${toolId}`);
         resBox.classList.remove('hidden');
         const btn = document.getElementById(`dlBtn_${toolId}`);
+        const t = this._t;
+
+        const doneMsg = document.getElementById(`resMsg_${toolId}`);
+        if (doneMsg) doneMsg.innerText = t("Done!", "تم!");
+        if (btn) btn.innerText = t("Download Result", "تحميل النتيجة");
 
         btn.onclick = () => download(titleOrBytes, filename, "application/pdf");
     },
     // 11. Remove Pages
     renderRemPage: function (container) {
-        this.renderUploadUI(container, 'remPg', 'Upload PDF', 'Remove Pages', 'PDFTools.runRemPg()', `<input type="text" id="remIdx" class="glass-input" placeholder="Page numbers to remove (e.g. 1, 3)">`);
+        const t = this._t;
+        this.renderUploadUI(container, 'remPg',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Remove Pages', 'حذف الصفحات'),
+            'PDFTools.runRemPg()',
+            `<input type="text" id="remIdx" class="glass-input" placeholder="${t('Page numbers to remove (e.g. 1, 3)', 'أرقام الصفحات للحذف (مثلاً 1, 3)')}">`
+        );
         document.getElementById('pdfInput_remPg').removeAttribute('multiple');
     },
     runRemPg: async function () {
@@ -484,7 +545,13 @@ const PDFTools = {
 
     // 12. Reorder Pages
     renderOrder: function (container) {
-        this.renderUploadUI(container, 'ordPg', 'Upload PDF', 'Reorder', 'PDFTools.runOrder()', `<input type="text" id="ordIdx" class="glass-input" placeholder="Order (e.g. 3, 1, 2)">`);
+        const t = this._t;
+        this.renderUploadUI(container, 'ordPg',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Reorder', 'إعادة ترتيب'),
+            'PDFTools.runOrder()',
+            `<input type="text" id="ordIdx" class="glass-input" placeholder="${t('Order (e.g. 3, 1, 2)', 'الترتيب (مثلاً 3, 1, 2)')}">`
+        );
         document.getElementById('pdfInput_ordPg').removeAttribute('multiple');
     },
     runOrder: async function () {
@@ -509,7 +576,13 @@ const PDFTools = {
 
     // 13. Crop (Simulated)
     renderCrop: function (container) {
-        this.renderUploadUI(container, 'crop', 'Upload PDF', 'Apply Crop', 'PDFTools.runCrop()', `<p style="font-size:0.8em; color:grey;">Adds generous margin crop to all pages.</p>`);
+        const t = this._t;
+        this.renderUploadUI(container, 'crop',
+            t('Upload PDF', 'ارفع ملف PDF'),
+            t('Apply Crop', 'تطبيق القص'),
+            'PDFTools.runCrop()',
+            `<p style="font-size:0.8em; color:grey;">${t('Adds generous margin crop to all pages.', 'يقوم بقص الهوامش من جميع الصفحات.')}</p>`
+        );
         document.getElementById('pdfInput_crop').removeAttribute('multiple');
     },
     runCrop: async function () {
@@ -533,31 +606,33 @@ const PDFTools = {
 
     // 14. Extract Text/Images
     renderExt: function (container) {
+        const t = this._t;
+        const selText = document.documentElement.lang === 'ar' ? 'اختر ملف PDF' : 'Select PDF';
+
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="file-drop-area" id="dropArea_ext" style="border:2px dashed var(--glass-border); padding:30px; text-align:center; border-radius:12px;">
-                    <p style="color:#aaa;">Upload PDF to extract content</p>
+                    <p style="color:#aaa;">${t('Upload PDF to extract content', 'ارفع ملف PDF لاستخراج المحتوى')}</p>
                     <input type="file" id="pdfInput_ext" accept=".pdf" style="display:none" onchange="PDFTools.handleFileSelect('ext')">
-                    <button onclick="document.getElementById('pdfInput_ext').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">Select PDF</button>
+                    <button onclick="document.getElementById('pdfInput_ext').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">${selText}</button>
                     <div id="fileList_ext" style="margin-top:10px; font-size:0.9em;"></div>
                 </div>
 
                 <div id="opts_ext" class="hidden" style="margin-top:16px; display:flex; gap:16px;">
-                    <button onclick="PDFTools.runExtract('text')" class="btn-primary" style="flex:1;">Extract Text</button>
-                    <button onclick="PDFTools.runExtract('images')" class="btn-primary" style="flex:1;">Extract Images</button>
+                    <button onclick="PDFTools.runExtract('text')" class="btn-primary" style="flex:1;">${t('Extract Text', 'استخراج النص')}</button>
+                    <button onclick="PDFTools.runExtract('images')" class="btn-primary" style="flex:1;">${t('Extract Images', 'استخراج الصور')}</button>
                 </div>
                 
-                <!-- Results -->
                 <div id="res_ext_text" class="result-box hidden" style="margin-top:16px;">
-                    <textarea id="extTextOut" class="glass-input" rows="10" placeholder="Extracted text will appear here..." readonly></textarea>
+                    <textarea id="extTextOut" class="glass-input" rows="10" placeholder="${t('Extracted text will appear here...', 'سيظهر النص المستخرج هنا...')}" readonly></textarea>
                     <div style="display:flex; gap:10px; margin-top:10px;">
-                        <button onclick="navigator.clipboard.writeText(document.getElementById('extTextOut').value)" class="tool-action">Copy Text</button>
-                        <button onclick="download(document.getElementById('extTextOut').value, 'extracted_text.txt', 'text/plain')" class="tool-action">Download .txt</button>
+                        <button onclick="navigator.clipboard.writeText(document.getElementById('extTextOut').value)" class="tool-action">${t('Copy Text', 'نسخ النص')}</button>
+                        <button onclick="download(document.getElementById('extTextOut').value, 'extracted_text.txt', 'text/plain')" class="tool-action">${t('Download .txt', 'تحميل .txt')}</button>
                     </div>
                 </div>
 
                 <div id="res_ext_img" class="result-box hidden" style="margin-top:16px;">
-                    <p style="margin-bottom:10px;">Found Images:</p>
+                    <p style="margin-bottom:10px;">${t('Found Images:', 'الصور الموجودة:')}</p>
                     <div id="extImgGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;"></div>
                 </div>
             </div>

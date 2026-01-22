@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ri88 | About</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/overrides.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <img src="assets/logo.png" alt="Ri88" style="height: 85px; vertical-align: middle;">
+            </a>
+            <div class="nav-links">
+                <a href="tools.html" class="nav-link" data-i18n="nav_tools">Tools</a>
+                <a href="about.html" class="nav-link active" data-i18n="nav_about">About</a>
+            </div>
+            <div style="display:flex; gap:16px; align-items:center;">
+                <button id="langToggle"
+                    style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding: 6px 12px; border-radius:12px; cursor:pointer;">EN/AR</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Content -->
+    <div class="container" style="padding: 120px 20px; max-width: 800px; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 3em; margin-bottom: 20px;" data-i18n="about_title">About Ri88 Portal</h1>
+        <p style="font-size: 1.2em; color: var(--text-secondary); line-height: 1.6; margin-bottom: 40px;"
+            data-i18n="about_desc">
+            A premium suite of essential utilities designed for Saudi users.<br>
+            We aim to provide fast, secure, and free tools for everyone.
+        </p>
+
+        <div class="glass-panel" style="padding: 40px; margin-bottom: 40px; text-align:left;">
+            <h2 style="margin-bottom: 20px; color: var(--accent-cyan);" data-i18n="about_mission_title">Our Mission</h2>
+            <p data-i18n="about_mission_desc">
+                Ri88 was built to simplify everyday digital tasks. From calculating VAT and loans to converting files
+                and editing images, we bring everything into one unified, beautiful interface.
+            </p>
+        </div>
+
+        <div class="glass-panel" style="padding: 20px; display:inline-block;">
+            <strong data-i18n="about_version">Version 2.0</strong>
+            <br><span style="font-size:12px; opacity:0.7;" data-i18n="about_tech">Built with Vanilla HTML/CSS/JS</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+        style="padding:40px; text-align:center; color:var(--text-secondary); border-top:1px solid var(--glass-border);">
+        <p>&copy; 2026 Ri88 Portal. Made for Saudi Users.</p>
+    </footer>
+
+    <!-- Main JS (for Lang Toggle) -->
+    <script src="assets/lucide.js"></script>
+    <script src="assets/app.js"></script>
+
+</body>
+
+</html>

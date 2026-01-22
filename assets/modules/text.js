@@ -4,70 +4,63 @@
  */
 
 const TextTools = {
+    _t: function (en, ar) {
+        return document.documentElement.lang === 'ar' ? ar : en;
+    },
+
     // 1. Arabic for Adobe
-    // ----------------------------------------------------------------
     renderAdobe: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Arabic Text (Problematic)</label>
-                    <textarea id="adbInput" class="glass-input" rows="4" placeholder="Type Arabic text here..."></textarea>
+                    <label>${t('Arabic Text (Problematic)', 'النص العربي (المتقطع)')}</label>
+                    <textarea id="adbInput" class="glass-input" rows="4" placeholder="${t('Type Arabic text here...', 'اكتب النص العربي هنا...')}"></textarea>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
                      <label style="font-size:12px; color:#aaa; display:flex; align-items:center;">
-                        <input type="checkbox" id="adbReverse" checked> Reverse Characters
+                        <input type="checkbox" id="adbReverse" checked> ${t('Reverse Characters', 'عكس الحروف')}
                      </label>
                 </div>
-                <button onclick="TextTools.processAdobe()" class="btn-primary full-width">Fix Text</button>
+                <button onclick="TextTools.processAdobe()" class="btn-primary full-width">${t('Fix Text', 'إصلاح النص')}</button>
                 
                 <div id="adbResult" class="result-box hidden">
-                    <label>Result (Copy/Paste to Adobe):</label>
+                    <label>${t('Result (Copy/Paste to Adobe):', 'النتيجة (انسخ والصق في أدوبي):')}</label>
                     <textarea id="adbOutput" class="glass-input" rows="4" readonly style="margin-top:8px;"></textarea>
-                    <button onclick="navigator.clipboard.writeText(document.getElementById('adbOutput').value)" class="tool-action" style="margin-top:8px;">Copy</button>
+                    <button onclick="navigator.clipboard.writeText(document.getElementById('adbOutput').value)" class="tool-action" style="margin-top:8px;">${t('Copy', 'نسخ')}</button>
                 </div>
             </div>
         `;
     },
 
     processAdobe: function () {
-        // Simple corrective logic for legacy Adobe apps
-        // 1. Reverse words? No, usually character-level reshaping + visual reversal.
-        // Doing full reshaping in vanilla JS is heavy. 
-        // We will do a basic 'reverse string' approximation which often helps disjoint letters.
-        // For distinct joined letters usage, a library like 'persian.js' or complex mapping is needed.
-        // Assuming user just wants basic RTL reversal for now if simple.
-
         const text = document.getElementById('adbInput').value;
         if (!text) return;
-
-        // Naive Reversal (characters)
-        // Note: Real Adobe fix requires shaping. For this 'MVP', we reverse visual order.
         const reversed = text.split('').reverse().join('');
-
         document.getElementById('adbOutput').value = reversed;
         document.getElementById('adbResult').classList.remove('hidden');
     },
 
     // 2. Text Cleaner
-    // ----------------------------------------------------------------
     renderCleaner: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Messy Text</label>
-                    <textarea id="clInput" class="glass-input" rows="6" placeholder="Paste text here..."></textarea>
+                    <label>${t('Messy Text', 'النص الأصلي')}</label>
+                    <textarea id="clInput" class="glass-input" rows="6" placeholder="${t('Paste text here...', 'الصق النص هنا...')}"></textarea>
                 </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px;">
-                    <label class="check-label"><input type="checkbox" id="clSpaces" checked> Remove Extra Spaces</label>
-                    <label class="check-label"><input type="checkbox" id="clLines" checked> Remove Empty Lines</label>
-                    <label class="check-label"><input type="checkbox" id="clEmoji"> Remove Emojis</label>
-                    <label class="check-label"><input type="checkbox" id="clHtml"> Strip HTML Tags</label>
+                    <label class="check-label"><input type="checkbox" id="clSpaces" checked> ${t('Remove Extra Spaces', 'حذف المسافات الزائدة')}</label>
+                    <label class="check-label"><input type="checkbox" id="clLines" checked> ${t('Remove Empty Lines', 'حذف الأسطر الفارغة')}</label>
+                    <label class="check-label"><input type="checkbox" id="clEmoji"> ${t('Remove Emojis', 'حذف الإيموجي')}</label>
+                    <label class="check-label"><input type="checkbox" id="clHtml"> ${t('Strip HTML Tags', 'حذف كود HTML')}</label>
                 </div>
-                <button onclick="TextTools.cleanText()" class="btn-primary full-width">Clean Text</button>
+                <button onclick="TextTools.cleanText()" class="btn-primary full-width">${t('Clean Text', 'تنظيف النص')}</button>
                 
                 <div id="clResult" class="result-box hidden">
                     <textarea id="clOutput" class="glass-input" rows="6" readonly></textarea>
-                    <button onclick="navigator.clipboard.writeText(document.getElementById('clOutput').value)" class="tool-action" style="margin-top:8px;">Copy</button>
+                    <button onclick="navigator.clipboard.writeText(document.getElementById('clOutput').value)" class="tool-action" style="margin-top:8px;">${t('Copy', 'نسخ')}</button>
                 </div>
             </div>
         `;
@@ -75,7 +68,6 @@ const TextTools = {
 
     cleanText: function () {
         let text = document.getElementById('clInput').value;
-
         if (document.getElementById('clSpaces').checked) {
             text = text.replace(/[ \t]+/g, ' ').trim();
         }
@@ -83,7 +75,6 @@ const TextTools = {
             text = text.replace(/^\s*[\r\n]/gm, '');
         }
         if (document.getElementById('clEmoji').checked) {
-            // Regex for common emojis
             text = text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
         }
         if (document.getElementById('clHtml').checked) {
@@ -94,15 +85,14 @@ const TextTools = {
 
         document.getElementById('clOutput').value = text;
         document.getElementById('clResult').classList.remove('hidden');
-    }
-    ,
+    },
 
     // 3. Case Converter
-    // ----------------------------------------------------------------
     renderCase: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
-                <textarea id="caseInput" class="glass-input" rows="5" placeholder="Type text to convert..."></textarea>
+                <textarea id="caseInput" class="glass-input" rows="5" placeholder="${t('Type text to convert...', 'اكتب النص للتحويل...')}"></textarea>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;">
                     <button onclick="TextTools.convertCase('upper')" class="btn-primary">UPPERCASE</button>
                     <button onclick="TextTools.convertCase('lower')" class="btn-primary">lowercase</button>
@@ -132,19 +122,19 @@ const TextTools = {
     },
 
     // 4. Hashtag Generator
-    // ----------------------------------------------------------------
     renderHashtag: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Content Text</label>
-                    <textarea id="hashInput" class="glass-input" rows="4" placeholder="Keywords or sentence..."></textarea>
+                    <label>${t('Content Text', 'النص / المحتوى')}</label>
+                    <textarea id="hashInput" class="glass-input" rows="4" placeholder="${t('Keywords or sentence...', 'كلمات مفتاحية أو جملة...')}"></textarea>
                 </div>
-                <button onclick="TextTools.genHashtags()" class="btn-primary full-width">Generate Tags</button>
+                <button onclick="TextTools.genHashtags()" class="btn-primary full-width">${t('Generate Tags', 'توليد الهاشتاقات')}</button>
                 
                 <div id="hashResult" class="result-box hidden">
                     <div id="hashOutput" style="color:var(--accent-pink); font-family:monospace; line-height:1.6;"></div>
-                    <button onclick="navigator.clipboard.writeText(document.getElementById('hashOutput').innerText)" class="tool-action" style="margin-top:12px;">Copy Tags</button>
+                    <button onclick="navigator.clipboard.writeText(document.getElementById('hashOutput').innerText)" class="tool-action" style="margin-top:12px;">${t('Copy Tags', 'نسخ الهاشتاقات')}</button>
                 </div>
             </div>
         `;
@@ -154,8 +144,6 @@ const TextTools = {
         const text = document.getElementById('hashInput').value;
         if (!text) return;
 
-        // Simple logic: split words, remove special chars, add #
-        // Filter small words? Keep it simple.
         const tags = text.replace(/[^\w\s\u0600-\u06FF]/g, '')
             .split(/\s+/)
             .filter(w => w.length > 2)
@@ -167,16 +155,16 @@ const TextTools = {
     },
 
     // 5. UTM Builder
-    // ----------------------------------------------------------------
     renderUTM: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
-                <div class="input-row"><input type="text" id="utmUrl" placeholder="Website URL (e.g. google.com)" class="glass-input"></div>
-                <div class="input-row"><input type="text" id="utmSource" placeholder="Campaign Source (e.g. twitter)" class="glass-input"></div>
-                <div class="input-row"><input type="text" id="utmMedium" placeholder="Campaign Medium (e.g. social)" class="glass-input"></div>
-                <div class="input-row"><input type="text" id="utmName" placeholder="Campaign Name (e.g. winter_sale)" class="glass-input"></div>
+                <div class="input-row"><input type="text" id="utmUrl" placeholder="${t('Website URL (e.g. google.com)', 'رابط الموقع (مثلاً google.com)')}" class="glass-input"></div>
+                <div class="input-row"><input type="text" id="utmSource" placeholder="${t('Campaign Source (e.g. twitter)', 'مصدر الحملة (مثلاً twitter)')}" class="glass-input"></div>
+                <div class="input-row"><input type="text" id="utmMedium" placeholder="${t('Campaign Medium (e.g. social)', 'وسيلة الحملة (مثلاً social)')}" class="glass-input"></div>
+                <div class="input-row"><input type="text" id="utmName" placeholder="${t('Campaign Name (e.g. winter_sale)', 'اسم الحملة (مثلاً winter_break)')}" class="glass-input"></div>
                 
-                <button onclick="TextTools.buildUTM()" class="btn-primary full-width">Build URL</button>
+                <button onclick="TextTools.buildUTM()" class="btn-primary full-width">${t('Build URL', 'بناء الرابط')}</button>
                 
                 <div id="utmResult" class="result-box hidden">
                     <textarea id="utmOutput" class="glass-input" rows="3" readonly></textarea>
@@ -207,15 +195,17 @@ const TextTools = {
 
     // 6. Link Extractor
     renderLinks: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
-                <textarea id="linkTxt" class="glass-input" style="height:100px;" placeholder="Paste text containing URLs..."></textarea>
-                <button onclick="TextTools.getLinks()" class="btn-primary full-width" style="margin-top:10px;">Extract Links</button>
+                <textarea id="linkTxt" class="glass-input" style="height:100px;" placeholder="${t('Paste text containing URLs...', 'الصق نص يحتوي على روابط...')}"></textarea>
+                <button onclick="TextTools.getLinks()" class="btn-primary full-width" style="margin-top:10px;">${t('Extract Links', 'استخراج الروابط')}</button>
                 <textarea id="linkOut" class="glass-input hidden" style="height:100px; margin-top:10px;" readonly></textarea>
             </div>
          `;
     },
     getLinks: function () {
+        const t = this._t;
         const txt = document.getElementById('linkTxt').value;
         const regex = /https?:\/\/[^\s]+/g;
         const matches = txt.match(regex);
@@ -225,23 +215,23 @@ const TextTools = {
             out.value = [...new Set(matches)].join('\n');
             out.classList.remove('hidden');
         } else {
-            alert('No links found');
+            alert(t('No links found', 'لم يتم العثور على روابط'));
         }
     },
 
     // 7. Arabic Punctuation
     renderPunc: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <textarea id="puncIn" class="glass-input" style="height:100px;" placeholder="نص عربي..."></textarea>
-                <button onclick="TextTools.fixPunc()" class="btn-primary full-width" style="margin-top:10px;">Fix Punctuation</button>
+                <button onclick="TextTools.fixPunc()" class="btn-primary full-width" style="margin-top:10px;">${t('Fix Punctuation', 'إصلاح الترقيم')}</button>
                 <textarea id="puncOut" class="glass-input hidden" style="height:100px; margin-top:10px;" readonly></textarea>
             </div>
          `;
     },
     fixPunc: function () {
         let txt = document.getElementById('puncIn').value;
-        // Basic mapping
         txt = txt.replace(/,/g, '،');
         txt = txt.replace(/\?/g, '؟');
         txt = txt.replace(/;/g, '؛');
@@ -254,17 +244,18 @@ const TextTools = {
 
     // 8. Diacritics Remover
     renderTashkeel: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <textarea id="diaIn" class="glass-input" style="height:100px;" placeholder="نص مُشَكَّل..."></textarea>
-                <button onclick="TextTools.remDia()" class="btn-primary full-width" style="margin-top:10px;">Remove Tashkeel</button>
+                <button onclick="TextTools.remDia()" class="btn-primary full-width" style="margin-top:10px;">${t('Remove Tashkeel', 'حذف التشكيل')}</button>
                 <textarea id="diaOut" class="glass-input hidden" style="height:100px; margin-top:10px;" readonly></textarea>
             </div>
          `;
     },
     remDia: function () {
         let txt = document.getElementById('diaIn').value;
-        txt = txt.replace(/[\u064B-\u065F\u0670]/g, ''); // Common Tashkeel range
+        txt = txt.replace(/[\u064B-\u065F\u0670]/g, '');
         document.getElementById('diaOut').value = txt;
         document.getElementById('diaOut').classList.remove('hidden');
     }

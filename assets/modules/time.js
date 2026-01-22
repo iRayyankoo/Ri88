@@ -4,16 +4,20 @@
  */
 
 const TimeTools = {
+    _t: function (en, ar) {
+        return document.documentElement.lang === 'ar' ? ar : en;
+    },
+
     // 1. Hijri Converter
-    // ----------------------------------------------------------------
     renderHijri: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Gregorian Date</label>
+                    <label>${t('Gregorian Date', 'التاريخ الميلادي')}</label>
                     <input type="date" id="gdate" class="glass-input">
                 </div>
-                <button onclick="TimeTools.convertHijri()" class="btn-primary full-width">Convert to Hijri</button>
+                <button onclick="TimeTools.convertHijri()" class="btn-primary full-width">${t('Convert to Hijri', 'تحويل للهجري')}</button>
                 
                 <div id="hijriResult" class="result-box hidden" style="text-align:center;">
                     <strong id="resHijri" style="font-size:1.5em; color:var(--accent-pink);">-</strong>
@@ -21,7 +25,6 @@ const TimeTools = {
                 </div>
             </div>
         `;
-        // Set Today
         document.getElementById('gdate').valueAsDate = new Date();
     },
 
@@ -29,14 +32,12 @@ const TimeTools = {
         const d = new Date(document.getElementById('gdate').value);
         if (isNaN(d.getTime())) return;
 
-        // Intl.DateTimeFormat is the reliable native way without libraries
         const hijri = new Intl.DateTimeFormat('en-Tn-u-ca-islamic', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         }).format(d);
 
-        // Also numeric parts for clarity
         const hijriNum = new Intl.DateTimeFormat('en-Tn-u-ca-islamic', {
             day: 'numeric',
             month: 'numeric',
@@ -49,24 +50,24 @@ const TimeTools = {
     },
 
     // 2. Date Difference
-    // ----------------------------------------------------------------
     renderDiff: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Start Date</label>
+                    <label>${t('Start Date', 'تاريخ البداية')}</label>
                     <input type="date" id="dStart" class="glass-input">
                 </div>
                 <div class="input-row">
-                    <label>End Date</label>
+                    <label>${t('End Date', 'تاريخ النهاية')}</label>
                     <input type="date" id="dEnd" class="glass-input">
                 </div>
-                <button onclick="TimeTools.calcDiff()" class="btn-primary full-width">Calculate Duration</button>
+                <button onclick="TimeTools.calcDiff()" class="btn-primary full-width">${t('Calculate Duration', 'احسب المدة')}</button>
                 
                 <div id="diffResult" class="result-box hidden">
-                    <div class="res-item"><span>Days:</span> <strong id="resDays">-</strong></div>
-                    <div class="res-item"><span>Weeks:</span> <strong id="resWeeks">-</strong></div>
-                    <div class="res-item"><span>Years/Months/Days:</span> <strong id="resYMD" style="font-size:0.9em;">-</strong></div>
+                    <div class="res-item"><span>${t('Days:', 'الأيام:')}</span> <strong id="resDays">-</strong></div>
+                    <div class="res-item"><span>${t('Weeks:', 'الأسابيع:')}</span> <strong id="resWeeks">-</strong></div>
+                    <div class="res-item"><span>${t('Years/Months/Days:', 'سنة/شهر/يوم:')}</span> <strong id="resYMD" style="font-size:0.9em;">-</strong></div>
                 </div>
             </div>
         `;
@@ -78,45 +79,36 @@ const TimeTools = {
 
         if (isNaN(s) || isNaN(e)) return;
 
-        // Difference in ms
         const diffTime = Math.abs(e - s);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         const weeks = (diffDays / 7).toFixed(1);
 
-        // Approximate YMD
-        // This is complex to do perfectly without libraries, simplified approach:
         let y = e.getFullYear() - s.getFullYear();
         let m = e.getMonth() - s.getMonth();
         let d = e.getDate() - s.getDate();
-        if (d < 0) {
-            m--;
-            d += 30; // Approx
-        }
-        if (m < 0) {
-            y--;
-            m += 12;
-        }
+        if (d < 0) { m--; d += 30; }
+        if (m < 0) { y--; m += 12; }
 
-        document.getElementById('resDays').innerText = diffDays + ' days';
-        document.getElementById('resWeeks').innerText = weeks + ' weeks';
-        document.getElementById('resYMD').innerText = `${y}y, ${m}m, ${d}d`; // Absolute delta? Assuming nice input
+        document.getElementById('resDays').innerText = diffDays + (this._t(' days', ' يوم'));
+        document.getElementById('resWeeks').innerText = weeks + (this._t(' weeks', ' أسبوع'));
+        document.getElementById('resYMD').innerText = `${y}y, ${m}m, ${d}d`;
         document.getElementById('diffResult').classList.remove('hidden');
     },
 
     // 3. Simple Timer
-    // ----------------------------------------------------------------
     timerInterval: null,
     seconds: 0,
     renderTimer: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group" style="text-align:center;">
                 <div id="timerDisplay" style="font-size:4em; font-weight:700; font-variant-numeric: tabular-nums; letter-spacing:-2px; color:var(--text-primary); margin:20px 0;">
                     00:00
                 </div>
                 <div style="display:flex; justify-content:center; gap:16px;">
-                    <button onclick="TimeTools.startTimer()" class="btn-primary" style="background:#2ecc71;">Start</button>
-                    <button onclick="TimeTools.stopTimer()" class="btn-primary" style="background:#e74c3c;">Stop</button>
-                    <button onclick="TimeTools.resetTimer()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">Reset</button>
+                    <button onclick="TimeTools.startTimer()" class="btn-primary" style="background:#2ecc71;">${t('Start', 'ابدأ')}</button>
+                    <button onclick="TimeTools.stopTimer()" class="btn-primary" style="background:#e74c3c;">${t('Stop', 'توقف')}</button>
+                    <button onclick="TimeTools.resetTimer()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">${t('Reset', 'تصفير')}</button>
                 </div>
             </div>
         `;
@@ -150,22 +142,22 @@ const TimeTools = {
     },
 
     // 4. Time Zone Converter
-    // ----------------------------------------------------------------
     zoneInterval: null,
     renderZone: function (container) {
+        const t = this._t;
         if (this.zoneInterval) clearInterval(this.zoneInterval);
 
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Select City</label>
+                    <label>${t('Select City', 'اختر المدينة')}</label>
                     <select id="tzSelect" class="glass-input" onchange="TimeTools.updateZone()">
-                        <option value="Asia/Riyadh" selected>Riyadh (KSA)</option>
-                        <option value="Asia/Dubai">Dubai (UAE)</option>
-                        <option value="Europe/London">London (UK)</option>
-                        <option value="America/New_York">New York (USA)</option>
-                        <option value="Asia/Tokyo">Tokyo (Japan)</option>
-                        <option value="Australia/Sydney">Sydney (AUS)</option>
+                        <option value="Asia/Riyadh" selected>${t('Riyadh (KSA)', 'الرياض (السعودية)')}</option>
+                        <option value="Asia/Dubai">${t('Dubai (UAE)', 'دبي (الإمارات)')}</option>
+                        <option value="Europe/London">${t('London (UK)', 'لندن (بريطانيا)')}</option>
+                        <option value="America/New_York">${t('New York (USA)', 'نيويورك (أمريكا)')}</option>
+                        <option value="Asia/Tokyo">${t('Tokyo (Japan)', 'طوكيو (اليابان)')}</option>
+                        <option value="Australia/Sydney">${t('Sydney (AUS)', 'سيدني (أستراليا)')}</option>
                         <option value="UTC">UTC (Universal)</option>
                     </select>
                 </div>
@@ -189,10 +181,12 @@ const TimeTools = {
         if (!displayTime) return;
 
         const now = new Date();
+        // Force locale based on current lang
+        const locale = document.documentElement.lang === 'ar' ? 'ar-SA' : 'en-US';
 
         try {
-            const timeStr = now.toLocaleTimeString('en-US', { timeZone: zone, hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' });
-            const dateStr = now.toLocaleDateString('en-US', { timeZone: zone, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString(locale, { timeZone: zone, hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' });
+            const dateStr = now.toLocaleDateString(locale, { timeZone: zone, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             displayTime.innerText = timeStr;
             displayDate.innerText = dateStr;

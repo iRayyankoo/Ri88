@@ -4,6 +4,10 @@
  */
 
 const ImageTools = {
+    _t: function (en, ar) {
+        return document.documentElement.lang === 'ar' ? ar : en;
+    },
+
     // Helper: Read file as DataURL
     readImage: (file) => {
         return new Promise((resolve, reject) => {
@@ -16,12 +20,15 @@ const ImageTools = {
 
     // Helper: Common UI
     renderUploadUI: (container, toolId, label, btnText, btnAction, extraOpts = '') => {
+        const t = ImageTools._t;
+        const selText = document.documentElement.lang === 'ar' ? 'اختر صورة' : 'Select Image';
+
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="file-drop-area" id="dropArea_${toolId}" style="border:2px dashed var(--glass-border); padding:30px; text-align:center; border-radius:12px; transition:0.3s;">
                     <p style="color:var(--text-secondary); margin-bottom:10px;">${label}</p>
                     <input type="file" id="imgInput_${toolId}" accept="image/*" style="display:none" onchange="ImageTools.handleFile('${toolId}')">
-                    <button onclick="document.getElementById('imgInput_${toolId}').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">Select Image</button>
+                    <button onclick="document.getElementById('imgInput_${toolId}').click()" class="btn-primary" style="background:var(--glass-bg); border:1px solid var(--glass-border);">${selText}</button>
                     <div id="fileInfo_${toolId}" style="margin-top:10px; font-size:0.9em; color:var(--text-primary);"></div>
                 </div>
                 
@@ -50,12 +57,17 @@ const ImageTools = {
 
     // 1. Image Compressor
     renderCompress: function (container) {
+        const t = this._t;
         const opts = `
-            <label>Quality (0.1 - 1.0)</label>
+            <label>${t('Quality (0.1 - 1.0)', 'الجودة (0.1 - 1.0)')}</label>
             <input type="range" id="compQual" min="0.1" max="1.0" step="0.1" value="0.7" class="glass-input" oninput="this.nextElementSibling.innerText = this.value">
             <span>0.7</span>
         `;
-        this.renderUploadUI(container, 'compress', 'Upload Image (JPG/PNG)', 'Compress', 'ImageTools.runCompress()', opts);
+        this.renderUploadUI(container, 'compress',
+            t('Upload Image (JPG/PNG)', 'ارفع صورة (JPG/PNG)'),
+            t('Compress', 'ضغط الصورة'),
+            'ImageTools.runCompress()', opts
+        );
     },
 
     runCompress: async function () {
@@ -83,14 +95,19 @@ const ImageTools = {
 
     // 2. Image Resizer
     renderResize: function (container) {
+        const t = this._t;
         const opts = `
             <div style="display:flex; gap:10px;">
-                <input type="number" id="resW" placeholder="Width" class="glass-input">
-                <input type="number" id="resH" placeholder="Height" class="glass-input">
+                <input type="number" id="resW" placeholder="${t('Width', 'العرض')}" class="glass-input">
+                <input type="number" id="resH" placeholder="${t('Height', 'الارتفاع')}" class="glass-input">
             </div>
-            <small style="color:var(--text-secondary)">Leave one empty to maintain aspect ratio.</small>
+            <small style="color:var(--text-secondary)">${t('Leave one empty to maintain aspect ratio.', 'اترك حقلاً فارغاً للحفاظ على الأبعاد الأصلية.')}</small>
         `;
-        this.renderUploadUI(container, 'resize', 'Upload Image', 'Resize', 'ImageTools.runResize()', opts);
+        this.renderUploadUI(container, 'resize',
+            t('Upload Image', 'ارفع صورة'),
+            t('Resize', 'تغيير الحجم'),
+            'ImageTools.runResize()', opts
+        );
     },
 
     runResize: async function () {
@@ -120,7 +137,12 @@ const ImageTools = {
 
     // 3. Convert to WebP
     renderWebP: function (container) {
-        this.renderUploadUI(container, 'webp', 'Upload Image', 'Convert to WebP', 'ImageTools.runWebP()');
+        const t = this._t;
+        this.renderUploadUI(container, 'webp',
+            t('Upload Image', 'ارفع صورة'),
+            t('Convert to WebP', 'تحويل إلى WebP'),
+            'ImageTools.runWebP()'
+        );
     },
 
     runWebP: async function () {
@@ -141,35 +163,41 @@ const ImageTools = {
 
     // 4. Remove Background (Partial/Placeholder)
     renderRemoveBG: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div style="text-align:center; padding:20px;">
-                 <p style="margin-bottom:15px;">True background removal requires heavy AI models unavailable for pure client-side static hosting without API keys.</p>
-                 <button onclick="window.open('https://www.remove.bg', '_blank')" class="btn-primary">Open Remove.bg (External)</button>
-                 <p style="margin-top:10px; font-size:0.8em; color:var(--text-secondary);">We recommend this free service for best results.</p>
+                 <p style="margin-bottom:15px;">${t('True background removal requires heavy AI models unavailable for pure client-side static hosting without API keys.', 'إزالة الخلفية الحقيقية تتطلب نماذج ذكاء اصطناعي غير متوفرة للاستضافة الثابتة بدون مفاتيح API.')}</p>
+                 <button onclick="window.open('https://www.remove.bg', '_blank')" class="btn-primary">${t('Open Remove.bg (External)', 'فتح Remove.bg (خارجي)')}</button>
+                 <p style="margin-top:10px; font-size:0.8em; color:var(--text-secondary);">${t('We recommend this free service for best results.', 'نوصي بهذه الخدمة المجانية للحصول على أفضل النتائج.')}</p>
             </div>
          `;
     },
 
     // 5. HEIC to JPG
     renderHEIC: function (container) {
-        // Requires heic2any loaded? For now, explain.
+        const t = this._t;
         container.innerHTML = `
              <div style="text-align:center; padding:20px;">
-                <p>HEIC conversion not fully supported in this browser environment yet.</p>
+                <p>${t('HEIC conversion not fully supported in this browser environment yet.', 'تحويل HEIC غير مدعوم بالكامل في هذا المتصفح حالياً.')}</p>
              </div>
         `;
     },
 
     // 6. Social Post Image Prep
     renderSocialImg: function (container) {
+        const t = this._t;
         const opts = `
             <select id="siPlat" class="glass-input">
-                <option value="1080x1080">Instagram Post (1:1)</option>
-                <option value="1080x1920">Instagram Story (9:16)</option>
-                <option value="1200x630">Facebook/Twitter Link</option>
+                <option value="1080x1080">${t('Instagram Post (1:1)', 'منشور انستغرام (1:1)')}</option>
+                <option value="1080x1920">${t('Instagram Story (9:16)', 'قصة انستغرام (9:16)')}</option>
+                <option value="1200x630">${t('Facebook/Twitter Link', 'رابط فيسبوك/تويتر')}</option>
             </select>
         `;
-        this.renderUploadUI(container, 'socialimg', 'Upload Image', 'Crop & Fit', 'ImageTools.runSocialImg()', opts);
+        this.renderUploadUI(container, 'socialimg',
+            t('Upload Image', 'ارفع صورة'),
+            t('Crop & Fit', 'قص وملاءمة'),
+            'ImageTools.runSocialImg()', opts
+        );
     },
 
     runSocialImg: async function () {
@@ -204,8 +232,13 @@ const ImageTools = {
 
     // 7. Add Border/Shadow
     renderBorder: function (container) {
-        const opts = `<label><input type="checkbox" id="addShadow" checked> Add Shadow & Padding</label>`;
-        this.renderUploadUI(container, 'border', 'Upload Screenshot/Image', 'Add Frame', 'ImageTools.runBorder()', opts);
+        const t = this._t;
+        const opts = `<label><input type="checkbox" id="addShadow" checked> ${t('Add Shadow & Padding', 'إضافة ظل وإطار')}</label>`;
+        this.renderUploadUI(container, 'border',
+            t('Upload Screenshot/Image', 'ارفع لقطة الشاشة/الصورة'),
+            t('Add Frame', 'إضافة إطار'),
+            'ImageTools.runBorder()', opts
+        );
     },
 
     runBorder: async function () {
@@ -240,7 +273,12 @@ const ImageTools = {
 
     // 8. Metadata Remover
     renderMeta: function (container) {
-        this.renderUploadUI(container, 'meta', 'Upload Photo', 'Remove Exif', 'ImageTools.runMeta()');
+        const t = this._t;
+        this.renderUploadUI(container, 'meta',
+            t('Upload Photo', 'ارفع صورة'),
+            t('Remove Exif', 'حذف البيانات الوصفية'),
+            'ImageTools.runMeta()'
+        );
     },
 
     runMeta: async function () {
@@ -265,10 +303,12 @@ const ImageTools = {
         const resBox = document.getElementById(`res_${toolId}`);
         const content = document.getElementById(`resContent_${toolId}`);
         const link = document.getElementById(`dlLink_${toolId}`);
+        const t = this._t;
 
         content.innerHTML = `<img src="${dataUrl}" style="max-height:300px; border-radius:8px; border:1px solid #ddd;">`;
         link.href = dataUrl;
         link.download = filename;
+        link.innerText = t("Download", "تحميل");
 
         resBox.classList.remove('hidden');
     }

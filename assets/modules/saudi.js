@@ -4,31 +4,36 @@
  */
 
 const SaudiTools = {
+    _t: function (en, ar) {
+        return document.documentElement.lang === 'ar' ? ar : en;
+    },
+
     // 1. End of Service
     renderEOS: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Total Salary (SAR)</label>
+                    <label>${t('Total Salary (SAR)', 'الراتب الإجمالي (ريال)')}</label>
                     <input type="number" id="eosSal" class="glass-input" placeholder="e.g. 5000">
                 </div>
                 <div class="input-row">
-                    <label>Years of Service</label>
+                    <label>${t('Years of Service', 'سنوات الخدمة')}</label>
                     <input type="number" id="eosYrs" class="glass-input" placeholder="e.g. 6.5">
                 </div>
                 <div class="input-row">
-                     <label>Termination Reason</label>
+                     <label>${t('Termination Reason', 'سبب إنهاء الخدمة')}</label>
                      <select id="eosReason" class="glass-input">
-                        <option value="term">Termination by Employer (Full)</option>
-                        <option value="resign">Resignation</option>
+                        <option value="term">${t('Termination by Employer (Full)', 'إنهاء من قبل صاحب العمل (كامل)')}</option>
+                        <option value="resign">${t('Resignation', 'استقالة')}</option>
                      </select>
                 </div>
-                <button onclick="SaudiTools.calcEOS()" class="btn-primary full-width">Calculate Reward</button>
+                <button onclick="SaudiTools.calcEOS()" class="btn-primary full-width">${t('Calculate Reward', 'احسب المكافأة')}</button>
                 
                 <div id="eosRes" class="result-box hidden">
-                    <h3>Estimated Reward</h3>
+                    <h3>${t('Estimated Reward', 'المكافأة التقديرية')}</h3>
                     <div id="eosVal" style="font-size:2em; color:var(--accent-pink); font-weight:bold;"></div>
-                    <p class="tool-desc" style="font-size:0.8em;">*Disclaimer: Estimate based on Saudi Labor Law. Verify with HR.</p>
+                    <p class="tool-desc" style="font-size:0.8em;">${t('*Disclaimer: Estimate based on Saudi Labor Law. Verify with HR.', '*تنبيه: تقدير مبني على نظام العمل السعودي. راجع الموارد البشرية.')}</p>
                 </div>
             </div>
         `;
@@ -38,6 +43,7 @@ const SaudiTools = {
         const sal = parseFloat(document.getElementById('eosSal').value);
         const yrs = parseFloat(document.getElementById('eosYrs').value);
         const type = document.getElementById('eosReason').value;
+        const t = this._t;
 
         if (!sal || !yrs) return;
 
@@ -67,25 +73,26 @@ const SaudiTools = {
             reward = baseReward;
         }
 
-        document.getElementById('eosVal').innerText = reward.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' SAR';
+        document.getElementById('eosVal').innerText = reward.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' ' + t('SAR', 'ريال');
         document.getElementById('eosRes').classList.remove('hidden');
     },
 
     // 2. Leave / Return Date
     renderLeave: function (container) {
+        const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>Start Date</label>
+                    <label>${t('Start Date', 'تاريخ البداية')}</label>
                     <input type="date" id="lvStart" class="glass-input">
                 </div>
                 <div class="input-row">
-                    <label>Days Requested</label>
+                    <label>${t('Days Requested', 'عدد الأيام')}</label>
                     <input type="number" id="lvDays" class="glass-input" value="1">
                 </div>
-                <button onclick="SaudiTools.calcLeave()" class="btn-primary full-width">Calculate Return</button>
+                <button onclick="SaudiTools.calcLeave()" class="btn-primary full-width">${t('Calculate Return', 'حساب تاريخ العودة')}</button>
                 <div id="lvRes" class="result-box hidden">
-                     <strong>Return To Work:</strong>
+                     <strong>${t('Return To Work:', 'العودة للعمل:')}</strong>
                      <div id="lvDate" style="font-size:1.5em; color:var(--text-primary); margin-top:5px;"></div>
                 </div>
             </div>

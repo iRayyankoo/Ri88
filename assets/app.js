@@ -339,8 +339,18 @@ const translations = {
     cat_image: "Image Tools",
     cat_developer: "Developer",
     cat_saudi: "Saudi Utils",
+    cat_favorites: "Favorites",
+    filter_all: "All",
+    filter_fav: "⭐ Favorites",
     all_tools: "All Tools",
-    search_placeholder: "Search for tools..."
+    search_placeholder: "Search for tools...",
+    about_title: "About Ri88 Portal",
+    about_desc: "A premium suite of essential utilities designed for Saudi users.<br>We aim to provide fast, secure, and free tools for everyone.",
+    about_mission_title: "Our Mission",
+    about_mission_desc: "Ri88 was built to simplify everyday digital tasks. From calculating VAT and loans to converting files and editing images, we bring everything into one unified, beautiful interface.",
+    about_version: "Version 2.0",
+    about_tech: "Built with Vanilla HTML/CSS/JS",
+    footer_copy: "© 2026 Ri88 Portal. Made for Saudi Users."
   },
   ar: {
     nav_tools: "الأدوات",
@@ -359,13 +369,42 @@ const translations = {
     cat_image: "صور",
     cat_developer: "للمبرمجين",
     cat_saudi: "خدمات سعودية",
+    cat_favorites: "المفضلة",
+    filter_all: "الكل",
+    filter_fav: "⭐ المفضلة",
     all_tools: "جميع الأدوات",
-    search_placeholder: "ابحث عن أداة..."
+    search_placeholder: "ابحث عن أداة...",
+    about_title: "عن بوابة ريان",
+    about_desc: "مجموعة متميزة من الأدوات الأساسية المصممة للمستخدمين في السعودية.<br>نسعى لتوفير أدوات سريعة، آمنة، ومجانية للجميع.",
+    about_mission_title: "رسالتنا",
+    about_mission_desc: "تم بناء Ri88 لتبسيط المهام الرقمية اليومية. من حساب الضريبة والقروض إلى تحويل الملفات وتعديل الصور، نجمع كل شيء في واجهة موحدة وجميلة.",
+    about_version: "الإصدار 2.0",
+    about_tech: "تم البناء باستخدام HTML/CSS/JS المطور",
+    footer_copy: "© 2026 بوابة ريان. صُنع بفخر للمستخدمين في السعودية."
   }
 };
 
 // State
 let displayTools = [...tools];
+let favorites = JSON.parse(localStorage.getItem('rayyan_favs')) || [];
+
+window.toggleFavorite = function (e, toolId) {
+  e.stopPropagation();
+  if (favorites.includes(toolId)) {
+    favorites = favorites.filter(id => id !== toolId);
+  } else {
+    favorites.push(toolId);
+  }
+  localStorage.setItem('rayyan_favs', JSON.stringify(favorites));
+  renderTools();
+
+  // Simple animation feedback
+  const btn = e.currentTarget;
+  if (btn) {
+    btn.style.transform = "scale(1.2)";
+    setTimeout(() => btn.style.transform = "scale(1)", 200);
+  }
+};
 
 
 // DOM Elements
@@ -378,28 +417,36 @@ const langToggle = document.getElementById('langToggle');
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
-  renderTools();
+  // Only render tools if the grid exists (tools.html)
+  if (grid) {
+    // Check for URL query params (e.g. ?cat=finance)
+    const urlParams = new URLSearchParams(window.location.search);
+    const catParam = urlParams.get('cat');
+    if (catParam) {
+      filterTools(catParam);
+    } else {
+      renderTools();
+    }
+  }
 
   // Search Listener
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    displayTools = tools.filter(t =>
-      t.title.toLowerCase().includes(query) ||
-      t.desc.toLowerCase().includes(query)
-    );
-    renderTools();
-    renderTools();
-  });
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      displayTools = tools.filter(t =>
+        t.title.toLowerCase().includes(query) ||
+        t.desc.toLowerCase().includes(query)
+      );
+      renderTools();
+    });
+  }
 
   // Language Toggle
   if (langToggle) {
-    langToggle.addEventListener('click', toggleLanguage);
+    langToggle.addEventListener('click', () => toggleLanguage());
     // Init from local storage
     if (localStorage.getItem('rayyan_lang') === 'ar') {
-      toggleLanguage(true); // force set without saving again needed? actually toggleLanguage toggles, so we need a set function or just check logic.
-      // Better to just set it directly on load if checking storage, but reuse function if smart.
-      // Let's make toggleLanguage handle 'target' or just simple toggle.
-      // Simplest: Check storage, if AR, apply AR.
+      toggleLanguage(true);
     }
   }
 });
@@ -430,7 +477,8 @@ function updateTextContent(lang) {
     const key = el.getAttribute('data-i18n');
     if (translations[lang][key]) {
       // Use innerHTML for keys that might have HTML (like hero_title)
-      if (key === 'hero_title') el.innerHTML = translations[lang][key];
+      // Use innerHTML for keys that might have HTML (like hero_title)
+      if (key === 'hero_title' || key === 'about_desc') el.innerHTML = translations[lang][key];
       else el.innerText = translations[lang][key];
     }
   });
@@ -460,9 +508,15 @@ function renderTools() {
     const title = isAr && tool.titleAr ? tool.titleAr : tool.title;
     const desc = isAr && tool.descAr ? tool.descAr : tool.desc;
     const actionText = isAr ? 'فتح الأداة' : 'Open Tool';
+    const isFav = favorites.includes(tool.id);
+    const heartStyle = isFav ? "fill:var(--accent-pink); color:var(--accent-pink);" : "color:rgba(255,255,255,0.3);";
 
     return `
-      <div class="glass-panel tool-card" onclick="openModal('${tool.id}')">
+      <div class="glass-panel tool-card" onclick="openModal('${tool.id}')" style="position:relative;">
+        <button onclick="toggleFavorite(event, '${tool.id}')" 
+                style="position:absolute; top:15px; right:15px; background:none; border:none; cursor:pointer; z-index:5;">
+            <i data-lucide="heart" style="width:20px; height:20px; ${heartStyle}"></i>
+        </button>
         <div class="tool-icon"><i data-lucide="${tool.icon}"></i></div>
         <div>
           <div class="tool-title">${title}</div>
@@ -529,7 +583,8 @@ function filterTools(category) {
   } else {
     displayTools = tools.filter(t => t.cat === category);
   }
-  document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
+  const toolsSection = document.getElementById('tools');
+  if (toolsSection) toolsSection.scrollIntoView({ behavior: 'smooth' });
   renderTools();
 }
 
@@ -538,7 +593,8 @@ function openModal(toolId) {
   const tool = tools.find(t => t.id === toolId);
   if (!tool) return;
 
-  modalTitle.textContent = tool.title;
+  const isAr = document.documentElement.getAttribute('lang') === 'ar';
+  if (modalTitle) modalTitle.textContent = isAr && tool.titleAr ? tool.titleAr : tool.title;
   // Routing to specific modules based on ID prefix or cat
   const category = tool.cat; // Get category from the found tool
   if (toolId.startsWith('loan') || toolId.startsWith('vat') || toolId.startsWith('net') || toolId.startsWith('curr') || toolId.startsWith('sav') || toolId === 'zakat') {
@@ -677,14 +733,23 @@ window.openAbout = function () {
   document.body.style.overflow = 'hidden';
 };
 
-// Expose filterTools if not already (it might be needed for onclicks in HTML)
+// Expose filterTools 
 window.filterTools = function (category) {
+  // If we are on index.html (no tools grid), clicking a category should redirect to tools.html
+  if (!grid) {
+    window.location.href = `tools.html?cat=${category}`;
+    return;
+  }
+
   if (category === 'all') {
     displayTools = [...tools];
+  } else if (category === 'favorites') {
+    displayTools = tools.filter(t => favorites.includes(t.id));
   } else {
     displayTools = tools.filter(t => t.cat === category);
   }
-  // Optional: Scroll to tools
-  document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
+
+  const toolsSection = document.getElementById('tools');
+  if (toolsSection) toolsSection.scrollIntoView({ behavior: 'smooth' });
   renderTools();
 };
