@@ -811,3 +811,16 @@ window.filterTools = function (category) {
   if (toolsSection) toolsSection.scrollIntoView({ behavior: 'smooth' });
   renderTools();
 };
+
+// Mobile Menu Logic
+window.toggleMobileMenu = function () {
+  const nav = document.getElementById('mobileNav');
+  if (nav) {
+    nav.classList.toggle('active');
+    if (nav.classList.contains('active')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+};
