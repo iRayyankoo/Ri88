@@ -358,53 +358,54 @@ const tools = [
     title: 'Pomodoro Timer', titleAr: 'مؤقت بومودورو',
     desc: 'Focus timer (25min work / 5min break).', descAr: 'تقنية بومودورو للتركيز وزيادة الإنتاجية.'
   },
-  id: 'image-palette', cat: 'image', icon: 'palette', status: 'new',
-  title: 'Color Extractor', titleAr: 'مستخرج الألوان',
-  desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
+  {
+    id: 'image-palette', cat: 'image', icon: 'palette', status: 'new',
+    title: 'Color Extractor', titleAr: 'مستخرج الألوان',
+    desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
   },
 
-// Life Utils (New)
-{
-  id: 'life-bill', cat: 'productivity', icon: 'calculator', status: 'new',
+  // Life Utils (New)
+  {
+    id: 'life-bill', cat: 'productivity', icon: 'calculator', status: 'new',
     title: 'Bill Splitter', titleAr: 'قاطة / تقسيم الفاتورة',
-      desc: 'Split bills and calculate tips easily.', descAr: 'تقسيم الفاتورة وحساب الإكرامية بين الأصدقاء.'
-},
-{
-  id: 'life-decision', cat: 'productivity', icon: 'shuffle', status: 'new',
+    desc: 'Split bills and calculate tips easily.', descAr: 'تقسيم الفاتورة وحساب الإكرامية بين الأصدقاء.'
+  },
+  {
+    id: 'life-decision', cat: 'productivity', icon: 'shuffle', status: 'new',
     title: 'Decision Maker', titleAr: 'عجلة الحظ',
-      desc: 'Randomly pick an option from a list.', descAr: 'اختيار عشوائي من قائمة خيارات (قرعة).'
-},
-{
-  id: 'life-tip', cat: 'productivity', icon: 'percent', status: 'new',
+    desc: 'Randomly pick an option from a list.', descAr: 'اختيار عشوائي من قائمة خيارات (قرعة).'
+  },
+  {
+    id: 'life-tip', cat: 'productivity', icon: 'percent', status: 'new',
     title: 'Tip Calculator', titleAr: 'حاسبة الإكرامية',
-      desc: 'Calculate tip percentage and total.', descAr: 'حساب نسبة الإكرامية ومبلغها.'
-},
+    desc: 'Calculate tip percentage and total.', descAr: 'حساب نسبة الإكرامية ومبلغها.'
+  },
 
-// Design Tools (New)
-{
-  id: 'des-grad', cat: 'developer', icon: 'palette', status: 'new',
+  // Design Tools (New)
+  {
+    id: 'des-grad', cat: 'developer', icon: 'palette', status: 'new',
     title: 'CSS Gradient', titleAr: 'منشئ التدرج اللوني',
-      desc: 'Generate CSS for linear gradients.', descAr: 'توليد كود CSS للتدرجات اللونية.'
-},
-{
-  id: 'des-shadow', cat: 'developer', icon: 'layers', status: 'new',
+    desc: 'Generate CSS for linear gradients.', descAr: 'توليد كود CSS للتدرجات اللونية.'
+  },
+  {
+    id: 'des-shadow', cat: 'developer', icon: 'layers', status: 'new',
     title: 'Box Shadow Gen', titleAr: 'منشئ الظلال',
-      desc: 'Create smooth CSS box shadows.', descAr: 'توليد كود CSS للظلال الناعمة.'
-},
+    desc: 'Create smooth CSS box shadows.', descAr: 'توليد كود CSS للظلال الناعمة.'
+  },
 
-// Media (New)
-{
-  id: 'media-rec', cat: 'content', icon: 'mic', status: 'new',
+  // Media (New)
+  {
+    id: 'media-rec', cat: 'content', icon: 'mic', status: 'new',
     title: 'Audio Recorder', titleAr: 'مسجل الصوت',
-      desc: 'Record and download audio clips.', descAr: 'تسجيل المقاطع الصوتية وتحميلها.'
-},
+    desc: 'Record and download audio clips.', descAr: 'تسجيل المقاطع الصوتية وتحميلها.'
+  },
 
-// Meme (New Image)
-{
-  id: 'img-meme', cat: 'image', icon: 'smile', status: 'new',
+  // Meme (New Image)
+  {
+    id: 'img-meme', cat: 'image', icon: 'smile', status: 'new',
     title: 'Meme Generator', titleAr: 'صانع الميمز',
-      desc: 'Add text to images for memes.', descAr: 'إضافة نصوص مضحكة للصور.'
-},
+    desc: 'Add text to images for memes.', descAr: 'إضافة نصوص مضحكة للصور.'
+  },
 ];
 
 
@@ -782,21 +783,6 @@ function openModal(toolId) {
     if (toolId === 'health-bmi') HealthTools.renderBMI(modalBody);
     else if (toolId === 'health-water') HealthTools.renderWater(modalBody);
     else if (toolId === 'health-sleep') HealthTools.renderSleep(modalBody);
-  }
-
-  // Routing for New Tools
-  else if (category === 'image') {
-    // ... existing image routing handled in previous blocks or verify if we need to append to existing block.
-    // Actually 'image' block is above. Let's check logic:
-    // The previous code had `else if (category === 'image')` block separately.
-    // Since I cannot easily edit the middle of that block without reading it all, I will add a SPECIFIC check for the specific new ID here 
-    // OR I can trust that the previous 'image' block is NOT covering this new ID, so I can add a check here?
-    // WAIT. If I add another `else if (category === 'image')` AFTER the first one, it will never be reached.
-    // I must edit the EXISTING image block or ensure this ID is caught.
-    // Ideally, I should edit the existing blocks. But to avoid huge scrolling/editing, I can add a specific catch-all at the TOP of this routing function or just add it to the existing blocks.
-    // Let's look at `openModal` structure again in `app.js`.
-    // It has `if ... else if ...`.
-    // I will use `replace_file_content` to append to the SPECIFIC category blocks.
   }
 
   else {
