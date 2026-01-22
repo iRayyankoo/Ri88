@@ -24,7 +24,6 @@ const DevTools = {
             </div>
         `;
     },
-
     fmtJson: function () {
         const t = this._t;
         try {
@@ -187,6 +186,309 @@ const DevTools = {
                 </div>
             </div>
         `;
+    },
+
+    // 8. JWT Debugger
+    renderJWT: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <textarea id="jwtIn" class="glass-input" style="height:100px; font-family:monospace;" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+                <button onclick="DevTools.decodeJWT()" class="btn-primary full-width" style="margin-top:10px;">${t('Decode Token', 'فك التشفير')}</button>
+                <div id="jwtRes" class="result-box hidden" style="text-align:left; direction:ltr;">
+                    <strong style="color:var(--accent-cyan);">Header</strong>
+                    <pre id="jwtHead" style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; overflow:auto;"></pre>
+                    <strong style="color:var(--accent-pink);">Payload</strong>
+                    <pre id="jwtPay" style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; overflow:auto;"></pre>
+                </div>
+            </div>
+        `;
+    },
+    decodeJWT: function () {
+        const txt = document.getElementById('jwtIn').value;
+        const [h, p, s] = txt.split('.');
+        if (!h || !p) return alert("Invalid JWT");
+        try {
+            const head = JSON.stringify(JSON.parse(atob(h)), null, 2);
+            const pay = JSON.stringify(JSON.parse(atob(p)), null, 2);
+            document.getElementById('jwtHead').innerText = head;
+            document.getElementById('jwtPay').innerText = pay;
+            document.getElementById('jwtRes').classList.remove('hidden');
+        } catch (e) { alert("Error decoding: " + e.message); }
+    },
+
+    // 9. SQL Formatter
+    renderSQL: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <textarea id="sqlIn" class="glass-input" style="height:150px; font-family:monospace;" placeholder="SELECT * FROM users WHERE id=1"></textarea>
+                <button onclick="DevTools.fmtSQL()" class="btn-primary full-width" style="margin-top:10px;">${t('Format SQL', 'تنسيق SQL')}</button>
+                <textarea id="sqlOut" class="glass-input hidden" style="height:150px; margin-top:10px; font-family:monospace;" readonly></textarea>
+            </div>
+        `;
+    },
+    fmtSQL: function () {
+        let sql = document.getElementById('sqlIn').value;
+        sql = sql.replace(/\s+/g, ' ')
+            .replace(/\s*,\s*/g, ',\n  ')
+            .replace(/\s+(SELECT|FROM|WHERE|AND|OR|ORDER BY|GROUP BY|JOIN|LEFT JOIN|RIGHT JOIN|LIMIT|INSERT INTO|VALUES|UPDATE|SET|DELETE)\s+/gi, '\n$1 ')
+            .replace(/\(\s+/g, '(\n  ')
+            .replace(/\s+\)/g, '\n)');
+        document.getElementById('sqlOut').value = sql.trim();
+        document.getElementById('sqlOut').classList.remove('hidden');
+    },
+
+    // 10. Chmod Calculator
+    renderChmod: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                    <div id="chmodOwner"><strong>Owner</strong><br><label><input type="checkbox" val="4"> Read</label><br><label><input type="checkbox" val="2"> Write</label><br><label><input type="checkbox" val="1"> Execute</label></div>
+                    <div id="chmodGroup"><strong>Group</strong><br><label><input type="checkbox" val="4"> Read</label><br><label><input type="checkbox" val="2"> Write</label><br><label><input type="checkbox" val="1"> Execute</label></div>
+                    <div id="chmodPublic"><strong>Public</strong><br><label><input type="checkbox" val="4"> Read</label><br><label><input type="checkbox" val="2"> Write</label><br><label><input type="checkbox" val="1"> Execute</label></div>
+                </div>
+                <div class="result-box" style="text-align:center;">
+                    <span style="font-size:3em; font-weight:bold; color:var(--accent-cyan);" id="chmodVal">000</span>
+                    <div id="chmodStr" style="color:#aaa; font-family:monospace;">---------</div>
+                </div>
+            </div>
+        `;
+        const inputs = container.querySelectorAll('input[type="checkbox"]');
+        inputs.forEach(i => i.addEventListener('change', () => this.calcChmod()));
+    },
+    calcChmod: function () {
+        const getVal = (id) => {
+            let v = 0;
+            document.querySelectorAll(`#${id} input:checked`).forEach(i => v += parseInt(i.getAttribute('val')));
+            return v;
+        };
+        const o = getVal('chmodOwner');
+        const g = getVal('chmodGroup');
+        const p = getVal('chmodPublic');
+        document.getElementById('chmodVal').innerText = `${o}${g}${p}`;
+
+        const map = { 4: 'r', 2: 'w', 1: 'x' };
+        const getStr = (val) => {
+            let s = '';
+            s += (val & 4) ? 'r' : '-';
+            s += (val & 2) ? 'w' : '-';
+            s += (val & 1) ? 'x' : '-';
+            return s;
+        };
+        document.getElementById('chmodStr').innerText = getStr(o) + getStr(g) + getStr(p);
+    },
+
+    // 11. Cron Generator
+    renderCron: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>Common Schedules</label>
+                    <select id="cronCommon" class="glass-input" onchange="DevTools.setCron(this.value)">
+                        <option value="* * * * *">Every Minute</option>
+                        <option value="0 * * * *">Hourly</option>
+                        <option value="0 0 * * *">Daily (Midnight)</option>
+                        <option value="0 0 * * 0">Weekly (Sunday)</option>
+                        <option value="0 0 1 * *">Monthly</option>
+                    </select>
+                </div>
+                <div class="result-box" style="text-align:center;">
+                    <input type="text" id="cronVal" value="* * * * *" class="glass-input" style="text-align:center; font-size:1.5em; font-family:monospace;">
+                    <div style="margin-top:10px; font-size:0.9em; color:#aaa;">min hour day month weekday</div>
+                </div>
+            </div>
+        `;
+    },
+    setCron: function (val) {
+        document.getElementById('cronVal').value = val;
+    },
+
+    // 12. Curl to Fetch
+    renderCurl: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <label>Curl Command</label>
+                <textarea id="curlIn" class="glass-input" style="height:100px; font-family:monospace;" placeholder="curl -X POST https://api.com..."></textarea>
+                <button onclick="DevTools.convCurl()" class="btn-primary full-width" style="margin-top:10px;">${t('Convert to Fetch', 'تحويل لـ Fetch')}</button>
+                <textarea id="fetchOut" class="glass-input hidden" style="height:150px; margin-top:10px; font-family:monospace;" readonly></textarea>
+            </div>
+        `;
+    },
+    convCurl: function () {
+        const curl = document.getElementById('curlIn').value;
+        let url = curl.match(/['"](https?:\/\/[^'"]+)['"]/);
+        if (!url) url = curl.match(/(https?:\/\/[^\s]+)/);
+
+        let method = 'GET';
+        if (curl.includes('-X POST') || curl.includes('--data')) method = 'POST';
+        if (curl.includes('-X PUT')) method = 'PUT';
+        if (curl.includes('-X DELETE')) method = 'DELETE';
+
+        let js = `fetch('${url ? url[1] : 'URL_HERE'}', {\n  method: '${method}',\n  headers: {\n    'Content-Type': 'application/json'\n  }\n})`;
+        document.getElementById('fetchOut').value = js;
+        document.getElementById('fetchOut').classList.remove('hidden');
+    },
+
+    // 13. User Agent Parser
+    renderUA: function (container) {
+        const t = this._t;
+        const ua = navigator.userAgent;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <textarea id="uaInput" class="glass-input" style="height:80px;">${ua}</textarea>
+                <button onclick="DevTools.parseUA()" class="btn-primary full-width" style="margin-top:10px;">${t('Parse UA', 'تحليل')}</button>
+                <div id="uaRes" class="result-box hidden">
+                    <div id="uaOut"></div>
+                </div>
+            </div>
+        `;
+        setTimeout(() => this.parseUA(), 100);
+    },
+    parseUA: function () {
+        const ua = document.getElementById('uaInput').value;
+        const out = document.getElementById('uaOut');
+
+        let os = "Unknown";
+        if (ua.includes("Win")) os = "Windows";
+        if (ua.includes("Mac")) os = "MacOS";
+        if (ua.includes("Linux")) os = "Linux";
+        if (ua.includes("Android")) os = "Android";
+        if (ua.includes("iOS") || ua.includes("iPhone")) os = "iOS";
+
+        let browser = "Unknown";
+        if (ua.includes("Chrome")) browser = "Chrome";
+        if (ua.includes("Firefox")) browser = "Firefox";
+        if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+        if (ua.includes("Edg")) browser = "Edge";
+
+        out.innerHTML = `
+            <strong>OS:</strong> ${os}<br>
+            <strong>Browser:</strong> ${browser}<br>
+            <strong>Mobile:</strong> ${/Mobi|Android/i.test(ua) ? 'Yes' : 'No'}
+        `;
+        document.getElementById('uaRes').classList.remove('hidden');
+    },
+
+    // 14. Meta Tag Generator
+    renderMeta: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row"><label>Title</label><input type="text" id="metaTitle" class="glass-input"></div>
+                <div class="input-row"><label>Description</label><textarea id="metaDesc" class="glass-input"></textarea></div>
+                <div class="input-row"><label>Keywords</label><input type="text" id="metaKey" class="glass-input" placeholder="comma, separated"></div>
+                <div class="input-row"><label>Author</label><input type="text" id="metaAuth" class="glass-input"></div>
+                
+                <button onclick="DevTools.genMeta()" class="btn-primary full-width">${t('Generate Meta Tags', 'توليد الميتا')}</button>
+                <textarea id="metaOut" class="glass-input hidden" style="height:150px; margin-top:10px; font-family:monospace;" readonly></textarea>
+            </div>
+        `;
+    },
+    genMeta: function () {
+        const title = document.getElementById('metaTitle').value;
+        const desc = document.getElementById('metaDesc').value;
+        const key = document.getElementById('metaKey').value;
+        const auth = document.getElementById('metaAuth').value;
+
+        let html = `<!-- Primary Meta Tags -->\n`;
+        html += `<title>${title}</title>\n`;
+        html += `<meta name="title" content="${title}">\n`;
+        html += `<meta name="description" content="${desc}">\n`;
+        html += `<meta name="keywords" content="${key}">\n`;
+        html += `<meta name="author" content="${auth}">\n`;
+        html += `<meta name="viewport" content="width=device-width, initial-scale=1.0">`;
+
+        document.getElementById('metaOut').value = html;
+        document.getElementById('metaOut').classList.remove('hidden');
+    },
+
+    // 15. Favicon Generator
+    renderFavicon: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group" style="text-align:center;">
+                <input type="file" id="favFile" accept="image/*" class="glass-input" onchange="DevTools.loadFav(this)">
+                <canvas id="favCanvas" width="32" height="32" style="border:1px solid #444; margin:20px; width:64px; height:64px; image-rendering:pixelated;"></canvas>
+                <button onclick="DevTools.dlFav()" class="btn-primary full-width">${t('Download .ico (PNG)', 'تحميل (PNG)')}</button>
+                <p style="font-size:0.8em; color:#aaa;">*Generates 32x32 PNG (Modern Favicon)</p>
+            </div>
+        `;
+    },
+    loadFav: function (input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const ctx = document.getElementById('favCanvas').getContext('2d');
+                    ctx.clearRect(0, 0, 32, 32);
+                    ctx.drawImage(img, 0, 0, 32, 32);
+                };
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    },
+    dlFav: function () {
+        const cvs = document.getElementById('favCanvas');
+        const link = document.createElement('a');
+        link.download = 'favicon.png';
+        link.href = cvs.toDataURL();
+        link.click();
+    },
+
+    // 16. SVG Optimizer
+    renderSVG: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <textarea id="svgIn" class="glass-input" style="height:150px; font-family:monospace;" placeholder="Place SVG Code..."></textarea>
+                <button onclick="DevTools.optSVG()" class="btn-primary full-width" style="margin-top:10px;">${t('Optimize', 'تحسين')}</button>
+                <textarea id="svgOut" class="glass-input hidden" style="height:150px; margin-top:10px; font-family:monospace;" readonly></textarea>
+                <div id="svgStats" style="margin-top:5px; font-size:0.9em;"></div>
+            </div>
+        `;
+    },
+    optSVG: function () {
+        const svg = document.getElementById('svgIn').value;
+        if (!svg) return;
+        let opt = svg.replace(/<!--[\s\S]*?-->/g, '')
+            .replace(/\n/g, '')
+            .replace(/>\s+</g, '><')
+            .replace(/\s{2,}/g, ' ');
+
+        document.getElementById('svgOut').value = opt;
+        document.getElementById('svgOut').classList.remove('hidden');
+        const saved = ((1 - (opt.length / svg.length)) * 100).toFixed(1);
+        document.getElementById('svgStats').innerText = `Reduced by ${saved}%`;
+    },
+
+    // 17. Markdown Preview
+    renderMarkdown: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <textarea id="mdIn" class="glass-input" style="height:150px; font-family:monospace;" placeholder="# Hello World\n**Bold** text" oninput="DevTools.preMD()"></textarea>
+                <div id="mdPre" style="background:white; color:black; padding:20px; border-radius:8px; margin-top:10px; min-height:100px;"></div>
+            </div>
+        `;
+    },
+    preMD: function () {
+        let md = document.getElementById('mdIn').value;
+        let html = md
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
+            .replace(/\*(.*)\*/gim, '<i>$1</i>')
+            .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
+            .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
+            .replace(/\n/gim, '<br>');
+        document.getElementById('mdPre').innerHTML = html;
     }
 };
 

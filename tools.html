@@ -22,9 +22,8 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="brand"
-                style="font-weight:800; font-size:24px; color:white; text-decoration:none;">
-                Ri88
+            <a href="index.html" class="brand" style="display:flex; align-items:center;">
+                <img src="assets/logo.png" alt="Ri88 Logo" style="height:65px; border-radius:6px;">
             </a>
             <div class="nav-links">
                 <a href="tools.html" class="nav-link active" data-i18n="nav_tools">Tools</a>
@@ -89,6 +88,8 @@
                 onclick="filterTools('developer')" data-i18n="cat_developer">Dev</button>
             <button class="glass-panel" style="padding:8px 16px; cursor:pointer; color:white; border:none;"
                 onclick="filterTools('saudi')" data-i18n="cat_saudi">Saudi</button>
+            <button class="glass-panel" style="padding:8px 16px; cursor:pointer; color:white; border:none;"
+                onclick="filterTools('education')" data-i18n="cat_education">Education</button>
         </div>
 
         <div class="tools-grid" id="toolsGrid">
@@ -138,7 +139,9 @@
     <script src="assets/modules/image.js"></script>
     <script src="assets/modules/developer.js"></script>
     <script src="assets/modules/saudi.js"></script>
+    <script src="assets/modules/health.js"></script> <!-- New Health (Priority) -->
     <script src="assets/modules/health_tools.js"></script>
+    <script src="assets/modules/education.js"></script>
     <script src="assets/modules/life.js"></script>
     <script src="assets/modules/design.js"></script>
     <script src="assets/modules/media.js"></script>

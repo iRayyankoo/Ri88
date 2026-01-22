@@ -220,6 +220,52 @@ const FinanceTools = {
         document.getElementById('currResult').classList.remove('hidden');
     },
 
+    // 4b. Crypto Converter (Simple)
+    renderCrypto: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${t('Amount', 'الكمية')}</label>
+                    <input type="number" id="cryAmt" placeholder="e.g. 1" class="glass-input">
+                </div>
+                <div class="input-row">
+                    <label>${t('Cryptocurrency', 'العملة الرقمية')}</label>
+                    <select id="cryCoin" class="glass-input">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="SOL">Solana (SOL)</option>
+                        <option value="XRP">Ripple (XRP)</option>
+                    </select>
+                </div>
+                <button onclick="FinanceTools.calcCrypto()" class="btn-primary full-width">${t('Convert to SAR/USD', 'تحويل للريال والدولار')}</button>
+                <div id="cryRes" class="result-box hidden">
+                    <div class="res-item"><span>SAR:</span> <strong id="resCrySAR">-</strong></div>
+                    <div class="res-item"><span>USD:</span> <strong id="resCryUSD">-</strong></div>
+                    <small style="display:block; margin-top:5px; color:#aaa;">*${t('Estimated rates (Static)', 'أسعار تقديرية (ثابتة)')}</small>
+                </div>
+            </div>
+        `;
+    },
+    calcCrypto: function () {
+        const amt = parseFloat(document.getElementById('cryAmt').value);
+        const coin = document.getElementById('cryCoin').value;
+        if (!amt) return;
+
+        // Static rates (Mock) - In real app, fetch API
+        const rates = {
+            BTC: { usd: 65000, sar: 243750 },
+            ETH: { usd: 3500, sar: 13125 },
+            SOL: { usd: 140, sar: 525 },
+            XRP: { usd: 0.60, sar: 2.25 }
+        };
+
+        const r = rates[coin];
+        document.getElementById('resCrySAR').innerText = (amt * r.sar).toLocaleString() + ' SAR';
+        document.getElementById('resCryUSD').innerText = (amt * r.usd).toLocaleString() + ' USD';
+        document.getElementById('cryRes').classList.remove('hidden');
+    },
+
     // 5. Savings Goal
     renderSavings: function (container) {
         const t = this._t;

@@ -411,6 +411,97 @@ const ImageTools = {
             }
         };
         img.src = this.memeDataUrl;
+    },
+
+    // 11. Image Cropper (Basic)
+    renderCropper: function (container) {
+        const t = this._t;
+        const opts = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input type="number" id="cropX" placeholder="X" class="glass-input">
+                <input type="number" id="cropY" placeholder="Y" class="glass-input">
+                <input type="number" id="cropW" placeholder="${t('Width', 'العرض')}" class="glass-input">
+                <input type="number" id="cropH" placeholder="${t('Height', 'الارتفاع')}" class="glass-input">
+            </div>
+        `;
+        this.renderUploadUI(container, 'cropper',
+            t('Upload Image', 'ارفع صورة'),
+            t('Crop', 'قص'),
+            'ImageTools.runCropper()', opts
+        );
+    },
+    runCropper: async function () {
+        const file = document.getElementById('imgInput_cropper').files[0];
+        if (!file) return;
+
+        const dataUrl = await this.readImage(file);
+        const img = new Image();
+        img.onload = () => {
+            const x = parseInt(document.getElementById('cropX').value) || 0;
+            const y = parseInt(document.getElementById('cropY').value) || 0;
+            const w = parseInt(document.getElementById('cropW').value) || img.width / 2;
+            const h = parseInt(document.getElementById('cropH').value) || img.height / 2;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
+
+            this.showResult('cropper', canvas.toDataURL('image/jpeg'), 'cropped_' + file.name);
+        };
+        img.src = dataUrl;
+    },
+
+    // 12. Image Filters
+    renderFilters: function (container) {
+        const t = this._t;
+        const opts = `
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px;">
+                <button onclick="ImageTools.setFilter('grayscale')" class="tool-action">B&W</button>
+                <button onclick="ImageTools.setFilter('sepia')" class="tool-action">Sepia</button>
+                <button onclick="ImageTools.setFilter('invert')" class="tool-action">Invert</button>
+                <button onclick="ImageTools.setFilter('brightness')" class="tool-action">Bright</button>
+                <button onclick="ImageTools.setFilter('contrast')" class="tool-action">Contrast</button>
+                <button onclick="ImageTools.setFilter('blur')" class="tool-action">Blur</button>
+            </div>
+            <input type="hidden" id="activeFilter" value="grayscale">
+        `;
+        this.renderUploadUI(container, 'filter',
+            t('Upload Image', 'ارفع صورة'),
+            t('Apply Filter', 'تطبيق الفلتر'),
+            'ImageTools.runFilter()', opts
+        );
+    },
+    setFilter: function (f) {
+        document.getElementById('activeFilter').value = f;
+        // Visual feedback could be added here
+    },
+    runFilter: async function () {
+        const file = document.getElementById('imgInput_filter').files[0];
+        if (!file) return;
+
+        const f = document.getElementById('activeFilter').value;
+        const dataUrl = await this.readImage(file);
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+
+            // Apply filter
+            if (f === 'grayscale') ctx.filter = 'grayscale(100%)';
+            if (f === 'sepia') ctx.filter = 'sepia(100%)';
+            if (f === 'invert') ctx.filter = 'invert(100%)';
+            if (f === 'brightness') ctx.filter = 'brightness(150%)';
+            if (f === 'contrast') ctx.filter = 'contrast(200%)';
+            if (f === 'blur') ctx.filter = 'blur(5px)';
+
+            ctx.drawImage(img, 0, 0);
+            this.showResult('filter', canvas.toDataURL('image/jpeg'), 'filtered_' + file.name);
+        };
+        img.src = dataUrl;
     }
 };
 

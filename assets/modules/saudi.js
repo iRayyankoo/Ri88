@@ -1,6 +1,6 @@
 /**
  * Saudi Work Tools
- * EOS Calculator, Leave Calculator
+ * EOS Calculator, Leave Calculator, Tafqeet, Events, Vacation, Hijri
  */
 
 const SaudiTools = {
@@ -59,11 +59,6 @@ const SaudiTools = {
         }
 
         // Resignation Rules (approx)
-        // < 2 yrs: 0
-        // 2-5 yrs: 1/3
-        // 5-10 yrs: 2/3
-        // 10+ yrs: Full
-
         if (type === 'resign') {
             if (yrs < 2) reward = 0;
             else if (yrs < 5) reward = baseReward / 3;
@@ -109,11 +104,6 @@ const SaudiTools = {
         const end = new Date(start);
         end.setDate(end.getDate() + days);
 
-        // Return is the day AFTER the last day of leave
-        // If leave includes end date, return is +1. Assuming 'Days Requested' means duration.
-        // E.g. Start 1st, 1 day. Leave = 1st. Return 2nd.
-        // end is 1st + 1 = 2nd.
-
         document.getElementById('lvDate').innerText = end.toDateString();
         document.getElementById('lvRes').classList.remove('hidden');
     },
@@ -139,13 +129,52 @@ const SaudiTools = {
         const t = this._t;
         const val = document.getElementById('tafqeetNum').value;
         if (!val) return;
-
         let text = val; // Placeholder for real library
         document.getElementById('tafqeetResult').classList.remove('hidden');
         document.getElementById('tafqeetText').innerText = text + " " + t("SAR", "ريال سعودي");
     },
 
-    // 4. Saudi Events
+    // 4. Vacation Salary (Rule: Salary pre-paid)
+    renderVacationSal: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row"><label>${t('Total Salary', 'الراتب الإجمالي')}</label><input type="number" id="vacSal" class="glass-input"></div>
+                <div class="input-row"><label>${t('Vacation Days', 'أيام الإجازة')}</label><input type="number" id="vacDays" class="glass-input"></div>
+                <button onclick="SaudiTools.calcVacationSal()" class="btn-primary full-width">${t('Calculate', 'احسب')}</button>
+                <div id="vacRes" class="result-box hidden">
+                    <h3>${t('Advance Salary', 'الراتب المقدم')}</h3>
+                    <div id="vacVal" style="font-size:2em; color:var(--accent-pink);"></div>
+                </div>
+            </div>
+        `;
+    },
+    calcVacationSal: function () {
+        const s = parseFloat(document.getElementById('vacSal').value);
+        const d = parseFloat(document.getElementById('vacDays').value);
+        if (!s || !d) return;
+        const val = (s / 30) * d;
+        document.getElementById('vacVal').innerText = val.toFixed(2);
+        document.getElementById('vacRes').classList.remove('hidden');
+    },
+
+    // 5. Hijri Date (Simulated)
+    renderHijri: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <p style="text-align:center;">${t('Today in Hijri (Umm Al-Qura)', 'التاريخ الهجري (أم القرى)')}</p>
+                <div style="font-size:1.8em; text-align:center; margin:20px 0; font-weight:bold; color:var(--accent-cyan);">
+                    <script>
+                        document.write(new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {year:'numeric', month:'long', day:'numeric'}).format(new Date()));
+                    </script>
+                    ${new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date())}
+                </div>
+            </div>
+        `;
+    },
+
+    // 6. Saudi Events
     renderEvents: function (container) {
         const t = this._t;
         const events = [

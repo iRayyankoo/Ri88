@@ -34,6 +34,11 @@ const tools = [
     title: 'Zakat Calculator', titleAr: 'حاسبة الزكاة',
     desc: 'Calculate Zakat (2.5%) on your assets.', descAr: 'حساب الزكاة (2.5%) على إجمالي الأصول.'
   },
+  {
+    id: 'fin-crypto', cat: 'finance', icon: 'bitcoin', status: 'new',
+    title: 'Crypto Converter', titleAr: 'محول العملات الرقمية',
+    desc: 'Convert BTC/ETH to SAR/USD.', descAr: 'تحويل العملات الرقمية إلى ريال/دولار.'
+  },
 
   // Time
   {
@@ -126,6 +131,17 @@ const tools = [
     id: 'proof', cat: 'content', icon: 'search-check', status: 'added',
     title: 'Proofreading', titleAr: 'تدقيق لغوي',
     desc: 'Simple text checker for errors.', descAr: 'فحص بسيط للأخطاء اللغوية.'
+  },
+
+  {
+    id: 'saudi-holiday', cat: 'saudi', icon: 'calendar', status: 'new',
+    title: 'Hijri Date', titleAr: 'التاريخ الهجري',
+    desc: 'Current Hijri date.', descAr: 'عرض التاريخ الهجري الحالي.'
+  },
+  {
+    id: 'saudi-vacation', cat: 'saudi', icon: 'sun', status: 'new',
+    title: 'Vacation Salary', titleAr: 'راتب الإجازة',
+    desc: 'Calculate advance vacation pay.', descAr: 'حساب الراتب المقدم للإجازة.'
   },
 
   // PDF
@@ -236,6 +252,33 @@ const tools = [
     title: 'Remove Metadata', titleAr: 'حذف البيانات الوصفية',
     desc: 'Strip EXIF data from photos.', descAr: 'مسح بيانات EXIF من الصور.'
   },
+  {
+    id: 'img-crop', cat: 'image', icon: 'crop', status: 'new',
+    title: 'Image Cropper', titleAr: 'قص الصور',
+    desc: 'Crop images to valid dimensions.', descAr: 'قص الصور بأبعاد مخصصة.'
+  },
+  {
+    id: 'img-filter', cat: 'image', icon: 'sliders', status: 'new',
+    title: 'Photo Filters', titleAr: 'فلاتر الصور',
+    desc: 'Apply B&W, Sepia, and more.', descAr: 'تطبيق فلاتر (أبيض وأسود، سيبيا، إلخ).'
+  },
+
+  // Health (New)
+  {
+    id: 'health-bmi', cat: 'health', icon: 'activity', status: 'new',
+    title: 'BMI Calculator', titleAr: 'كتلة الجسم (BMI)',
+    desc: 'Check if weight is healthy.', descAr: 'حساب مؤشر كتلة الجسم.'
+  },
+  {
+    id: 'health-bmr', cat: 'health', icon: 'fire', status: 'new',
+    title: 'Calories (BMR)', titleAr: 'حاسبة السعرات',
+    desc: 'Calculate daily calorie needs.', descAr: 'حساب احتياج الجسم من السعرات.'
+  },
+  {
+    id: 'health-water', cat: 'health', icon: 'droplet', status: 'new',
+    title: 'Water Intake', titleAr: 'احتياج الماء',
+    desc: 'Daily water tracking.', descAr: 'حساب كمية الماء المطلوبة يومياً.'
+  },
 
   // Developer
   {
@@ -265,8 +308,57 @@ const tools = [
   },
   {
     id: 'dev-diff', cat: 'developer', icon: 'git-compare', status: 'added',
-    title: 'Diff Checker', titleAr: 'مقارنة النصوص',
     desc: 'Compare two texts for differences.', descAr: 'مقارنة الاختلافات بين نصين.'
+  },
+  {
+    id: 'dev-jwt', cat: 'developer', icon: 'key', status: 'new',
+    title: 'JWT Debugger', titleAr: 'فاحص JWT',
+    desc: 'Decode and debug JWT tokens.', descAr: 'فك تشفير وفحص رموز JWT.'
+  },
+  {
+    id: 'dev-sql', cat: 'developer', icon: 'database', status: 'new',
+    title: 'SQL Formatter', titleAr: 'تنسيق SQL',
+    desc: 'Format and beautify SQL queries.', descAr: 'تنسيق وترتيب استعلامات SQL.'
+  },
+  {
+    id: 'dev-chmod', cat: 'developer', icon: 'shield', status: 'new',
+    title: 'Chmod Calculator', titleAr: 'حاسبة Chmod',
+    desc: 'Calculate Linux file permissions.', descAr: 'حساب صلاحيات الملفات في لينكس.'
+  },
+  {
+    id: 'dev-cron', cat: 'developer', icon: 'clock', status: 'new',
+    title: 'Cron Generator', titleAr: 'مجدول Cron',
+    desc: 'Create Cron job schedules.', descAr: 'إنشاء جداول المهام المجدولة (Cron).'
+  },
+  {
+    id: 'dev-curl', cat: 'developer', icon: 'terminal', status: 'new',
+    title: 'Curl to Fetch', titleAr: 'تحويل Curl',
+    desc: 'Convert Curl commands to JS Fetch.', descAr: 'تحويل أوامر Curl إلى كود Fetch.'
+  },
+  {
+    id: 'dev-ua', cat: 'developer', icon: 'monitor', status: 'new',
+    title: 'User Agent', titleAr: 'تحليل المتصفح',
+    desc: 'Parse User Agent string.', descAr: 'تحليل ومعرفة نوع المتصفح والنظام.'
+  },
+  {
+    id: 'dev-meta', cat: 'developer', icon: 'code', status: 'new',
+    title: 'Meta Tags', titleAr: 'ميتا تاج',
+    desc: 'Generate SEO meta tags.', descAr: 'توليد وسوم الميتا لمحركات البحث.'
+  },
+  {
+    id: 'dev-fav', cat: 'developer', icon: 'image', status: 'new',
+    title: 'Favicon Gen', titleAr: 'أيقونة الموقع',
+    desc: 'Create valid 32x32 Favicon.', descAr: 'إنشاء أيقونة مفضلة للموقع.'
+  },
+  {
+    id: 'dev-svg', cat: 'developer', icon: 'pen-tool', status: 'new',
+    title: 'SVG Optimizer', titleAr: 'تحسين SVG',
+    desc: 'Minify SVG code.', descAr: 'ضغط وتحسين أكواد SVG.'
+  },
+  {
+    id: 'dev-md', cat: 'developer', icon: 'file-text', status: 'new',
+    title: 'Markdown View', titleAr: 'عارد Markdown',
+    desc: 'Preview Markdown text.', descAr: 'معاينة نصوص مارك داون.'
   },
 
   // Saudi Tools
@@ -335,6 +427,18 @@ const tools = [
     desc: 'Generate placeholder Arabic text.', descAr: 'توليد نصوص عربية عشوائية للتطوير والتصميم.'
   },
 
+  // Education (New)
+  {
+    id: 'edu-gpa', cat: 'education', icon: 'graduation-cap', status: 'new',
+    title: 'GPA Calculator', titleAr: 'حاسبة المعدل',
+    desc: 'Calculate GPA (5.0 or 4.0 scale).', descAr: 'حساب المعدل التراكمي (من 5 أو 4).'
+  },
+  {
+    id: 'edu-grade', cat: 'education', icon: 'calculator', status: 'new',
+    title: 'Grade Calculator', titleAr: 'حاسبة الدرجات',
+    desc: 'Calculate totals from assessments.', descAr: 'حساب مجموع الدرجات من التقييمات المختلفة.'
+  },
+
   // Health Data (New Category)
   {
     id: 'health-bmi', cat: 'health', icon: 'activity', status: 'new',
@@ -350,6 +454,11 @@ const tools = [
     id: 'health-sleep', cat: 'health', icon: 'moon-star', status: 'new',
     title: 'Sleep Calculator', titleAr: 'حاسبة النوم',
     desc: 'Calculate best times to wake up.', descAr: 'حساب أفضل أوقات الاستيقاظ وآلتي النوم.'
+  },
+  {
+    id: 'health-bmr', cat: 'health', icon: 'fire', status: 'new',
+    title: 'Calories (BMR)', titleAr: 'حاسبة السعرات',
+    desc: 'Calculate daily calorie needs.', descAr: 'حساب احتياج الجسم من السعرات.'
   },
 
   // Productivity & Design Expansion
@@ -392,8 +501,23 @@ const tools = [
     title: 'Box Shadow Gen', titleAr: 'منشئ الظلال',
     desc: 'Create smooth CSS box shadows.', descAr: 'توليد كود CSS للظلال الناعمة.'
   },
+  {
+    id: 'des-contrast', cat: 'developer', icon: 'sun', status: 'new',
+    title: 'Contrast Checker', titleAr: 'تباين الألوان',
+    desc: 'Check text readability (WCAG).', descAr: 'فحص تباين الألوان للقراءة (WCAG).'
+  },
 
   // Media (New)
+  {
+    id: 'media-gif', cat: 'media', icon: 'film', status: 'new',
+    title: 'Video to GIF', titleAr: 'فيديو إلى GIF',
+    desc: 'Convert clips to animated GIFs.', descAr: 'تحويل مقاطع الفيديو إلى صور متحركة.'
+  },
+  {
+    id: 'media-mp3', cat: 'media', icon: 'music', status: 'new',
+    title: 'Video to Audio', titleAr: 'فيديو إلى صوت',
+    desc: 'Extract MP3/Audio from video.', descAr: 'استخراج الصوت من ملفات الفيديو.'
+  },
   {
     id: 'media-rec', cat: 'content', icon: 'mic', status: 'new',
     title: 'Audio Recorder', titleAr: 'مسجل الصوت',
@@ -451,6 +575,7 @@ const translations = {
     cat_text: "Text",
     cat_prod: "Productivity",
     cat_content: "Content",
+    cat_education: "Education",
     cat_pdf: "PDF Tools",
     cat_image: "Image Tools",
     cat_health: "Health",
@@ -483,6 +608,7 @@ const translations = {
     cat_text: "نصوص",
     cat_prod: "الإنتاجية",
     cat_content: "محتوى",
+    cat_education: "التعليم",
     cat_pdf: "أدوات PDF",
     cat_image: "صور",
     cat_health: "صحة",
@@ -791,6 +917,8 @@ function openModal(toolId) {
     else if (toolId === 'img-meta') ImageTools.renderMeta(modalBody);
     else if (toolId === 'image-palette') ImageTools.renderPalette(modalBody);
     else if (toolId === 'img-meme') ImageTools.renderMeme(modalBody);
+    else if (toolId === 'img-crop') ImageTools.renderCropper(modalBody);
+    else if (toolId === 'img-filter') ImageTools.renderFilters(modalBody);
   }
   else if (category === 'developer') {
     if (toolId === 'dev-json') DevTools.renderJson(modalBody);
@@ -799,21 +927,44 @@ function openModal(toolId) {
     else if (toolId === 'dev-url') DevTools.renderUrlEnc(modalBody);
     else if (toolId === 'dev-regex') DevTools.renderRegex(modalBody);
     else if (toolId === 'dev-diff') DevTools.renderDiff(modalBody);
+    else if (toolId === 'dev-screen') DevTools.renderScreenInfo(modalBody);
+    else if (toolId === 'dev-jwt') DevTools.renderJWT(modalBody);
+    else if (toolId === 'dev-sql') DevTools.renderSQL(modalBody);
+    else if (toolId === 'dev-chmod') DevTools.renderChmod(modalBody);
+    else if (toolId === 'dev-cron') DevTools.renderCron(modalBody);
+    else if (toolId === 'dev-curl') DevTools.renderCurl(modalBody);
+    else if (toolId === 'dev-ua') DevTools.renderUA(modalBody);
+    else if (toolId === 'dev-meta') DevTools.renderMeta(modalBody);
+    else if (toolId === 'dev-fav') DevTools.renderFavicon(modalBody);
+    else if (toolId === 'dev-svg') DevTools.renderSVG(modalBody);
+    else if (toolId === 'dev-md') DevTools.renderMarkdown(modalBody);
+
+    // Design Tools routed here
     else if (toolId === 'des-grad') DesignTools.renderGradient(modalBody);
     else if (toolId === 'des-shadow') DesignTools.renderShadow(modalBody);
-    else if (toolId === 'dev-screen') DevTools.renderScreenInfo(modalBody);
+    else if (toolId === 'des-contrast') DesignTools.renderContrast(modalBody);
   }
   else if (category === 'saudi') {
     if (toolId === 'saudi-eos') SaudiTools.renderEOS(modalBody);
     else if (toolId === 'saudi-leave') SaudiTools.renderLeave(modalBody);
     else if (toolId === 'text-tafqeet') SaudiTools.renderTafqeet(modalBody);
     else if (toolId === 'saudi-events') SaudiTools.renderEvents(modalBody);
+    else if (toolId === 'saudi-holiday') SaudiTools.renderHijri(modalBody);
+    else if (toolId === 'saudi-vacation') SaudiTools.renderVacationSal(modalBody);
+  }
+  else if (category === 'media') {
+    if (toolId === 'media-rec') MediaTools.renderRecorder(modalBody);
+    else if (toolId === 'media-gif') MediaTools.renderGif(modalBody);
+    else if (toolId === 'media-mp3') MediaTools.renderVid2Mp3(modalBody);
   }
   else if (category === 'health') {
     if (toolId === 'health-bmi') HealthTools.renderBMI(modalBody);
+    else if (toolId === 'health-bmr') HealthTools.renderBMR(modalBody);
     else if (toolId === 'health-water') HealthTools.renderWater(modalBody);
-    else if (toolId === 'health-sleep') HealthTools.renderSleep(modalBody);
-    else if (toolId === 'health-breath') HealthTools.renderBreathing(modalBody);
+  }
+  else if (category === 'education') {
+    if (toolId === 'edu-gpa') EducationTools.renderGPA(modalBody);
+    else if (toolId === 'edu-grade') EducationTools.renderGrade(modalBody);
   }
 
   else {

@@ -1,6 +1,6 @@
 /**
  * Design Tools Module
- * CSS Gradient, Box Shadow
+ * CSS Gradient, Box Shadow, Contrast Checker
  */
 
 const DesignTools = {
@@ -96,6 +96,72 @@ const DesignTools = {
         const css = `${x}px ${y}px ${b}px ${s}px ${rgba}`;
         document.getElementById('shadowBox').style.boxShadow = css;
         document.getElementById('shCode').innerText = `box-shadow: ${css};`;
+    },
+
+    // 3. Contrast Checker
+    renderContrast: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <div style="flex:1; margin-right:10px;">
+                        <label>${t('Background', 'الخلفية')}</label>
+                        <input type="color" id="contBg" value="#ffffff" oninput="DesignTools.checkCont()" class="full-width" style="height:50px;">
+                    </div>
+                    <div style="flex:1; margin-left:10px;">
+                        <label>${t('Foreground', 'النص')}</label>
+                        <input type="color" id="contFg" value="#000000" oninput="DesignTools.checkCont()" class="full-width" style="height:50px;">
+                    </div>
+                </div>
+                
+                <div id="contPreview" style="background:#fff; color:#000; padding:20px; border-radius:8px; text-align:center; font-size:24px; font-weight:bold; margin-bottom:20px; border:1px solid #ddd;">
+                    ${t('Readability Test', 'اختبار القراءة')}
+                </div>
+
+                <div class="result-box" style="text-align:center;">
+                    <div style="font-size:3em; font-weight:bold;" id="contRatio">21.00</div>
+                    <div id="contGrade" style="font-size:1.2em; margin-top:5px; color:#2ecc71;">AAA (Excellent)</div>
+                </div>
+                <p style="font-size:0.8em; color:#aaa; margin-top:10px;">* WCAG 2.0 Guidelines: AA requires 4.5:1, AAA requires 7:1.</p>
+            </div>
+        `;
+        this.checkCont();
+    },
+
+    checkCont: function () {
+        const bg = document.getElementById('contBg').value;
+        const fg = document.getElementById('contFg').value;
+        const prev = document.getElementById('contPreview');
+        const ratioEl = document.getElementById('contRatio');
+        const gradeEl = document.getElementById('contGrade');
+
+        prev.style.backgroundColor = bg;
+        prev.style.color = fg;
+
+        // Luminance calc
+        const getLum = (hex) => {
+            const r = parseInt(hex.substr(1, 2), 16) / 255;
+            const g = parseInt(hex.substr(3, 2), 16) / 255;
+            const b = parseInt(hex.substr(5, 2), 16) / 255;
+            const a = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+            return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+        };
+
+        const l1 = getLum(bg) + 0.05;
+        const l2 = getLum(fg) + 0.05;
+        const ratio = (Math.max(l1, l2) / Math.min(l1, l2)).toFixed(2);
+
+        ratioEl.innerText = ratio;
+
+        let grade = "Fail";
+        let color = "#e74c3c";
+
+        if (ratio >= 7) { grade = "AAA (Excellent)"; color = "#2ecc71"; }
+        else if (ratio >= 4.5) { grade = "AA (Good)"; color = "#f1c40f"; }
+        else if (ratio >= 3) { grade = "AA Large (Okay)"; color = "#e67e22"; }
+
+        gradeEl.innerText = grade;
+        gradeEl.style.color = color;
     }
 };
 
