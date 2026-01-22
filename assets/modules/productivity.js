@@ -694,6 +694,49 @@ const ProdTools = {
             </html>
         `);
         win.document.close();
+    },
+
+    // 7. Pomodoro Timer
+    renderPomodoro: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div style="text-align:center;">
+                <div id="pomoTimer" style="font-size:64px; font-weight:800; font-family:monospace; color:var(--accent-pink); margin:20px 0;">25:00</div>
+                <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
+                    <button onclick="ProdTools.startPomo()" class="btn-primary" style="padding:10px 24px;">${t('Start', 'ابدأ')}</button>
+                    <button onclick="ProdTools.resetPomo()" class="glass-panel" style="padding:10px 24px; cursor:pointer;">${t('Reset', 'إعادة')}</button>
+                </div>
+                <div style="font-size:14px; color:#aaa;">
+                    <span>${t('Focus: 25m', 'تركيز: 25د')}</span> | 
+                    <span>${t('Break: 5m', 'راحة: 5د')}</span>
+                </div>
+            </div>
+        `;
+        ProdTools.pomoTime = 25 * 60;
+        ProdTools.pomoInterval = null;
+    },
+
+    startPomo: function () {
+        if (ProdTools.pomoInterval) return;
+        const t = this._t;
+        ProdTools.pomoInterval = setInterval(() => {
+            ProdTools.pomoTime--;
+            if (ProdTools.pomoTime < 0) {
+                clearInterval(ProdTools.pomoInterval);
+                alert(t('Time is up!', 'انتهى الوقت!'));
+                return;
+            }
+            const m = Math.floor(ProdTools.pomoTime / 60);
+            const s = ProdTools.pomoTime % 60;
+            document.getElementById('pomoTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+        }, 1000);
+    },
+
+    resetPomo: function () {
+        clearInterval(ProdTools.pomoInterval);
+        ProdTools.pomoInterval = null;
+        ProdTools.pomoTime = 25 * 60;
+        document.getElementById('pomoTimer').innerText = "25:00";
     }
 };
 

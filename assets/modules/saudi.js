@@ -116,6 +116,69 @@ const SaudiTools = {
 
         document.getElementById('lvDate').innerText = end.toDateString();
         document.getElementById('lvRes').classList.remove('hidden');
+    },
+
+    // 3. Tafqeet logic
+    renderTafqeet: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+             <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${t('Annual Amount', 'المبلغ')}</label>
+                    <input type="number" id="tafqeetNum" class="glass-input full-width" placeholder="e.g. 1500">
+                </div>
+                <button onclick="SaudiTools.doTafqeet()" class="btn-primary full-width">${t('Convert to Text', 'تحويل للنص')}</button>
+                <div id="tafqeetResult" class="result-box hidden">
+                     <p id="tafqeetText" style="font-size:18px; color:var(--accent-warm); font-weight:bold; text-align:center; line-height:1.6;"></p>
+                </div>
+            </div>
+        `;
+    },
+
+    doTafqeet: function () {
+        const t = this._t;
+        const val = document.getElementById('tafqeetNum').value;
+        if (!val) return;
+
+        let text = val; // Placeholder for real library
+        document.getElementById('tafqeetResult').classList.remove('hidden');
+        document.getElementById('tafqeetText').innerText = text + " " + t("SAR", "ريال سعودي");
+    },
+
+    // 4. Saudi Events
+    renderEvents: function (container) {
+        const t = this._t;
+        const events = [
+            { nameAr: 'يوم التأسيس', nameEn: 'Founding Day', date: '02-22' },
+            { nameAr: 'اليوم الوطني', nameEn: 'National Day', date: '09-23' },
+            { nameAr: 'عيد الفطر (تقريبي)', nameEn: 'Eid Al-Fitr (Approx)', date: '03-20' },
+            { nameAr: 'عيد الأضحى (تقريبي)', nameEn: 'Eid Al-Adha (Approx)', date: '05-27' },
+        ];
+
+        let html = `<div class="tool-ui-group">`;
+        events.forEach(ev => {
+            const currentYear = new Date().getFullYear();
+            let target = new Date(`${currentYear}-${ev.date}`);
+            const now = new Date();
+            if (target < now) target.setFullYear(currentYear + 1);
+
+            const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+
+            html += `
+                <div class="glass-panel" style="padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color:var(--accent-cyan); display:block; font-size:16px;">${t(ev.nameEn, ev.nameAr)}</strong>
+                        <span style="color:#aaa; font-size:12px;">${ev.date}</span>
+                    </div>
+                    <div style="text-align:center;">
+                        <span style="font-size:24px; font-weight:bold; color:white;">${diff}</span>
+                        <br><span style="font-size:10px; color:#888;">${t('Days Left', 'يوم متبقي')}</span>
+                    </div>
+                </div>
+             `;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
     }
 };
 

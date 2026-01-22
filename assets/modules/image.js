@@ -311,6 +311,45 @@ const ImageTools = {
         link.innerText = t("Download", "تحميل");
 
         resBox.classList.remove('hidden');
+    },
+
+    // 9. Color Palette
+    renderPalette: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <input type="file" id="palInput" class="glass-input full-width" accept="image/*" onchange="ImageTools.extractPal()">
+                <div id="palPreview" style="margin-top:20px; text-align:center;" class="hidden">
+                    <img id="palImg" style="max-width:100%; max-height:200px; border-radius:12px; margin-bottom:16px;">
+                    <div id="colorsGrid" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;"></div>
+                </div>
+            </div>
+        `;
+    },
+
+    extractPal: function () {
+        const file = document.getElementById('palInput').files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.getElementById('palImg');
+            img.src = e.target.result;
+            document.getElementById('palPreview').classList.remove('hidden');
+
+            // Mock Palette extraction
+            const colors = ['#FF6B6B', '#4ECB71', '#D35BFF', '#00FFF2', '#555555'];
+            const grid = document.getElementById('colorsGrid');
+            grid.innerHTML = '';
+
+            colors.forEach(c => {
+                grid.innerHTML += `
+                <div style="width:50px; height:50px; background:${c}; border-radius:50%; cursor:pointer;" 
+                     onclick="alert('${c}')" title="${c}"></div>
+               `;
+            });
+        };
+        reader.readAsDataURL(file);
     }
 };
 

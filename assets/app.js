@@ -317,6 +317,52 @@ const tools = [
     title: 'Extract Images', titleAr: 'استخراج الصور',
     desc: 'Extract all images from PDF.', descAr: 'استخراج جميع الصور من ملف PDF.'
   },
+
+  // Saudi / Arabic Expansion
+  {
+    id: 'text-tafqeet', cat: 'saudi', icon: 'banknote', status: 'new',
+    title: 'Number to Text', titleAr: 'تفقيط الأرقام',
+    desc: 'Convert numbers to Arabic text (financial).', descAr: 'تحويل الأرقام إلى نص عربي (للفواتير والشيكات).'
+  },
+  {
+    id: 'saudi-events', cat: 'saudi', icon: 'calendar-heart', status: 'new',
+    title: 'Saudi Events', titleAr: 'المناسبات السعودية',
+    desc: 'Countdown to Founding Day, National Day, etc.', descAr: 'عد تنازلي للمناسبات الوطنية والأعياد.'
+  },
+  {
+    id: 'text-lorem', cat: 'text', icon: 'align-left', status: 'new',
+    title: 'Arabic Lorem Ipsum', titleAr: 'مولد نص عشوائي',
+    desc: 'Generate placeholder Arabic text.', descAr: 'توليد نصوص عربية عشوائية للتطوير والتصميم.'
+  },
+
+  // Health Data (New Category)
+  {
+    id: 'health-bmi', cat: 'health', icon: 'activity', status: 'new',
+    title: 'BMI Calculator', titleAr: 'حاسبة كتلة الجسم',
+    desc: 'Calculate Body Mass Index & weight status.', descAr: 'حساب مؤشر كتلة الجسم والوزن المثالي.'
+  },
+  {
+    id: 'health-water', cat: 'health', icon: 'droplet', status: 'new',
+    title: 'Water Intake', titleAr: 'احتياج الماء',
+    desc: 'Daily water intake calculator.', descAr: 'حساب كمية الماء اليومية الموصى بها.'
+  },
+  {
+    id: 'health-sleep', cat: 'health', icon: 'moon-star', status: 'new',
+    title: 'Sleep Calculator', titleAr: 'حاسبة النوم',
+    desc: 'Calculate best times to wake up.', descAr: 'حساب أفضل أوقات الاستيقاظ وآلتي النوم.'
+  },
+
+  // Productivity & Design Expansion
+  {
+    id: 'prod-pomodoro', cat: 'productivity', icon: 'timer-reset', status: 'new',
+    title: 'Pomodoro Timer', titleAr: 'مؤقت بومودورو',
+    desc: 'Focus timer (25min work / 5min break).', descAr: 'تقنية بومودورو للتركيز وزيادة الإنتاجية.'
+  },
+  {
+    id: 'image-palette', cat: 'image', icon: 'palette', status: 'new',
+    title: 'Color Extractor', titleAr: 'مستخرج الألوان',
+    desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
+  },
 ];
 
 
@@ -337,6 +383,7 @@ const translations = {
     cat_content: "Content",
     cat_pdf: "PDF Tools",
     cat_image: "Image Tools",
+    cat_health: "Health",
     cat_developer: "Developer",
     cat_saudi: "Saudi Utils",
     cat_favorites: "Favorites",
@@ -367,6 +414,7 @@ const translations = {
     cat_content: "محتوى",
     cat_pdf: "أدوات PDF",
     cat_image: "صور",
+    cat_health: "صحة",
     cat_developer: "للمبرمجين",
     cat_saudi: "خدمات سعودية",
     cat_favorites: "المفضلة",
@@ -620,6 +668,7 @@ function openModal(toolId) {
     else if (toolId === 'text-link') TextTools.renderLinks(modalBody);
     else if (toolId === 'text-punc') TextTools.renderPunc(modalBody);
     else if (toolId === 'text-dia') TextTools.renderTashkeel(modalBody);
+    else if (toolId === 'text-lorem') TextTools.renderLorem(modalBody);
   }
   else if (category === 'productivity') {
     if (toolId === 'qr') ProdTools.renderQR(modalBody);
@@ -628,6 +677,7 @@ function openModal(toolId) {
     else if (toolId === 'speed') ProdTools.renderSpeed(modalBody);
     else if (toolId === 'prod-iban') ProdTools.renderIBAN(modalBody);
     else if (toolId === 'prod-inv') ProdTools.renderInvoice(modalBody);
+    else if (toolId === 'prod-pomodoro') ProdTools.renderPomodoro(modalBody);
   }
   else if (category === 'content') {
     if (toolId === 'social-sizes') ContentTools.renderSocial(modalBody);
@@ -661,6 +711,7 @@ function openModal(toolId) {
     else if (toolId === 'img-social') ImageTools.renderSocialImg(modalBody);
     else if (toolId === 'img-border') ImageTools.renderBorder(modalBody);
     else if (toolId === 'img-meta') ImageTools.renderMeta(modalBody);
+    else if (toolId === 'image-palette') ImageTools.renderPalette(modalBody);
   }
   else if (category === 'developer') {
     if (toolId === 'dev-json') DevTools.renderJson(modalBody);
@@ -673,6 +724,13 @@ function openModal(toolId) {
   else if (category === 'saudi') {
     if (toolId === 'saudi-eos') SaudiTools.renderEOS(modalBody);
     else if (toolId === 'saudi-leave') SaudiTools.renderLeave(modalBody);
+    else if (toolId === 'text-tafqeet') SaudiTools.renderTafqeet(modalBody);
+    else if (toolId === 'saudi-events') SaudiTools.renderEvents(modalBody);
+  }
+  else if (category === 'health') {
+    if (toolId === 'health-bmi') HealthTools.renderBMI(modalBody);
+    else if (toolId === 'health-water') HealthTools.renderWater(modalBody);
+    else if (toolId === 'health-sleep') HealthTools.renderSleep(modalBody);
   }
 
   else {

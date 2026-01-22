@@ -258,6 +258,44 @@ const TextTools = {
         txt = txt.replace(/[\u064B-\u065F\u0670]/g, '');
         document.getElementById('diaOut').value = txt;
         document.getElementById('diaOut').classList.remove('hidden');
+    },
+
+    // 9. Arabic Lorem Ipsum
+    renderLorem: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${t('Number of Paragraphs', 'عدد الفقرات')}</label>
+                    <input type="number" id="loremCount" class="glass-input full-width" value="1" min="1" max="10">
+                </div>
+                <button onclick="TextTools.genLorem()" class="btn-primary full-width">${t('Generate Text', 'توليد النص')}</button>
+                <div style="position:relative;">
+                    <textarea id="loremRes" class="glass-input full-width hidden" rows="8" readonly></textarea>
+                     <button onclick="TextTools.copyLorem()" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.5); border:none; color:white; padding:4px 8px; border-radius:4px; cursor:pointer;">${t('Copy', 'نسخ')}</button>
+                </div>
+            </div>
+        `;
+    },
+
+    genLorem: function () {
+        const count = parseInt(document.getElementById('loremCount').value) || 1;
+        const text = "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.\n\nإذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه الخصوص.";
+
+        let out = "";
+        for (let i = 0; i < count; i++) {
+            out += text + "\n\n";
+        }
+
+        const res = document.getElementById('loremRes');
+        res.classList.remove('hidden');
+        res.value = out.trim();
+    },
+
+    copyLorem: function () {
+        const copyText = document.getElementById("loremRes");
+        copyText.select();
+        document.execCommand("copy");
     }
 };
 
