@@ -406,6 +406,32 @@ const tools = [
     title: 'Meme Generator', titleAr: 'صانع الميمز',
     desc: 'Add text to images for memes.', descAr: 'إضافة نصوص مضحكة للصور.'
   },
+  // New Suggested Tools
+  {
+    id: 'health-breath', cat: 'health', icon: 'wind', status: 'new',
+    title: 'Breathing Exercise', titleAr: 'تمرين التنفس',
+    desc: 'Relax and focus with guided breathing.', descAr: 'استرخِ وركز مع تمرين التنفس الموجه.'
+  },
+  {
+    id: 'life-reaction', cat: 'productivity', icon: 'zap', status: 'new',
+    title: 'Reaction Time', titleAr: 'سرعة رد الفعل',
+    desc: 'Test how fast you can click.', descAr: 'اختبر سرعة استجابتك.'
+  },
+  {
+    id: 'fin-discount', cat: 'finance', icon: 'tag', status: 'new',
+    title: 'Discount Calc', titleAr: 'حاسبة الخصم',
+    desc: 'Calculate price after discount.', descAr: 'حساب السعر بعد الخصم.'
+  },
+  {
+    id: 'time-add', cat: 'time', icon: 'calendar-plus', status: 'new',
+    title: 'Date Adder', titleAr: 'ضيف التاريخ',
+    desc: 'Add days/months to a date.', descAr: 'إضافة أيام أو شهور لتاريخ معين.'
+  },
+  {
+    id: 'dev-screen', cat: 'developer', icon: 'monitor', status: 'new',
+    title: 'Screen Info', titleAr: 'معلومات الشاشة',
+    desc: 'View screen resolution and specs.', descAr: 'عرض دقة الشاشة والمواصفات.'
+  },
 ];
 
 
