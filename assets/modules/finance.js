@@ -304,6 +304,42 @@ const FinanceTools = {
 
         document.getElementById('resZakatVal').innerText = zakat.toLocaleString() + suffix;
         document.getElementById('zakatResult').classList.remove('hidden');
+    },
+
+    // 7. Discount Calculator
+    renderDiscount: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${t('Original Price', 'السعر الأصلي')}</label>
+                    <input type="number" id="discPrice" class="glass-input" placeholder="e.g. 200">
+                </div>
+                <div class="input-row">
+                    <label>${t('Discount (%)', 'الخصم (%)')}</label>
+                    <input type="number" id="discOff" class="glass-input" placeholder="e.g. 30">
+                </div>
+                <button onclick="FinanceTools.calcDiscount()" class="btn-primary full-width">${t('Calculate', 'احسب')}</button>
+                
+                <div id="discResult" class="result-box hidden">
+                    <div class="res-item"><span>${t('New Price:', 'السعر الجديد:')}</span> <strong id="resDiscPrice" style="color:var(--accent-pink);">-</strong></div>
+                    <div class="res-item"><span>${t('You Save:', 'وفرت:')}</span> <strong id="resDiscSave" style="color:#2ecc71;">-</strong></div>
+                </div>
+            </div>
+        `;
+    },
+
+    calcDiscount: function () {
+        const price = parseFloat(document.getElementById('discPrice').value);
+        const off = parseFloat(document.getElementById('discOff').value);
+        if (!price || !off) return;
+
+        const save = price * (off / 100);
+        const final = price - save;
+
+        document.getElementById('resDiscPrice').innerText = final.toFixed(2);
+        document.getElementById('resDiscSave').innerText = save.toFixed(2);
+        document.getElementById('discResult').classList.remove('hidden');
     }
 };
 

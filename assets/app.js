@@ -697,12 +697,14 @@ function openModal(toolId) {
     else if (toolId === 'currency') FinanceTools.renderCurrency(modalBody);
     else if (toolId === 'savings') FinanceTools.renderSavings(modalBody);
     else if (toolId === 'zakat') FinanceTools.renderZakat(modalBody);
+    else if (toolId === 'fin-discount') FinanceTools.renderDiscount(modalBody);
   }
   else if (category === 'time') {
     if (toolId === 'hijri') TimeTools.renderHijri(modalBody);
     else if (toolId === 'diff') TimeTools.renderDiff(modalBody);
     else if (toolId === 'timer') TimeTools.renderTimer(modalBody);
     else if (toolId === 'timezone') TimeTools.renderZone(modalBody);
+    else if (toolId === 'time-add') TimeTools.renderDateAdd(modalBody);
   }
   else if (category === 'text') {
     if (toolId === 'adobe-fix') TextTools.renderAdobe(modalBody);
@@ -726,6 +728,7 @@ function openModal(toolId) {
     else if (toolId === 'life-bill') LifeTools.renderBill(modalBody);
     else if (toolId === 'life-decision') LifeTools.renderDecision(modalBody);
     else if (toolId === 'life-tip') LifeTools.renderTip(modalBody);
+    else if (toolId === 'life-reaction') LifeTools.renderReaction(modalBody);
   }
   else if (category === 'content') {
     if (toolId === 'social-sizes') ContentTools.renderSocial(modalBody);
@@ -772,6 +775,7 @@ function openModal(toolId) {
     else if (toolId === 'dev-diff') DevTools.renderDiff(modalBody);
     else if (toolId === 'des-grad') DesignTools.renderGradient(modalBody);
     else if (toolId === 'des-shadow') DesignTools.renderShadow(modalBody);
+    else if (toolId === 'dev-screen') DevTools.renderScreenInfo(modalBody);
   }
   else if (category === 'saudi') {
     if (toolId === 'saudi-eos') SaudiTools.renderEOS(modalBody);
@@ -783,6 +787,7 @@ function openModal(toolId) {
     if (toolId === 'health-bmi') HealthTools.renderBMI(modalBody);
     else if (toolId === 'health-water') HealthTools.renderWater(modalBody);
     else if (toolId === 'health-sleep') HealthTools.renderSleep(modalBody);
+    else if (toolId === 'health-breath') HealthTools.renderBreathing(modalBody);
   }
 
   else {

@@ -193,6 +193,49 @@ const TimeTools = {
         } catch (e) {
             displayTime.innerText = "Error";
         }
+    },
+
+    // 5. Date Adder
+    renderDateAdd: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${t('Start Date', 'تاريخ البدء')}</label>
+                    <input type="date" id="daDate" class="glass-input">
+                </div>
+                <div class="input-row">
+                    <label>${t('Add Days', 'أضف أيام')}</label>
+                    <input type="number" id="daDays" class="glass-input" value="0">
+                </div>
+                <div class="input-row">
+                    <label>${t('Add Date', 'أضف شهور')}</label>
+                    <input type="number" id="daMonths" class="glass-input" value="0">
+                </div>
+                
+                <button onclick="TimeTools.calcDateAdd()" class="btn-primary full-width">${t('Calculate', 'احسب')}</button>
+                
+                <div id="daResult" class="result-box hidden" style="text-align:center;">
+                    <div style="font-size:0.9em; color:#aaa;">${t('Result Date', 'التاريخ الناتج')}</div>
+                    <strong id="resDateAdd" style="font-size:1.5em; color:var(--accent-cyan);">-</strong>
+                </div>
+            </div>
+        `;
+        document.getElementById('daDate').valueAsDate = new Date();
+    },
+
+    calcDateAdd: function () {
+        const d = new Date(document.getElementById('daDate').value);
+        const days = parseInt(document.getElementById('daDays').value) || 0;
+        const months = parseInt(document.getElementById('daMonths').value) || 0;
+
+        if (isNaN(d.getTime())) return;
+
+        d.setDate(d.getDate() + days);
+        d.setMonth(d.getMonth() + months);
+
+        document.getElementById('resDateAdd').innerText = d.toLocaleDateString();
+        document.getElementById('daResult').classList.remove('hidden');
     }
 };
 

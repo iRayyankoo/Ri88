@@ -164,6 +164,29 @@ const DevTools = {
         } else {
             res.innerHTML = `<span style='color:#e74c3c'>${t('Texts differ.', 'النصوص مختلفة.')}</span> Length: ` + a.length + " vs " + b.length;
         }
+    },
+
+    // 7. Screen Info
+    renderScreenInfo: function (container) {
+        const t = this._t;
+        const w = window.screen.width;
+        const h = window.screen.height;
+        const dpr = window.devicePixelRatio;
+        const touch = 'ontouchstart' in window ? t('Yes', 'نعم') : t('No', 'لا');
+        const orient = screen.orientation ? screen.orientation.type : t('Unknown', 'غير معروف');
+
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="result-box" style="display:block; margin:0;">
+                    <div class="res-item"><span>${t('Screen Resolution:', 'دقة الشاشة:')}</span> <strong>${w} x ${h}</strong></div>
+                    <div class="res-item"><span>${t('Window Inner Size:', 'حجم النافذة داخلياً:')}</span> <strong>${window.innerWidth} x ${window.innerHeight}</strong></div>
+                    <div class="res-item"><span>${t('Pixel Ratio (DPR):', 'كثافة البكسل:')}</span> <strong>${dpr}x</strong></div>
+                    <div class="res-item"><span>${t('Touch Support:', 'دعم اللمس:')}</span> <strong>${touch}</strong></div>
+                    <div class="res-item"><span>${t('Orientation:', 'الاتجاه:')}</span> <strong>${orient}</strong></div>
+                    <div class="res-item"><span>${t('Color Depth:', 'عمق الألوان:')}</span> <strong>${screen.colorDepth}-bit</strong></div>
+                </div>
+            </div>
+        `;
     }
 };
 
