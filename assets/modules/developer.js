@@ -188,6 +188,6 @@ const DevTools = {
             </div>
         `;
     }
-},
+};
 
-    window.DevTools = DevTools;
+window.DevTools = DevTools;
