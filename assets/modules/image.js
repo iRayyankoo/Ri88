@@ -350,69 +350,68 @@ const ImageTools = {
             });
         };
         reader.readAsDataURL(file);
-    }
-},
+    },
 
     // 10. Meme Generator
-    renderMeme: function(container) {
+    renderMeme: function (container) {
         const t = this._t;
-const opts = `
+        const opts = `
              <div class="input-row"><input type="text" id="memeTop" class="glass-input" placeholder="${t('Top Text', 'النص العلوي')}" oninput="ImageTools.drawMeme()"></div>
              <div class="input-row"><input type="text" id="memeBot" class="glass-input" placeholder="${t('Bottom Text', 'النص السفلي')}" oninput="ImageTools.drawMeme()"></div>
         `;
-this.renderUploadUI(container, 'meme',
-    t('Upload Image', 'ارفع صورة'),
-    t('Generate Meme', 'إنشاء الميم'),
-    'ImageTools.drawMeme(true)', opts
-);
+        this.renderUploadUI(container, 'meme',
+            t('Upload Image', 'ارفع صورة'),
+            t('Generate Meme', 'إنشاء الميم'),
+            'ImageTools.drawMeme(true)', opts
+        );
     },
 
-drawMeme: async function(finalize = false) {
-    const file = document.getElementById('imgInput_meme').files[0];
-    if (!file) return;
+    drawMeme: async function (finalize = false) {
+        const file = document.getElementById('imgInput_meme').files[0];
+        if (!file) return;
 
-    // Cache image if not exists, but for simplicity read every time or optimize later. 
-    // Better: store dataUrl in a var.
-    if (!this.memeDataUrl) this.memeDataUrl = await this.readImage(file);
+        // Cache image if not exists, but for simplicity read every time or optimize later. 
+        // Better: store dataUrl in a var.
+        if (!this.memeDataUrl) this.memeDataUrl = await this.readImage(file);
 
-    const top = document.getElementById('memeTop').value.toUpperCase();
-    const bot = document.getElementById('memeBot').value.toUpperCase();
+        const top = document.getElementById('memeTop').value.toUpperCase();
+        const bot = document.getElementById('memeBot').value.toUpperCase();
 
-    const img = new Image();
-    img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
 
-        ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0);
 
-        // Text Style
-        ctx.font = `bold ${img.width / 10}px Impact, sans-serif`;
-        ctx.fillStyle = 'white';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = img.width / 150;
-        ctx.textAlign = 'center';
+            // Text Style
+            ctx.font = `bold ${img.width / 10}px Impact, sans-serif`;
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = img.width / 150;
+            ctx.textAlign = 'center';
 
-        if (top) {
-            ctx.strokeText(top, img.width / 2, img.height * 0.15);
-            ctx.fillText(top, img.width / 2, img.height * 0.15);
-        }
-        if (bot) {
-            ctx.strokeText(bot, img.width / 2, img.height * 0.9);
-            ctx.fillText(bot, img.width / 2, img.height * 0.9);
-        }
+            if (top) {
+                ctx.strokeText(top, img.width / 2, img.height * 0.15);
+                ctx.fillText(top, img.width / 2, img.height * 0.15);
+            }
+            if (bot) {
+                ctx.strokeText(bot, img.width / 2, img.height * 0.9);
+                ctx.fillText(bot, img.width / 2, img.height * 0.9);
+            }
 
-        if (finalize) {
-            this.showResult('meme', canvas.toDataURL('image/jpeg'), 'meme.jpg');
-        } else {
-            // Preview? 
-            // Currently current UI structure puts result in a hidden box. 
-            // Real-time preview needs UI change. For now button click updates result.
-        }
-    };
-    img.src = this.memeDataUrl;
-}
+            if (finalize) {
+                this.showResult('meme', canvas.toDataURL('image/jpeg'), 'meme.jpg');
+            } else {
+                // Preview? 
+                // Currently current UI structure puts result in a hidden box. 
+                // Real-time preview needs UI change. For now button click updates result.
+            }
+        };
+        img.src = this.memeDataUrl;
+    }
 };
 
 window.ImageTools = ImageTools;
