@@ -716,7 +716,7 @@ function openModal(toolId) {
   if (modalTitle) modalTitle.textContent = isAr && tool.titleAr ? tool.titleAr : tool.title;
   // Routing to specific modules based on ID prefix or cat
   const category = tool.cat; // Get category from the found tool
-  if (toolId.startsWith('loan') || toolId.startsWith('vat') || toolId.startsWith('net') || toolId.startsWith('curr') || toolId.startsWith('sav') || toolId === 'zakat') {
+  if (toolId.startsWith('loan') || toolId.startsWith('vat') || toolId.startsWith('net') || toolId.startsWith('curr') || toolId.startsWith('sav') || toolId === 'zakat' || toolId.startsWith('fin-')) {
     if (toolId === 'loan-calc') FinanceTools.renderLoanCalc(modalBody);
     else if (toolId === 'vat-calc') FinanceTools.renderVAT(modalBody);
     else if (toolId === 'net-salary') FinanceTools.renderSalary(modalBody);

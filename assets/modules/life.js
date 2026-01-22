@@ -202,6 +202,87 @@ const LifeTools = {
         document.getElementById('tipVal').innerText = tipAmt.toFixed(2);
         document.getElementById('tipTotal').innerText = total.toFixed(2);
         document.getElementById('tipResult').classList.remove('hidden');
+    },
+
+    // 4. Reaction Game
+    renderReaction: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group" style="text-align:center;">
+                <div id="reactBox" style="
+                    width:100%; height:200px; 
+                    background:var(--card-bg); 
+                    border:2px solid #444; 
+                    border-radius:12px;
+                    display:flex; flex-direction:column;
+                    align-items:center; justify-content:center;
+                    cursor:pointer;
+                    user-select:none;
+                    transition:all 0.1s;
+                " onclick="LifeTools.handleReactionClick()">
+                    <div id="reactIcon" style="font-size:3em; margin-bottom:10px;">⚡</div>
+                    <div id="reactMsg" style="font-size:1.5em; font-weight:bold;">${t('Click to Start', 'اضغط للبدء')}</div>
+                    <div id="reactSub" style="font-size:0.9em; color:#aaa;">${t('Wait for green...', 'انتظر اللون الأخضر...')}</div>
+                </div>
+                
+                <div id="reactResult" class="result-box hidden" style="margin-top:15px;">
+                    <div style="font-size:0.9em;">${t('Your Time:', 'الوقت:')}</div>
+                    <div id="reactTime" style="font-size:2.5em; font-weight:bold; color:var(--accent-cyan);">0 ms</div>
+                </div>
+            </div>
+        `;
+        this.reactState = 'idle'; // idle, waiting, ready, finished
+        this.reactTimer = null;
+        this.reactStart = 0;
+    },
+
+    handleReactionClick: function () {
+        const t = this._t;
+        const box = document.getElementById('reactBox');
+        const msg = document.getElementById('reactMsg');
+        const sub = document.getElementById('reactSub');
+
+        if (this.reactState === 'idle' || this.reactState === 'finished') {
+            // Start Game
+            this.reactState = 'waiting';
+            box.style.background = '#bdc3c7'; // Grey
+            box.style.borderColor = '#bdc3c7';
+            msg.innerText = t('Wait for Green...', 'انتظر الأخضر...');
+            sub.innerText = '';
+            document.getElementById('reactResult').classList.add('hidden');
+
+            const randomTime = 2000 + Math.random() * 3000; // 2-5s
+
+            this.reactTimer = setTimeout(() => {
+                this.reactState = 'ready';
+                this.reactStart = Date.now();
+                box.style.background = '#2ecc71'; // Green
+                box.style.borderColor = '#2ecc71';
+                msg.innerText = t('CLICK NOW!', 'اضغط الآن!');
+                sub.innerText = '';
+            }, randomTime);
+
+        } else if (this.reactState === 'waiting') {
+            // Too Early
+            clearTimeout(this.reactTimer);
+            this.reactState = 'idle'; // Reset
+            box.style.background = '#e74c3c'; // Red
+            box.style.borderColor = '#e74c3c';
+            msg.innerText = t('Too Early!', 'مبكر جداً!');
+            sub.innerText = t('Click to try again', 'اضغط للمحاولة مجدداً');
+
+        } else if (this.reactState === 'ready') {
+            // Success
+            const diff = Date.now() - this.reactStart;
+            this.reactState = 'finished';
+            box.style.background = 'var(--card-bg)';
+            box.style.borderColor = 'var(--accent-cyan)';
+            msg.innerText = t('Nice!', 'رائع!');
+            sub.innerText = t('Click to play again', 'اضغط للعب مرة أخرى');
+
+            document.getElementById('reactTime').innerText = diff + ' ms';
+            document.getElementById('reactResult').classList.remove('hidden');
+        }
     }
 };
 
