@@ -60,16 +60,36 @@ const LifeTools = {
             <div class="tool-ui-group">
                 <div class="input-row">
                     <label>${t('Options (comma separated)', 'الخيارات (افصل بفاصلة)')}</label>
-                    <textarea id="decOptions" class="glass-input" rows="3" placeholder="${t('Pizza, Burger, Shawarma...', 'بيتزا, برجر, شاورما...')}"></textarea>
+                    <textarea id="decOptions" class="glass-input" rows="3" placeholder="${t('Pizza, Burger, Shawarma...', 'بيتزا, برجر, شاورما...')}" oninput="LifeTools.previewOptions()"></textarea>
                 </div>
-                <button onclick="LifeTools.decide()" class="btn-primary full-width">${t('Decide for Me!', 'اختر لي!')}</button>
                 
-                <div id="decResult" class="result-box hidden" style="text-align:center;">
-                    <div style="font-size:1.2em; color:#aaa;">${t(' The Winner Is...', ' الفائز هو...')}</div>
-                    <div id="decWinner" style="font-size:3em; font-weight:800; color:var(--accent-pink); margin-top:10px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></div>
+                <div id="decPreview" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; min-height:40px;"></div>
+
+                <button onclick="LifeTools.decide()" class="btn-primary full-width" style="margin-top:10px;">${t('Spin the Wheel!', 'دـور العـجلـة!')}</button>
+                
+                <div id="decResult" class="result-box hidden" style="text-align:center; position:relative; overflow:hidden;">
+                    <div style="font-size:1.2em; color:#aaa; margin-bottom:10px;">${t('The Winner Is...', 'الفائز هو...')}</div>
+                    
+                    <div id="decSpinner" style="height:60px; overflow:hidden; position:relative;">
+                        <div id="decSpinnerText" style="font-size:2.5em; font-weight:800; color:var(--text-secondary); transition: transform 0.1s;"></div>
+                    </div>
+
+                    <div id="decFinal" style="display:none; transform:scale(0); transition:transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                        <div id="decWinnerText" style="font-size:3.5em; font-weight:900; background:var(--primary-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 20px rgba(109, 76, 255, 0.5));"></div>
+                        <div style="font-size:40px; margin-top:10px;">🎉</div>
+                    </div>
                 </div>
             </div>
         `;
+    },
+
+    previewOptions: function () {
+        const text = document.getElementById('decOptions').value;
+        const div = document.getElementById('decPreview');
+        if (!text) { div.innerHTML = ''; return; }
+
+        const opts = text.split(/[,\n]/).map(s => s.trim()).filter(s => s);
+        div.innerHTML = opts.map(o => `<span style="background:rgba(255,255,255,0.1); padding:4px 12px; border-radius:20px; font-size:12px;">${o}</span>`).join('');
     },
 
     decide: function () {
@@ -77,27 +97,55 @@ const LifeTools = {
         if (!text) return;
 
         const opts = text.split(/[,\n]/).map(s => s.trim()).filter(s => s);
-        if (opts.length === 0) return;
+        if (opts.length < 2) {
+            alert(this._t('Please enter at least 2 options!', 'الرجاء إدخال خيارين على الأقل!'));
+            return;
+        }
 
-        // Simple random visualization
         const resBox = document.getElementById('decResult');
-        const winnerDiv = document.getElementById('decWinner');
+        const spinner = document.getElementById('decSpinner');
+        const spinnerText = document.getElementById('decSpinnerText');
+        const finalDiv = document.getElementById('decFinal');
+        const winnerText = document.getElementById('decWinnerText');
 
         resBox.classList.remove('hidden');
-        winnerDiv.innerText = "...";
+        spinner.style.display = 'block';
+        finalDiv.style.display = 'none';
+        finalDiv.style.transform = 'scale(0)';
 
-        let i = 0;
-        const interval = setInterval(() => {
-            winnerDiv.innerText = opts[Math.floor(Math.random() * opts.length)];
-            i++;
-            if (i > 10) {
-                clearInterval(interval);
+        // Rolling Animation
+        let count = 0;
+        const maxCount = 30; // Number of flips
+        let speed = 50;
+
+        const roll = () => {
+            const rand = opts[Math.floor(Math.random() * opts.length)];
+            spinnerText.innerText = rand;
+            spinnerText.style.transform = `translateY(${count % 2 === 0 ? '-10px' : '10px'})`;
+
+            count++;
+            if (count < maxCount) {
+                speed += 10; // Slow down
+                setTimeout(() => {
+                    spinnerText.style.transform = 'translateY(0)';
+                    roll();
+                }, speed);
+            } else {
+                // Finish
                 const winner = opts[Math.floor(Math.random() * opts.length)];
-                winnerDiv.innerText = winner;
-                winnerDiv.style.transform = "scale(1.2)";
-                setTimeout(() => winnerDiv.style.transform = "scale(1)", 200);
+                spinner.style.display = 'none';
+                finalDiv.style.display = 'block';
+                winnerText.innerText = winner;
+
+                // Pop effect
+                setTimeout(() => {
+                    finalDiv.style.transform = 'scale(1)';
+                    // Confetti trigger if we had a library, but CSS animation is enough for now
+                }, 100);
             }
-        }, 100);
+        };
+
+        roll();
     },
 
     // 3. Tip Calculator (Standalone)

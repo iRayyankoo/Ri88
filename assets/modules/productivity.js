@@ -704,7 +704,7 @@ const ProdTools = {
                 <div id="pomoTimer" style="font-size:64px; font-weight:800; font-family:monospace; color:var(--accent-pink); margin:20px 0;">25:00</div>
                 <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
                     <button onclick="ProdTools.startPomo()" class="btn-primary" style="padding:10px 24px;">${t('Start', 'ابدأ')}</button>
-                    <button onclick="ProdTools.resetPomo()" class="glass-panel" style="padding:10px 24px; cursor:pointer;">${t('Reset', 'إعادة')}</button>
+                    <button onclick="ProdTools.resetPomo()" class="btn-secondary" style="padding:10px 24px;">${t('Reset', 'إعادة')}</button>
                 </div>
                 <div style="font-size:14px; color:#aaa;">
                     <span>${t('Focus: 25m', 'تركيز: 25د')}</span> | 
