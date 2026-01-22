@@ -152,13 +152,12 @@ const HealthTools = {
 
         document.getElementById('sleepTimes').innerHTML = html;
         document.getElementById('sleepRes').classList.remove('hidden');
-    }
-},
+    },
 
     // 4. Breathing Exercise
-    renderBreathing: function(container) {
+    renderBreathing: function (container) {
         const t = this._t;
-container.innerHTML = `
+        container.innerHTML = `
             <div style="text-align:center; padding:40px 0;">
                 <div id="breathCircle" style="width:150px; height:150px; border-radius:50%; background:linear-gradient(135deg, #00FFF2, #D35BFF); margin:0 auto 30px; transform:scale(1); box-shadow:0 0 30px rgba(0,255,242,0.3); display:flex; align-items:center; justify-content:center; font-size:1.2em; font-weight:bold; color:white; transition:all 4s ease-in-out;">
                     <span id="breathText">${t('Inhale', 'شهيق')}</span>
@@ -170,54 +169,54 @@ container.innerHTML = `
                 <p style="font-size:0.9em; color:#aaa;">${t('4-7-8 Technique: Calm your mind.', 'تقنية 4-7-8: لتهدئة العقل.')}</p>
             </div>
         `;
-this.breathState = false;
-this.breathInterval = null;
+        this.breathState = false;
+        this.breathInterval = null;
     },
 
-toggleBreath: function() {
-    if (this.breathState) {
-        // Stop
-        clearInterval(this.breathInterval);
-        this.breathState = false;
-        document.getElementById('btnBreath').innerText = this._t('Start Guide', 'بدء التمرين');
-        document.getElementById('breathCircle').style.transform = 'scale(1)';
-        document.getElementById('breathText').innerText = this._t('Ready?', 'جاهز؟');
-    } else {
-        // Start
-        this.breathState = true;
-        document.getElementById('btnBreath').innerText = this._t('Stop', 'توقف');
-        this.runBreathCycle();
-        this.breathInterval = setInterval(() => this.runBreathCycle(), 19000); // 4+7+8 = 19s
-    }
-},
+    toggleBreath: function () {
+        if (this.breathState) {
+            // Stop
+            clearInterval(this.breathInterval);
+            this.breathState = false;
+            document.getElementById('btnBreath').innerText = this._t('Start Guide', 'بدء التمرين');
+            document.getElementById('breathCircle').style.transform = 'scale(1)';
+            document.getElementById('breathText').innerText = this._t('Ready?', 'جاهز؟');
+        } else {
+            // Start
+            this.breathState = true;
+            document.getElementById('btnBreath').innerText = this._t('Stop', 'توقف');
+            this.runBreathCycle();
+            this.breathInterval = setInterval(() => this.runBreathCycle(), 19000); // 4+7+8 = 19s
+        }
+    },
 
-runBreathCycle: function() {
-    const circle = document.getElementById('breathCircle');
-    const text = document.getElementById('breathText');
-    const t = this._t;
+    runBreathCycle: function () {
+        const circle = document.getElementById('breathCircle');
+        const text = document.getElementById('breathText');
+        const t = this._t;
 
-    // Inhale (4s)
-    text.innerText = t('Inhale', 'شهيق');
-    circle.style.transition = 'all 4s ease-in-out';
-    circle.style.transform = 'scale(1.5)';
-    circle.style.opacity = '1';
-
-    setTimeout(() => {
-        if (!this.breathState) return;
-        // Hold (7s)
-        text.innerText = t('Hold', 'احبس');
-        circle.style.transition = 'all 0.5s'; // slight pulse maybe? keep static
+        // Inhale (4s)
+        text.innerText = t('Inhale', 'شهيق');
+        circle.style.transition = 'all 4s ease-in-out';
+        circle.style.transform = 'scale(1.5)';
+        circle.style.opacity = '1';
 
         setTimeout(() => {
             if (!this.breathState) return;
-            // Exhale (8s)
-            text.innerText = t('Exhale', 'زفير');
-            circle.style.transition = 'all 8s ease-in-out';
-            circle.style.transform = 'scale(0.8)';
-            circle.style.opacity = '0.7';
-        }, 7000);
-    }, 4000);
-}
+            // Hold (7s)
+            text.innerText = t('Hold', 'احبس');
+            circle.style.transition = 'all 0.5s'; // slight pulse maybe? keep static
+
+            setTimeout(() => {
+                if (!this.breathState) return;
+                // Exhale (8s)
+                text.innerText = t('Exhale', 'زفير');
+                circle.style.transition = 'all 8s ease-in-out';
+                circle.style.transform = 'scale(0.8)';
+                circle.style.opacity = '0.7';
+            }, 7000);
+        }, 4000);
+    }
 };
 
 window.HealthTools = HealthTools;
