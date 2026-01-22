@@ -358,11 +358,53 @@ const tools = [
     title: 'Pomodoro Timer', titleAr: 'مؤقت بومودورو',
     desc: 'Focus timer (25min work / 5min break).', descAr: 'تقنية بومودورو للتركيز وزيادة الإنتاجية.'
   },
-  {
-    id: 'image-palette', cat: 'image', icon: 'palette', status: 'new',
-    title: 'Color Extractor', titleAr: 'مستخرج الألوان',
-    desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
+  id: 'image-palette', cat: 'image', icon: 'palette', status: 'new',
+  title: 'Color Extractor', titleAr: 'مستخرج الألوان',
+  desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
   },
+
+// Life Utils (New)
+{
+  id: 'life-bill', cat: 'productivity', icon: 'calculator', status: 'new',
+    title: 'Bill Splitter', titleAr: 'قاطة / تقسيم الفاتورة',
+      desc: 'Split bills and calculate tips easily.', descAr: 'تقسيم الفاتورة وحساب الإكرامية بين الأصدقاء.'
+},
+{
+  id: 'life-decision', cat: 'productivity', icon: 'shuffle', status: 'new',
+    title: 'Decision Maker', titleAr: 'عجلة الحظ',
+      desc: 'Randomly pick an option from a list.', descAr: 'اختيار عشوائي من قائمة خيارات (قرعة).'
+},
+{
+  id: 'life-tip', cat: 'productivity', icon: 'percent', status: 'new',
+    title: 'Tip Calculator', titleAr: 'حاسبة الإكرامية',
+      desc: 'Calculate tip percentage and total.', descAr: 'حساب نسبة الإكرامية ومبلغها.'
+},
+
+// Design Tools (New)
+{
+  id: 'des-grad', cat: 'developer', icon: 'palette', status: 'new',
+    title: 'CSS Gradient', titleAr: 'منشئ التدرج اللوني',
+      desc: 'Generate CSS for linear gradients.', descAr: 'توليد كود CSS للتدرجات اللونية.'
+},
+{
+  id: 'des-shadow', cat: 'developer', icon: 'layers', status: 'new',
+    title: 'Box Shadow Gen', titleAr: 'منشئ الظلال',
+      desc: 'Create smooth CSS box shadows.', descAr: 'توليد كود CSS للظلال الناعمة.'
+},
+
+// Media (New)
+{
+  id: 'media-rec', cat: 'content', icon: 'mic', status: 'new',
+    title: 'Audio Recorder', titleAr: 'مسجل الصوت',
+      desc: 'Record and download audio clips.', descAr: 'تسجيل المقاطع الصوتية وتحميلها.'
+},
+
+// Meme (New Image)
+{
+  id: 'img-meme', cat: 'image', icon: 'smile', status: 'new',
+    title: 'Meme Generator', titleAr: 'صانع الميمز',
+      desc: 'Add text to images for memes.', descAr: 'إضافة نصوص مضحكة للصور.'
+},
 ];
 
 
@@ -370,6 +412,7 @@ const tools = [
 const translations = {
   en: {
     nav_tools: "Tools",
+    nav_home: "Home",
     nav_categories: "Categories",
     nav_about: "About",
     hero_title: "Smart tools for<br><span style='color:var(--accent-pink);'>everyday use</span>",
@@ -401,6 +444,7 @@ const translations = {
   },
   ar: {
     nav_tools: "الأدوات",
+    nav_home: "الرئيسية",
     nav_categories: "الفئات",
     nav_about: "عن الموقع",
     hero_title: "أدوات ذكية<br><span style='color:var(--accent-pink);'>لاستخدامك اليومي</span>",
@@ -678,12 +722,16 @@ function openModal(toolId) {
     else if (toolId === 'prod-iban') ProdTools.renderIBAN(modalBody);
     else if (toolId === 'prod-inv') ProdTools.renderInvoice(modalBody);
     else if (toolId === 'prod-pomodoro') ProdTools.renderPomodoro(modalBody);
+    else if (toolId === 'life-bill') LifeTools.renderBill(modalBody);
+    else if (toolId === 'life-decision') LifeTools.renderDecision(modalBody);
+    else if (toolId === 'life-tip') LifeTools.renderTip(modalBody);
   }
   else if (category === 'content') {
     if (toolId === 'social-sizes') ContentTools.renderSocial(modalBody);
     else if (toolId === 'caption') ContentTools.renderCaption(modalBody);
     else if (toolId === 'ideas') ContentTools.renderIdeas(modalBody);
     else if (toolId === 'proof') ContentTools.renderProof(modalBody);
+    else if (toolId === 'media-rec') MediaTools.renderRecorder(modalBody);
   }
   else if (category === 'pdf') {
     if (toolId === 'pdf-merge') PDFTools.renderMerge(modalBody);
@@ -712,6 +760,7 @@ function openModal(toolId) {
     else if (toolId === 'img-border') ImageTools.renderBorder(modalBody);
     else if (toolId === 'img-meta') ImageTools.renderMeta(modalBody);
     else if (toolId === 'image-palette') ImageTools.renderPalette(modalBody);
+    else if (toolId === 'img-meme') ImageTools.renderMeme(modalBody);
   }
   else if (category === 'developer') {
     if (toolId === 'dev-json') DevTools.renderJson(modalBody);
@@ -720,6 +769,8 @@ function openModal(toolId) {
     else if (toolId === 'dev-url') DevTools.renderUrlEnc(modalBody);
     else if (toolId === 'dev-regex') DevTools.renderRegex(modalBody);
     else if (toolId === 'dev-diff') DevTools.renderDiff(modalBody);
+    else if (toolId === 'des-grad') DesignTools.renderGradient(modalBody);
+    else if (toolId === 'des-shadow') DesignTools.renderShadow(modalBody);
   }
   else if (category === 'saudi') {
     if (toolId === 'saudi-eos') SaudiTools.renderEOS(modalBody);
@@ -731,6 +782,21 @@ function openModal(toolId) {
     if (toolId === 'health-bmi') HealthTools.renderBMI(modalBody);
     else if (toolId === 'health-water') HealthTools.renderWater(modalBody);
     else if (toolId === 'health-sleep') HealthTools.renderSleep(modalBody);
+  }
+
+  // Routing for New Tools
+  else if (category === 'image') {
+    // ... existing image routing handled in previous blocks or verify if we need to append to existing block.
+    // Actually 'image' block is above. Let's check logic:
+    // The previous code had `else if (category === 'image')` block separately.
+    // Since I cannot easily edit the middle of that block without reading it all, I will add a SPECIFIC check for the specific new ID here 
+    // OR I can trust that the previous 'image' block is NOT covering this new ID, so I can add a check here?
+    // WAIT. If I add another `else if (category === 'image')` AFTER the first one, it will never be reached.
+    // I must edit the EXISTING image block or ensure this ID is caught.
+    // Ideally, I should edit the existing blocks. But to avoid huge scrolling/editing, I can add a specific catch-all at the TOP of this routing function or just add it to the existing blocks.
+    // Let's look at `openModal` structure again in `app.js`.
+    // It has `if ... else if ...`.
+    // I will use `replace_file_content` to append to the SPECIFIC category blocks.
   }
 
   else {
