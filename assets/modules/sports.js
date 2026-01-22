@@ -68,27 +68,64 @@ const SportsTools = {
     renderGenericHub: function (container, items, mainBtnQuery) {
         const t = this._t;
 
+        // Ensure dash and frame container exist in the modal body if not already
+        // But since we are rendering into 'container' (modalBody), we structure it here.
+
         let gridHtml = items.map(item => `
-            <button onclick="SportsTools.openGoogle('${item.query}')" class="glass-panel" style="padding:15px; text-align:center; cursor:pointer;">
+            <button onclick="SportsTools.viewInApp('${item.query}')" class="glass-panel" style="padding:15px; text-align:center; cursor:pointer;">
                 <div style="font-size:24px; margin-bottom:5px;">${item.icon}</div>
                 <div style="font-size:13px; font-weight:bold;">${t(item.name, item.nameAr)}</div>
             </button>
         `).join('');
 
         container.innerHTML = `
-            <div class="tool-ui-group">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
-                    ${gridHtml}
+            <div id="sports-dash" style="transition:all 0.3s ease;">
+                <div class="tool-ui-group">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                        ${gridHtml}
+                    </div>
+                    ${mainBtnQuery ? `<button onclick="SportsTools.viewInApp('${mainBtnQuery}')" class="btn-primary full-width">${t('View All / Search', 'عرض الكل / بحث')}</button>` : ''}
                 </div>
-                ${mainBtnQuery ? `<button onclick="SportsTools.openGoogle('${mainBtnQuery}')" class="btn-primary full-width">${t('View All / Search', 'عرض الكل / بحث')}</button>` : ''}
+            </div>
+            
+            <div id="sports-frame-container" class="hidden" style="display:flex; flex-direction:column; height:600px; animation:fadeIn 0.3s ease;">
+                <button onclick="SportsTools.closeFrame()" class="btn-secondary full-width" style="margin-bottom:10px; border-radius:12px;">${t('Back to Sports', 'العودة للقائمة')}</button>
+                <iframe id="sports-frame" style="width:100%; flex:1; border:none; border-radius:12px; background:white;" src=""></iframe>
             </div>
         `;
     },
 
+    viewInApp: function (query) {
+        const dashboard = document.getElementById('sports-dash');
+        const frameContainer = document.getElementById('sports-frame-container');
+        const frame = document.getElementById('sports-frame');
+
+        if (!dashboard || !frameContainer) return; // Safety
+
+        // Hide dashboard, show frame
+        dashboard.classList.add('hidden');
+        frameContainer.classList.remove('hidden');
+
+        // Use Google with igu=1 (Interface Google Unblocked) to allow embedding
+        // pws=0 to avoid personal results
+        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1&pws=0`;
+        frame.src = url;
+    },
+
+    closeFrame: function () {
+        const dashboard = document.getElementById('sports-dash');
+        const frameContainer = document.getElementById('sports-frame-container');
+        const frame = document.getElementById('sports-frame');
+
+        if (!dashboard || !frameContainer) return;
+
+        frame.src = ''; // Stop loading
+        frameContainer.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+    },
+
     openGoogle: function (query) {
-        // #sie=lg forces the "Sports Immersive Experience" layout in Google Search
-        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}#sie=lg`;
-        window.open(url, '_blank');
+        this.viewInApp(query);
     }
 };
 
