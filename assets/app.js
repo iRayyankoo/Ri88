@@ -439,6 +439,55 @@ const tools = [
     desc: 'Calculate totals from assessments.', descAr: 'حساب مجموع الدرجات من التقييمات المختلفة.'
   },
 
+  // Languages (New)
+  {
+    id: 'lang-trans', cat: 'languages', icon: 'languages', status: 'new',
+    title: 'Quick Translator', titleAr: 'مترجم سريع',
+    desc: 'Open Google Translate quickly.', descAr: 'فتح ترجمة جوجل بسرعة مع النص.'
+  },
+  {
+    id: 'lang-ar-corr', cat: 'languages', icon: 'check-circle-2', status: 'new',
+    title: 'Arabic Corrector', titleAr: 'مصحح عربي',
+    desc: 'Fix common Arabic typos.', descAr: 'تصحيح الأخطاء الإملائية العربية الشائعة.'
+  },
+  {
+    id: 'lang-en-corr', cat: 'languages', icon: 'check-circle-2', status: 'new',
+    title: 'English Corrector', titleAr: 'مصحح إنجليزي',
+    desc: 'Fix capitalization and spacing.', descAr: 'تنسيق وتصحيح النصوص الإنجليزية.'
+  },
+  {
+    id: 'lang-editor', cat: 'languages', icon: 'pen-tool', status: 'new',
+    title: 'Smart Editor', titleAr: 'محرر ذكي',
+    desc: 'Write and format text.', descAr: 'محرر نصوص بسيط مع عداد كلمات.'
+  },
+
+  // Sports (New Phase 7)
+  {
+    id: 'sport-football', cat: 'sports', icon: 'trophy', status: 'new',
+    title: 'Football Hub', titleAr: 'كرة القدم',
+    desc: 'Live scores, leagues & standings.', descAr: 'نتائج مباشرة، دوريات، وترتيب الفرق.'
+  },
+  {
+    id: 'sport-basket', cat: 'sports', icon: 'dribbble', status: 'new',
+    title: 'Basketball Hub', titleAr: 'كرة السلة',
+    desc: 'NBA, KSA League & Global.', descAr: 'NBA، الدوري السعودي، والبطولات العالمية.'
+  },
+  {
+    id: 'sport-motor', cat: 'sports', icon: 'flag', status: 'new',
+    title: 'Motorsports', titleAr: 'رياضة المحركات',
+    desc: 'F1, MotoGP, Rally schedules.', descAr: 'فورمولا 1، موتو جي بي، والراليات.'
+  },
+  {
+    id: 'sport-combat', cat: 'sports', icon: 'swords', status: 'new',
+    title: 'Combat Sports', titleAr: 'فنون قتالية',
+    desc: 'UFC, Boxing, WWE events.', descAr: 'UFC، ملاكمة، ومصارعة حرة.'
+  },
+  {
+    id: 'sport-world', cat: 'sports', icon: 'globe', status: 'new',
+    title: 'World Sports', titleAr: 'رياضات عالمية',
+    desc: 'Tennis, Cricket, Golf & more.', descAr: 'تنس، كريكت، غولف والمزيد.'
+  },
+
   // Health Data (New Category)
   {
     id: 'health-bmi', cat: 'health', icon: 'activity', status: 'new',
@@ -576,6 +625,8 @@ const translations = {
     cat_prod: "Productivity",
     cat_content: "Content",
     cat_education: "Education",
+    cat_languages: "Languages",
+    cat_sports: "Sports",
     cat_pdf: "PDF Tools",
     cat_image: "Image Tools",
     cat_health: "Health",
@@ -609,6 +660,8 @@ const translations = {
     cat_prod: "الإنتاجية",
     cat_content: "محتوى",
     cat_education: "التعليم",
+    cat_languages: "لغات",
+    cat_sports: "رياضة",
     cat_pdf: "أدوات PDF",
     cat_image: "صور",
     cat_health: "صحة",
@@ -965,6 +1018,19 @@ function openModal(toolId) {
   else if (category === 'education') {
     if (toolId === 'edu-gpa') EducationTools.renderGPA(modalBody);
     else if (toolId === 'edu-grade') EducationTools.renderGrade(modalBody);
+  }
+  else if (category === 'languages') {
+    if (toolId === 'lang-trans') LangTools.renderTranslator(modalBody);
+    else if (toolId === 'lang-ar-corr') LangTools.renderCorrector(modalBody);
+    else if (toolId === 'lang-en-corr') LangTools.renderEnCorrector(modalBody);
+    else if (toolId === 'lang-editor') LangTools.renderEditor(modalBody);
+  }
+  else if (category === 'sports') {
+    if (toolId === 'sport-football') SportsTools.renderFootball(modalBody);
+    else if (toolId === 'sport-basket') SportsTools.renderBasketball(modalBody);
+    else if (toolId === 'sport-motor') SportsTools.renderMotorsport(modalBody);
+    else if (toolId === 'sport-combat') SportsTools.renderCombat(modalBody);
+    else if (toolId === 'sport-world') SportsTools.renderWorld(modalBody);
   }
 
   else {
