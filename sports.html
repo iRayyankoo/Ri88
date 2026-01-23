@@ -31,8 +31,15 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            background: white;
-            /* Google typically has white bg */
+            background: var(--bg-main);
+            overflow-y: auto;
+        }
+
+        .page-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
         }
 
         iframe {
@@ -40,6 +47,20 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        /* Native Card Styles */
+        .match-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: transform 0.2s;
+        }
+
+        .match-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .loading-overlay {
@@ -70,6 +91,10 @@
                 transform: rotate(360deg);
             }
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -93,12 +118,36 @@
 
     <!-- Main Content -->
     <div class="sports-container">
-        <div id="loader" class="loading-overlay">
+        <!-- Native UI Container (Default) -->
+        <div id="nativeView" class="page-content">
+
+            <header style="text-align:center; margin-bottom:30px; margin-top:20px;">
+                <h2 id="leagueTitle" style="color:var(--text-primary); margin-bottom:5px;">Live Scores</h2>
+                <p style="color:var(--text-secondary); font-size:12px;">Powered by Google Data (Demo)</p>
+            </header>
+
+            <!-- Matches List -->
+            <div id="matchesGrid" style="display:flex; flex-direction:column; gap:15px;">
+                <!-- Content injected via JS -->
+            </div>
+
+            <div style="margin-top:30px; text-align:center; padding-bottom: 40px;">
+                <button onclick="toggleSource()" class="btn-secondary"
+                    style="font-size:12px; padding: 8px 16px; border-radius: 20px;">
+                    Switch to Google View (Iframe)
+                </button>
+            </div>
+        </div>
+
+        <div id="loader" class="loading-overlay hidden">
             <div class="spinner"></div>
             <h3 style="color:white;">Loading Live Scores...</h3>
             <p style="color:var(--text-secondary);">Powered by Google</p>
         </div>
-        <iframe id="sportsFrame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+
+        <!-- Hidden Iframe for backup -->
+        <iframe id="sportsFrame" class="hidden"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
     </div>
 
     <script src="assets/app.js"></script>
@@ -107,20 +156,103 @@
         const params = new URLSearchParams(window.location.search);
         const query = params.get('q') || 'Football matches';
 
+        // UI Elements
+        const nativeView = document.getElementById('nativeView');
         const frame = document.getElementById('sportsFrame');
         const loader = document.getElementById('loader');
+        const matchesGrid = document.getElementById('matchesGrid');
+        const leagueTitle = document.getElementById('leagueTitle');
 
-        // Construct Google URL
-        // igu=1 allows embedding, pws=0 removes personal data
-        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1&pws=0`;
+        // Set Title based on query
+        if (leagueTitle) {
+            if (query.includes('Saudi')) leagueTitle.innerText = "Saudi Pro League";
+            else if (query.includes('Premier')) leagueTitle.innerText = "Premier League";
+            else if (query.includes('La Liga')) leagueTitle.innerText = "La Liga";
+            else leagueTitle.innerText = query;
+        }
 
-        frame.src = url;
+        // Mock Data Generator for "My Design" Demo
+        function generateMockMatches() {
+            const teams = [
+                { name: 'Al Hilal', logo: '💙', score: 3 },
+                { name: 'Al Nassr', logo: '💛', score: 2 },
+                { name: 'Ittihad', logo: '🐅', score: 1 },
+                { name: 'Ahli', logo: '💚', score: 1 },
+                { name: 'Liverpool', logo: '🔴', score: 2 },
+                { name: 'Man City', logo: '🔵', score: 2 },
+                { name: 'Real Madrid', logo: '👑', score: 4 },
+                { name: 'Barca', logo: '🔵🔴', score: 0 },
+                { name: 'Arsenal', logo: '🔴', score: 1 },
+                { name: 'Chelsea', logo: '🔵', score: 1 }
+            ];
 
-        frame.onload = function () {
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
-            }, 1000); // Fake delay to ensure load
+            let html = '';
+            for (let i = 0; i < 4; i++) {
+                const t1 = teams[Math.floor(Math.random() * teams.length)];
+                let t2 = teams[Math.floor(Math.random() * teams.length)];
+                while (t1 === t2) t2 = teams[Math.floor(Math.random() * teams.length)];
+
+                const timeStr = Math.floor(Math.random() * 90) + "'";
+
+                html += `
+                <div class="glass-panel match-card" style="padding: 20px; display:flex; justify-content:space-between; align-items:center;">
+                    <div class="team" style="text-align:center; flex:1;">
+                        <div style="font-size:32px; margin-bottom:5px;">${t1.logo}</div>
+                        <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${t1.name}</div>
+                    </div>
+                    
+                    <div class="score" style="text-align:center; flex:0.6;">
+                        <div style="font-size:32px; font-weight:800; color:var(--accent-pink); letter-spacing:4px; line-height:1;">
+                            ${t1.score}-${t2.score}
+                        </div>
+                        <div style="font-size:12px; color:#ef4444; font-weight:bold; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;">
+                            <span style="width:6px; height:6px; background:#ef4444; border-radius:50%; display:inline-block;"></span> 
+                            LIVE ${timeStr}
+                        </div>
+                    </div>
+                    
+                    <div class="team" style="text-align:center; flex:1;">
+                        <div style="font-size:32px; margin-bottom:5px;">${t2.logo}</div>
+                        <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${t2.name}</div>
+                    </div>
+                </div>
+                `;
+            }
+            return html;
+        }
+
+        function renderNative() {
+            if (matchesGrid) matchesGrid.innerHTML = generateMockMatches();
+        }
+
+        // Initial Render
+        renderNative();
+
+        // Toggle Logic
+        window.toggleSource = function () {
+            if (nativeView.classList.contains('hidden')) {
+                // Show Native
+                nativeView.classList.remove('hidden');
+                frame.classList.add('hidden');
+                frame.src = '';
+            } else {
+                // Show Google Iframe
+                nativeView.classList.add('hidden');
+                frame.classList.remove('hidden');
+                loader.classList.remove('hidden');
+                loader.style.opacity = '1';
+                loader.style.display = 'flex';
+
+                const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1&pws=0`;
+                frame.src = url;
+
+                frame.onload = function () {
+                    setTimeout(() => {
+                        loader.style.opacity = '0';
+                        setTimeout(() => loader.style.display = 'none', 500);
+                    }, 1000);
+                };
+            }
         };
 
         // Lucide
