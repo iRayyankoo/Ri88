@@ -810,17 +810,23 @@ function renderTools() {
     const heartStyle = isFav ? "fill:var(--accent-pink); color:var(--accent-pink);" : "color:rgba(255,255,255,0.3);";
 
     return `
-      <div class="glass-panel tool-card" onclick="openModal('${tool.id}')" style="position:relative;">
-        <button onclick="toggleFavorite(event, '${tool.id}')" 
-                style="position:absolute; top:15px; right:15px; background:none; border:none; cursor:pointer; z-index:5;">
-            <i data-lucide="heart" style="width:20px; height:20px; ${heartStyle}"></i>
-        </button>
-        <div class="tool-icon"><i data-lucide="${tool.icon}"></i></div>
-        <div>
-          <div class="tool-title">${title}</div>
-          <div class="tool-desc">${desc}</div>
+      <div class="glass-panel tool-card animated-card" onclick="openModal('${tool.id}')" style="position:relative;">
+        <div class="bg-blob"></div>
+        <div class="card-content-wrapper">
+            <button onclick="toggleFavorite(event, '${tool.id}')" 
+                    style="position:absolute; top:15px; right:15px; background:none; border:none; cursor:pointer; z-index:5;">
+                <i data-lucide="heart" style="width:20px; height:20px; ${heartStyle}"></i>
+            </button>
+            <div class="tool-icon animated-icon"><i data-lucide="${tool.icon}"></i></div>
+            <div>
+              <div class="tool-title">${title}</div>
+              <div class="tool-desc">${desc}</div>
+            </div>
+            
+            <div class="card-hover-reveal">
+                <button class="tool-action btn-secondary" style="width:100%; margin-top:0; font-size:14px; padding:8px;">${actionText}</button>
+            </div>
         </div>
-        <button class="tool-action">${actionText}</button>
       </div>
     `;
   }).join('');
@@ -1124,3 +1130,38 @@ window.toggleMobileMenu = function () {
     }
   }
 };
+
+// PWA Install Logic
+let deferredPrompt;
+const installBtn = document.getElementById('installAppBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Update UI to notify the user they can add to home screen
+  if (installBtn) {
+    installBtn.classList.remove('hidden');
+
+    installBtn.addEventListener('click', () => {
+      // Hide our user interface that shows our A2HS button
+      installBtn.style.display = 'none';
+      // Show the prompt
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
+      });
+    });
+  }
+});
+
+// Add translation for install button
+translations.en.install_app = "App";
+translations.ar.install_app = "تطبيق";

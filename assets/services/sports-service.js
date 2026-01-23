@@ -62,17 +62,12 @@ const SportsService = {
             if (query.includes(name)) leagueCode = code;
         }
 
-        // Use 'allorigins' as a more permissive proxy for file:// protocol
-        // NOTE: This is a public proxy. For production, use your own backend.
-        const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+        // Use local v2.01 proxy to bypass CORS
         const TARGET_URL = `${this.config.BASE_URL}/competitions/${leagueCode}/matches?status=LIVE,SCHEDULED,FINISHED`;
+        const PROXY_ENDPOINT = `/api/proxy?url=${encodeURIComponent(TARGET_URL)}&token=${this.config.API_KEY}`;
 
         try {
-            const response = await fetch(PROXY_URL + encodeURIComponent(TARGET_URL), {
-                headers: {
-                    'X-Auth-Token': this.config.API_KEY
-                }
-            });
+            const response = await fetch(PROXY_ENDPOINT);
 
             if (!response.ok) throw new Error(`API Connection Failed (${response.status})`);
 

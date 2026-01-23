@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ri88 | Sports Live</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6D4CFF">
     <link rel="stylesheet" href="assets/styles.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
@@ -153,6 +155,13 @@
     </div>
 
     <script src="assets/app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
 
     <!-- IMPORT THE SPORTS SERVICE WITH API LOGIC -->
     <script src="assets/services/sports-service.js?v=2"></script>
@@ -213,25 +222,37 @@
             } else {
                 matches.forEach(m => {
                     html += `
-                    <div class="glass-panel match-card" style="padding: 20px; display:flex; justify-content:space-between; align-items:center;">
-                        <div class="team" style="text-align:center; flex:1;">
-                            <div style="font-size:32px; margin-bottom:5px;">${m.homeLogo || '⚽'}</div>
-                            <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${m.homeTeam}</div>
-                        </div>
-                        
-                        <div class="score" style="text-align:center; flex:0.6;">
-                            <div style="font-size:32px; font-weight:800; color:var(--accent-pink); letter-spacing:4px; line-height:1;">
-                                ${m.homeScore}-${m.awayScore}
+                    <div class="glass-panel match-card animated-card" style="padding: 20px; position:relative;">
+                        <div class="bg-blob"></div>
+                        <div class="card-content-wrapper">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="team" style="text-align:center; flex:1;">
+                                    <div class="animated-icon" style="font-size:32px; margin-bottom:5px;">${m.homeLogo || '⚽'}</div>
+                                    <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${m.homeTeam}</div>
+                                </div>
+                                
+                                <div class="score" style="text-align:center; flex:0.6;">
+                                    <div style="font-size:32px; font-weight:800; color:var(--accent-pink); letter-spacing:4px; line-height:1;">
+                                        ${m.homeScore}-${m.awayScore}
+                                    </div>
+                                    <div style="font-size:12px; color:${m.status === 'LIVE' ? '#ef4444' : '#22c55e'}; font-weight:bold; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;">
+                                        ${m.status === 'LIVE' ? '<span style="width:6px; height:6px; background:#ef4444; border-radius:50%; display:inline-block;"></span>' : ''} 
+                                        ${m.status} ${m.minute}
+                                    </div>
+                                </div>
+                                
+                                <div class="team" style="text-align:center; flex:1;">
+                                    <div class="animated-icon" style="font-size:32px; margin-bottom:5px;">${m.awayLogo || '⚽'}</div>
+                                    <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${m.awayTeam}</div>
+                                </div>
                             </div>
-                            <div style="font-size:12px; color:${m.status === 'LIVE' ? '#ef4444' : '#22c55e'}; font-weight:bold; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;">
-                                ${m.status === 'LIVE' ? '<span style="width:6px; height:6px; background:#ef4444; border-radius:50%; display:inline-block;"></span>' : ''} 
-                                ${m.status} ${m.minute}
+
+                            <!-- Revealed on Hover -->
+                            <div class="card-hover-reveal" style="text-align:center;">
+                                <button class="btn-secondary" style="font-size:12px; padding:6px 20px; margin-top:10px;">
+                                    Match Details
+                                </button>
                             </div>
-                        </div>
-                        
-                        <div class="team" style="text-align:center; flex:1;">
-                            <div style="font-size:32px; margin-bottom:5px;">${m.awayLogo || '⚽'}</div>
-                            <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${m.awayTeam}</div>
                         </div>
                     </div>
                     `;

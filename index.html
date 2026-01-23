@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ri88 | Premium Tools Portal</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6D4CFF">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +32,11 @@
         <a href="about.html" class="nav-link" data-i18n="nav_about">About</a>
       </div>
       <div style="display:flex; gap:16px; align-items:center;">
+        <button id="installAppBtn" class="hidden"
+          style="background:var(--primary-gradient); border:none; color:white; padding: 6px 12px; border-radius:12px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:600;">
+          <i data-lucide="download" style="width:16px; height:16px;"></i>
+          <span data-i18n="install_app">App</span>
+        </button>
         <button id="langToggle"
           style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding: 6px 12px; border-radius:12px; cursor:pointer;">EN/AR</button>
 
@@ -160,6 +167,13 @@
 
   <!-- Main JS -->
   <script src="assets/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
 
 </body>
 

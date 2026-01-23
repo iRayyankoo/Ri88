@@ -629,3 +629,80 @@ select.glass-input option {
     box-shadow: 0 10px 30px rgba(211, 91, 255, 0.4);
     transform: translateY(-2px);
 }
+
+/* --- v3.0 Animations --- */
+
+/* Base Animated Card Wrapper */
+.animated-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+    cursor: pointer;
+}
+
+.animated-card:hover {
+    box-shadow: 0 20px 50px rgba(239, 68, 68, 0.2); /* Red glow match for sports */
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Inner Content Container that moves up */
+.card-content-wrapper {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.animated-card:hover .card-content-wrapper {
+    transform: translateY(-15px);
+}
+
+/* Elements to Hide/Show */
+.card-hover-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    height: 0; /* Collapsed by default */
+    overflow: hidden;
+}
+
+.animated-card:hover .card-hover-reveal {
+    opacity: 1;
+    transform: translateY(0);
+    height: auto;
+    margin-top: 10px;
+}
+
+/* Icon specific animation */
+.animated-icon {
+    transition: all 0.5s ease;
+}
+
+.animated-card:hover .animated-icon {
+    transform: translateY(-10px) scale(0.9);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+/* Background Blob Effect */
+.bg-blob {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 150px;
+    height: 150px;
+    background: var(--accent);
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0;
+    transition: 0.5s;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.animated-card:hover .bg-blob {
+    opacity: 0.6;
+    top: -20px;
+    left: -20px;
+}
