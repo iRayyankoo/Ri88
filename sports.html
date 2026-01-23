@@ -123,12 +123,14 @@
 
             <header style="text-align:center; margin-bottom:30px; margin-top:20px;">
                 <h2 id="leagueTitle" style="color:var(--text-primary); margin-bottom:5px;">Live Scores</h2>
-                <p style="color:var(--text-secondary); font-size:12px;">Powered by Google Data (Demo)</p>
+                <p style="color:var(--text-secondary); font-size:12px;">Waiting for API Data...</p>
             </header>
 
             <!-- Matches List -->
             <div id="matchesGrid" style="display:flex; flex-direction:column; gap:15px;">
-                <!-- Content injected via JS -->
+                <div style="text-align:center; padding:40px; color:var(--text-muted);">
+                    Loading matches...
+                </div>
             </div>
 
             <div style="margin-top:30px; text-align:center; padding-bottom: 40px;">
@@ -151,6 +153,10 @@
     </div>
 
     <script src="assets/app.js"></script>
+
+    <!-- IMPORT THE SPORTS SERVICE WITH API LOGIC -->
+    <script src="assets/services/sports-service.js?v=2"></script>
+
     <script>
         // Parse Query
         const params = new URLSearchParams(window.location.search);
@@ -171,58 +177,68 @@
             else leagueTitle.innerText = query;
         }
 
-        // Mock Data Generator for "My Design" Demo
-        function generateMockMatches() {
-            const teams = [
-                { name: 'Al Hilal', logo: '💙', score: 3 },
-                { name: 'Al Nassr', logo: '💛', score: 2 },
-                { name: 'Ittihad', logo: '🐅', score: 1 },
-                { name: 'Ahli', logo: '💚', score: 1 },
-                { name: 'Liverpool', logo: '🔴', score: 2 },
-                { name: 'Man City', logo: '🔵', score: 2 },
-                { name: 'Real Madrid', logo: '👑', score: 4 },
-                { name: 'Barca', logo: '🔵🔴', score: 0 },
-                { name: 'Arsenal', logo: '🔴', score: 1 },
-                { name: 'Chelsea', logo: '🔵', score: 1 }
-            ];
+        // Render Native Grid using Service
+        async function renderNative() {
+            if (!matchesGrid) return; // Guard clause
 
-            let html = '';
-            for (let i = 0; i < 4; i++) {
-                const t1 = teams[Math.floor(Math.random() * teams.length)];
-                let t2 = teams[Math.floor(Math.random() * teams.length)];
-                while (t1 === t2) t2 = teams[Math.floor(Math.random() * teams.length)];
-
-                const timeStr = Math.floor(Math.random() * 90) + "'";
-
-                html += `
-                <div class="glass-panel match-card" style="padding: 20px; display:flex; justify-content:space-between; align-items:center;">
-                    <div class="team" style="text-align:center; flex:1;">
-                        <div style="font-size:32px; margin-bottom:5px;">${t1.logo}</div>
-                        <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${t1.name}</div>
-                    </div>
-                    
-                    <div class="score" style="text-align:center; flex:0.6;">
-                        <div style="font-size:32px; font-weight:800; color:var(--accent-pink); letter-spacing:4px; line-height:1;">
-                            ${t1.score}-${t2.score}
-                        </div>
-                        <div style="font-size:12px; color:#ef4444; font-weight:bold; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;">
-                            <span style="width:6px; height:6px; background:#ef4444; border-radius:50%; display:inline-block;"></span> 
-                            LIVE ${timeStr}
-                        </div>
-                    </div>
-                    
-                    <div class="team" style="text-align:center; flex:1;">
-                        <div style="font-size:32px; margin-bottom:5px;">${t2.logo}</div>
-                        <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${t2.name}</div>
-                    </div>
-                </div>
-                `;
+            // Check if Service is loaded
+            if (!window.SportsService) {
+                matchesGrid.innerHTML = `<div style="text-align:center; color:red;">Error: SportsService not loaded. Check console.</div>`;
+                return;
             }
-            return html;
-        }
 
-        function renderNative() {
-            if (matchesGrid) matchesGrid.innerHTML = generateMockMatches();
+            // Fetch Data (Real or Mock based on Service config)
+            const matches = await window.SportsService.getMatches(query);
+
+            // Handle Errors
+            if (matches.length > 0 && matches[0].error) {
+                matchesGrid.innerHTML = `
+                    <div style="text-align:center; padding:40px; background:rgba(239,68,68,0.1); border-radius:12px; border:1px solid rgba(239,68,68,0.3);">
+                        <h3 style="color:#ef4444; margin-bottom:10px;">Connection Failed</h3>
+                        <p style="color:var(--text-secondary); margin-bottom:20px;">${matches[0].message}</p>
+                        <p style="color:var(--text-muted); font-size:12px;">
+                            If you are opening this file directly (file:///), browsers block API calls.<br>
+                            Please use VS Code Live Server extension.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate HTML
+            let html = '';
+
+            if (matches.length === 0) {
+                html = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No matches found needed for today.</div>`;
+            } else {
+                matches.forEach(m => {
+                    html += `
+                    <div class="glass-panel match-card" style="padding: 20px; display:flex; justify-content:space-between; align-items:center;">
+                        <div class="team" style="text-align:center; flex:1;">
+                            <div style="font-size:32px; margin-bottom:5px;">${m.homeLogo || '⚽'}</div>
+                            <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${m.homeTeam}</div>
+                        </div>
+                        
+                        <div class="score" style="text-align:center; flex:0.6;">
+                            <div style="font-size:32px; font-weight:800; color:var(--accent-pink); letter-spacing:4px; line-height:1;">
+                                ${m.homeScore}-${m.awayScore}
+                            </div>
+                            <div style="font-size:12px; color:${m.status === 'LIVE' ? '#ef4444' : '#22c55e'}; font-weight:bold; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;">
+                                ${m.status === 'LIVE' ? '<span style="width:6px; height:6px; background:#ef4444; border-radius:50%; display:inline-block;"></span>' : ''} 
+                                ${m.status} ${m.minute}
+                            </div>
+                        </div>
+                        
+                        <div class="team" style="text-align:center; flex:1;">
+                            <div style="font-size:32px; margin-bottom:5px;">${m.awayLogo || '⚽'}</div>
+                            <div style="font-weight:bold; color:var(--text-primary); font-size:14px;">${m.awayTeam}</div>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+
+            matchesGrid.innerHTML = html;
         }
 
         // Initial Render
@@ -235,6 +251,8 @@
                 nativeView.classList.remove('hidden');
                 frame.classList.add('hidden');
                 frame.src = '';
+                // Re-render to ensure fresh data
+                renderNative();
             } else {
                 // Show Google Iframe
                 nativeView.classList.add('hidden');
