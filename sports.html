@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ri88 | Sports Live</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* No scroll on body, only in iframe if needed */
+        }
+
+        .navbar {
+            position: relative;
+            /* Not fixed here to stack correctly */
+            flex-shrink: 0;
+        }
+
+        .sports-container {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            /* Google typically has white bg */
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            top: 80px;
+            /* Below nav */
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Nav -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand" style="display:flex; align-items:center;">
+                <img src="assets/logo.png" alt="Ri88 Logo" style="height:65px; border-radius:6px;">
+            </a>
+            <div class="nav-links">
+                <a href="tools.html" class="nav-link">Tools</a>
+                <a href="index.html" class="nav-link">Home</a>
+            </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" style="color:white;"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="sports-container">
+        <div id="loader" class="loading-overlay">
+            <div class="spinner"></div>
+            <h3 style="color:white;">Loading Live Scores...</h3>
+            <p style="color:var(--text-secondary);">Powered by Google</p>
+        </div>
+        <iframe id="sportsFrame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+    </div>
+
+    <script src="assets/app.js"></script>
+    <script>
+        // Parse Query
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q') || 'Football matches';
+
+        const frame = document.getElementById('sportsFrame');
+        const loader = document.getElementById('loader');
+
+        // Construct Google URL
+        // igu=1 allows embedding, pws=0 removes personal data
+        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1&pws=0`;
+
+        frame.src = url;
+
+        frame.onload = function () {
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 1000); // Fake delay to ensure load
+        };
+
+        // Lucide
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
