@@ -37,12 +37,14 @@ const SportsService = {
             try {
                 return await this.fetchFromAPI(query);
             } catch (error) {
-                console.error("API Error, falling back to mock:", error);
-                return this.generateMockMatches(query);
+                console.error("API Error:", error);
+                // Return a special error object to display in UI instead of fake data
+                // This stops the app from showing "fake" matches when the API fails
+                return [{ error: true, message: error.message || "Unknown API Error" }];
             }
         }
 
-        // 2. Default to Mock Data
+        // 2. Default to Mock Data (Only used if Real Data is DISABLED in config)
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(this.generateMockMatches(query));
@@ -60,16 +62,33 @@ const SportsService = {
             if (query.includes(name)) leagueCode = code;
         }
 
-        const response = await fetch(`${this.config.BASE_URL}/competitions/${leagueCode}/matches?status=LIVE,SCHEDULED,FINISHED`, {
-            headers: {
-                'X-Auth-Token': this.config.API_KEY
-            }
-        });
+        // Use 'allorigins' as a more permissive proxy for file:// protocol
+        // NOTE: This is a public proxy. For production, use your own backend.
+        const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+        const TARGET_URL = `${this.config.BASE_URL}/competitions/${leagueCode}/matches?status=LIVE,SCHEDULED,FINISHED`;
 
-        if (!response.ok) throw new Error('API Request Failed');
+        try {
+            const response = await fetch(PROXY_URL + encodeURIComponent(TARGET_URL), {
+                headers: {
+                    'X-Auth-Token': this.config.API_KEY
+                }
+            });
 
-        const data = await response.json();
-        return this.formatAPIData(data.matches);
+            if (!response.ok) throw new Error(`API Connection Failed (${response.status})`);
+
+            const data = await response.json();
+
+            // Update UI to show we are using Real Data
+            const statusEl = document.querySelector('header p');
+            if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">● Live Data Active (API)</span>';
+
+            return this.formatAPIData(data.matches);
+        } catch (error) {
+            // Update UI to show Error
+            const statusEl = document.querySelector('header p');
+            if (statusEl) statusEl.innerHTML = `<span style="color:#ef4444;">● Data Error (See below)</span>`;
+            throw error; // Trigger fallback
+        }
     },
 
     /**
