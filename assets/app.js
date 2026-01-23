@@ -643,6 +643,9 @@ const translations = {
     about_mission_desc: "Ri88 was built to simplify everyday digital tasks. From calculating VAT and loans to converting files and editing images, we bring everything into one unified, beautiful interface.",
     about_version: "Version 2.0",
     about_tech: "Built with Vanilla HTML/CSS/JS",
+    download_title: "Get the Android App",
+    download_desc: "Download the official Ri88 Portal app for a faster, full-screen experience on your Android device.",
+    download_note: "Direct APK Download",
     footer_copy: "© 2026 Ri88 Portal. Made for Saudi Users."
   },
   ar: {
@@ -678,6 +681,9 @@ const translations = {
     about_mission_desc: "تم بناء Ri88 لتبسيط المهام الرقمية اليومية. من حساب الضريبة والقروض إلى تحويل الملفات وتعديل الصور، نجمع كل شيء في واجهة موحدة وجميلة.",
     about_version: "الإصدار 2.0",
     about_tech: "تم البناء باستخدام HTML/CSS/JS المطور",
+    download_title: "حمل تطبيق الأندرويد",
+    download_desc: "حمل تطبيق بوابة ريان الرسمي لتجربة أسرع وشاشة كاملة على جهاز الأندرويد الخاص بك.",
+    download_note: "تحميل مباشر لملف APK",
     footer_copy: "© 2026 بوابة ريان. صُنع بفخر للمستخدمين في السعودية."
   }
 };
