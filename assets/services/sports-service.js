@@ -10,10 +10,10 @@
 const SportsService = {
     config: {
         // PASTE YOUR API KEY HERE
-        API_KEY: '', // e.g. 'a1b2c3d4e5...'
+        API_KEY: '8f873e7ce89b42c297c5c0bf3b857c69',
 
         BASE_URL: 'https://api.football-data.org/v4',
-        enableRealData: false // Set to true when you have a key
+        enableRealData: true // Set to true when you have a key
     },
 
     // Map query names to API League Codes
