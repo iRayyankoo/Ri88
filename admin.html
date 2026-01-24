@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ri88 | Admin Dashboard</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/overrides.css">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--accent-pink);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .btn-success {
+            background: #2ed573;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .tool-list {
+            margin-top: 40px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .tool-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-info h4 {
+            margin: 0 0 5px 0;
+        }
+
+        .tool-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        /* Modal for Add/Edit */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--accent-pink);
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="login-box">
+        <h2 style="margin-bottom: 30px;">Admin Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+            <p id="loginError" style="color: #ff4757; margin-top: 15px; display: none;"></p>
+        </form>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard admin-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h1>🛠️ Tool Manager</h1>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="openModal()" class="btn-success">+ Add New Tool</button>
+                <button onclick="logout()" class="btn-danger">Logout</button>
+            </div>
+        </div>
+
+        <!-- Initial Setup Warning -->
+        <div id="setupWarning"
+            style="background: rgba(255,165,0,0.1); border: 1px solid orange; padding: 20px; border-radius: 12px; margin-bottom: 30px; display: none;">
+            <h3>⚠️ First Time Setup</h3>
+            <p>Your database seems empty. Would you like to import the existing 40+ tools from the website?</p>
+            <button onclick="importOldTools()" class="btn-primary" style="margin-top: 10px; width: auto;">Import Default
+                Tools</button>
+        </div>
+
+        <div id="loading" style="text-align: center; margin-top: 50px;">
+            <p>Loading tools...</p>
+        </div>
+
+        <div id="toolList" class="tool-list">
+            <!-- Tools will be injected here -->
+        </div>
+    </div>
+
+    <!-- Edit/Add Modal -->
+    <div id="toolModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" style="margin-bottom: 20px;">Add New Tool</h2>
+            <form id="toolForm">
+                <input type="hidden" id="toolDocId">
+                <div class="form-group">
+                    <label>ID (Unique)</label>
+                    <input type="text" id="toolId" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="toolCat" class="form-control">
+                        <option value="finance">Finance</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="text">Text</option>
+                        <option value="time">Time</option>
+                        <option value="content">Content</option>
+                        <option value="image">Image</option>
+                        <option value="pdf">PDF</option>
+                        <option value="health">Health</option>
+                        <option value="saudi">Saudi</option>
+                        <option value="developer">Developer</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title (English)</label>
+                    <input type="text" id="toolTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Title (Arabic)</label>
+                    <input type="text" id="toolTitleAr" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Description (English)</label>
+                    <input type="text" id="toolDesc" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Description (Arabic)</label>
+                    <input type="text" id="toolDescAr" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Icon (Lucide Name)</label>
+                    <input type="text" id="toolIcon" class="form-control" placeholder="e.g. calculator">
+                </div>
+                <button type="submit" class="btn-primary">Save Tool</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './assets/firebase-config.js';
+        import { defaultTools } from './assets/app.js';
+        import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { collection, getDocs, doc, setDoc, deleteDoc, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Login Logic
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                document.getElementById('loginError').innerText = error.message;
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+
+        // Auth State
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadTools();
+            } else {
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+            }
+        });
+
+        window.logout = () => signOut(auth);
+
+        // Tool Management
+        const toolsCol = collection(db, 'tools');
+
+        async function loadTools() {
+            const list = document.getElementById('toolList');
+            list.innerHTML = '';
+            document.getElementById('loading').style.display = 'block';
+
+            const querySnapshot = await getDocs(toolsCol);
+
+            if (querySnapshot.empty) {
+                document.getElementById('setupWarning').style.display = 'block';
+            } else {
+                document.getElementById('setupWarning').style.display = 'none';
+            }
+
+            querySnapshot.forEach((doc) => {
+                const t = doc.data();
+                const item = document.createElement('div');
+                item.className = 'tool-item';
+                item.innerHTML = `
+                    <div class="tool-info">
+                        <h4>${t.title} / ${t.titleAr}</h4>
+                        <p>${t.desc}</p>
+                        <small style="color:var(--accent-purple);">${t.cat} | ${t.id}</small>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="editTool('${doc.id}')" class="btn-primary" style="padding:8px 16px; width:auto;">Edit</button>
+                        <button onclick="removeTool('${doc.id}')" class="btn-danger">Delete</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Import Old Tools (Seeding)
+        window.importOldTools = async () => {
+            if (!confirm("This will add " + defaultTools.length + " tools to your database. Continue?")) return;
+
+            document.getElementById('loading').innerText = "Importing tools... please wait.";
+            document.getElementById('loading').style.display = 'block';
+
+            // Batch writes (limit 500 per batch)
+            const batch = writeBatch(db);
+
+            defaultTools.forEach(tool => {
+                // Use tool.id as doc ID for easier referencing
+                const docRef = doc(db, "tools", tool.id);
+                batch.set(docRef, tool);
+            });
+
+            try {
+                await batch.commit();
+                alert("Success! Tools imported.");
+                window.location.reload();
+            } catch (e) {
+                alert("Error importing: " + e.message);
+                console.error(e);
+            }
+        };
+
+        // Form Handling
+        const toolForm = document.getElementById('toolForm');
+        toolForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('toolDocId').value;
+            const data = {
+                id: document.getElementById('toolId').value,
+                cat: document.getElementById('toolCat').value,
+                title: document.getElementById('toolTitle').value,
+                titleAr: document.getElementById('toolTitleAr').value,
+                desc: document.getElementById('toolDesc').value,
+                descAr: document.getElementById('toolDescAr').value,
+                icon: document.getElementById('toolIcon').value || 'box'
+            };
+
+            if (id) {
+                await setDoc(doc(db, 'tools', id), data);
+            } else {
+                await addDoc(toolsCol, data);
+            }
+            closeModal();
+            loadTools();
+        });
+
+        window.removeTool = async (id) => {
+            if (confirm('Are you sure?')) {
+                await deleteDoc(doc(db, 'tools', id));
+                loadTools();
+            }
+        };
+
+        // Modal Logic
+        window.openModal = () => document.getElementById('toolModal').style.display = 'flex';
+        window.closeModal = () => {
+            document.getElementById('toolModal').style.display = 'none';
+            document.getElementById('toolForm').reset();
+            document.getElementById('toolDocId').value = '';
+        };
+
+        // Expose edit for onclick
+        window.editTool = async (docId) => {
+            // Fetch single doc (client side filter is faster for now)
+            // ... (implement edit population)
+            alert("Edit feature ready after initial data load.");
+        };
+
+    </script>
+</body>
+
+</html>

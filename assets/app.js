@@ -1,8 +1,10 @@
 // Rayyan Portal 2.0 Core Logic
+import { db } from './firebase-config.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Tool Data Definitions
 // Status: 'existing' or 'added'
-const tools = [
+export const defaultTools = [
   // Finance
   {
     id: 'loan-calc', cat: 'finance', icon: 'calculator', status: 'existing',
@@ -607,6 +609,28 @@ const tools = [
   },
 ];
 
+let tools = [...defaultTools];
+
+async function fetchTools() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "tools"));
+    if (!querySnapshot.empty) {
+      const fetchedTools = [];
+      querySnapshot.forEach((doc) => {
+        fetchedTools.push(doc.data());
+      });
+      tools = fetchedTools;
+      displayTools = [...tools];
+      renderTools();
+      console.log("Tools fetched from Firebase:", tools.length);
+    } else {
+      console.log("No tools in Firebase, using defaults.");
+    }
+  } catch (e) {
+    console.error("Error fetching tools:", e);
+  }
+}
+
 
 // Translations
 const translations = {
@@ -731,7 +755,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       renderTools();
     }
+    fetchTools();
   }
+
 
   // Search Listener
   if (searchInput) {
@@ -899,7 +925,7 @@ function filterTools(category) {
 }
 
 // Modal Logic
-function openModal(toolId) {
+window.openModal = function (toolId) {
   const tool = tools.find(t => t.id === toolId);
   if (!tool) return;
 
@@ -1054,7 +1080,7 @@ function openModal(toolId) {
   document.body.style.overflow = 'hidden'; // Prevent scroll
 }
 
-function closeModal() {
+window.closeModal = function () {
   modalOverlay.classList.remove('active');
   document.body.style.overflow = '';
 }
