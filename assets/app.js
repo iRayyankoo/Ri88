@@ -833,6 +833,8 @@ function updateTextContent(lang) {
 
 // Render Grid
 function renderTools() {
+  if (!grid) return; // Prevent crash on admin page
+
   grid.innerHTML = '';
 
   if (displayTools.length === 0) {
