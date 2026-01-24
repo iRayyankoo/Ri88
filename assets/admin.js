@@ -26,17 +26,20 @@ if (loginForm) {
 }
 
 // Analytics Logic
-window.updateEmbedUrl = function () {
-    const url = prompt('Enter your Looker Studio Embed URL (must start with https://lookerstudio.google.com/embed/):');
-    if (!url) return;
+const embedUrlBtn = document.getElementById('embedUrlBtn');
+if (embedUrlBtn) {
+    embedUrlBtn.addEventListener('click', () => {
+        const url = prompt('Enter your Looker Studio Embed URL (must start with https://lookerstudio.google.com/embed/):');
+        if (!url) return;
 
-    if (url.startsWith('https://lookerstudio.google.com/embed/')) {
-        localStorage.setItem('rayyan_analytics_url', url);
-        loadAnalytics();
-    } else {
-        alert('Invalid URL! Must be a valid Looker Studio embed link.');
-    }
-};
+        if (url.startsWith('https://lookerstudio.google.com/embed/')) {
+            localStorage.setItem('rayyan_analytics_url', url);
+            loadAnalytics();
+        } else {
+            alert('Invalid URL! Must be a valid Looker Studio embed link.');
+        }
+    });
+}
 
 function loadAnalytics() {
     const url = localStorage.getItem('rayyan_analytics_url');
