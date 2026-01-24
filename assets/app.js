@@ -24,7 +24,7 @@ const translations = {
     about_mission_title: "Our Mission", about_mission_desc: "Ri88 was built to simplify everyday digital tasks.",
     about_version: "Version 2.0", about_tech: "Built with Vanilla HTML/CSS/JS",
     download_title: "Get the Android App", download_desc: "Download the official Ri88 Portal app.",
-    download_note: "Direct APK Download", footer_copy: "© 2026 Ri88 Portal. Made for Saudi Users.",
+    download_note: "Direct APK Download", footer_copy: "© 2026 Ri88 Portal. Version v12.1",
     install_app: "App"
   },
   ar: {
@@ -41,7 +41,7 @@ const translations = {
     about_mission_title: "رسالتنا", about_mission_desc: "تم بناء Ri88 لتبسيط المهام الرقمية اليومية.",
     about_version: "الإصدار 2.0", about_tech: "تم البناء باستخدام HTML/CSS/JS المطور",
     download_title: "حمل تطبيق الأندرويد", download_desc: "حمل تطبيق بوابة ريان الرسمي لتجربة أسرع.",
-    download_note: "تحميل مباشر لملف APK", footer_copy: "© 2026 بوابة ريان. صُنع بفخر للمستخدمين في السعودية.",
+    download_note: "تحميل مباشر لملف APK", footer_copy: "© 2026 بوابة ريان. الإصدار v12.1",
     install_app: "تطبيق"
   }
 };
