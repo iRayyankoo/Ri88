@@ -98,6 +98,43 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupLanguage();
   checkForBanner();
   renderCategories(); // For Index page
+
+  // 5. Authentication Logic
+  const provider = new GoogleAuthProvider();
+  const loginBtn = document.getElementById('loginBtn');
+
+  if (loginBtn) {
+    // Auth State Listener
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        loginBtn.innerText = `Hi, ${user.displayName.split(' ')[0]}`;
+        loginBtn.onclick = () => signOut(auth);
+
+        // Sync Favorites from Cloud
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const cloudFavs = userDoc.data().favorites || [];
+          favorites = [...new Set([...favorites, ...cloudFavs])];
+          localStorage.setItem('rayyan_favs', JSON.stringify(favorites));
+          renderTools();
+        }
+      } else {
+        const isAr = document.documentElement.lang === 'ar';
+        loginBtn.innerText = isAr ? 'دخول' : 'Sign In';
+        loginBtn.onclick = () => {
+          signInWithPopup(auth, provider).then(res => {
+            // Create User Doc if new
+            const u = res.user;
+            setDoc(doc(db, "users", u.uid), {
+              email: u.email,
+              name: u.displayName,
+              lastLogin: new Date()
+            }, { merge: true });
+          }).catch(e => console.error(e));
+        };
+      }
+    });
+  }
 });
 
 // --- CORE FUNCTIONS ---
