@@ -467,3 +467,19 @@ async function loadSearchStats() {
         list.innerHTML = '<li style="color:salmon;">Error loading stats. Check console.</li>';
     }
 }
+
+// CRM Tab Switcher
+window.switchTab = (tabName) => {
+    // Hide all views
+    document.querySelectorAll('.crm-view').forEach(el => el.style.display = 'none');
+    // Deactivate all buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+    // Show target
+    const view = document.getElementById(`view-${tabName}`);
+    if (view) view.style.display = 'block';
+
+    // Activate button
+    const btn = document.getElementById(`btn-${tabName}`);
+    if (btn) btn.classList.add('active');
+};
