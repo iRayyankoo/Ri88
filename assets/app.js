@@ -749,13 +749,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check for URL query params (e.g. ?cat=finance)
     const urlParams = new URLSearchParams(window.location.search);
     const catParam = urlParams.get('cat');
-    if (catParam) {
-      filterTools(catParam);
+    // Render Initial View
+    if (window.location.pathname.includes('admin')) {
+      // Do not run main app logic on admin page
     } else {
-      renderTools();
+      if (typeof displayTools !== 'undefined') { // Safety check
+        if (catParam) {
+          filterTools(catParam);
+        } else {
+          renderTools();
+        }
+        fetchTools();
+        trackVisit();
+      }
     }
-    fetchTools();
-    trackVisit();
   }
 
 
@@ -1202,25 +1209,28 @@ translations.ar.install_app = "تطبيق";
 
 // Analytics Tracking
 async function trackVisit() {
-    // Check if tracked in this session
-    if (sessionStorage.getItem('visited_session')) return;
+  // Check if tracked in this session
+  if (sessionStorage.getItem('visited_session')) return;
 
-    try {
-        const statsRef = doc(db, 'stats', 'general');
-        const docSnap = await getDoc(statsRef);
+  try {
+    const statsRef = doc(db, 'stats', 'general');
+    const docSnap = await getDoc(statsRef);
 
-        if (docSnap.exists()) {
-            await updateDoc(statsRef, {
-                visitors: increment(1)
-            });
-        } else {
-            // First time setup
-            await setDoc(statsRef, { visitors: 1 });
-        }
-        
-        sessionStorage.setItem('visited_session', 'true');
-        console.log('Visit tracked!');
-    } catch (e) {
-        console.warn('Tracking error (ignore if offline):', e);
+    if (docSnap.exists()) {
+      await updateDoc(statsRef, {
+        visitors: increment(1)
+      });
+    } else {
+      // First time setup
+      await setDoc(statsRef, { visitors: 1 });
     }
+
+    sessionStorage.setItem('visited_session', 'true');
+    console.log('Visit tracked!');
+  } catch (e) {
+    console.warn('Tracking error (ignore if offline):', e);
+  }
 }
+
+
+export { tools as defaultTools };
