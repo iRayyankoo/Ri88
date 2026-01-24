@@ -22,6 +22,7 @@ export default function Navbar() {
                     <div className="nav-links">
                         <Link href="/" className="nav-link active">الأدوات</Link>
                         <Link href="/about" className="nav-link">عن الموقع</Link>
+                        <Link href="/blog" className="nav-link">المدونة</Link>
                     </div>
 
                     {/* Actions */}
@@ -61,6 +62,7 @@ export default function Navbar() {
                     <Link href="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>الرئيسية</Link>
                     <Link href="/tools" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>الأدوات</Link>
                     <Link href="/about" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>عن الموقع</Link>
+                    <Link href="/blog" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>المدونة</Link>
                 </div>
             </div>
         </>
