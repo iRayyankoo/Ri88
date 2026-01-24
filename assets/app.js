@@ -1,6 +1,5 @@
-import { db, auth } from './firebase-config.js';
-import { collection, getDocs, doc, updateDoc, increment, setDoc, getDoc, addDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { collection, getDocs, doc, updateDoc, increment, setDoc, getDoc, addDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { defaultTools } from './tools-data.js';
 
 // --- STATE ---
