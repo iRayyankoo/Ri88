@@ -68,10 +68,9 @@ onAuthStateChanged(auth, user => {
 });
 
 // --- DASHBOARD DATA ---
-async function loadDashboardData() {
-    await Promise.all([fetchTools(), fetchStats(), loadUsers(), loadTickets(), loadAuditLogs()]);
-    renderToolsList();
-    renderCategories();
+await Promise.all([fetchTools(), fetchStats(), loadUsers(), loadTickets(), loadAuditLogs(), loadArticles()]);
+renderToolsList();
+renderCategories();
 }
 
 // --- TOOLS MANAGER ---
