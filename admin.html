@@ -224,57 +224,50 @@
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle" style="margin-bottom: 20px;">Add New Tool</h2>
             <form id="toolForm">
-                <!-- ... form fields ... -->
+                <input type="hidden" id="toolDocId">
+                <div class="form-group">
+                    <label>ID (Unique)</label>
+                    <input type="text" id="toolId" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="toolCat" class="form-control">
+                        <option value="finance">Finance</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="text">Text</option>
+                        <option value="time">Time</option>
+                        <option value="content">Content</option>
+                        <option value="image">Image</option>
+                        <option value="pdf">PDF</option>
+                        <option value="health">Health</option>
+                        <option value="saudi">Saudi</option>
+                        <option value="developer">Developer</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title (English)</label>
+                    <input type="text" id="toolTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Title (Arabic)</label>
+                    <input type="text" id="toolTitleAr" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Description (English)</label>
+                    <input type="text" id="toolDesc" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Description (Arabic)</label>
+                    <input type="text" id="toolDescAr" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Icon (Lucide Name)</label>
+                    <input type="text" id="toolIcon" class="form-control" placeholder="e.g. calculator">
+                </div>
+                <button type="submit" class="btn-primary">Save Tool</button>
             </form>
         </div>
-    </div>
-    <!-- Dummy overlay for app.js compatibility -->
-    <div id="modalOverlay" style="display:none;"></div>
-    <div id="modalBody" style="display:none;"></div>
-    <input type="hidden" id="toolDocId">
-    <div class="form-group">
-        <label>ID (Unique)</label>
-        <input type="text" id="toolId" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>Category</label>
-        <select id="toolCat" class="form-control">
-            <option value="finance">Finance</option>
-            <option value="productivity">Productivity</option>
-            <option value="text">Text</option>
-            <option value="time">Time</option>
-            <option value="content">Content</option>
-            <option value="image">Image</option>
-            <option value="pdf">PDF</option>
-            <option value="health">Health</option>
-            <option value="saudi">Saudi</option>
-            <option value="developer">Developer</option>
-            <option value="sports">Sports</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Title (English)</label>
-        <input type="text" id="toolTitle" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>Title (Arabic)</label>
-        <input type="text" id="toolTitleAr" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>Description (English)</label>
-        <input type="text" id="toolDesc" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>Description (Arabic)</label>
-        <input type="text" id="toolDescAr" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label>Icon (Lucide Name)</label>
-        <input type="text" id="toolIcon" class="form-control" placeholder="e.g. calculator">
-    </div>
-    <button type="submit" class="btn-primary">Save Tool</button>
-    </form>
-    </div>
     </div>
 
     <script type="module">
@@ -456,6 +449,9 @@
         };
 
     </script>
+    <!-- Dummy overlay for app.js compatibility -->
+    <div id="modalOverlay" style="display:none;"></div>
+    <div id="modalBody" style="display:none;"></div>
 </body>
 
 </html>
