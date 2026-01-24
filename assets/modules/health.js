@@ -153,6 +153,135 @@ const HealthTools = {
         document.getElementById('watL').innerText = l;
         document.getElementById('watCups').innerText = cups;
         document.getElementById('waterRes').classList.remove('hidden');
+    },
+
+    // 4. Sleep Calculator
+    renderSleep: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${t('I want to wake up at:', 'أريد الاستيقاظ الساعة:')}</label>
+                    <input type="time" id="wakeTime" class="glass-input" value="06:00">
+                </div>
+                <button onclick="HealthTools.calcSleep()" class="btn-primary full-width">${t('Calculate Bedtime', 'متى يجب أن أنام؟')}</button>
+                
+                <div id="sleepRes" class="result-box hidden">
+                    <p style="text-align:center; margin-bottom:10px;">${t('You should fall asleep at one of these times:', 'يجب أن تغفو في أحد هذه الأوقات:')}</p>
+                    <div id="sleepTimes" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;"></div>
+                    <p style="font-size:0.8em; color:#aaa; margin-top:10px; text-align:center;">
+                        ${t('*Calculated based on 90-minute sleep cycles. Allow 15 mins to fall asleep.', '*محسوبة بناءً على دورات نوم مدتها 90 دقيقة. أضف 15 دقيقة للغفو.')}
+                    </p>
+                </div>
+            </div>
+        `;
+    },
+
+    calcSleep: function () {
+        const timeStr = document.getElementById('wakeTime').value;
+        if (!timeStr) return;
+
+        const [h, m] = timeStr.split(':').map(Number);
+        const wakeDate = new Date();
+        wakeDate.setHours(h, m, 0, 0);
+
+        // Calculate 4, 5, and 6 cycles back (90 mins each)
+        // 4 cycles = 6 hours
+        // 5 cycles = 7.5 hours
+        // 6 cycles = 9 hours
+        // Subtract 15 mins for falling asleep
+
+        const cycles = [6, 5, 4]; // Recommended order
+        const times = [];
+
+        cycles.forEach(c => {
+            const d = new Date(wakeDate);
+            d.setMinutes(d.getMinutes() - (c * 90) - 15);
+            times.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        });
+
+        const html = times.map((tm, i) => `
+            <span style="
+                background: ${i === 1 ? 'var(--accent-pink)' : 'rgba(255,255,255,0.1)'}; 
+                padding: 8px 16px; 
+                border-radius: 20px; 
+                font-weight: bold; 
+                color: white;
+                border: 1px solid rgba(255,255,255,0.2);
+            ">${tm}</span>
+        `).join('');
+
+        document.getElementById('sleepTimes').innerHTML = html;
+        document.getElementById('sleepRes').classList.remove('hidden');
+    },
+
+    // 5. Breathing Exercise (Box Breathing)
+    renderBreath: function (container) {
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group" style="text-align:center; padding:40px 0;">
+                <div id="breathCircle" style="
+                    width:150px; height:150px; 
+                    border-radius:50%; 
+                    background:rgba(255,255,255,0.05); 
+                    border:4px solid var(--accent-cyan);
+                    margin:0 auto 30px;
+                    display:flex; align-items:center; justify-content:center;
+                    font-size:1.5em; font-weight:bold;
+                    transition: all 4s ease-in-out;
+                    box-shadow: 0 0 30px rgba(0,255,242,0.1);
+                ">${t('Ready?', 'جاهز؟')}</div>
+                
+                <button id="breathBtn" onclick="HealthTools.startBreath()" class="btn-primary">${t('Start Exercise', 'ابدأ التمرين')}</button>
+                <div id="breathInstr" style="margin-top:20px; font-size:1.2em; min-height:30px;"></div>
+            </div>
+        `;
+        this.breathState = 'idle';
+    },
+
+    startBreath: function () {
+        if (this.breathState === 'running') return;
+        this.breathState = 'running';
+        document.getElementById('breathBtn').classList.add('hidden');
+
+        const circle = document.getElementById('breathCircle');
+        const text = document.getElementById('breathInstr');
+        const t = this._t;
+
+        const cycle = () => {
+            if (this.breathState !== 'running') return;
+
+            // Inhale (4s)
+            text.innerText = t('Inhale...', 'شهيق...');
+            circle.style.transform = 'scale(1.5)';
+            circle.style.background = 'rgba(0,255,242,0.2)';
+            circle.innerText = '4';
+
+            setTimeout(() => {
+                // Hold (4s)
+                text.innerText = t('Hold...', 'احبس...');
+                circle.innerText = '4';
+
+                setTimeout(() => {
+                    // Exhale (4s)
+                    text.innerText = t('Exhale...', 'زفير...');
+                    circle.style.transform = 'scale(1)';
+                    circle.style.background = 'rgba(255,255,255,0.05)';
+                    circle.innerText = '4';
+
+                    setTimeout(() => {
+                        // Hold (4s)
+                        text.innerText = t('Hold...', 'احبس...');
+
+                        setTimeout(() => {
+                            cycle(); // Loop
+                        }, 4000);
+                    }, 4000);
+                }, 4000);
+            }, 4000);
+        };
+
+        cycle();
     }
 };
 

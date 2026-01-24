@@ -120,9 +120,11 @@
                 <img src="assets/logo.png" alt="Ri88 Logo" style="height:65px; border-radius:6px;">
             </a>
             <div class="nav-links">
-                <a href="tools.html" class="nav-link">Tools</a>
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="tools.html" class="nav-link" data-i18n="nav_tools">Tools</a>
+                <a href="index.html" class="nav-link" data-i18n="nav_home">Home</a>
             </div>
+            <button id="langToggle"
+                style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding: 6px 12px; border-radius:12px; cursor:pointer; margin-left:10px;">EN/AR</button>
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
                 <i data-lucide="menu" style="color:white;"></i>
             </button>
@@ -135,8 +137,10 @@
         <div id="nativeView" class="page-content">
 
             <header style="text-align:center; margin-bottom:30px; margin-top:20px;">
-                <h2 id="leagueTitle" style="color:var(--text-primary); margin-bottom:5px;">Live Scores</h2>
-                <p style="color:var(--text-secondary); font-size:12px;">Waiting for API Data...</p>
+                <h2 id="leagueTitle" style="color:var(--text-primary); margin-bottom:5px;" data-i18n="sports_title">Live
+                    Scores</h2>
+                <p style="color:var(--text-secondary); font-size:12px;" data-i18n="sports_waiting">Waiting for API
+                    Data...</p>
             </header>
 
             <!-- Matches List -->
@@ -148,7 +152,7 @@
 
             <div style="margin-top:30px; text-align:center; padding-bottom: 40px;">
                 <button onclick="toggleSource()" class="btn-secondary"
-                    style="font-size:12px; padding: 8px 16px; border-radius: 20px;">
+                    style="font-size:12px; padding: 8px 16px; border-radius: 20px;" data-i18n="sports_switch">
                     Switch to Google View (Iframe)
                 </button>
             </div>
@@ -159,6 +163,36 @@
             <h3 style="color:white;">Loading Live Scores...</h3>
             <p style="color:var(--text-secondary);">Powered by Google</p>
         </div>
+
+        <!-- Fat Footer -->
+        <footer class="fat-footer" style="margin-top:auto;">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <img src="assets/logo.png" style="height:60px; margin-bottom:20px;">
+                    <p style="color:var(--text-secondary); max-width:300px;" data-i18n="footer_desc">
+                        Ri88 is the leading digital toolbox for the modern Saudi creator. Trusted by over 10,000 users
+                        daily.
+                    </p>
+                </div>
+                <!-- Simplified for App View -->
+                <div class="footer-col">
+                    <h4 data-i18n="footer_explore">Explore</h4>
+                    <a href="tools.html" data-i18n="footer_all_tools">All Tools</a>
+                    <a href="blog.html" data-i18n="footer_magazine">Magazine</a>
+                    <a href="index.html" data-i18n="nav_home">Home</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer_updated">Stay Updated</h4>
+                    <div class="footer-input-group">
+                        <input type="email" placeholder="Enter your email" data-i18n="footer_email_ph">
+                        <button><i data-lucide="arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer_rights">&copy; 2026 Ri88 Portal. Made with ❤️ in Riyadh.</p>
+            </div>
+        </footer>
 
         <!-- Hidden Iframe for backup -->
         <iframe id="sportsFrame" class="hidden"

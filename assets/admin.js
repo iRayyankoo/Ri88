@@ -68,10 +68,17 @@ onAuthStateChanged(auth, user => {
 });
 
 // --- DASHBOARD DATA ---
-await Promise.all([fetchTools(), fetchStats(), loadUsers(), loadTickets(), loadAuditLogs(), loadArticles()]);
-renderToolsList();
-renderCategories();
-}
+window.loadDashboardData = async () => {
+    console.log("Loading Dashboard Data...");
+    try {
+        await Promise.all([fetchTools(), fetchStats(), loadUsers(), loadTickets(), loadAuditLogs(), loadArticles()]);
+        renderToolsList();
+        renderCategories();
+        console.log("Data Loaded!");
+    } catch (e) {
+        console.error("Partial Data Load Error:", e);
+    }
+};
 
 // --- TOOLS MANAGER ---
 async function fetchTools() {
@@ -300,6 +307,110 @@ document.getElementById('backupBtn')?.addEventListener('click', () => {
     a.href = URL.createObjectURL(blob);
     a.download = 'backup.json';
     a.click();
+});
+
+// --- ARTICLES MANAGER (CMS) ---
+window.loadArticles = async () => {
+    const el = document.getElementById('articlesList');
+    if (!el) return;
+    const q = query(collection(db, "articles"), orderBy("date", "desc"));
+    const snap = await getDocs(q);
+    articles = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })); // Cache
+
+    el.innerHTML = articles.map(a => `
+        <div style="padding:10px; background:rgba(255,255,255,0.02); margin-bottom:5px; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <img src="${a.image || 'assets/logo.png'}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+                <div>
+                    <div style="font-weight:bold;">${a.title}</div>
+                    <div style="font-size:0.8em; color:#888;">${a.author || 'Unknown'} • ${new Date(a.date?.seconds * 1000).toLocaleDateString()}</div>
+                </div>
+            </div>
+            <div>
+                <button onclick="editArticle('${a.id}')" style="background:none; border:1px solid #444; color:#aaa; border-radius:4px; cursor:pointer; padding:4px 8px;">Edit</button>
+                <button onclick="deleteArticle('${a.id}')" style="background:none; border:none; color:#ff4757; cursor:pointer;">&times;</button>
+            </div>
+        </div>
+    `).join('');
+};
+
+window.resetArticleForm = () => {
+    document.getElementById('artId').value = "";
+    document.getElementById('artTitle').value = "";
+    document.getElementById('artCategory').value = "التقنية";
+    document.getElementById('artAuthor').value = "";
+    document.getElementById('artAuthorImg').value = "";
+    document.getElementById('artImage').value = "";
+    document.getElementById('artDate').value = "";
+    document.getElementById('artContent').value = "";
+    document.getElementById('saveArticleBtn').innerText = "🚀 Publish Article";
+};
+
+window.editArticle = (id) => {
+    const a = articles.find(x => x.id === id);
+    if (!a) return;
+
+    document.getElementById('artId').value = id;
+    document.getElementById('artTitle').value = a.title;
+    document.getElementById('artCategory').value = a.category || "التقنية";
+    document.getElementById('artAuthor').value = a.author || "";
+    document.getElementById('artAuthorImg').value = a.authorImage || "";
+    document.getElementById('artImage').value = a.image || "";
+
+    // Date Handler
+    if (a.date) {
+        const d = new Date(a.date.seconds * 1000);
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); // Localize
+        document.getElementById('artDate').value = d.toISOString().slice(0, 16);
+    }
+
+    document.getElementById('artContent').value = a.content || "";
+    document.getElementById('saveArticleBtn').innerText = "💾 Save Changes";
+    document.querySelector('#view-content').scrollIntoView(); // Scroll to top
+};
+
+window.deleteArticle = async (id) => {
+    if (confirm("Permanently delete this article?")) {
+        await deleteDoc(doc(db, "articles", id));
+        loadArticles();
+        logAction("Delete Article", id);
+    }
+};
+
+document.getElementById('saveArticleBtn')?.addEventListener('click', async () => {
+    const id = document.getElementById('artId').value;
+    const btn = document.getElementById('saveArticleBtn');
+
+    const data = {
+        title: document.getElementById('artTitle').value,
+        category: document.getElementById('artCategory').value,
+        author: document.getElementById('artAuthor').value || "Admin",
+        authorImage: document.getElementById('artAuthorImg').value,
+        image: document.getElementById('artImage').value,
+        content: document.getElementById('artContent').value,
+        date: document.getElementById('artDate').value ? new Date(document.getElementById('artDate').value) : new Date()
+    };
+
+    if (!data.title) return alert("Title required");
+
+    btn.innerText = "Saving...";
+    try {
+        if (id) {
+            await updateDoc(doc(db, "articles", id), data);
+            logAction("Update Article", data.title);
+        } else {
+            await addDoc(collection(db, "articles"), data);
+            logAction("Create Article", data.title);
+        }
+        resetArticleForm();
+        loadArticles();
+        alert("Article Saved Successfully!");
+    } catch (e) {
+        console.error(e);
+        alert("Error saving: " + e.message);
+    } finally {
+        btn.innerText = "🚀 Publish Article";
+    }
 });
 
 // --- TAB SWITCHER (Unified) ---

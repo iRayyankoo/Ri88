@@ -212,3 +212,43 @@
     border-color: rgba(255, 255, 255, 0.2);
     background: rgba(255, 255, 255, 0.08);
 }
+
+/* === CRITICAL CLICK FIXES === */
+.hero-mesh-bg,
+.bg-blob,
+.hero-elements {
+    pointer-events: none !important;
+}
+
+.modal-overlay:not(.active) {
+    pointer-events: none !important;
+    display: none !important;
+    /* Force hide */
+}
+
+/* Force tools grid to be on top of background effects */
+.tools-grid,
+.cat-grid,
+section {
+    position: relative;
+    z-index: 5;
+}
+
+/* Ensure buttons are always clickable */
+button,
+a,
+.tool-card {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 50 !important;
+    /* Above hero mesh */
+}
+
+/* Modal must be supreme */
+.modal-overlay.active {
+    z-index: 99999 !important;
+    display: flex !important;
+}
+
+/* Debug: Highlight click zones (border) */
+/* .tool-card { border: 2px solid red !important; } */

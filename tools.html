@@ -114,10 +114,47 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer
-        style="padding:40px; text-align:center; color:var(--text-secondary); border-top:1px solid var(--glass-border);">
-        <p data-i18n="footer_copy">&copy; 2026 Ri88 Portal. Made for Saudi Users.</p>
+    <!-- Fat Footer -->
+    <footer class="fat-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <img src="assets/logo.png" style="height:60px; margin-bottom:20px;">
+                <p style="color:var(--text-secondary); max-width:300px;">
+                    Ri88 is the leading digital toolbox for the modern Saudi creator. Trusted by over 10,000 users
+                    daily.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <a href="tools.html">All Tools</a>
+                <a href="blog.html">Magazine</a>
+                <a href="sports.html">Live Sports</a>
+                <a href="about.html">About Us</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Contact Support</a>
+            </div>
+            <div class="footer-col">
+                <h4>Stay Updated</h4>
+                <p style="font-size:14px; margin-bottom:10px;">Get the latest tools delivered to your inbox.</p>
+                <div class="footer-input-group">
+                    <input type="email" placeholder="Enter your email">
+                    <button><i data-lucide="arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Ri88 Portal. Made with ❤️ in Riyadh.</p>
+            <div class="social-links">
+                <a href="#"><i data-lucide="twitter"></i></a>
+                <a href="#"><i data-lucide="instagram"></i></a>
+                <a href="#"><i data-lucide="linkedin"></i></a>
+            </div>
+        </div>
     </footer>
 
     <!-- Modals (Container) -->
@@ -138,15 +175,10 @@
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="https://unpkg.com/downloadjs@1.4.7/download.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- PDF Libs -->
     <script src="assets/lucide.js"></script>
-    <script>
-        // Set worker path for pdf.js
-        if (window.pdfjsLib) {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        }
-    </script>
 
-    <!-- Tool Modules -->
+    <!-- Tool Modules (Restored) -->
     <script src="assets/modules/finance.js"></script>
     <script src="assets/modules/time.js"></script>
     <script src="assets/modules/text.js"></script>
@@ -156,7 +188,7 @@
     <script src="assets/modules/image.js"></script>
     <script src="assets/modules/developer.js"></script>
     <script src="assets/modules/saudi.js"></script>
-    <script src="assets/modules/health.js"></script> <!-- New Health (Priority) -->
+    <script src="assets/modules/health.js"></script>
     <script src="assets/modules/health_tools.js"></script>
     <script src="assets/modules/education.js"></script>
     <script src="assets/modules/languages.js"></script>
@@ -166,7 +198,7 @@
     <script src="assets/modules/media.js"></script>
 
     <!-- Main JS -->
-    <script type="module" src="assets/app.js"></script>
+    <script type="module" src="assets/app.js?v=14.6"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

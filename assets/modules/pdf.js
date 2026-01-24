@@ -605,12 +605,39 @@ const PDFTools = {
     },
 
     // 14. Extract Text/Images
+    renderExtImg: function (container) {
+        // Alias to generic extractor but auto-trigger images mode could be added. 
+        // For now, reuse the generic UI but pre-select images tab if we were building a tabbed UI.
+        // Or simpler: Direct implementation reuse.
+        this.renderExt(container);
+        // We can inject a script to auto-click "Extract Images" after a short delay or guide user.
+        // But for simplicity, let's just show the generic extractor which has the "Extract Images" button.
+        // Better yet: Custom UI for images only.
+
+        // Let's override the UI for this specific tool ID to be focused on images.
+        const t = this._t;
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                 <div class="file-drop-area" id="dropArea_extImg" style="border:2px dashed var(--glass-border); padding:30px; text-align:center; border-radius:12px;">
+                    <p>${t('Upload PDF to extract images', 'ارفع ملف PDF لاستخراج الصور')}</p>
+                    <input type="file" id="pdfInput_ext" accept=".pdf" style="display:none" onchange="PDFTools.handleFileSelect('ext')">
+                    <button onclick="document.getElementById('pdfInput_ext').click()" class="btn-primary">${t('Select PDF', 'اختر ملف')}</button>
+                    <div id="fileList_ext" style="margin-top:10px;"></div>
+                </div>
+                <button onclick="PDFTools.runExtract('images')" class="btn-primary full-width" style="margin-top:20px;">${t('Extract Images', 'استخراج الصور')}</button>
+                <div id="res_ext_img" class="result-box hidden" style="margin-top:16px;">
+                    <div id="extImgGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;"></div>
+                </div>
+            </div>
+        `;
+    },
+
     renderExt: function (container) {
         const t = this._t;
         const selText = document.documentElement.lang === 'ar' ? 'اختر ملف PDF' : 'Select PDF';
 
         container.innerHTML = `
-            <div class="tool-ui-group">
+            < div class="tool-ui-group" >
                 <div class="file-drop-area" id="dropArea_ext" style="border:2px dashed var(--glass-border); padding:30px; text-align:center; border-radius:12px;">
                     <p style="color:#aaa;">${t('Upload PDF to extract content', 'ارفع ملف PDF لاستخراج المحتوى')}</p>
                     <input type="file" id="pdfInput_ext" accept=".pdf" style="display:none" onchange="PDFTools.handleFileSelect('ext')">
@@ -635,8 +662,8 @@ const PDFTools = {
                     <p style="margin-bottom:10px;">${t('Found Images:', 'الصور الموجودة:')}</p>
                     <div id="extImgGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px;"></div>
                 </div>
-            </div>
-        `;
+            </div >
+    `;
     },
 
     runExtract: async function (mode) {
@@ -662,7 +689,7 @@ const PDFTools = {
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
                     const pageText = textContent.items.map(item => item.str).join(' ');
-                    fullText += `--- Page ${i} ---\n${pageText}\n\n`;
+                    fullText += `-- - Page ${i} ---\n${pageText} \n\n`;
                 }
 
                 document.getElementById('extTextOut').value = fullText;
@@ -738,8 +765,8 @@ const PDFTools = {
 
                                     const imgUrl = canvas.toDataURL();
                                     const div = document.createElement('div');
-                                    div.innerHTML = `<img src="${imgUrl}" style="width:100%; border-radius:8px; border:1px solid var(--glass-border);">
-                                                     <a href="${imgUrl}" download="image_${count}.png" style="font-size:10px; display:block; margin-top:4px;">Download</a>`;
+                                    div.innerHTML = `< img src = "${imgUrl}" style = "width:100%; border-radius:8px; border:1px solid var(--glass-border);" >
+    <a href="${imgUrl}" download="image_${count}.png" style="font-size:10px; display:block; margin-top:4px;">Download</a>`;
                                     grid.appendChild(div);
                                     count++;
                                 }

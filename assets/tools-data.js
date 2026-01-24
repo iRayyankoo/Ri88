@@ -602,3 +602,8 @@ export const defaultTools = [
         desc: 'View screen resolution and specs.', descAr: 'عرض دقة الشاشة والمواصفات.'
     },
 ];
+
+// Rescue Backup: Expose to window for non-module scripts
+if (typeof window !== 'undefined') {
+    window.ALL_TOOLS = defaultTools;
+}

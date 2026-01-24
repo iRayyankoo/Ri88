@@ -1,285 +1,246 @@
-/**
- * Content Creation Tools Module
- * Logic for Social Media Sizes, Caption Helper
- */
 
-const ContentTools = {
-    _t: function (en, ar) {
-        return document.documentElement.lang === 'ar' ? ar : en;
-    },
+window.ContentTools = {
 
-    // 1. Social Media Sizes
-    // ----------------------------------------------------------------
-    renderSocial: function (container) {
-        const t = this._t;
-        container.innerHTML = `
-            <div class="tool-ui-group">
-                <div class="input-row">
-                    <label>${t('Platform', 'المنصة')}</label>
-                    <select id="smPlatform" class="glass-input" onchange="ContentTools.updateSizes()">
-                        <option value="ig">${t('Instagram', 'انستغرام')}</option>
-                        <option value="tw">${t('X (Twitter)', 'اكس (تويتر)')}</option>
-                        <option value="li">${t('LinkedIn', 'لينكد إن')}</option>
-                        <option value="yt">${t('YouTube', 'يوتيوب')}</option>
-                        <option value="tk">${t('TikTok', 'تيك توك')}</option>
-                    </select>
-                </div>
-                
-                <div id="smResult" class="result-box" style="margin-top:16px;">
-                    <ul id="sizeList" style="list-style:none; padding:0; margin:0;"></ul>
-                </div>
-            </div>
-        `;
-        this.updateSizes(); // Init
-    },
-
-    updateSizes: function () {
-        const p = document.getElementById('smPlatform').value;
-        const list = document.getElementById('sizeList');
-        let data = [];
-        const t = this._t;
-
-        // Helper for concise translation
-        const w = (en, ar) => t(en, ar);
-
-        if (p === 'ig') {
-            data = [
-                { name: w('Profile Photo', 'صورة الملف الشخصي'), size: '320 x 320 px' },
-                { name: w('Square Post', 'منشور مربع'), size: '1080 x 1080 px' },
-                { name: w('Portrait Post', 'منشور طولي'), size: '1080 x 1350 px' },
-                { name: w('Stories / Reels', 'قصص / ريلز'), size: '1080 x 1920 px' }
-            ];
-        } else if (p === 'tw') {
-            data = [
-                { name: w('Profile Photo', 'صورة الملف الشخصي'), size: '400 x 400 px' },
-                { name: w('Header Photo', 'صورة الغلاف'), size: '1500 x 500 px' },
-                { name: w('In-Stream Image', 'صورة داخل التغريدة'), size: '1600 x 900 px' }
-            ];
-        } else if (p === 'li') {
-            data = [
-                { name: w('Profile Photo', 'صورة الملف الشخصي'), size: '400 x 400 px' },
-                { name: w('Cover Photo', 'صورة الغلاف'), size: '1128 x 191 px' },
-                { name: w('Shared Image', 'صورة مشاركة'), size: '1200 x 627 px' }
-            ];
-        } else if (p === 'yt') {
-            data = [
-                { name: w('Channel Icon', 'أيقونة القناة'), size: '800 x 800 px' },
-                { name: w('Channel Art', 'صورة القناة'), size: '2560 x 1440 px' },
-                { name: w('Thumbnail', 'صورة مصغرة'), size: '1280 x 720 px' }
-            ];
-        } else if (p === 'tk') {
-            data = [
-                { name: w('Profile Photo', 'صورة الملف الشخصي'), size: '200 x 200 px' },
-                { name: w('Video', 'فيديو'), size: '1080 x 1920 px' }
-            ];
-        }
-
-        list.innerHTML = data.map(i => `
-            <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
-                <span style="opacity:0.9;">${i.name}</span>
-                <strong style="color:var(--accent-cyan);">${i.size}</strong>
-            </li>
-        `).join('');
-    },
-
-    // 2. Caption Templates
-    // ----------------------------------------------------------------
-    renderCaption: function (container) {
-        const t = this._t;
-        container.innerHTML = `
-            <div class="tool-ui-group">
-                <div class="input-row">
-                    <label>${t('Category', 'الفئة')}</label>
-                    <select id="capCat" class="glass-input">
-                        <option value="promo">${t('Promotional / Sales', 'دعاية / مبيعات')}</option>
-                        <option value="engage">${t('Engagement / Question', 'تفاعل / أسئلة')}</option>
-                        <option value="quote">${t('Inspirational Quote', 'اقتباسات ملهمة')}</option>
-                        <option value="new">${t('New Launch', 'إطلاق جديد')}</option>
-                    </select>
-                </div>
-                <button onclick="ContentTools.genCaption()" class="btn-primary full-width">${t('Generate Template', 'توليد القالب')}</button>
-                
-                <div id="capResult" class="result-box hidden">
-                    <textarea id="capOutput" class="glass-input" rows="4" readonly></textarea>
-                    <button onclick="navigator.clipboard.writeText(document.getElementById('capOutput').value)" class="tool-action" style="margin-top:8px;">${t('Copy', 'نسخ')}</button>
-                </div>
-            </div>
-        `;
-    },
-
-    genCaption: function () {
-        const cat = document.getElementById('capCat').value;
+    // --- CAPTION TEMPLATES (Address Templates) ---
+    renderCaption: (container) => {
         const isAr = document.documentElement.lang === 'ar';
-        let templates = [];
 
-        if (cat === 'promo') {
-            templates = isAr ? [
-                "🔥 عرض لفترة محدودة! احصل على خصم 20% على [المنتج] اليوم. لا تفوت الفرصة! الرابط في البايو. #خصم #عرض",
-                "جاهز لترقية [حياتك/عملك]؟ احصل على [المنتج] الآن ووفر الكثير. 🛍️ تسوق الآن:",
-                "تنبيه تخفيضات! 🚨 أسعار محطمة على [الفئة] لمدة 24 ساعة فقط."
-            ] : [
-                "🔥 Limited Time Offer! Get 20% off on [Product] today. Don't miss out! Link in bio. #Sale #Deal",
-                "Ready to upgrade your [Game/Life]? Grab [Product] now and save big. 🛍️ Shop now:",
-                "Flash Sale Alert! 🚨 Prices slashed on [Category] for 24 hours only."
-            ];
-        } else if (cat === 'engage') {
-            templates = isAr ? [
-                "سؤال اليوم: ما هو أفضل [موضوع] بالنسبة لك؟ شاركنا في التعليقات! 👇",
-                "اضغط لايك مرتين إذا كنت توافق! ❤️ ما هو الشيء الذي لا يمكنك العيش بدونه؟",
-                "هذا أم ذاك؟ علق بـ 'أ' لـ [الخيار 1] أو 'ب' لـ [الخيار 2]! 🤜🤛"
-            ] : [
-                "Question of the day: What's your favorite [Topic]? Let us know below! 👇",
-                "Double tap if you agree! ❤️ What's one thing you can't live without?",
-                "This or That? Comment 'A' for [Option 1] or 'B' for [Option 2]! 🤜🤛"
-            ];
-        } else if (cat === 'quote') {
-            templates = isAr ? [
-                "\"الطريقة الوحيدة للقيام بعمل عظيم هي أن تحب ما تفعله.\" - ستيف جوبز ✨ #تحفيز",
-                "استمر في المضي قدماً. كل ما تحتاجه سيأتي إليك في الوقت المناسب. 🌟",
-                "احلم كبيراً. ابدأ صغيراً. تحرك الآن. 💪 #إلهام"
-            ] : [
-                "\"The only way to do great work is to love what you do.\" - Steve Jobs ✨ #Motivation",
-                "Keep going. Everything you need will come to you at the perfect time. 🌟",
-                "Dream big. Start small. Act now. 💪 #Inspiration"
-            ];
-        } else if (cat === 'new') {
-            templates = isAr ? [
-                "✨ وأخيراً وصل! نقدم لكم [اسم المنتج] - الحل الذي كنت تنتظره.",
-                "أخبار كبيرة! 📣 أطلقنا للتو [الميزة/المنتج]. الدخول من الرابط في البايو!",
-                "وصول جديد! 📦 كن أول من يحصل على أحدث تشكيلة لدينا."
-            ] : [
-                "✨ It's finally here! Introducing [Product Name] - the solution you've been waiting for.",
-                "Big news! 📣 We just launched [Feature/Product]. Check it out now at the link in bio!",
-                "New Arrival! 📦 Be the first to get your hands on our latest collection."
-            ];
-        }
+        container.innerHTML = `
+            <div class="tool-ui-group">
+                <div class="input-row">
+                    <label>${isAr ? 'الموضوع / الكلمة المفتاحية' : 'Topic / Keyword'}</label>
+                    <input type="text" id="capTopic" class="glass-input" placeholder="${isAr ? 'مثال: القهوة، التسويق، الرياضة' : 'e.g. Coffee, Marketing, Fitness'}">
+                </div>
 
-        const rand = templates[Math.floor(Math.random() * templates.length)];
-        document.getElementById('capOutput').value = rand;
-        document.getElementById('capResult').classList.remove('hidden');
+                <div class="input-row">
+                    <label>${isAr ? 'نوع المحتوى' : 'Content Type'}</label>
+                    <select id="capType" class="glass-input">
+                        <option value="all">${isAr ? 'الكل' : 'All Types'}</option>
+                        <option value="list">${isAr ? 'قوائم (5 طرق لـ...)' : 'Listicle (5 Ways to...)'}</option>
+                        <option value="question">${isAr ? 'سؤال ومشاركة' : 'Question / Engagement'}</option>
+                        <option value="howto">${isAr ? 'كيف (شروحات)' : 'How-To / Educational'}</option>
+                        <option value="promo">${isAr ? 'ترويجي / بيع' : 'Promotional / Sales'}</option>
+                    </select>
+                </div>
+
+                <button onclick="ContentTools.generateCaptions()" class="btn-primary full-width">
+                    ${isAr ? '✨ توليد العناوين' : '✨ Generate Captions'}
+                </button>
+
+                <div id="capResults" class="result-box hidden" style="margin-top:20px; max-height:300px; overflow-y:auto;">
+                    <!-- Results injected here -->
+                </div>
+            </div>
+        `;
+
+        // Initialize Internal Logic
+        ContentTools.generateCaptions = () => {
+            const topic = document.getElementById('capTopic').value.trim();
+            const type = document.getElementById('capType').value;
+            const resBox = document.getElementById('capResults');
+
+            if (!topic) {
+                alert(isAr ? 'الرجاء إدخال موضوع!' : 'Please enter a topic!');
+                return;
+            }
+
+            const templates = {
+                en: {
+                    list: [
+                        "5 Reasons Why {t} is the Future",
+                        "Top 10 Tips for {t} You Need to Know",
+                        "3 Secrets About {t} No One Tells You",
+                        "The {t} Checklist: Everything You Need",
+                        "7 Ways {t} Can Change Your Life"
+                    ],
+                    question: [
+                        "Have you ever tried {t}?",
+                        "What's your biggest challenge with {t}?",
+                        "Do you prefer {t} or [Alternative]?",
+                        "Who else loves {t} as much as I do?",
+                        "What is the first thing you think of when you hear {t}?"
+                    ],
+                    howto: [
+                        "How to Master {t} in 3 Simple Steps",
+                        "The Ultimate Guide to {t}",
+                        "How I Improved My {t} in One Week",
+                        "Beginner's Guide to {t}",
+                        "Stop Doing {t} Wrong! Here is How."
+                    ],
+                    promo: [
+                        "Don't miss out on our latest {t} offer!",
+                        "Get the best {t} deals today.",
+                        "Upgrade your life with {t}.",
+                        "Limited time offer on all {t} products!",
+                        "Why our {t} is the best in the market."
+                    ]
+                },
+                ar: {
+                    list: [
+                        "٥ أسباب تجعل {t} هو المستقبل",
+                        "أهم ١٠ نصائح حول {t} يجب أن تعرفها",
+                        "٣ أسرار عن {t} لا يخبرك بها أحد",
+                        "قائمة {t}: كل ما تحتاجه للبدء",
+                        "٧ طرق يمكن لـ {t} أن يغير حياتك بها"
+                    ],
+                    question: [
+                        "هل جربت {t} من قبل؟",
+                        "ما هو أكبر تحدي يواجهك مع {t}؟",
+                        "بصراحة.. تفضل {t} ولا البديل؟",
+                        "مين هنا يعشق {t} مثلي؟",
+                        "وش أول شي يجي ببالك لما تسمع طاري {t}؟"
+                    ],
+                    howto: [
+                        "كيف تحترف {t} في ٣ خطوات بسيطة",
+                        "الدليل الشامل لـ {t}",
+                        "كيف طورت معرفتي بـ {t} في أسبوع واحد",
+                        "دليل المبتدئين في عالم {t}",
+                        "لا تغلط نفس الغلطة مع {t}! إليك الطريقة الصحيحة."
+                    ],
+                    promo: [
+                        "لا تفوت عروضنا الجديدة على {t}!",
+                        "احصل على أفضل صفقات {t} اليوم.",
+                        "ارتقِ بحياتك مع {t}.",
+                        "عرض لفترة محدودة على جميع منتجات {t}!",
+                        "لماذا يعتبر {t} لدينا هو الأفضل في السوق؟"
+                    ]
+                }
+            };
+
+            const lang = isAr ? 'ar' : 'en';
+            let selectedTemplates = [];
+
+            if (type === 'all') {
+                selectedTemplates = [
+                    ...templates[lang].list,
+                    ...templates[lang].question,
+                    ...templates[lang].howto,
+                    ...templates[lang].promo
+                ];
+            } else {
+                selectedTemplates = templates[lang][type] || [];
+            }
+
+            // Shuffle
+            selectedTemplates = selectedTemplates.sort(() => 0.5 - Math.random());
+
+            let html = `<h4>${isAr ? 'النتائج المقترحة:' : 'Suggested Captions:'}</h4><ul style="list-style:none; padding:0;">`;
+
+            selectedTemplates.forEach(tmpl => {
+                const finalCaption = tmpl.replace('{t}', `<span style="color:var(--accent-pink); font-weight:bold;">${topic}</span>`);
+                html += `
+                    <li style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${finalCaption}</span>
+                        <button onclick="navigator.clipboard.writeText('${tmpl.replace('{t}', topic)}'); this.innerText='Done!'" class="btn-secondary" style="font-size:12px; padding:4px 8px;">
+                            ${isAr ? 'نسخ' : 'Copy'}
+                        </button>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+
+            resBox.innerHTML = html;
+            resBox.classList.remove('hidden');
+        };
     },
 
-    // 3. Content Ideas
-    // ----------------------------------------------------------------
+    // --- CONTENT IDEAS ---
     renderIdeas: function (container) {
-        const t = this._t;
+        const isAr = document.documentElement.lang === 'ar';
         container.innerHTML = `
             <div class="tool-ui-group">
                 <div class="input-row">
-                    <label>${t('Industry / Niche', 'المجال / التخصص')}</label>
-                    <select id="ideaNiche" class="glass-input">
-                        <option value="tech">${t('Technology / SaaS', 'تقنية / برمجيات')}</option>
-                        <option value="fashion">${t('Fashion / Beauty', 'موضة / تجميل')}</option>
-                        <option value="fitness">${t('Health & Fitness', 'صحة / لياقة')}</option>
-                        <option value="food">${t('Food & Beverage', 'مطاعم / أغذية')}</option>
-                        <option value="biz">${t('Business / Consultant', 'أعمال / استشارات')}</option>
-                    </select>
+                    <label>${isAr ? 'المجال / النيش' : 'Niche / Industry'}</label>
+                    <input type="text" id="ideaNiche" class="glass-input" placeholder="${isAr ? 'مثال: العناية بالبشرة، التقنية' : 'e.g. Skin Care, Tech'}">
                 </div>
-                <button onclick="ContentTools.genIdeas()" class="btn-primary full-width">${t('Get Weekly Plan', 'خطة أسبوعية')}</button>
-                
-                <div id="ideaResult" class="result-box hidden">
-                    <ul id="ideaList" style="list-style:none; padding:0; line-height:1.8;"></ul>
-                </div>
+                <button onclick="ContentTools.genIdeas()" class="btn-primary full-width">
+                    ${isAr ? '💡 اقترح أفكار' : '💡 Generate Ideas'}
+                </button>
+                <div id="ideaRes" class="result-box hidden" style="margin-top:20px;"></div>
             </div>
         `;
+
+        ContentTools.genIdeas = () => {
+            const niche = document.getElementById('ideaNiche').value.trim() || (isAr ? 'عام' : 'General');
+            const ideas = isAr ? [
+                `كيف تبدأ في ${niche} من الصفر`,
+                `٥ أخطاء شائعة في ${niche} وكيف تتجنبها`,
+                `قصة نجاحي مع ${niche} (دروس مستفادة)`,
+                `الأدوات التي أستخدمها لـ ${niche}`,
+                `مستقبل ${niche} في ٢٠٢٤`,
+                `مقارنة: ${niche} الغالي vs الرخيص`
+            ] : [
+                `How to start ${niche} from scratch`,
+                `5 Common mistakes in ${niche} to avoid`,
+                `My success story with ${niche}`,
+                `Top tools I use for ${niche}`,
+                `The future of ${niche} in 2024`,
+                `Comparison: Cheap vs Expensive ${niche}`
+            ];
+
+            document.getElementById('ideaRes').innerHTML = `
+                <ul style="list-style:none; padding:0;">
+                    ${ideas.map(i => `<li style="margin-bottom:10px; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px;">${i}</li>`).join('')}
+                </ul>
+             `;
+            document.getElementById('ideaRes').classList.remove('hidden');
+        };
     },
 
-    genIdeas: function () {
-        const niche = document.getElementById('ideaNiche').value;
-        const list = document.getElementById('ideaList');
+    // --- SOCIAL SIZES ---
+    renderSocialSizes: function (container) {
         const isAr = document.documentElement.lang === 'ar';
-        let ideas = [];
+        const sizes = {
+            'Instagram': { 'Post': '1080 x 1080', 'Story': '1080 x 1920', 'Portrait': '1080 x 1350' },
+            'Twitter (X)': { 'Post': '1600 x 900', 'Header': '1500 x 500' },
+            'TikTok': { 'Video': '1080 x 1920' },
+            'LinkedIn': { 'Post': '1200 x 1200', 'Cover': '1128 x 191' },
+            'YouTube': { 'Thumbnail': '1280 x 720', 'Banner': '2560 x 1440' }
+        };
 
-        if (niche === 'tech') {
-            ideas = isAr ? [
-                "الاثنين: شارك نصيحة إنتاجية سريعة",
-                "الأربعاء: خلف الكواليس لإعداداتك أو الكود",
-                "الجمعة: قصة نجاح عميل أو شهادة"
-            ] : [
-                "Mon: Share a quick productivity tip/hack", "Wed: Behind the scenes of your setup/code", "Fri: Client success story or testimonial"
-            ];
-        } else if (niche === 'fashion') {
-            ideas = isAr ? [
-                "الاثنين: تفاصيل إطلالة اليوم (OOTD)",
-                "الأربعاء: كيف تنسق [إكسسوار] بـ 3 طرق",
-                "الجمعة: عرض خاص أو كتالوج عطلة نهاية الأسبوع"
-            ] : [
-                "Mon: Outfit of the Day (OOTD) breakdown", "Wed: How to style [Accessory] 3 ways", "Fri: Flash sale or weekend lookbook"
-            ];
-        } else if (niche === 'fitness') {
-            ideas = isAr ? [
-                "الاثنين: جرعة تحفيز للأسبوع",
-                "الأربعاء: نصيحة لتمرين صحيح (فيديو)",
-                "الجمعة: وصفة وجبة صحية خفيفة"
-            ] : [
-                "Mon: Monday Motivation logic/quote", "Wed: Workout technique tip (Video)", "Fri: Healthy snack recipe"
-            ];
-        } else if (niche === 'food') {
-            ideas = isAr ? [
-                "الاثنين: تسليط الضوء على مكون (فوائد)",
-                "الأربعاء: وصفة سريعة في 15 دقيقة",
-                "الجمعة: مراجعة مطعم أو وجبة مفتوحة"
-            ] : [
-                "Mon: Ingredient spotlight (Benefits)", "Wed: Quick 15-min recipe", "Fri: Restaurant review or cheat meal"
-            ];
-        } else if (niche === 'biz') {
-            ideas = isAr ? [
-                "الاثنين: تحليل لاتجاهات السوق",
-                "الأربعاء: توصية بأداة/تطبيق مفيد",
-                "الجمعة: إنجازات الأسبوع/دروس مستفادة"
-            ] : [
-                "Mon: Market trend analysis", "Wed: Tool/App recommendation", "Fri: Weekly wins/lessons learned"
-            ];
+        let html = `<div class="tool-ui-group"><div style="display:grid; gap:15px;">`;
+        for (let platform in sizes) {
+            html += `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px;">
+                <strong style="color:var(--accent-cyan); display:block; margin-bottom:8px;">${platform}</strong>
+                ${Object.entries(sizes[platform]).map(([k, v]) =>
+                `<div style="display:flex; justify-content:space-between; font-size:0.9em; margin-bottom:4px;">
+                        <span>${k}</span><span style="font-family:monospace;">${v}</span>
+                    </div>`).join('')}
+            </div>`;
         }
-
-        list.innerHTML = ideas.map(i => `<li>✅ ${i}</li>`).join('');
-        document.getElementById('ideaResult').classList.remove('hidden');
+        html += `</div></div>`;
+        container.innerHTML = html;
     },
 
-    // 4. Basic Proofreading
-    // ----------------------------------------------------------------
+    // --- PROOFREADING (Simulated) ---
     renderProof: function (container) {
-        const t = this._t;
-        // Logic check: Capitalization only relevant for English mostly.
-        const capOption = document.documentElement.lang === 'ar' ? '' : `
-            <label style="font-size:12px; color:#aaa;"><input type="checkbox" id="proofCaps" checked> Fix Capitalization (Start of sentence)</label>
-        `;
-
+        const isAr = document.documentElement.lang === 'ar';
         container.innerHTML = `
             <div class="tool-ui-group">
-                <textarea id="proofInput" class="glass-input" rows="5" placeholder="${t('Paste your text here...', 'الصق النص هنا...')}"></textarea>
-                <div class="input-row" style="margin-top:10px;">
-                    <label style="font-size:12px; color:#aaa;"><input type="checkbox" id="proofSpace" checked> ${t('Fix Double Spaces', 'إصلاح المسافات المكررة')}</label>
-                    ${capOption}
-                </div>
-                <button onclick="ContentTools.runProof()" class="btn-primary full-width" style="margin-top:10px;">${t('Check & Fix', 'فحص وإصلاح')}</button>
-                
-                <div id="proofResult" class="result-box hidden">
-                    <textarea id="proofOutput" class="glass-input" rows="5" readonly></textarea>
-                </div>
+                <textarea id="proofTxt" class="glass-input" style="height:150px;" placeholder="${isAr ? 'ضع النص هنا للتدقيق...' : 'Paste text to check...'}"></textarea>
+                <button onclick="ContentTools.runProof()" class="btn-primary full-width" style="margin-top:10px;">
+                    ${isAr ? '🔍 فحص النص' : '🔍 Check Text'}
+                </button>
+                <div id="proofRes" class="result-box hidden" style="margin-top:10px;"></div>
             </div>
         `;
-    },
 
-    runProof: function () {
-        let text = document.getElementById('proofInput').value;
-        if (!text) return;
+        ContentTools.runProof = () => {
+            const txt = document.getElementById('proofTxt').value;
+            // Simple regex checks for demonstration
+            let issues = [];
+            if (txt.includes('  ')) issues.push(isAr ? 'مسافات مزدوجة' : 'Double spaces found');
+            if (txt.match(/[?!]{2,}/)) issues.push(isAr ? 'تكرار علامات الترقيم' : 'Repeated punctuation');
+            if (isAr && txt.match(/ى /)) issues.push('استخدام "ى" بدلاً من "ي" (تحقق من السياق)');
+            if (!isAr && txt.match(/ i /)) issues.push('Lowercase "i" found');
 
-        if (document.getElementById('proofSpace').checked) {
-            text = text.replace(/[ ]{2,}/g, ' ');
-        }
-
-        const caps = document.getElementById('proofCaps');
-        if (caps && caps.checked) {
-            // Capitalize first letter
-            text = text.charAt(0).toUpperCase() + text.slice(1);
-            // Capitalize after . ! ?
-            text = text.replace(/([.!?]\s+)([a-z])/g, (match, sep, char) => sep + char.toUpperCase());
-        }
-
-        document.getElementById('proofOutput').value = text;
-        document.getElementById('proofResult').classList.remove('hidden');
+            const res = document.getElementById('proofRes');
+            if (issues.length === 0) {
+                res.innerHTML = `<span style="color:#2ecc71">✅ ${isAr ? 'يبدو النص جيداً' : 'Text looks good'}</span>`;
+            } else {
+                res.innerHTML = `<strong style="color:#e74c3c">${isAr ? 'ملاحظات:' : 'Issues:'}</strong><ul>${issues.map(i => `<li>${i}</li>`).join('')}</ul>`;
+            }
+            res.classList.remove('hidden');
+        };
     }
 };
-
-window.ContentTools = ContentTools;

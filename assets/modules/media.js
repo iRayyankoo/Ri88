@@ -148,7 +148,7 @@ const MediaTools = {
     },
 
     // 3. Video to Audio (MP3/WAV)
-    renderVid2Mp3: function (container) {
+    renderMp3: function (container) {
         const t = this._t;
         container.innerHTML = `
             <div class="tool-ui-group">
