@@ -1,7 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { defaultTools } from './tools-data.js';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, getDocs, doc, setDoc, deleteDoc, addDoc, writeBatch, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, setDoc, deleteDoc, addDoc, writeBatch, getDoc, updateDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 console.log("Admin module loaded.");
 
@@ -119,7 +119,8 @@ onAuthStateChanged(auth, (user) => {
         loadTools();
         fetchStats();
         loadAnalytics();
-        loadBanner(); // Load announcement config
+        loadBanner();
+        loadSearchStats(); // Load failed searches
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';
@@ -128,8 +129,19 @@ onAuthStateChanged(auth, (user) => {
 
 window.logout = () => signOut(auth);
 
+// Sort Logic
+const sortBtn = document.getElementById('sortBtn');
+if (sortBtn) {
+    sortBtn.addEventListener('click', () => {
+        currentSort = currentSort === 'default' ? 'views' : 'default';
+        sortBtn.innerText = currentSort === 'views' ? '🔥 Views' : '📊 Sort';
+        loadTools();
+    });
+}
+
 // Tool Management
 const toolsCol = collection(db, 'tools');
+let currentSort = 'default';
 
 async function loadTools() {
     const list = document.getElementById('toolList');
@@ -143,17 +155,22 @@ async function loadTools() {
 
     try {
         const querySnapshot = await getDocs(toolsCol);
+        let docs = [];
+        querySnapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+
+        if (currentSort === 'views') {
+            docs.sort((a, b) => (b.views || 0) - (a.views || 0));
+        }
 
         if (setupWarning) {
-            if (querySnapshot.empty) {
+            if (docs.length === 0) {
                 setupWarning.style.display = 'block';
             } else {
                 setupWarning.style.display = 'none';
             }
         }
 
-        querySnapshot.forEach((doc) => {
-            const t = doc.data();
+        docs.forEach((t) => {
             const item = document.createElement('div');
             item.className = 'tool-item';
             // Dim if hidden
@@ -161,16 +178,19 @@ async function loadTools() {
 
             item.innerHTML = `
                 <div class="tool-info">
-                    <h4>${t.title} / ${t.titleAr} ${t.hidden ? '<span style="color:red; font-size:0.8em;">(Hidden)</span>' : ''}</h4>
+                    <h4>${t.title} / ${t.titleAr} 
+                        ${t.hidden ? '<span style="color:red; font-size:0.8em;">(Hidden)</span>' : ''}
+                        <span style="font-size:0.8em; color:#ffd700; margin-left:5px;">★ ${t.views || 0}</span>
+                    </h4>
                     <p>${t.desc}</p>
                     <small style="color:var(--accent-purple);">${t.cat} | ${t.id}</small>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
-                    <button onclick="toggleVisibility('${doc.id}', ${t.hidden || false})" class="btn-success" style="padding:8px 12px; font-size:1.2em;" title="Toggle Visibility">
+                    <button onclick="toggleVisibility('${t.id}', ${t.hidden || false})" class="btn-success" style="padding:8px 12px; font-size:1.2em;" title="Toggle Visibility">
                         ${t.hidden ? '👁️‍🗨️' : '👁️'}
                     </button>
-                    <button onclick="editTool('${doc.id}')" class="btn-primary" style="padding:8px 16px; width:auto;">Edit</button>
-                    <button onclick="removeTool('${doc.id}')" class="btn-danger">Delete</button>
+                    <button onclick="editTool('${t.id}')" class="btn-primary" style="padding:8px 16px; width:auto;">Edit</button>
+                    <button onclick="removeTool('${t.id}')" class="btn-danger">Delete</button>
                 </div>
             `;
             list.appendChild(item);
@@ -285,6 +305,9 @@ window.editTool = async (docId) => {
     }
 };
 
+    }
+};
+
 window.toggleVisibility = async (id, currentHiddenState) => {
     try {
         await updateDoc(doc(db, 'tools', id), {
@@ -295,3 +318,36 @@ window.toggleVisibility = async (id, currentHiddenState) => {
         alert("Error updating visibility: " + e.message);
     }
 };
+
+// Search Stats Logic
+async function loadSearchStats() {
+    const list = document.getElementById('missedSearchList');
+    if (!list) return;
+
+    try {
+        const q = query(collection(db, "stats_search"), orderBy("timestamp", "desc"), limit(10));
+        const querySnapshot = await getDocs(q);
+
+        list.innerHTML = '';
+        if (querySnapshot.empty) {
+            list.innerHTML = '<li style="padding:10px; color:#aaa;">No data yet.</li>';
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString() : 'Just now';
+            const item = document.createElement('li');
+            item.style.padding = '10px';
+            item.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+            item.innerHTML = `
+                <span style="color:var(--accent-pink); font-weight:bold;">"${data.term}"</span>
+                <span style="float:right; font-size:0.8em; color:#aaa;">${date}</span>
+            `;
+            list.appendChild(item);
+        });
+    } catch (e) {
+        console.error("Error loading search stats:", e);
+        list.innerHTML = '<li style="color:salmon;">Error loading stats. Check console.</li>';
+    }
+}

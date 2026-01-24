@@ -193,6 +193,8 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
             <h1>🛠️ Tool Manager</h1>
             <div style="display: flex; gap: 10px;">
+                <button id="sortBtn" class="btn-primary" style="padding:12px; width:auto;" title="Sort by Views">📊
+                    Sort</button>
                 <button onclick="openModal()" class="btn-success">+ Add New Tool</button>
                 <button onclick="logout()" class="btn-danger">Logout</button>
             </div>
@@ -243,6 +245,16 @@
                 <div id="embedContainer"
                     style="width:100%; height:200px; background:rgba(0,0,0,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#aaa; overflow:hidden;">
                     <p>Click "Set URL" to link Looker Studio.</p>
+                </div>
+
+                <!-- Missed Opportunities -->
+                <div
+                    style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; margin-bottom: 30px;">
+                    <h3 style="margin-top:0;">🔍 Missed Opportunities (Failed Searches)</h3>
+                    <ul id="missedSearchList"
+                        style="list-style:none; padding:0; margin:0; max-height:200px; overflow-y:auto;">
+                        <li style="padding:10px; color:#aaa;">Loading...</li>
+                    </ul>
                 </div>
             </div>
         </div>

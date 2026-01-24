@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, doc, updateDoc, increment, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc, increment, setDoc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Tool Data Definitions
 // Status: 'existing' or 'added'
@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Search Listener
+  let searchDebounce;
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
@@ -177,6 +178,21 @@ document.addEventListener('DOMContentLoaded', () => {
         t.desc.toLowerCase().includes(query)
       );
       renderTools();
+
+      // Analytics: Log Failed Search
+      clearTimeout(searchDebounce);
+      if (displayTools.length === 0 && query.length > 3) {
+        searchDebounce = setTimeout(() => {
+          try {
+            addDoc(collection(db, 'stats_search'), {
+              term: query,
+              timestamp: new Date()
+            });
+          } catch (e) {
+            console.warn("Analytics error:", e);
+          }
+        }, 2000);
+      }
     });
   }
 
@@ -361,6 +377,15 @@ function filterTools(category) {
 window.openModal = function (toolId) {
   const tool = tools.find(t => t.id === toolId);
   if (!tool) return;
+
+  // Analytics: Increment View
+  try {
+    updateDoc(doc(db, 'tools', toolId), {
+      views: increment(1)
+    });
+  } catch (e) {
+    console.warn("Analytics error:", e);
+  }
 
   const isAr = document.documentElement.getAttribute('lang') === 'ar';
   if (modalTitle) modalTitle.textContent = isAr && tool.titleAr ? tool.titleAr : tool.title;
