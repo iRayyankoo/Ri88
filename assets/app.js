@@ -258,6 +258,43 @@ async function checkForBanner() {
   }
 }
 
+// Dynamic Categories
+async function renderCategories() {
+  const grid = document.getElementById('categoriesGrid');
+  if (!grid) return;
+
+  try {
+    const snap = await getDocs(collection(db, "categories"));
+    if (snap.empty) {
+      return;
+    }
+
+    const isAr = document.documentElement.getAttribute('lang') === 'ar';
+    snap.forEach(doc => {
+      const c = doc.data();
+      const a = document.createElement('a');
+      a.href = `tools.html?cat=${c.id}`;
+      a.className = 'glass-panel cat-card';
+      a.style.textDecoration = 'none';
+      a.style.display = 'block';
+      a.style.color = 'inherit';
+      a.innerHTML = `
+                <i data-lucide="${c.icon || 'box'}" class="cat-icon" style="color:var(--accent-purple)"></i>
+                <span>${isAr ? c.nameAr : c.name}</span>
+            `;
+      grid.appendChild(a);
+    });
+
+    // Refresh icons
+    setTimeout(() => {
+      if (window.lucide) window.lucide.createIcons();
+    }, 500);
+
+  } catch (e) {
+    console.warn("Category render error:", e);
+  }
+}
+
 // RTL Logic
 function toggleLanguage(forceAr = false) {
   const html = document.documentElement;
