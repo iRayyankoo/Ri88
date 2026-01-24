@@ -287,6 +287,11 @@ export const tools: Tool[] = [
         title: 'Water Intake', titleAr: 'احتياج الماء',
         desc: 'Daily water tracking.', descAr: 'حساب كمية الماء المطلوبة يومياً.'
     },
+    {
+        id: 'health-sleep', cat: 'health', icon: 'moon', status: 'new',
+        title: 'Sleep Calculator', titleAr: 'حاسبة النوم',
+        desc: 'Best times to wake up refreshed.', descAr: 'أفضل أوقات الاستيقاظ لتكون نشيطاً.'
+    },
 
     // Developer
     {

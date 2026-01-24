@@ -293,11 +293,11 @@ function BreathingExercise() {
 // MAIN ROUTER
 export default function HealthTools({ toolId }: ToolProps) {
     switch (toolId) {
-        case 'bmi': return <BMICalculator />;
-        case 'calories': return <BMRCalculator />;
-        case 'water': return <WaterCalculator />;
-        case 'sleep-calc': return <SleepCalculator />;
-        case 'breathing': return <BreathingExercise />;
-        default: return <div>Unknown Health Tool</div>
+        case 'health-bmi': return <BMICalculator />;
+        case 'health-bmr': return <BMRCalculator />;
+        case 'health-water': return <WaterCalculator />;
+        case 'health-sleep': return <SleepCalculator />;
+        case 'health-breath': return <BreathingExercise />;
+        default: return <div style={{ textAlign: 'center', padding: '50px' }}>Tool not found or coming soon: {toolId}</div>
     }
 }
