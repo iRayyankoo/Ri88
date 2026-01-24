@@ -161,69 +161,82 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (e) {
     console.warn("Maintenance check failed:", e);
   }
+}
 
-  // Only render tools if the grid exists (tools.html)
-  if (grid) {
-    // Check for URL query params (e.g. ?cat=finance)
-    const urlParams = new URLSearchParams(window.location.search);
-    const catParam = urlParams.get('cat');
-    // Render Initial View
-    if (window.location.pathname.includes('admin')) {
-      // Do not run main app logic on admin page
-    } else {
-      if (typeof displayTools !== 'undefined') { // Safety check
-        if (catParam) {
-          filterTools(catParam);
-        } else {
-          renderTools();
+  // 2. Apply Dynamic Theme
+  try {
+  const themeSnap = await getDoc(doc(db, "config", "theme"));
+  if (themeSnap.exists()) {
+    const t = themeSnap.data();
+    if (t.primary) document.documentElement.style.setProperty('--accent-purple', t.primary);
+    if (t.secondary) document.documentElement.style.setProperty('--accent-pink', t.secondary);
+  }
+} catch (e) {
+  console.warn("Theme load failed:", e);
+}
+
+// Only render tools if the grid exists (tools.html)
+if (grid) {
+  // Check for URL query params (e.g. ?cat=finance)
+  const urlParams = new URLSearchParams(window.location.search);
+  const catParam = urlParams.get('cat');
+  // Render Initial View
+  if (window.location.pathname.includes('admin')) {
+    // Do not run main app logic on admin page
+  } else {
+    if (typeof displayTools !== 'undefined') { // Safety check
+      if (catParam) {
+        filterTools(catParam);
+      } else {
+        renderTools();
+      }
+      fetchTools();
+      trackVisit();
+    }
+  }
+}
+
+
+
+// Search Listener
+let searchDebounce;
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    displayTools = tools.filter(t =>
+      t.title.toLowerCase().includes(query) ||
+      t.desc.toLowerCase().includes(query)
+    );
+    renderTools();
+
+    // Analytics: Log Failed Search
+    clearTimeout(searchDebounce);
+    if (displayTools.length === 0 && query.length > 3) {
+      searchDebounce = setTimeout(() => {
+        try {
+          addDoc(collection(db, 'stats_search'), {
+            term: query,
+            timestamp: new Date()
+          });
+        } catch (e) {
+          console.warn("Analytics error:", e);
         }
-        fetchTools();
-        trackVisit();
-      }
+      }, 2000);
     }
+  });
+}
+
+// Language Toggle
+if (langToggle) {
+  langToggle.addEventListener('click', () => toggleLanguage());
+  // Init from local storage
+  if (localStorage.getItem('rayyan_lang') === 'ar') {
+    toggleLanguage(true);
   }
+}
 
-
-
-  // Search Listener
-  let searchDebounce;
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      displayTools = tools.filter(t =>
-        t.title.toLowerCase().includes(query) ||
-        t.desc.toLowerCase().includes(query)
-      );
-      renderTools();
-
-      // Analytics: Log Failed Search
-      clearTimeout(searchDebounce);
-      if (displayTools.length === 0 && query.length > 3) {
-        searchDebounce = setTimeout(() => {
-          try {
-            addDoc(collection(db, 'stats_search'), {
-              term: query,
-              timestamp: new Date()
-            });
-          } catch (e) {
-            console.warn("Analytics error:", e);
-          }
-        }, 2000);
-      }
-    });
-  }
-
-  // Language Toggle
-  if (langToggle) {
-    langToggle.addEventListener('click', () => toggleLanguage());
-    // Init from local storage
-    if (localStorage.getItem('rayyan_lang') === 'ar') {
-      toggleLanguage(true);
-    }
-  }
-
-  // Check for Announcements
-  checkForBanner();
+// Check for Announcements
+checkForBanner();
 });
 
 // Announcement Logic

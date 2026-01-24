@@ -19,6 +19,11 @@ const saveBannerBtn = document.getElementById('saveBannerBtn');
 const maintenanceActive = document.getElementById('maintenanceActive');
 const maintenanceStatus = document.getElementById('maintenanceStatus');
 
+// Theme Logic
+const themePrimary = document.getElementById('themePrimary');
+const themeSecondary = document.getElementById('themeSecondary');
+const saveThemeBtn = document.getElementById('saveThemeBtn');
+
 // Load Configs
 async function loadConfigs() {
     try {
@@ -39,10 +44,43 @@ async function loadConfigs() {
                 updateMaintUI(active);
             }
         }
+
+        // Theme
+        const themeSnap = await getDoc(doc(db, "config", "theme"));
+        if (themeSnap.exists()) {
+            const data = themeSnap.data();
+            if (themePrimary) themePrimary.value = data.primary || "#6D4CFF";
+            if (themeSecondary) themeSecondary.value = data.secondary || "#FF4C9F";
+        }
     } catch (e) {
         console.error("Error loading configs:", e);
     }
 }
+
+// Save Theme
+if (saveThemeBtn) {
+    saveThemeBtn.addEventListener('click', async () => {
+        try {
+            await setDoc(doc(db, "config", "theme"), {
+                primary: themePrimary.value,
+                secondary: themeSecondary.value,
+                updatedAt: new Date()
+            });
+            alert("Theme updated! Refresh the main site to see changes.");
+        } catch (e) {
+            console.error(e);
+            alert("Failed to save theme.");
+        }
+    });
+}
+
+window.resetTheme = async () => {
+    if (confirm("Reset to default colors?")) {
+        themePrimary.value = "#6D4CFF";
+        themeSecondary.value = "#FF4C9F";
+        saveThemeBtn.click();
+    }
+};
 
 function updateMaintUI(active) {
     if (maintenanceStatus) {
@@ -158,6 +196,7 @@ onAuthStateChanged(auth, (user) => {
         loadConfigs(); // Load banner & maintenance
         loadSearchStats(); // Load failed searches
         loadMessages(); // Load inbox
+        loadCategories(); // Load categories
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';

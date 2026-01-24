@@ -222,6 +222,30 @@
                 <span id="maintenanceStatus" style="font-weight:bold; color:#ff6b6b;">OFF</span>
             </label>
         </div>
+
+        <!-- Theme Editor -->
+        <div
+            style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; margin-bottom: 30px;">
+            <h3 style="margin-top:0;">🎨 Theme Customization</h3>
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-size:0.9em; opacity:0.8;">Primary
+                        (Purple)</label>
+                    <input type="color" id="themePrimary" value="#6D4CFF"
+                        style="width:100px; height:40px; border:none; cursor:pointer;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-size:0.9em; opacity:0.8;">Secondary
+                        (Pink)</label>
+                    <input type="color" id="themeSecondary" value="#FF4C9F"
+                        style="width:100px; height:40px; border:none; cursor:pointer;">
+                </div>
+                <button id="saveThemeBtn" class="btn-primary" style="align-self:end;">Save Theme</button>
+                <button onclick="resetTheme()"
+                    style="align-self:end; background:none; border:none; color:var(--text-secondary); cursor:pointer;">Reset
+                    Default</button>
+            </div>
+        </div>
         <div
             style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; margin-bottom: 30px;">
             <h3 style="margin-top:0;">📢 Announcement Banner</h3>
