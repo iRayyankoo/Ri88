@@ -336,13 +336,15 @@
 
                     <!-- Tools & Cats -->
                     <div style="margin-top:30px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:16px;">
+                        <div
+                            style="background:rgba(255,255,255,0.03); padding:20px; border-radius:16px; min-height:200px; resize:vertical; overflow:auto; max-height:600px;">
                             <h3 style="margin-top:0;">🗂️ Categories</h3>
                             <div id="categoryList" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
                             <button onclick="openCatModal()" class="btn-success"
                                 style="margin-top:10px; width:auto; font-size:0.8em;">+ Category</button>
                         </div>
-                        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:16px;">
+                        <div
+                            style="background:rgba(255,255,255,0.03); padding:20px; border-radius:16px; min-height:200px; resize:vertical; overflow:auto; max-height:600px;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <h3 style="margin:0;">🛠️ Tools</h3>
                                 <button onclick="openModal()" class="btn-success" style="width:auto; font-size:0.8em;">+
