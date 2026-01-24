@@ -26,9 +26,9 @@ if (loginForm) {
 }
 
 // Analytics Logic
-const embedUrlBtn = document.getElementById('embedUrlBtn');
-if (embedUrlBtn) {
-    embedUrlBtn.addEventListener('click', () => {
+// Delegation: Listen on document to ensure we catch the click even if timing is off
+document.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'embedUrlBtn') {
         const url = prompt('Enter your Looker Studio Embed URL (must start with https://lookerstudio.google.com/embed/):');
         if (!url) return;
 
@@ -38,8 +38,8 @@ if (embedUrlBtn) {
         } else {
             alert('Invalid URL! Must be a valid Looker Studio embed link.');
         }
-    });
-}
+    }
+});
 
 function loadAnalytics() {
     const url = localStorage.getItem('rayyan_analytics_url');
