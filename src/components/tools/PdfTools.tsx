@@ -222,9 +222,158 @@ function PDFWatermark() {
     );
 }
 
+// ----------------------------------------------------------------------
+// 5. IMAGES TO PDF
+function ImageToPDF() {
+    const [files, setFiles] = useState<FileList | null>(null);
+    const [processing, setProcessing] = useState(false);
+
+    const convert = async () => {
+        if (!files || !window.PDFLib) return;
+        setProcessing(true);
+        try {
+            const { PDFDocument } = window.PDFLib;
+            const pdfDoc = await PDFDocument.create();
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const arrayBuffer = await readFile(file);
+
+                let image;
+                if (file.type === 'image/jpeg') {
+                    image = await pdfDoc.embedJpg(arrayBuffer);
+                } else if (file.type === 'image/png') {
+                    image = await pdfDoc.embedPng(arrayBuffer);
+                } else {
+                    // Try PNG fallback or skip
+                    continue;
+                }
+
+                const page = pdfDoc.addPage([image.width, image.height]);
+                page.drawImage(image, {
+                    x: 0,
+                    y: 0,
+                    width: image.width,
+                    height: image.height,
+                });
+            }
+
+            const pdfBytes = await pdfDoc.save();
+            download(pdfBytes, 'images-converted.pdf');
+        } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
+        setProcessing(false);
+    };
+
+    return (
+        <div className="tool-ui-group">
+            <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="glass-input full-width" />
+            <div style={{ fontSize: '0.9em', color: '#aaa', marginTop: '8px' }}>
+                {files ? `${files.length} selected` : 'Select JPG/PNG images'}
+            </div>
+            <button onClick={convert} disabled={!files || processing} className="btn-primary full-width" style={{ marginTop: '16px' }}>
+                Convert to PDF
+            </button>
+        </div>
+    );
+}
 
 // ----------------------------------------------------------------------
-// MAIN ROUTER
+// 6. ROTATE PDF
+function PDFRotate() {
+    const [file, setFile] = useState<File | null>(null);
+    const [rotation, setRotation] = useState(90);
+    const [processing, setProcessing] = useState(false);
+
+    const run = async () => {
+        if (!file || !window.PDFLib) return;
+        setProcessing(true);
+        try {
+            const { PDFDocument, degrees } = window.PDFLib;
+            const bytes = await readFile(file);
+            const pdf = await PDFDocument.load(bytes);
+            const pages = pdf.getPages();
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            pages.forEach((page: any) => {
+                const currentRotation = page.getRotation().angle;
+                page.setRotation(degrees(currentRotation + rotation));
+            });
+
+            const pdfBytes = await pdf.save();
+            download(pdfBytes, `rotated_${file.name}`);
+        } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
+        setProcessing(false);
+    }
+
+    return (
+        <div className="tool-ui-group">
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width" />
+            <div className="input-row" style={{ marginTop: '10px' }}>
+                <label>Rotation Degrees</label>
+                <select value={rotation} onChange={e => setRotation(parseInt(e.target.value))} className="glass-input">
+                    <option value="90">90° Clockwise</option>
+                    <option value="180">180°</option>
+                    <option value="270">90° Counter-Clockwise</option>
+                </select>
+            </div>
+            <button onClick={run} disabled={!file || processing} className="btn-primary full-width" style={{ marginTop: '16px' }}>
+                Rotate All Pages
+            </button>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 7. REMOVE PAGES
+function PDFRemovePages() {
+    const [file, setFile] = useState<File | null>(null);
+    const [pagesToRemove, setPagesToRemove] = useState('');
+    const [processing, setProcessing] = useState(false);
+
+    const run = async () => {
+        if (!file || !window.PDFLib) return;
+        setProcessing(true);
+        try {
+            const { PDFDocument } = window.PDFLib;
+            const bytes = await readFile(file);
+            const pdf = await PDFDocument.load(bytes);
+            const total = pdf.getPageCount();
+
+            // Parse pages to remove (1-indexed)
+            const toRemove = new Set<number>();
+            pagesToRemove.split(',').forEach(p => {
+                const num = parseInt(p.trim());
+                if (!isNaN(num) && num >= 1 && num <= total) {
+                    toRemove.add(num - 1); // 0-indexed for API
+                }
+            });
+
+            // Convert to sorted array descending to avoid index shifting issues when removing
+            const sortedIndices = Array.from(toRemove).sort((a, b) => b - a);
+
+            sortedIndices.forEach(idx => {
+                pdf.removePage(idx);
+            });
+
+            const pdfBytes = await pdf.save();
+            download(pdfBytes, `trimmed_${file.name}`);
+        } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
+        setProcessing(false);
+    }
+
+    return (
+        <div className="tool-ui-group">
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width" />
+            <div className="input-row" style={{ marginTop: '10px' }}>
+                <label>Pages to Remove (e.g. 1, 3, 5)</label>
+                <input value={pagesToRemove} onChange={e => setPagesToRemove(e.target.value)} className="glass-input bg-dark" placeholder="Page numbers..." />
+            </div>
+            <button onClick={run} disabled={!file || !pagesToRemove || processing} className="btn-primary full-width" style={{ marginTop: '16px' }}>
+                Delete Pages
+            </button>
+        </div>
+    );
+}
 export default function PdfTools({ toolId }: ToolProps) {
     const [libLoaded, setLibLoaded] = useState(false);
 
@@ -244,8 +393,12 @@ export default function PdfTools({ toolId }: ToolProps) {
                     {toolId === 'pdf-protect' && <PDFProtector />}
                     {toolId === 'pdf-watermark' && <PDFWatermark />}
 
+                    {toolId === 'img-to-pdf' && <ImageToPDF />}
+                    {toolId === 'pdf-rotate' && <PDFRotate />}
+                    {toolId === 'pdf-rem' && <PDFRemovePages />}
+
                     {/* Fallback for others */}
-                    {!['pdf-merge', 'pdf-split', 'pdf-protect', 'pdf-watermark'].includes(toolId) && (
+                    {!['pdf-merge', 'pdf-split', 'pdf-protect', 'pdf-watermark', 'img-to-pdf', 'pdf-rotate', 'pdf-rem'].includes(toolId) && (
                         <div style={{ textAlign: 'center', padding: '20px' }}>
                             <h3>Coming Soon</h3>
                             <p>This PDF tool ({toolId}) is being migrated.</p>
