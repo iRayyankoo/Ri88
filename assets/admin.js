@@ -28,12 +28,25 @@ if (loginForm) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        const btn = loginForm.querySelector('button');
+        const errBox = document.getElementById('loginError');
+
+        console.log("Attempting login for:", email);
+        if (btn) btn.innerText = "Verifying...";
+        if (errBox) errBox.style.display = 'none';
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            console.log("Login successful!");
+            // UI update handled by onAuthStateChanged
         } catch (error) {
-            document.getElementById('loginError').innerText = error.message;
-            document.getElementById('loginError').style.display = 'block';
+            console.error("Login failed:", error);
+            if (btn) btn.innerText = "Login";
+            if (errBox) {
+                errBox.innerText = "Error: " + error.message;
+                errBox.style.display = 'block';
+            }
+            alert("Login Failed: " + error.code + "\n" + error.message);
         }
     });
 }
