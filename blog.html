@@ -16,66 +16,60 @@
     <script src="assets/lucide.js"></script>
 
     <style>
-        :root {
-            --bg-cream: #F9F7F2;
-            --text-dark: #1A1A1A;
-            --text-gray: #666666;
-            --accent-blue: #2D5BFF;
-            --accent-gold: #FFD700;
-            --font-main: 'IBM Plex Sans Arabic', sans-serif;
-        }
+        <link rel="stylesheet" href="assets/styles.css"><link rel="stylesheet" href="assets/overrides.css"><style>
 
+        /* Ri88 Blog Specific Overrides */
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-cream);
-            color: var(--text-dark);
-            font-family: var(--font-main);
+            /* Inherits from styles.css */
             overflow-x: hidden;
         }
 
-        /* Nav (Simplified for Blog) */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            background: transparent;
+        /* Navbar Override for Blog (Make it sticky/consistent) */
+        /* Using standard .navbar from styles.css */
+
+        main {
+            padding-top: 100px;
         }
 
-        .brand {
-            font-weight: 700;
-            font-size: 1.5em;
-            text-decoration: none;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Hero Article - Compact */
+        /* Hero Article - Branded */
         .hero-article {
             display: grid;
             grid-template-columns: 1.5fr 1fr;
-            /* Text wider, Image narrower */
             gap: 60px;
             padding: 40px 10%;
             align-items: center;
             margin-bottom: 60px;
             max-height: 500px;
-            /* Constrain height */
+            position: relative;
+        }
+
+        /* Glow Effect for Hero */
+        .hero-article::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            width: 300px;
+            height: 300px;
+            background: var(--accent-pink);
+            filter: blur(150px);
+            opacity: 0.2;
+            z-index: -1;
         }
 
         .hero-content h1 {
             font-size: 2.8em;
             line-height: 1.3;
             margin-bottom: 15px;
-            font-weight: 700;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #b8c0d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero-content p {
             font-size: 1.2em;
-            color: var(--text-gray);
+            color: var(--text-secondary);
             margin-bottom: 25px;
             line-height: 1.6;
         }
@@ -85,207 +79,247 @@
             align-items: center;
             gap: 10px;
             font-size: 0.9em;
-            color: var(--text-gray);
+            color: var(--text-muted);
         }
 
         .hero-meta img {
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .hero-image {
-            position: relative;
+            border: 2px solid var(--accent-purple);
         }
 
         .hero-image img {
             width: 100%;
             height: 100%;
             max-height: 380px;
-            /* Fixed max height */
             object-fit: cover;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .hero-frame {
-            position: absolute;
-            inset: -10px;
-            border: 2px solid #2d9687;
-            /* Green frame style */
-            border-radius: 24px;
-            z-index: -1;
-            transform: rotate(-1deg);
-        }
-
-        /* Grid - Enhanced */
+        /* Articles List - Glass Style */
         .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 50px;
-            padding: 0 10% 100px 10%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 15% 100px 15%;
         }
 
         .article-card {
             text-decoration: none;
             color: inherit;
-            transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            /* Subtle Paper Look */
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 24px;
+            padding: 24px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            /* Glassy */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
 
         .article-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateX(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-purple);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-img-wrapper {
+            width: 160px;
+            height: 120px;
+            flex-shrink: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
 
         .card-img {
             width: 100%;
-            aspect-ratio: 16/10;
+            height: 100%;
             object-fit: cover;
-            margin-bottom: 0;
-            /* Flush with content */
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover .card-img {
+            transform: scale(1.1);
         }
 
         .card-content {
-            padding: 24px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             flex-grow: 1;
         }
 
         .card-title {
-            font-size: 1.3em;
+            font-size: 1.4em;
             font-weight: 700;
-            margin: 0 0 12px 0;
-            line-height: 1.5;
-            color: #1a1a1a;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        .article-card:hover .card-title {
+            color: var(--accent-cyan);
         }
 
         .card-excerpt {
-            color: #555;
+            color: var(--text-secondary);
             font-size: 0.95em;
-            line-height: 1.7;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            margin-bottom: 12px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            flex-grow: 1;
         }
 
-        /* Newsletter Section */
+        /* Newsletter Section - Matches Index Footer Style */
         .newsletter-section {
-            background: #F2F0E9;
+            background: linear-gradient(to top, #0B1026, #131830);
             padding: 60px 10%;
             text-align: center;
-            border-top: 1px solid #E5E5E5;
+            border-top: 1px solid var(--glass-border);
         }
 
-        .news-grid {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .podcast-card {
-            width: 150px;
-            height: 150px;
-            border-radius: 12px;
-            background: #ddd;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .podcast-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .newsletter-section h3 {
+            color: white;
+            margin-bottom: 10px;
         }
 
         /* Mobile */
         @media (max-width: 768px) {
+            .articles-grid {
+                padding: 0 5%;
+            }
+
             .hero-article {
                 grid-template-columns: 1fr;
-                padding: 20px 5%;
-            }
-
-            .hero-content h1 {
-                font-size: 2em;
-            }
-
-            .articles-grid {
-                padding: 0 5% 60px 5%;
+                text-align: center;
                 gap: 30px;
             }
-        }
 
-        strong {
-            color: #d63031;
-        }
+            .article-card {
+                flex-direction: column-reverse;
+            }
 
-        /* Red highlights */
+            .card-img-wrapper {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+
+    .news-grid {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    }
+
+    .podcast-card {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    background: #ddd;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .podcast-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+    .hero-article {
+    grid-template-columns: 1fr;
+    padding: 20px 5%;
+    }
+
+    .hero-content h1 {
+    font-size: 2em;
+    }
+
+    .articles-grid {
+    padding: 0 5% 60px 5%;
+    gap: 30px;
+    }
+    }
+
+    strong {
+    color: #d63031;
+    }
+
+    /* Red highlights */
     </style>
 </head>
 
 <body>
 
-    <nav>
-        <a href="index.html" class="brand">
-            <img src="assets/logo.png" style="height:40px;">
-            <span>المقالات</span>
-        </a>
-        <div style="display:flex; gap:20px;">
-            <a href="index.html" style="text-decoration:none; color:inherit; font-weight:600;">الرئيسية</a>
-            <a href="about.html" style="text-decoration:none; color:inherit;">عن ريان</a>
+    <!-- Navbar (Standard) -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <img src="assets/logo.png" alt="Ri88 Logo">
+            </a>
+            <div class="nav-links">
+                <a href="tools.html" class="nav-link">Tools</a>
+                <a href="blog.html" class="nav-link active">Blog</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
+            <div style="display:flex; gap:16px;">
+                <a href="tools.html" class="btn-primary" style="padding:10px 20px; font-size:14px;">App</a>
+            </div>
         </div>
     </nav>
+    <main>
 
-    <!-- Featured -->
-    <header class="hero-article">
-        <div class="hero-content">
-            <h1>القادسية يحقق الفوز السادس توالياً</h1>
-            <p>كونسيساو: لكي نكون منافسين حقيقيين على البطولات الثلاث نحتاج إلى تعزيز الفريق وضبط التشكيلة.</p>
-            <div class="hero-meta">
-                <img src="https://i.pravatar.cc/100?img=1" alt="Author">
-                <div style="display:flex; flex-direction:column;">
-                    <span style="font-weight:bold; color:var(--text-dark);">نواف العقيل</span>
-                    <span style="font-size:0.85em;">23 يناير 2026</span>
+        <!-- Featured -->
+        <header class="hero-article">
+            <div class="hero-content">
+                <h1>القادسية يحقق الفوز السادس توالياً</h1>
+                <p>كونسيساو: لكي نكون منافسين حقيقيين على البطولات الثلاث نحتاج إلى تعزيز الفريق وضبط التشكيلة.</p>
+                <div class="hero-meta">
+                    <img src="https://i.pravatar.cc/100?img=1" alt="Author">
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-weight:bold; color:var(--text-dark);">نواف العقيل</span>
+                        <span style="font-size:0.85em;">23 يناير 2026</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="hero-image">
-            <div class="hero-frame"></div>
-            <img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                alt="Hero">
-        </div>
-    </header>
-
-    <!-- List -->
-    <section class="articles-grid" id="blogGrid">
-        <!-- Dynamic Content will be injected here via JS -->
-
-        <!-- MOCK ITEMS (For Visual Check - will be replaced by JS) -->
-        <a href="article.html" class="article-card" style="display:none;">
-            <div class="card-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b" class="card-img">
+            <div class="hero-image">
+                <div class="hero-frame"></div>
+                <img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                    alt="Hero">
             </div>
-            <div class="card-content">
-                <h3 class="card-title">«اللي باقي منك»: يستحق الترشيح للأوسكار 🏆</h3>
-                <p class="card-excerpt">مراجعة نقدية لفيلم يعيد تعريف السينما العربية...</p>
-            </div>
-        </a>
-    </section>
+        </header>
+
+        <!-- List -->
+        <section class="articles-grid" id="blogGrid">
+            <!-- Dynamic Content will be injected here via JS -->
+
+            <!-- MOCK ITEMS (For Visual Check - will be replaced by JS) -->
+            <a href="article.html" class="article-card" style="display:none;">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">«اللي باقي منك»: يستحق الترشيح للأوسكار 🏆</h3>
+                    <p class="card-excerpt">مراجعة نقدية لفيلم يعيد تعريف السينما العربية...</p>
+                </div>
+            </a>
+        </section>
+    </main>
 
     <!-- Podcast/Newsletter Footprint -->
     <div class="newsletter-section">

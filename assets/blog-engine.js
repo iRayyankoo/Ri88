@@ -32,11 +32,24 @@ async function renderBlogListing() {
 
         const articles = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
+        // Local Covers from user upload
+        const covers = [
+            'assets/covers/img_1.png', 'assets/covers/img_2.png', 'assets/covers/img_3.png',
+            'assets/covers/img_4.png', 'assets/covers/img_5.png', 'assets/covers/img_6.png',
+            'assets/covers/img_7.png', 'assets/covers/img_8.png', 'assets/covers/img_9.png',
+            'assets/covers/img_10.png', 'assets/covers/img_11.png', 'assets/covers/img_12.png',
+            'assets/covers/img_zakat.png'
+        ];
+
         // Render
-        grid.innerHTML = articles.map(a => `
+        grid.innerHTML = articles.map((a, index) => {
+            // Use user image IF set, otherwise cycle through local covers
+            const imgUrl = (a.image && a.image.startsWith('http')) ? a.image : covers[index % covers.length];
+
+            return `
             <a href="article.html?id=${a.id}" class="article-card">
                 <div class="card-img-wrapper">
-                    <img src="${a.image || 'assets/logo.png'}" class="card-img" onerror="this.src='https://placehold.co/150x150/eee/999?text=IMG'">
+                    <img src="${imgUrl}" class="card-img" loading="lazy">
                 </div>
                 <div class="card-content">
                     <h3 class="card-title">${a.title}</h3>
