@@ -24,6 +24,11 @@ const themePrimary = document.getElementById('themePrimary');
 const themeSecondary = document.getElementById('themeSecondary');
 const saveThemeBtn = document.getElementById('saveThemeBtn');
 
+// Ad Logic
+const adFooter = document.getElementById('adFooter');
+const adsActive = document.getElementById('adsActive');
+const saveAdsBtn = document.getElementById('saveAdsBtn');
+
 // Load Configs
 async function loadConfigs() {
     try {
@@ -52,9 +57,34 @@ async function loadConfigs() {
             if (themePrimary) themePrimary.value = data.primary || "#6D4CFF";
             if (themeSecondary) themeSecondary.value = data.secondary || "#FF4C9F";
         }
+
+        // Ads
+        const adSnap = await getDoc(doc(db, "config", "ads"));
+        if (adSnap.exists()) {
+            const data = adSnap.data();
+            if (adFooter) adFooter.value = data.footer_code || "";
+            if (adsActive) adsActive.checked = data.active || false;
+        }
     } catch (e) {
         console.error("Error loading configs:", e);
     }
+}
+
+// Save Ads
+if (saveAdsBtn) {
+    saveAdsBtn.addEventListener('click', async () => {
+        try {
+            await setDoc(doc(db, "config", "ads"), {
+                footer_code: adFooter.value,
+                active: adsActive.checked,
+                updatedAt: new Date()
+            });
+            alert("Ad configuration saved!");
+        } catch (e) {
+            console.error(e);
+            alert("Error saving ads.");
+        }
+    });
 }
 
 // Save Theme
@@ -197,6 +227,7 @@ onAuthStateChanged(auth, (user) => {
         loadSearchStats(); // Load failed searches
         loadMessages(); // Load inbox
         loadCategories(); // Load categories
+        renderChart(); // Load visual analytics
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';
