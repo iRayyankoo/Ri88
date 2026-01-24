@@ -1,14 +1,54 @@
 import { auth, db } from './firebase-config.js';
 import { defaultTools } from './tools-data.js';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, getDocs, doc, setDoc, deleteDoc, addDoc, writeBatch, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, setDoc, deleteDoc, addDoc, writeBatch, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 console.log("Admin module loaded.");
 
 // DOM Elements
 const loginForm = document.getElementById('loginForm');
 const toolForm = document.getElementById('toolForm');
-const modalElement = document.getElementById('toolModal'); // The actual modal div
+const modalElement = document.getElementById('toolModal');
+
+// Announcement Logic
+const bannerText = document.getElementById('bannerText');
+const bannerActive = document.getElementById('bannerActive');
+const saveBannerBtn = document.getElementById('saveBannerBtn');
+
+// Load Banner Config
+async function loadBanner() {
+    if (!bannerText) return;
+    try {
+        const docRef = doc(db, "config", "announcement");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            bannerText.value = data.text || "";
+            bannerActive.checked = data.active || false;
+        }
+    } catch (e) {
+        console.error("Error loading banner:", e);
+    }
+}
+
+// Save Banner Config
+if (saveBannerBtn) {
+    saveBannerBtn.addEventListener('click', async () => {
+        try {
+            const docRef = doc(db, "config", "announcement");
+            await setDoc(docRef, {
+                text: bannerText.value,
+                active: bannerActive.checked,
+                updatedAt: new Date()
+            });
+            alert("Banner updated successfully!");
+        } catch (e) {
+            console.error("Error saving banner:", e);
+            alert("Failed to save banner.");
+        }
+    });
+}
+
 
 // Login Logic
 if (loginForm) {
@@ -77,8 +117,9 @@ onAuthStateChanged(auth, (user) => {
         if (loginSection) loginSection.style.display = 'none';
         if (dashboardSection) dashboardSection.style.display = 'block';
         loadTools();
-        fetchStats(); // Load live counter
-        loadAnalytics(); // Load iframe
+        fetchStats();
+        loadAnalytics();
+        loadBanner(); // Load announcement config
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';
@@ -115,13 +156,19 @@ async function loadTools() {
             const t = doc.data();
             const item = document.createElement('div');
             item.className = 'tool-item';
+            // Dim if hidden
+            if (t.hidden) item.style.opacity = '0.5';
+
             item.innerHTML = `
                 <div class="tool-info">
-                    <h4>${t.title} / ${t.titleAr}</h4>
+                    <h4>${t.title} / ${t.titleAr} ${t.hidden ? '<span style="color:red; font-size:0.8em;">(Hidden)</span>' : ''}</h4>
                     <p>${t.desc}</p>
                     <small style="color:var(--accent-purple);">${t.cat} | ${t.id}</small>
                 </div>
-                <div style="display:flex; gap:10px;">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button onclick="toggleVisibility('${doc.id}', ${t.hidden || false})" class="btn-success" style="padding:8px 12px; font-size:1.2em;" title="Toggle Visibility">
+                        ${t.hidden ? '👁️‍🗨️' : '👁️'}
+                    </button>
                     <button onclick="editTool('${doc.id}')" class="btn-primary" style="padding:8px 16px; width:auto;">Edit</button>
                     <button onclick="removeTool('${doc.id}')" class="btn-danger">Delete</button>
                 </div>
@@ -235,5 +282,16 @@ window.editTool = async (docId) => {
 
         openModal();
         document.getElementById('modalTitle').innerText = "Edit Tool";
+    }
+};
+
+window.toggleVisibility = async (id, currentHiddenState) => {
+    try {
+        await updateDoc(doc(db, 'tools', id), {
+            hidden: !currentHiddenState
+        });
+        loadTools();
+    } catch (e) {
+        alert("Error updating visibility: " + e.message);
     }
 };

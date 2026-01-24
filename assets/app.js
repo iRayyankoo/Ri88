@@ -14,7 +14,10 @@ async function fetchTools() {
     if (!querySnapshot.empty) {
       const fetchedTools = [];
       querySnapshot.forEach((doc) => {
-        fetchedTools.push(doc.data());
+        const data = doc.data();
+        if (!data.hidden) {
+          fetchedTools.push(data);
+        }
       });
       tools = fetchedTools;
       displayTools = [...tools];
@@ -185,7 +188,29 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleLanguage(true);
     }
   }
+
+  // Check for Announcements
+  checkForBanner();
 });
+
+// Announcement Logic
+async function checkForBanner() {
+  try {
+    const docRef = doc(db, "config", "announcement");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.active && data.text) {
+        const banner = document.createElement('div');
+        banner.className = 'announcement-banner';
+        banner.innerText = data.text;
+        document.body.prepend(banner);
+      }
+    }
+  } catch (e) {
+    console.warn("Banner check failed:", e);
+  }
+}
 
 // RTL Logic
 function toggleLanguage(forceAr = false) {
