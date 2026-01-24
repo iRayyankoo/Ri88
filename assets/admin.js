@@ -228,6 +228,7 @@ onAuthStateChanged(auth, (user) => {
         loadMessages(); // Load inbox
         loadCategories(); // Load categories
         renderChart(); // Load visual analytics
+        loadTranslations(); // Load translations
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';
