@@ -15,24 +15,24 @@ export async function initBlog() {
 }
 
 async function renderBlogListing() {
-    const grid = document.getElementById('blogGrid');
+    const grid = document.getElementById('bentoGrid'); // New ID
     if (!grid) return;
 
-    // Show Loading
-    grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Jari Altahmil...</p>';
+    // Show Loading Skeleton
+    grid.innerHTML = '<div style="color:white; grid-column:1/-1; text-align:center; padding:50px;">Loading Magazine...</div>';
 
     try {
-        const q = query(collection(db, "articles"), orderBy("date", "desc"));
+        const q = query(collection(db, "articles"), orderBy("date", "desc"), limit(12));
         const snap = await getDocs(q);
 
         if (snap.empty) {
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No articles yet.</p>';
+            grid.innerHTML = '<p style="color:white; text-align:center;">No articles yet.</p>';
             return;
         }
 
         const articles = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Local Covers from user upload
+        // Local Covers
         const covers = [
             'assets/covers/img_1.png', 'assets/covers/img_2.png', 'assets/covers/img_3.png',
             'assets/covers/img_4.png', 'assets/covers/img_5.png', 'assets/covers/img_6.png',
@@ -41,34 +41,54 @@ async function renderBlogListing() {
             'assets/covers/img_zakat.png'
         ];
 
-        // Render
+        // RENDER LOGIC
         grid.innerHTML = articles.map((a, index) => {
-            // Use user image IF set, otherwise cycle through local covers
             const imgUrl = (a.image && a.image.startsWith('http')) ? a.image : covers[index % covers.length];
 
+            // Bento Pattern: 
+            // 0: Large (2x2)
+            // 1, 2: Standard
+            // 3: Tall (1x2)
+            // 4+: Standard matching grid flow
+
+            let className = 'bento-standard';
+            if (index === 0) className = 'bento-large';
+            else if (index === 3) className = 'bento-tall';
+            else if (index === 7) className = 'bento-large'; // Another large one later
+
+            // Different Inner HTML based on type
+            if (className === 'bento-large') {
+                return `
+                <a href="article.html?id=${a.id}" class="bento-item ${className}">
+                    <img src="${imgUrl}" class="bento-img" loading="lazy">
+                    <div class="bento-overlay">
+                        <span style="background:var(--accent-pink); width:fit-content; color:white; padding:4px 10px; border-radius:10px; font-size:0.7em; margin-bottom:10px; font-weight:bold;">FEATURED</span>
+                        <h3 class="bento-title">${a.title}</h3>
+                        <div class="bento-meta">
+                            <i data-lucide="user" style="width:14px;"></i> ${a.author}
+                        </div>
+                    </div>
+                </a>`;
+            }
+
             return `
-            <a href="article.html?id=${a.id}" class="article-card">
-                <div class="card-img-wrapper">
-                    <img src="${imgUrl}" class="card-img" loading="lazy">
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">${a.title}</h3>
-                    <p class="card-excerpt">${a.excerpt || a.content.substring(0, 100) + '...'}</p>
-                    <div class="hero-meta" style="margin-top:5px;">
-                        <span style="font-weight:bold; color:#d63031;">${a.author}</span>
-                        <span style="font-size:0.8em; color:#aaa;"> بواسطة النشرة البريدية • </span>
-                        <span style="font-size:0.8em; color:#aaa;">${new Date(a.date?.seconds * 1000).toLocaleDateString('ar-SA')}</span>
+            <a href="article.html?id=${a.id}" class="bento-item ${className}">
+                <img src="${imgUrl}" class="bento-img" loading="lazy">
+                <div class="bento-content">
+                    <h3 class="bento-title">${a.title}</h3>
+                    <div class="bento-meta">
+                        <span>${new Date(a.date?.seconds * 1000).toLocaleDateString('ar-SA')}</span>
                     </div>
                 </div>
-            </a>
-        `).join('');
+            </a>`;
+        }).join('');
 
-        // Optional: Update Hero with latest
-        // populateHero(articles[0]);
+        // Re-inject Lucide icons for new content
+        if (window.lucide) window.lucide.createIcons();
 
     } catch (e) {
         console.error(e);
-        grid.innerHTML = '<p style="color:salmon; text-align:center; grid-column:1/-1;">Error loading articles.</p>';
+        grid.innerHTML = '<p style="color:salmon; text-align:center; grid-column:1/-1;">Error loading.</p>';
     }
 }
 

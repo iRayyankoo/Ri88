@@ -15,9 +15,11 @@
     <!-- Icons -->
     <script src="assets/lucide.js"></script>
 
-    <style>
-        <link rel="stylesheet" href="assets/styles.css"><link rel="stylesheet" href="assets/overrides.css"><style>
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/overrides.css">
 
+    <style>
         /* Ri88 Blog Specific Overrides */
         body {
             /* Inherits from styles.css */
@@ -282,44 +284,307 @@
             </div>
         </div>
     </nav>
-    <main>
+    <main class="magazine-container">
 
-        <!-- Featured -->
-        <header class="hero-article">
-            <div class="hero-content">
-                <h1>القادسية يحقق الفوز السادس توالياً</h1>
-                <p>كونسيساو: لكي نكون منافسين حقيقيين على البطولات الثلاث نحتاج إلى تعزيز الفريق وضبط التشكيلة.</p>
-                <div class="hero-meta">
-                    <img src="https://i.pravatar.cc/100?img=1" alt="Author">
-                    <div style="display:flex; flex-direction:column;">
-                        <span style="font-weight:bold; color:var(--text-dark);">نواف العقيل</span>
-                        <span style="font-size:0.85em;">23 يناير 2026</span>
+        <!-- Creative Hero: Immersive Gradient Mesh -->
+        <section class="creative-hero">
+            <div class="hero-bg-mesh"></div>
+            <div class="hero-content-wrapper">
+                <span class="hero-tag">✨ Featured Story</span>
+                <h1 class="hero-title">القادسية يقلب الطاولة ويحقق الفوز السادس توالياً</h1>
+                <p class="hero-desc">تحليل تكتيكي شامل: كيف استطاع كونسيساو إعادة هيكلة الفريق في الشوط الثاني وخطف
+                    النقاط الثلاث من أمام الشباب؟</p>
+
+                <div class="hero-footer">
+                    <div class="author-pill">
+                        <img src="https://i.pravatar.cc/100?img=1">
+                        <span>نواف العقيل</span>
                     </div>
+                    <button class="read-btn">Read Article <i data-lucide="arrow-right"></i></button>
                 </div>
             </div>
-            <div class="hero-image">
-                <div class="hero-frame"></div>
+            <div class="hero-visual-3d">
                 <img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                    alt="Hero">
+                    class="floating-img main">
+                <img src="assets/covers/img_1.png" class="floating-img sub blur-1">
             </div>
-        </header>
-
-        <!-- List -->
-        <section class="articles-grid" id="blogGrid">
-            <!-- Dynamic Content will be injected here via JS -->
-
-            <!-- MOCK ITEMS (For Visual Check - will be replaced by JS) -->
-            <a href="article.html" class="article-card" style="display:none;">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b" class="card-img">
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">«اللي باقي منك»: يستحق الترشيح للأوسكار 🏆</h3>
-                    <p class="card-excerpt">مراجعة نقدية لفيلم يعيد تعريف السينما العربية...</p>
-                </div>
-            </a>
         </section>
+
+        <!-- Bento Grid Layout -->
+        <section class="bento-grid" id="bentoGrid">
+            <!-- Dynamic Content Injected Here -->
+            <!-- 
+                Grid Logic:
+                Item 1: Large Feature (Span 2 cols)
+                Item 2: Tall Sidebar (Span 2 rows)
+                Item 3-6: Standard Cards
+            -->
+        </section>
+
     </main>
+
+    <style>
+        /* --- MAGAZINE LAYOUT --- */
+        .magazine-container {
+            padding-top: 80px;
+            min-height: 100vh;
+            background: #0B1026;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(109, 76, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(211, 91, 255, 0.15) 0%, transparent 40%);
+        }
+
+        /* Hero */
+        .creative-hero {
+            position: relative;
+            height: 500px;
+            /* Reduced from 80vh for better fold visibility */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10%;
+            margin-bottom: 40px;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-bg-mesh {
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        .hero-content-wrapper {
+            z-index: 2;
+            max-width: 60%;
+        }
+
+        .hero-tag {
+            background: rgba(255, 184, 107, 0.2);
+            color: var(--accent-warm);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 184, 107, 0.3);
+        }
+
+        .hero-title {
+            font-size: 3.5em;
+            font-weight: 900;
+            /* Kufi Thick */
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 60%, #b8c0d9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-visual-3d {
+            position: relative;
+            width: 40%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-img {
+            position: absolute;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .floating-img.main {
+            width: 320px;
+            height: 420px;
+            object-fit: cover;
+            z-index: 2;
+            transform: rotate(-3deg);
+        }
+
+        .floating-img.sub {
+            width: 200px;
+            height: 250px;
+            object-fit: cover;
+            z-index: 1;
+            right: 20px;
+            bottom: 40px;
+            transform: rotate(5deg) scale(0.9);
+            filter: blur(2px) brightness(0.6);
+        }
+
+        /* BENTO GRID */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 280px;
+            /* Fixed Row Height */
+            gap: 20px;
+            padding: 0 5% 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Cell Styles */
+        .bento-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: white;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            z-index: 3;
+        }
+
+        .bento-item img {
+            transition: transform 0.6s ease;
+        }
+
+        .bento-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Large Feature Cell */
+        .bento-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .bento-large .bento-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .bento-large .bento-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 10%, transparent 80%);
+            z-index: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        /* Standard Cell */
+        .bento-standard {
+            grid-column: span 1;
+            grid-row: span 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bento-standard .bento-img {
+            width: 100%;
+            height: 55%;
+            object-fit: cover;
+        }
+
+        .bento-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Tall Cell */
+        .bento-tall {
+            grid-column: span 1;
+            grid-row: span 2;
+        }
+
+        .bento-tall .bento-img {
+            height: 60%;
+        }
+
+        /* Typography inside Bento */
+        .bento-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .bento-large .bento-title {
+            font-size: 1.8em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .bento-standard .bento-title {
+            font-size: 1.1em;
+            color: #E0E0E0;
+        }
+
+        .bento-tall .bento-title {
+            font-size: 1.4em;
+        }
+
+        .bento-meta {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Mobile */
+        @media (max-width: 1024px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 10px;
+            }
+
+            .bento-large {
+                grid-column: span 2;
+            }
+
+            .bento-tall {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            /* Break tallness */
+            .creative-hero {
+                flex-direction: column;
+                height: auto;
+                padding-top: 120px;
+                text-align: center;
+            }
+
+            .hero-content-wrapper {
+                max-width: 100%;
+                margin-bottom: 40px;
+            }
+
+            .hero-visual-3d {
+                width: 100%;
+                height: 300px;
+                display: none;
+            }
+
+            /* Simplify for mobile */
+        }
+    </style>
 
     <!-- Podcast/Newsletter Footprint -->
     <div class="newsletter-section">
