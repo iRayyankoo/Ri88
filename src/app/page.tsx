@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo } from 'react';
 import Navbar from '@/components/Navbar';
-import NewsTicker from '@/components/NewsTicker';
+
 import Hero from '@/components/Hero';
 import ToolCard from '@/components/ToolCard';
 import Modal from '@/components/Modal';
@@ -55,7 +55,7 @@ export default function Home() {
 
   return (
     <>
-      <NewsTicker />
+
       <Navbar />
       <Hero />
 
