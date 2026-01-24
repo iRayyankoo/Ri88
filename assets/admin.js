@@ -15,20 +15,54 @@ const bannerText = document.getElementById('bannerText');
 const bannerActive = document.getElementById('bannerActive');
 const saveBannerBtn = document.getElementById('saveBannerBtn');
 
-// Load Banner Config
-async function loadBanner() {
-    if (!bannerText) return;
+// Maintenance Logic
+const maintenanceActive = document.getElementById('maintenanceActive');
+const maintenanceStatus = document.getElementById('maintenanceStatus');
+
+// Load Configs
+async function loadConfigs() {
     try {
-        const docRef = doc(db, "config", "announcement");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            bannerText.value = data.text || "";
-            bannerActive.checked = data.active || false;
+        // Banner
+        const bannerSnap = await getDoc(doc(db, "config", "announcement"));
+        if (bannerSnap.exists()) {
+            const data = bannerSnap.data();
+            if (bannerText) bannerText.value = data.text || "";
+            if (bannerActive) bannerActive.checked = data.active || false;
+        }
+
+        // Maintenance
+        const maintSnap = await getDoc(doc(db, "config", "maintenance"));
+        if (maintSnap.exists()) {
+            const active = maintSnap.data().active || false;
+            if (maintenanceActive) {
+                maintenanceActive.checked = active;
+                updateMaintUI(active);
+            }
         }
     } catch (e) {
-        console.error("Error loading banner:", e);
+        console.error("Error loading configs:", e);
     }
+}
+
+function updateMaintUI(active) {
+    if (maintenanceStatus) {
+        maintenanceStatus.innerText = active ? "ACTIVE (LOCKED)" : "OFF";
+        maintenanceStatus.style.color = active ? "#ff4757" : "#2ed573";
+    }
+}
+
+if (maintenanceActive) {
+    maintenanceActive.addEventListener('change', async (e) => {
+        const active = e.target.checked;
+        updateMaintUI(active);
+        try {
+            await setDoc(doc(db, "config", "maintenance"), { active: active, updatedAt: new Date() });
+        } catch (err) {
+            alert("Failed to update maintenance mode.");
+            e.target.checked = !active; // Revert
+            updateMaintUI(!active);
+        }
+    });
 }
 
 // Save Banner Config
@@ -119,8 +153,11 @@ onAuthStateChanged(auth, (user) => {
         loadTools();
         fetchStats();
         loadAnalytics();
-        loadBanner();
+        fetchStats();
+        loadAnalytics();
+        loadConfigs(); // Load banner & maintenance
         loadSearchStats(); // Load failed searches
+        loadMessages(); // Load inbox
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';

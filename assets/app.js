@@ -144,7 +144,24 @@ const modalBody = document.getElementById('modalBody');
 const langToggle = document.getElementById('langToggle');
 
 // Initialization
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // 1. Check Maintenance Mode
+  try {
+    const maintSnap = await getDoc(doc(db, "config", "maintenance"));
+    if (maintSnap.exists() && maintSnap.data().active) {
+      document.body.innerHTML = `
+              <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#0f0f13; color:white; font-family:sans-serif; text-align:center;">
+                  <h1 style="font-size:3em; margin-bottom:10px;">🚧</h1>
+                  <h2>Under Maintenance</h2>
+                  <p style="color:#aaa;">We are improving the site. Please come back later.</p>
+              </div>
+          `;
+      return; // Stop execution
+    }
+  } catch (e) {
+    console.warn("Maintenance check failed:", e);
+  }
+
   // Only render tools if the grid exists (tools.html)
   if (grid) {
     // Check for URL query params (e.g. ?cat=finance)

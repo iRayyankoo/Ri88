@@ -209,7 +209,19 @@
                 Tools</button>
         </div>
 
-        <!-- Announcement Section -->
+        <!-- Control Center -->
+        <div
+            style="background: rgba(255, 68, 68, 0.1); border: 1px solid rgba(255, 68, 68, 0.3); padding: 25px; border-radius: 16px; margin-bottom: 30px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h3 style="margin:0; color:#ff6b6b;">🔒 Maintenance Mode</h3>
+                <p style="margin:5px 0 0 0; font-size:0.9em; opacity:0.8;">Lock the site for all visitors. Only you can
+                    access the admin.</p>
+            </div>
+            <label class="switch" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                <input type="checkbox" id="maintenanceActive" style="transform:scale(1.5);">
+                <span id="maintenanceStatus" style="font-weight:bold; color:#ff6b6b;">OFF</span>
+            </label>
+        </div>
         <div
             style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 16px; margin-bottom: 30px;">
             <h3 style="margin-top:0;">📢 Announcement Banner</h3>
