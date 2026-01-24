@@ -305,9 +305,6 @@ window.editTool = async (docId) => {
     }
 };
 
-    }
-};
-
 window.toggleVisibility = async (id, currentHiddenState) => {
     try {
         await updateDoc(doc(db, 'tools', id), {
