@@ -2,34 +2,45 @@ import { db } from './firebase-config.js';
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 async function seed() {
-    console.log("Seeding article...");
+    console.log("Seeding articles...");
+
+    const titles = [
+        "لماذا مات محتوى الأصدقاء؟",
+        "مستقبل الذكاء الاصطناعي في التعليم",
+        "كيف تبني عادة القراءة؟",
+        "تجربتي مع العمل عن بعد لمدة سنة",
+        "أهمية الأمن السيبراني في 2026",
+        "مراجعة لأحدث هواتف سامسونج",
+        "هل الاستثمار في الذهب مجدي؟",
+        "نصائح للمطورين المبتدئين",
+        "قصة نجاح شركة سعودية ناشئة",
+        "أفضل تطبيقات تنظيم الوقت",
+        "عالم الميتافيرس: حقيقة أم خيال؟",
+        "التصوير الفوتوغرافي بالجوال",
+        "تعلم البرمجة من الصفر",
+        "مستقبل السيارات الكهربائية",
+        "أسرار التسويق الرقمي الناجح"
+    ];
+
+    const authors = ["ريان الحربي", "نواف العقيل", "سارة الأحمد", "خالد الزهراني", "إيمان أسعد"];
+
     try {
-        await addDoc(collection(db, "articles"), {
-            title: "كيف تبني عادة القراءة في 2026؟",
-            author: "ريان الحربي",
-            image: "https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-            excerpt: "خطوات عملية بسيطة لتحويل القراءة من واجب ثقيل إلى متعة يومية لا تستغني عنها.",
-            content: `
-                <p>كثير منا يضع "القراءة" ضمن أهدافه السنوية، ولكن القليل يستمر. المشكلة ليست في الوقت، بل في النهج.</p>
-                <h2>1. ابدأ صغيراً جداً</h2>
-                <p>لا تقرر قراءة كتاب في الأسبوع. قرر قراءة "صفحة واحدة" قبل النوم. السر في الاستمرارية وليس الكثافة.</p>
-                
-                <div class="pull-quote">
-                    "العادة هي ما تفعله دون تفكير. اجعل حمل الكتاب أسهل من حمل الهاتف."
-                </div>
+        let count = 0;
+        for (const title of titles) {
+            await addDoc(collection(db, "articles"), {
+                title: title,
+                author: authors[Math.floor(Math.random() * authors.length)],
+                // Using placehold.co temporarily, frontend handles covers
+                image: ``,
+                excerpt: "مقال تجريبي لاختبار شكل المجلة الجديد والشبكة المتداخلة...",
+                content: `<p>محتوى تجريبي للمقال رقم ${count + 1}...</p>`,
+                date: new Date(Date.now() - Math.floor(Math.random() * 1000000000)) // Random past date
+            });
+            console.log(`Added: ${title}`);
+            count++;
+        }
 
-                <h2>2. جهز البيئة</h2>
-                <p>ضع الكتاب في مكان تراه دائماً. على الوسادة، أو بجانب ريموت التلفزيون. اجعل الوصول إليه أسهل من الوصول للمشتتات.</p>
-
-                <h2>3. اقرأ ما تحب، حتى لو كان "تافهاً"</h2>
-                <p>في البداية، الهدف هو بناء العادة. لا تجبر نفسك على قراءة كتب فلسفية معقدة إذا كنت لا تستمتع بها. اقرأ روايات، قصص مصورة، أي شيء يجعلك تقلب الصفحة.</p>
-                
-                <br>
-                <p>تذكر، القراءة ليست سباقاً. هي رحلة ممتعة لاكتشاف عوالم جديدة.</p>
-            `,
-            date: new Date()
-        });
-        document.body.innerHTML += '<h1 style="color:green; position:fixed; top:0; left:0; background:white; padding:20px;">تم نشر المقال العشوائي بنجاح! ✅</h1>';
+        document.body.innerHTML += '<h1 style="color:green; text-align:center; margin-top:50px;">✅ تم إضافة 15 مقال عشوائي بنجاح!</h1><p style="text-align:center;">ارجع لصفحة المقالات وحدث الصفحة.</p>';
     } catch (e) {
         document.body.innerHTML += `<h1 style="color:red;">Error: ${e.message}</h1>`;
         console.error(e);
