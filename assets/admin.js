@@ -65,6 +65,15 @@ async function loadConfigs() {
             if (adFooter) adFooter.value = data.footer_code || "";
             if (adsActive) adsActive.checked = data.active || false;
         }
+
+        // Features
+        const featSnap = await getDoc(doc(db, "config", "features"));
+        if (featSnap.exists()) {
+            const data = featSnap.data();
+            if (featBlog) featBlog.checked = data.blog !== false; // Default true
+            if (featAuth) featAuth.checked = data.auth !== false;
+            if (featSports) featSports.checked = data.sports !== false;
+        }
     } catch (e) {
         console.error("Error loading configs:", e);
     }
@@ -230,6 +239,7 @@ onAuthStateChanged(auth, (user) => {
         renderChart(); // Load visual analytics
         loadTranslations(); // Load translations
         loadArticles(); // Load blog posts
+        loadUsers(); // Load users
     } else {
         if (loginSection) loginSection.style.display = 'block';
         if (dashboardSection) dashboardSection.style.display = 'none';
