@@ -1090,15 +1090,17 @@ window.openModal = function (toolId) {
   document.body.style.overflow = 'hidden'; // Prevent scroll
 }
 
-window.closeModal = function () {
-  modalOverlay.classList.remove('active');
-  document.body.style.overflow = '';
-}
+if (modalOverlay) {
+  window.closeModal = function () {
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
 
-// Close on outside click
-modalOverlay.addEventListener('click', (e) => {
-  if (e.target === modalOverlay) closeModal();
-});
+  // Close on outside click
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+}
 
 // About Modal
 window.openAbout = function () {
