@@ -1,6 +1,5 @@
-// Rayyan Portal 2.0 Core Logic
 import { db } from './firebase-config.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc, increment, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Tool Data Definitions
 // Status: 'existing' or 'added'
@@ -756,7 +755,9 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTools();
     }
     fetchTools();
+    trackVisit();
   }
+
 
 
   // Search Listener
@@ -1197,3 +1198,29 @@ window.addEventListener('beforeinstallprompt', (e) => {
 // Add translation for install button
 translations.en.install_app = "App";
 translations.ar.install_app = "تطبيق";
+
+
+// Analytics Tracking
+async function trackVisit() {
+    // Check if tracked in this session
+    if (sessionStorage.getItem('visited_session')) return;
+
+    try {
+        const statsRef = doc(db, 'stats', 'general');
+        const docSnap = await getDoc(statsRef);
+
+        if (docSnap.exists()) {
+            await updateDoc(statsRef, {
+                visitors: increment(1)
+            });
+        } else {
+            // First time setup
+            await setDoc(statsRef, { visitors: 1 });
+        }
+        
+        sessionStorage.setItem('visited_session', 'true');
+        console.log('Visit tracked!');
+    } catch (e) {
+        console.warn('Tracking error (ignore if offline):', e);
+    }
+}
