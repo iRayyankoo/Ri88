@@ -166,6 +166,32 @@
                 transform: translateY(0);
             }
         }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 12px 15px;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: var(--accent-purple);
+            color: white;
+            font-weight: 500;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
