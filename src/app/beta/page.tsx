@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo } from 'react';
 import { tools, categories, Tool } from '@/data/tools';
-import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Type, Clock, Activity, Zap, Smartphone, Code, Flag, GraduationCap, Languages, Trophy, Palette, ArrowRight, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Type, Clock, Activity, Zap, Smartphone, Code, Flag, GraduationCap, Languages, Trophy, Palette, ArrowRight, Twitter, Instagram, Linkedin, Shuffle } from 'lucide-react';
 import Modal from '@/components/Modal';
 import ToolRouter from '@/components/tools/ToolRouter';
 import Link from 'next/link';
@@ -40,6 +40,21 @@ export default function BetaHome() {
     // Initial View Logic (Featured/New)
     const featuredTools = useMemo(() => tools.filter(t => ['loan-calc', 'time-add', 'health-bmi', 'pdf-merge'].includes(t.id)), []);
     const newTools = useMemo(() => tools.filter(t => t.status === 'new').slice(0, 4), []);
+    const [randomTools, setRandomTools] = useState<Tool[]>([]);
+
+    // Smart Randomization Logic
+    React.useEffect(() => {
+        const excludedIds = new Set([...featuredTools.map(t => t.id), ...newTools.map(t => t.id)]);
+        const candidates = tools.filter(t => !excludedIds.has(t.id));
+
+        // Shuffle
+        for (let i = candidates.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+        }
+
+        setRandomTools(candidates.slice(0, 8)); // Show 8 random tools
+    }, [featuredTools, newTools]);
 
     // Filter Logic
     const filteredTools = useMemo(() => {
@@ -206,12 +221,33 @@ export default function BetaHome() {
                                     </div>
                                 </div>
                             </div>
-                        )}
+                                </div>
+                    {/* Random / Discover */}
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                            <h2 style={{ fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Shuffle size={18} color="#D35BFF" /> جرب شيئاً جديداً
+                            </h2>
+                            <button
+                                onClick={() => window.location.reload()}
+                                style={{ background: 'none', border: 'none', color: '#D35BFF', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                            >
+                                <Shuffle size={14} /> تحديث
+                            </button>
+                        </div>
+                        <div className="tools-grid-responsive">
+                            {randomTools.map(tool => (
+                                <ToolCard key={tool.id} tool={tool} onClick={() => handleToolClick(tool)} />
+                            ))}
+                        </div>
                     </div>
                 </div>
+                        )}
+        </div>
+                </div >
 
-                {/* Footer (Full Width, No Bottom Gap) */}
-                <footer className="beta-footer">
+        {/* Footer (Full Width, No Bottom Gap) */ }
+        < footer className = "beta-footer" >
                     <div className="footer-grid">
                         <div className="footer-brand">
                             <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px', color: 'white', marginBottom: '20px' }}>
@@ -248,14 +284,15 @@ export default function BetaHome() {
                     <div className="footer-copyright">
                         © 2026 Ri88. صنع بكل حب ❤️ في الرياض.
                     </div>
-                </footer>
+                </footer >
 
-            </main>
+            </main >
 
-            {/* Login Modal */}
-            <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
+        {/* Login Modal */ }
+        < LoginModal isOpen = { loginOpen } onClose = {() => setLoginOpen(false)
+} />
 
-            {/* Tool Modal */}
+{/* Tool Modal */ }
             <Modal
                 isOpen={!!activeTool}
                 onClose={() => setActiveTool(null)}
@@ -382,7 +419,7 @@ export default function BetaHome() {
                     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
                 }
             `}</style>
-        </div>
+        </div >
     );
 }
 
