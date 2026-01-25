@@ -322,7 +322,8 @@ function PDFExtractText() {
     };
 
     const downloadText = () => {
-        const blob = new Blob([textResult], { type: 'text/plain' });
+        // Add Byte Order Mark (BOM) for UTF-8 so Windows (Notepad/Excel) recognizes Arabic correctly
+        const blob = new Blob(['\uFEFF' + textResult], { type: 'text/plain;charset=utf-8' });
         download(blob, 'extracted_text.txt');
     };
 
