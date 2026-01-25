@@ -309,7 +309,7 @@ function ToolCard({ tool, onClick }: { tool: Tool, onClick: () => void }) {
                     background: tool.status === 'new' ? '#00E096' : 'rgba(255,255,255,0.05)',
                     color: tool.status === 'new' ? '#000' : '#666'
                 }}>
-                    {tool.status === 'new' ? 'جديد' : tool.cat}
+                    {tool.status === 'new' ? 'جديد' : (categories.find(c => c.id === tool.cat)?.nameAr || tool.cat)}
                 </div>
             </div>
 

@@ -41,12 +41,14 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'fixed',
-                inset: 0, // Top/Left/Right/Bottom: 0
-                zIndex: 99999
+                inset: 0,
+                zIndex: 99999,
+                background: 'rgba(0, 0, 0, 0.6)',
+                backdropFilter: 'blur(8px)',
+                transition: 'all 0.3s ease'
             }}
         >
             <div
-                className="modal-window glass-panel"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     width: '90%',
@@ -55,23 +57,47 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                     overflowY: 'auto',
                     padding: '32px',
                     position: 'relative',
-                    animation: 'fadeIn 0.3s ease-out'
+                    animation: 'modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    background: '#181926',
+                    borderRadius: '32px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05)',
+                    color: 'white'
                 }}
             >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', alignItems: 'center' }}>
-                    <h3 style={{ fontSize: '1.5rem', margin: 0 }}>{title}</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '20px' }}>
+                    <h3 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 800 }}>{title}</h3>
                     <button
                         onClick={onClose}
-                        style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '4px' }}
+                        style={{
+                            background: 'rgba(255,255,255,0.05)',
+                            border: 'none',
+                            color: '#8890AA',
+                            cursor: 'pointer',
+                            padding: '8px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,50,50,0.2)'; e.currentTarget.style.color = '#ff4444'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#8890AA'; }}
                     >
-                        <X size={24} />
+                        <X size={20} />
                     </button>
                 </div>
 
-                <div className="modal-body">
+                <div className="modal-body" style={{ direction: 'rtl' }}>
                     {children}
                 </div>
             </div>
+            <style jsx global>{`
+                @keyframes modalSlideUp {
+                    from { transform: translateY(20px) scale(0.95); opacity: 0; }
+                    to { transform: translateY(0) scale(1); opacity: 1; }
+                }
+            `}</style>
         </div>,
         document.body
     );
