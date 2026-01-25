@@ -103,9 +103,9 @@ function VATCalculator() {
                 <label>نسبة الضريبة (%)</label>
                 <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="glass-input" />
             </div>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-                <button onClick={() => calculate('add')} className="btn-primary" style={{ flex: 1 }}>أضف الضريبة (+)</button>
-                <button onClick={() => calculate('remove')} className="btn-primary" style={{ flex: 1, background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>أزل الضريبة (-)</button>
+            <div className="grid grid-cols-2 gap-3 mt-4">
+                <button onClick={() => calculate('add')} className="btn-primary w-full text-sm">أضف (+)</button>
+                <button onClick={() => calculate('remove')} className="btn-secondary w-full text-sm !border-glass">أزل (-)</button>
             </div>
 
             {result && (
