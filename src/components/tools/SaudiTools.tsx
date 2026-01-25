@@ -189,6 +189,39 @@ function TafqeetTool() {
     );
 }
 
+// ----------------------------------------------------------------------
+// 3. Hijri Date Converter (Simple)
+function HijriDate() {
+    const [today, setToday] = useState('');
+    useEffect(() => {
+        setToday(new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date()));
+    }, []);
+    return (
+        <div className="tool-ui-group">
+            <h3 className="text-center text-xl mb-4" style={{ textAlign: 'center' }}>تاريخ اليوم الهجري</h3>
+            <div className="glass-panel p-6 text-center text-2xl font-bold text-accent-cyan" style={{ padding: '20px', textAlign: 'center', fontSize: '1.5em', color: 'var(--accent-cyan)' }}>
+                {today}
+            </div>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 4. Saudi Events (Simple Placeholder)
+function SaudiEvents() {
+    return (
+        <div className="tool-ui-group">
+            <h3 className="text-center text-xl mb-4" style={{ textAlign: 'center' }}>الأحداث السعودية القادمة</h3>
+            <div className="glass-panel" style={{ padding: '15px', marginBottom: '10px', textAlign: 'center' }}>
+                🎉 <b>يوم التأسيس</b> <br /> 22 فبراير
+            </div>
+            <div className="glass-panel" style={{ padding: '15px', textAlign: 'center' }}>
+                🇸🇦 <b>اليوم الوطني</b> <br /> 23 سبتمبر
+            </div>
+        </div>
+    );
+}
+
 export default function SaudiTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'saudi-eos': return <EOSCalculator />;
