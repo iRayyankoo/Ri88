@@ -10,6 +10,10 @@ import ContentTools from './ContentTools';
 import HealthTools from './HealthTools';
 import SaudiTools from './SaudiTools';
 import DeveloperTools from './DeveloperTools';
+import EducationTools from './EducationTools';
+import DesignTools from './DesignTools';
+import LanguagesTools from './LanguagesTools';
+import SportsDashboard from '../sports/SportsDashboard';
 import { Tool } from '@/data/tools';
 
 interface ToolRouterProps {
@@ -54,19 +58,18 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
             return <DeveloperTools toolId={id} />;
 
         case 'education':
+            return <EducationTools toolId={id} />;
+
+        case 'design':
+            return <DesignTools toolId={id} />;
+
         case 'languages':
+            return <LanguagesTools toolId={id} />;
+
         case 'sports':
-            // These are likely new categories that might not have a dedicated component yet
-            // or should be handled by a generic one. For now, we'll show a "Maintenance" placeholder
-            // unless we confirm they have components.
-            // Checking logic: We don't have EducationTools.tsx etc yet.
-            return (
-                <div style={{ textAlign: 'center', padding: '60px', color: '#888' }}>
-                    <h2 style={{ fontSize: '2em', marginBottom: '10px' }}>🚧</h2>
-                    <h3>Under Construction</h3>
-                    <p>The {cat} tools are being updated.</p>
-                </div>
-            );
+            // All sport tools route to the main dashboard for now, 
+            // potentially pre-selecting a league based on ID could be added to SportsDashboard later
+            return <SportsDashboard />;
 
         default:
             return (
