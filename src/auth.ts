@@ -14,7 +14,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         signIn: '/beta', // Custom sign-in modal on beta page
     },
     callbacks: {
-        async session({ session, token }) {
+        async session({ session, token }: { session: any, token: any }) {
             return session
         },
     },

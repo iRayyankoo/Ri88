@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo } from 'react';
 import { tools, categories, Tool } from '@/data/tools';
-import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Type, Clock, Activity, Zap, Smartphone, Code, Flag, GraduationCap, Languages, Trophy, Palette, ArrowRight, ArrowLeft, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Type, Clock, Activity, Zap, Smartphone, Code, Flag, GraduationCap, Languages, Trophy, Palette, ArrowRight, Twitter, Instagram, Linkedin } from 'lucide-react';
 import Modal from '@/components/Modal';
 import ToolRouter from '@/components/tools/ToolRouter';
 import Link from 'next/link';

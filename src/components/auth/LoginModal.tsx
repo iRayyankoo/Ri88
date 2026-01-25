@@ -2,7 +2,7 @@
 "use client";
 import React from 'react';
 import { signIn } from "next-auth/react"
-import { X, Github, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
 import Modal from '@/components/Modal';
 
 interface LoginModalProps {
