@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, ArrowUpRight, ArrowDownRight, Activity, Users, Globe, Smartphone } from 'lucide-react';
+import { Map as MapIcon, ArrowUpRight, ArrowDownRight, Activity, Users, Globe, Smartphone } from 'lucide-react';
 
 function StatCard({ title, value, change, isPositive, icon: Icon, color }: any) {
     return (
@@ -72,7 +72,7 @@ export default function DashboardView() {
 
                         {/* Saudi Map Placeholder */}
                         <div style={{ position: 'relative' }}>
-                            <Map size={100} color="#333" />
+                            <MapIcon size={100} color="#333" />
                             {/* Live Pings */}
                             <div className="absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
                             <div className="absolute bottom-10 left-4 w-3 h-3 bg-blue-500 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>

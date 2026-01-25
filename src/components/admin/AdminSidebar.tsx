@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, FileText, Users, Palette, Settings, LogOut, Search, Map, Bell } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, Palette, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
 interface NavButtonProps {
