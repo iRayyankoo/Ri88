@@ -426,7 +426,7 @@ export const tools: Tool[] = [
 
     // Saudi / Arabic Expansion
     {
-        id: 'text-tafqeet', cat: 'saudi', icon: 'banknote', status: 'new',
+        id: 'saudi-tafqeet', cat: 'saudi', icon: 'banknote', status: 'new',
         title: 'Number to Text', titleAr: 'تفقيط الأرقام',
         desc: 'Convert numbers to Arabic text (financial).', descAr: 'تحويل الأرقام إلى نص عربي (للفواتير والشيكات).'
     },
@@ -455,22 +455,22 @@ export const tools: Tool[] = [
 
     // Languages (New)
     {
-        id: 'lang-trans', cat: 'languages', icon: 'languages', status: 'new',
+        id: 'text-translate', cat: 'languages', icon: 'languages', status: 'new',
         title: 'Quick Translator', titleAr: 'مترجم سريع',
         desc: 'Open Google Translate quickly.', descAr: 'فتح ترجمة جوجل بسرعة مع النص.'
     },
     {
-        id: 'lang-ar-corr', cat: 'languages', icon: 'check-circle-2', status: 'new',
+        id: 'text-grammar-ar', cat: 'languages', icon: 'check-circle-2', status: 'new',
         title: 'Arabic Corrector', titleAr: 'مصحح عربي',
         desc: 'Fix common Arabic typos.', descAr: 'تصحيح الأخطاء الإملائية العربية الشائعة.'
     },
     {
-        id: 'lang-en-corr', cat: 'languages', icon: 'check-circle-2', status: 'new',
+        id: 'text-grammar-en', cat: 'languages', icon: 'check-circle-2', status: 'new',
         title: 'English Corrector', titleAr: 'مصحح إنجليزي',
         desc: 'Fix capitalization and spacing.', descAr: 'تنسيق وتصحيح النصوص الإنجليزية.'
     },
     {
-        id: 'lang-editor', cat: 'languages', icon: 'pen-tool', status: 'new',
+        id: 'text-editor', cat: 'languages', icon: 'pen-tool', status: 'new',
         title: 'Smart Editor', titleAr: 'محرر ذكي',
         desc: 'Write and format text.', descAr: 'محرر نصوص بسيط مع عداد كلمات.'
     },
@@ -533,19 +533,24 @@ export const tools: Tool[] = [
 
     // Design Tools (New)
     {
-        id: 'des-grad', cat: 'developer', icon: 'palette', status: 'new',
+        id: 'design-gradient', cat: 'design', icon: 'palette', status: 'new',
         title: 'CSS Gradient', titleAr: 'منشئ التدرج اللوني',
         desc: 'Generate CSS for linear gradients.', descAr: 'توليد كود CSS للتدرجات اللونية.'
     },
     {
-        id: 'des-shadow', cat: 'developer', icon: 'layers', status: 'new',
+        id: 'design-shadow', cat: 'design', icon: 'layers', status: 'new',
         title: 'Box Shadow Gen', titleAr: 'منشئ الظلال',
         desc: 'Create smooth CSS box shadows.', descAr: 'توليد كود CSS للظلال الناعمة.'
     },
     {
-        id: 'des-contrast', cat: 'developer', icon: 'sun', status: 'new',
+        id: 'design-contrast', cat: 'design', icon: 'sun', status: 'new',
         title: 'Contrast Checker', titleAr: 'تباين الألوان',
         desc: 'Check text readability (WCAG).', descAr: 'فحص تباين الألوان للقراءة (WCAG).'
+    },
+    {
+        id: 'design-palette', cat: 'design', icon: 'image', status: 'new', // Moved here
+        title: 'Color Extractor', titleAr: 'مستخرج الألوان',
+        desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
     },
 
     // Media (New)
@@ -578,7 +583,7 @@ export const tools: Tool[] = [
         desc: 'Relax and focus with guided breathing.', descAr: 'استرخِ وركز مع تمرين التنفس الموجه.'
     },
     {
-        id: 'life-reaction', cat: 'productivity', icon: 'zap', status: 'new',
+        id: 'prod-reaction', cat: 'productivity', icon: 'zap', status: 'new',
         title: 'Reaction Time', titleAr: 'سرعة رد الفعل',
         desc: 'Test how fast you can click.', descAr: 'اختبر سرعة استجابتك.'
     },
@@ -615,4 +620,5 @@ export const categories = [
     { id: 'education', name: 'Education', nameAr: 'التعليم', icon: 'graduation-cap' },
     { id: 'languages', name: 'Languages', nameAr: 'لغات', icon: 'languages' },
     { id: 'sports', name: 'Sports', nameAr: 'رياضة', icon: 'trophy' },
+    { id: 'design', name: 'Design', nameAr: 'تصميم', icon: 'palette' },
 ];
