@@ -7,6 +7,7 @@ import ToolRouter from '@/components/tools/ToolRouter';
 import Link from 'next/link';
 import UserMenu from '@/components/auth/UserMenu';
 import LoginModal from '@/components/auth/LoginModal';
+import CommandPalette from '@/components/CommandPalette';
 import { useSession } from "next-auth/react";
 
 // Icon Map for Categories
@@ -133,8 +134,10 @@ export default function BetaHome() {
                                 placeholder="بحث عن أداة، حاسبة..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 className="search-input"
                             />
+                            <div className="search-shortcut">Ctrl K</div>
                         </div>
 
                         <div className="header-actions">
@@ -298,6 +301,9 @@ export default function BetaHome() {
                 {activeTool && <ToolRouter tool={activeTool} />}
             </Modal>
 
+            {/* Command Palette */}
+            <CommandPalette onSelectTool={(t) => setActiveTool(t)} />
+
             <style jsx global>{`
                 /* --- GLOBAL LAYOUT STYLES --- */
                 .beta-layout {
@@ -350,6 +356,7 @@ export default function BetaHome() {
                 .search-container { position: relative; width: 400px; }
                 .search-input { width: 100%; padding: 12px 45px 12px 12px; border-radius: 50px; background: #232433; border: 1px solid #2E2F40; color: white; outline: none; text-align: right; font-family: inherit; }
                 .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; }
+                .search-shortcut { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 10px; color: #666; border: 1px solid #333; padding: 2px 6px; border-radius: 4px; pointer-events: none; }
                 .header-actions { display: flex; gap: 15px; }
                 .lang-btn { padding: 10px 20px; border-radius: 50px; background: #232433; border: 1px solid #2E2F40; color: white; fontSize: 13px; fontWeight: 600; }
                 .favorite-btn { padding: 10px; border-radius: 50%; background: #D35BFF; color: white; border: none; display: flex; alignItems: center; content: center; }
