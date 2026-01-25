@@ -227,16 +227,16 @@ export default function BetaHome() {
                         <div>
                             <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>استكشف</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px', color: '#8890AA' }}>
-                                <a href="#">الرئيسية</a>
-                                <a href="#">من نحن</a>
-                                <a href="#">تواصل معنا</a>
+                                <Link href="/beta" style={{ color: '#8890AA', textDecoration: 'none' }}>الرئيسية</Link>
+                                <Link href="/beta/about" style={{ color: '#8890AA', textDecoration: 'none' }}>من نحن</Link>
+                                <Link href="/beta/contact" style={{ color: '#8890AA', textDecoration: 'none' }}>تواصل معنا</Link>
                             </div>
                         </div>
                         <div>
                             <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>قانوني</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px', color: '#8890AA' }}>
-                                <a href="#">الخصوصية</a>
-                                <a href="#">الشروط</a>
+                                <Link href="/beta/privacy" style={{ color: '#8890AA', textDecoration: 'none' }}>الخصوصية</Link>
+                                <Link href="/beta/terms" style={{ color: '#8890AA', textDecoration: 'none' }}>الشروط</Link>
                             </div>
                         </div>
                         <div>
