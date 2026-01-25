@@ -1,128 +1,66 @@
-
 "use client";
 import React, { useState } from 'react';
-import { LayoutDashboard, FileText, Users, Palette, Settings, LogOut, Search, Map, Bell } from 'lucide-react';
-import Link from 'next/link';
+import { Bell, Search } from 'lucide-react';
+import AdminSidebar from '@/components/admin/AdminSidebar';
+import DashboardView from '@/components/admin/views/DashboardView';
+import ContentView from '@/components/admin/views/ContentView';
+import UsersView from '@/components/admin/views/UsersView';
+import { AppearanceView, SettingsView } from '@/components/admin/views/SettingsView';
 
 export default function AdminPage() {
     const [activeTab, setActiveTab] = useState('dashboard');
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', height: '100vh', background: '#13131a', color: 'white', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', height: '100vh', background: '#0B1026', color: 'white', overflow: 'hidden' }}>
 
-            {/* Sidebar */}
-            <div style={{ background: '#0f0f13', borderRight: '1px solid rgba(255,255,255,0.05)', padding: '20px', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ fontWeight: 'bold', fontSize: '1.2em', color: 'white' }}>Ri88 Admin</div>
-                </div>
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                    <NavButton icon={<LayoutDashboard size={18} />} label="Dashboard" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-                    <NavButton icon={<FileText size={18} />} label="Content & Blog" active={activeTab === 'content'} onClick={() => setActiveTab('content')} />
-                    <NavButton icon={<Users size={18} />} label="Users & Inbox" active={activeTab === 'users'} onClick={() => setActiveTab('users')} />
-                    <NavButton icon={<Palette size={18} />} label="Appearance" active={activeTab === 'appearance'} onClick={() => setActiveTab('appearance')} />
-                    <NavButton icon={<Settings size={18} />} label="Settings" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
-                </nav>
-                <div style={{ marginTop: 'auto' }}>
-                    <Link href="/">
-                        <button style={{ background: '#ff4757', color: 'white', border: 'none', padding: '10px', borderRadius: '8px', cursor: 'pointer', width: '100%', display: 'flex', justifyContent: 'center', gap: '10px', alignItems: 'center' }}>
-                            <LogOut size={16} /> Logout / Exit
-                        </button>
-                    </Link>
-                    <div style={{ textAlign: 'center', color: '#555', fontSize: '0.8em', marginTop: '15px' }}>v2.0 Next.js</div>
-                </div>
-            </div>
+            {/* Modular Sidebar */}
+            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {/* Content Area */}
-            <div style={{ padding: '40px', overflowY: 'auto', background: '#13131a' }}>
+            <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#0B1026' }}>
 
-                {/* HEADERS */}
-                <header style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 style={{ margin: 0 }}>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h1>
-                    <div style={{ display: 'flex', gap: '20px' }}>
+                {/* Header */}
+                <header style={{ padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(11, 16, 38, 0.8)', backdropFilter: 'blur(10px)' }}>
+                    <div>
+                        <h1 style={{ margin: 0, fontSize: '1.8em' }}>
+                            {activeTab === 'dashboard' ? 'Dashboard' :
+                                activeTab === 'content' ? 'Content Management' :
+                                    activeTab === 'users' ? 'Users & Community' :
+                                        activeTab === 'appearance' ? 'Appearance' : 'Settings'}
+                        </h1>
+                        <p style={{ margin: '5px 0 0', color: '#666', fontSize: '0.9em' }}>Welcome back, Rayan</p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                        {/* Search Bar */}
                         <div style={{ position: 'relative' }}>
-                            <Bell size={20} color="#aaa" />
-                            <span style={{ position: 'absolute', top: -2, right: -2, width: '8px', height: '8px', background: 'red', borderRadius: '50%' }}></span>
+                            <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#666' }} />
+                            <input
+                                type="text"
+                                placeholder="Global Search..."
+                                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 10px 10px 40px', borderRadius: '20px', color: 'white', width: '250px', fontSize: '0.9em', outline: 'none' }}
+                            />
                         </div>
-                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#333' }}></div>
+
+                        <div style={{ position: 'relative', cursor: 'pointer' }}>
+                            <Bell size={24} color="#aaa" />
+                            <span style={{ position: 'absolute', top: 0, right: 0, width: '10px', height: '10px', background: '#FF4757', borderRadius: '50%', border: '2px solid #0B1026' }}></span>
+                        </div>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #6D4CFF, #00FFF2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.2em' }}>
+                            R
+                        </div>
                     </div>
                 </header>
 
-                {/* VIEW: DASHBOARD */}
-                {activeTab === 'dashboard' && (
-                    <div className="animate-fade-in">
-                        {/* Map Mock */}
-                        <div style={{ background: 'rgba(25, 25, 35, 1)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '16px', marginBottom: '30px', height: '250px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ padding: '20px', position: 'absolute', zIndex: 2 }}>
-                                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}> <Map size={18} /> Live Activity</h3>
-                                <small style={{ color: '#aaa' }}>Real-time GEO-IP tracking (Simulated)</small>
-                            </div>
-                            <div style={{ width: '100%', height: '100%', opacity: 0.3, backgroundImage: 'radial-gradient(#444 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-                        </div>
-
-                        {/* Stats Grid */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-                            <StatCard title="Total Visitors" value="12,450" color="linear-gradient(135deg, #6D4CFF, #8E44AD)" />
-                            <StatCard title="Active Tools" value="24" color="rgba(255,255,255,0.05)" />
-                            <StatCard title="Blog Posts" value="8" color="rgba(255,255,255,0.05)" />
-                            <StatCard title="Server Status" value="Online" color="rgba(46, 204, 113, 0.2)" textColor="#2ecc71" />
-                        </div>
-                    </div>
-                )}
-
-                {/* VIEW: CONTENT */}
-                {activeTab === 'content' && (
-                    <div>
-                        <div style={{ padding: '40px', textAlign: 'center', border: '2px dashed #333', borderRadius: '16px', color: '#666' }}>
-                            <h3>Content Management System</h3>
-                            <p>This module is under migration. Please use the codebase to edit content in `src/data/` for now.</p>
-                        </div>
-                    </div>
-                )}
-
-                {/* Fallback for others */}
-                {['users', 'appearance', 'settings'].includes(activeTab) && (
-                    <div style={{ padding: '40px', textAlign: 'center', border: '2px dashed #333', borderRadius: '16px', color: '#666' }}>
-                        <h3>Feature Coming Soon</h3>
-                        <p>We are still porting the {activeTab} module to Next.js.</p>
-                    </div>
-                )}
+                {/* Main View Area */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
+                    {activeTab === 'dashboard' && <DashboardView />}
+                    {activeTab === 'content' && <ContentView />}
+                    {activeTab === 'users' && <UsersView />}
+                    {activeTab === 'appearance' && <AppearanceView />}
+                    {activeTab === 'settings' && <SettingsView />}
+                </div>
 
             </div>
-        </div>
-    );
-}
-
-function NavButton({ icon, label, active, onClick }: { icon: any, label: string, active: boolean, onClick: () => void }) {
-    return (
-        <button
-            onClick={onClick}
-            style={{
-                background: active ? 'var(--accent-purple, #6D4CFF)' : 'transparent',
-                border: 'none',
-                color: active ? 'white' : '#aaa',
-                padding: '12px 15px',
-                textAlign: 'left',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '1em',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                transition: 'all 0.2s'
-            }}
-        >
-            {icon}
-            {label}
-        </button>
-    );
-}
-
-function StatCard({ title, value, color, textColor = 'white' }: any) {
-    return (
-        <div style={{ background: color, padding: '25px', borderRadius: '16px', color: textColor }}>
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '0.9em', opacity: 0.8 }}>{title}</h3>
-            <div style={{ fontSize: '2em', fontWeight: 'bold' }}>{value}</div>
         </div>
     );
 }

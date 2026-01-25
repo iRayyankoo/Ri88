@@ -288,7 +288,8 @@ a {
 /* --- Hero Section --- */
 .hero-3d {
   position: relative;
-  min-height: 85vh; /* Changed from height: 55vh to avoid overlap */
+  min-height: 85vh;
+  /* Changed from height: 55vh to avoid overlap */
   padding-top: 80px;
   display: flex;
   align-items: center;
@@ -338,7 +339,8 @@ a {
 }
 
 .hero-content h1 {
-  font-size: 4em; /* Reduced from 5em to prevent overlap */
+  font-size: 4em;
+  /* Reduced from 5em to prevent overlap */
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 20px;
@@ -644,115 +646,177 @@ select.glass-input option {
     transform: translateY(0);
   }
 }
+
 /* --- Fat Footer --- */
 .fat-footer {
-    background: rgba(11, 16, 38, 0.95);
-    border-top: 1px solid var(--glass-border);
-    padding: 80px 24px 40px;
-    margin-top: 100px;
-    backdrop-filter: blur(20px);
-    position: relative;
-    z-index: 10;
+  background: rgba(11, 16, 38, 0.95);
+  border-top: 1px solid var(--glass-border);
+  padding: 80px 24px 40px;
+  margin-top: 100px;
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 10;
 }
 
 .footer-grid {
-    max-width: var(--container-width);
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    gap: 40px;
-    margin-bottom: 60px;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  margin-bottom: 60px;
 }
 
 /* Force direction for footer to match content language implicitly */
 html[dir="rtl"] .footer-grid {
-    text-align: right;
+  text-align: right;
 }
 
 .footer-col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .footer-col h4 {
-    color: white;
-    margin-bottom: 12px;
-    font-size: 18px;
-    font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .footer-col a {
-    display: block;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: all 0.2s ease;
-    width: fit-content;
+  display: block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: fit-content;
 }
 
 .footer-col a:hover {
-    color: var(--accent-cyan);
-    transform: translateX(5px);
+  color: var(--accent-cyan);
+  transform: translateX(5px);
 }
 
 html[dir="rtl"] .footer-col a:hover {
-    transform: translateX(-5px);
+  transform: translateX(-5px);
 }
 
 .footer-input-group {
-    display: flex;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 4px;
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 4px;
 }
 
 .footer-bottom {
-    max-width: var(--container-width);
-    margin: 0 auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--text-muted);
-    font-size: 14px;
-    flex-wrap: wrap;
-    gap: 20px;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .social-links {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .social-links a:hover {
-    color: white;
-    transform: translateY(-3px);
+  color: white;
+  transform: translateY(-3px);
 }
 
 @media (max-width: 900px) {
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 600px) {
-    .footer-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-    
-    html[dir="rtl"] .footer-grid {
-        text-align: center;
-    }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
 
-    .footer-col {
-        align-items: center;
-    }
+  html[dir="rtl"] .footer-grid {
+    text-align: center;
+  }
 
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-    }
+  .footer-col {
+    align-items: center;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* --- Mobile Compactness Fixes --- */
+@media (max-width: 768px) {
+
+  /* Compact Buttons */
+  .btn-primary,
+  .btn-secondary {
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    border-radius: 50px;
+    /* Keep pill shape but smaller */
+    width: 100%;
+    /* Ensure full width on mobile for consistency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Compact Inputs */
+  .glass-input {
+    padding: 10px 14px !important;
+    font-size: 15px !important;
+    /* Slightly smaller text */
+    height: auto !important;
+  }
+
+  /* Tighter Layouts */
+  .tool-ui-group {
+    gap: 16px !important;
+  }
+
+  .input-row {
+    gap: 6px !important;
+  }
+
+  .result-box {
+    padding: 16px !important;
+    margin-top: 16px !important;
+  }
+
+  /* Smaller Hero Text */
+  .hero-content h1 {
+    font-size: 2.5rem !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Fix Section Headers on Mobile */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Grid Adjustments */
+  .tools-grid {
+    grid-template-columns: 1fr;
+    /* Single column on small mobile */
+    gap: 16px;
+  }
 }
