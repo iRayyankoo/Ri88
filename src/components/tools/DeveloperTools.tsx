@@ -132,12 +132,209 @@ function MetaGenerator() {
     );
 }
 
+// ----------------------------------------------------------------------
+// 5. URL Encoder/Decoder
+function UrlEncoder() {
+    const [input, setInput] = useState('');
+
+    const encode = () => setInput(encodeURIComponent(input));
+    const decode = () => setInput(decodeURIComponent(input));
+
+    return (
+        <div className="tool-ui-group">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" placeholder="Enter URL..." style={{ height: '100px' }}></textarea>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                <button onClick={encode} className="btn-primary full-width">Encode</button>
+                <button onClick={decode} className="btn-secondary full-width">Decode</button>
+            </div>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 6. Hash Generator (SHA/MD5)
+function HashGenerator() {
+    const [text, setText] = useState('');
+    const [algo, setAlgo] = useState('SHA-256');
+    const [hash, setHash] = useState('');
+
+    const generate = async () => {
+        const msgBuffer = new TextEncoder().encode(text);
+        const hashBuffer = await crypto.subtle.digest(algo, msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        setHash(hashArray.map(b => b.toString(16).padStart(2, '0')).join(''));
+    };
+
+    return (
+        <div className="tool-ui-group">
+            <input value={text} onChange={e => setText(e.target.value)} className="glass-input full-width mb-4" placeholder="Text to hash" />
+            <select value={algo} onChange={e => setAlgo(e.target.value)} className="glass-input full-width mb-4">
+                <option value="SHA-256">SHA-256 (Recommended)</option>
+                <option value="SHA-1">SHA-1</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-512">SHA-512</option>
+            </select>
+            <button onClick={generate} className="btn-primary full-width">Generate Hash</button>
+            {hash && (
+                <div className="mt-4">
+                    <p className="text-sm text-gray-400 mb-1">Result:</p>
+                    <div className="glass-panel p-2 break-all font-mono text-sm select-all">{hash}</div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 7. JWT Debugger
+function JwtDebugger() {
+    const [token, setToken] = useState('');
+    const [header, setHeader] = useState('');
+    const [payload, setPayload] = useState('');
+
+    const decode = () => {
+        try {
+            const parts = token.split('.');
+            if (parts.length !== 3) throw new Error('Invalid Token Format');
+
+            const dec = (str: string) => JSON.stringify(JSON.parse(atob(str.replace(/-/g, '+').replace(/_/g, '/'))), null, 2);
+
+            setHeader(dec(parts[0]));
+            setPayload(dec(parts[1]));
+        } catch (e) {
+            setHeader('Error decoding header');
+            setPayload('Error decoding payload');
+        }
+    };
+
+    return (
+        <div className="tool-ui-group">
+            <input value={token} onChange={e => setToken(e.target.value)} className="glass-input full-width mb-4" placeholder="Paste JWT Token (ey...)" />
+            <button onClick={decode} className="btn-primary full-width mb-4">Decode</button>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <label className="block mb-2 text-sm text-gray-400">Header</label>
+                    <textarea value={header} readOnly className="glass-input full-width font-mono h-40 text-xs" />
+                </div>
+                <div>
+                    <label className="block mb-2 text-sm text-gray-400">Payload</label>
+                    <textarea value={payload} readOnly className="glass-input full-width font-mono h-40 text-xs" />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 8. Text Diff
+function TextDiff() {
+    // Simple line-by-line diff mock or basic comparison
+    // Real diffing lib is heavy, so we'll do a basic "Are they equal?" + line count check
+    // Or a simple visual line check.
+    const [t1, setT1] = useState('');
+    const [t2, setT2] = useState('');
+    const [res, setRes] = useState<string | null>(null);
+
+    const compare = () => {
+        if (t1 === t2) {
+            setRes('Identical');
+            return;
+        }
+
+        // Simple comparison
+        const l1 = t1.split('\n');
+        const l2 = t2.split('\n');
+        let diffs = 0;
+        l1.forEach((line, i) => {
+            if (line !== l2[i]) diffs++;
+        });
+        diffs += Math.abs(l1.length - l2.length);
+
+        setRes(`${diffs} lines difference found.`);
+    };
+
+    return (
+        <div className="tool-ui-group">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+                <textarea value={t1} onChange={e => setT1(e.target.value)} className="glass-input h-40" placeholder="Original Text" />
+                <textarea value={t2} onChange={e => setT2(e.target.value)} className="glass-input h-40" placeholder="Modified Text" />
+            </div>
+            <button onClick={compare} className="btn-primary full-width">Compare</button>
+            {res && <div className="mt-4 text-center font-bold text-accent-cyan">{res}</div>}
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 9. Screen Info
+function ScreenInfo() {
+    const [info, setInfo] = useState<any>({});
+
+    React.useEffect(() => {
+        const update = () => {
+            setInfo({
+                width: window.screen.width,
+                height: window.screen.height,
+                availWidth: window.screen.availWidth,
+                availHeight: window.screen.availHeight,
+                colorDepth: window.screen.colorDepth,
+                pixelDepth: window.screen.pixelDepth,
+                orientation: window.screen.orientation?.type || 'Unknown',
+                dpr: window.devicePixelRatio,
+                userAgent: navigator.userAgent
+            });
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
+
+    return (
+        <div className="tool-ui-group text-center">
+            <div className="text-accent-cyan text-4xl font-bold mb-4">
+                {info.width} x {info.height}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-left">
+                <div className="glass-panel p-3">
+                    <div className="text-gray-400 text-xs">Available Space</div>
+                    <div className="font-mono">{info.availWidth} x {info.availHeight}</div>
+                </div>
+                <div className="glass-panel p-3">
+                    <div className="text-gray-400 text-xs">Color Depth</div>
+                    <div className="font-mono">{info.colorDepth}-bit</div>
+                </div>
+                <div className="glass-panel p-3">
+                    <div className="text-gray-400 text-xs">Pixel Ratio</div>
+                    <div className="font-mono">{info.dpr}x</div>
+                </div>
+                <div className="glass-panel p-3">
+                    <div className="text-gray-400 text-xs">Orientation</div>
+                    <div className="font-mono">{info.orientation}</div>
+                </div>
+            </div>
+
+            <div className="mt-4 text-xs text-gray-500 break-all glass-panel p-2">
+                {info.userAgent}
+            </div>
+        </div>
+    );
+}
+
 export default function DeveloperTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'dev-json': return <JsonFormatter />;
         case 'dev-base64': return <Base64Converter />;
         case 'dev-regex': return <RegexTester />;
         case 'dev-meta': return <MetaGenerator />;
+
+        case 'dev-url': return <UrlEncoder />;
+        case 'dev-hash': return <HashGenerator />;
+        case 'dev-jwt': return <JwtDebugger />;
+        case 'dev-diff': return <TextDiff />;
+        case 'dev-screen': return <ScreenInfo />;
+
         default: return <div style={{ padding: '20px', textAlign: 'center' }}>Tool {toolId} migrated soon.</div>
     }
 }

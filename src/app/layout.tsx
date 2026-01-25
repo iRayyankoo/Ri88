@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "أدوات ذكية لاستخدامك اليومي - بوابة ريان (Rayyan Portal)",
 };
 
+import Footer from "@/components/Footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -13,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

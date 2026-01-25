@@ -644,3 +644,115 @@ select.glass-input option {
     transform: translateY(0);
   }
 }
+/* --- Fat Footer --- */
+.fat-footer {
+    background: rgba(11, 16, 38, 0.95);
+    border-top: 1px solid var(--glass-border);
+    padding: 80px 24px 40px;
+    margin-top: 100px;
+    backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 10;
+}
+
+.footer-grid {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+/* Force direction for footer to match content language implicitly */
+html[dir="rtl"] .footer-grid {
+    text-align: right;
+}
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-col h4 {
+    color: white;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.footer-col a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.footer-col a:hover {
+    color: var(--accent-cyan);
+    transform: translateX(5px);
+}
+
+html[dir="rtl"] .footer-col a:hover {
+    transform: translateX(-5px);
+}
+
+.footer-input-group {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.footer-bottom {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+}
+
+.social-links a:hover {
+    color: white;
+    transform: translateY(-3px);
+}
+
+@media (max-width: 900px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    html[dir="rtl"] .footer-grid {
+        text-align: center;
+    }
+
+    .footer-col {
+        align-items: center;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}

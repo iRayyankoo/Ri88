@@ -6,6 +6,7 @@ import ProductivityTools from './ProductivityTools';
 import TimeTools from './TimeTools';
 import MediaTools from './MediaTools';
 import PdfTools from './PdfTools';
+import ContentTools from './ContentTools';
 import HealthTools from './HealthTools';
 import SaudiTools from './SaudiTools';
 import DeveloperTools from './DeveloperTools';
@@ -36,6 +37,9 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
         case 'image':
         case 'media':
             return <MediaTools toolId={id} />;
+
+        case 'content':
+            return <ContentTools toolId={id} />;
 
         case 'pdf':
             return <PdfTools toolId={id} />;

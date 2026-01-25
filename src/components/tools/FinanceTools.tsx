@@ -257,6 +257,218 @@ function SavingsCalculator() {
     );
 }
 
+// --- 7. Currency Converter ---
+function CurrencyConverter() {
+    const [amount, setAmount] = useState('1');
+    const [from, setFrom] = useState('USD');
+    const [to, setTo] = useState('SAR');
+    const [res, setRes] = useState<string | null>(null);
+
+    // Mock Rates (Base USD)
+    const rates: any = {
+        'USD': 1,
+        'SAR': 3.75,
+        'EUR': 0.92,
+        'GBP': 0.79,
+        'AED': 3.67,
+        'KWD': 0.31,
+        'EGP': 47.5
+    };
+
+    const convert = () => {
+        const val = parseFloat(amount);
+        if (!val) return;
+        const rate = rates[to] / rates[from];
+        setRes((val * rate).toFixed(2));
+    }
+
+    return (
+        <div className="tool-ui-group">
+            <div className="input-row">
+                <label>المبلغ</label>
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="glass-input" />
+            </div>
+            <div style={{ display: 'flex', gap: '16px' }}>
+                <div className="input-row" style={{ flex: 1 }}>
+                    <label>من</label>
+                    <select value={from} onChange={e => setFrom(e.target.value)} className="glass-input">
+                        {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                </div>
+                <div className="input-row" style={{ flex: 1 }}>
+                    <label>إلى</label>
+                    <select value={to} onChange={e => setTo(e.target.value)} className="glass-input">
+                        {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                </div>
+            </div>
+            <button onClick={convert} className="btn-primary full-width">تحويل العملة</button>
+            {res && (
+                <div className="result-box" style={{ textAlign: 'center' }}>
+                    <strong style={{ fontSize: '2em', color: 'var(--accent-cyan)' }}>{res} {to}</strong>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// --- 8. Crypto Converter ---
+function CryptoConverter() {
+    const [amount, setAmount] = useState('1');
+    const [coin, setCoin] = useState('BTC');
+    const [currency, setCurrency] = useState('USD');
+    const [res, setRes] = useState<string | null>(null);
+
+    // Mock Approx Prices
+    const prices: any = {
+        'BTC': 65000,
+        'ETH': 3500,
+        'SOL': 140,
+        'BNB': 600,
+        'XRP': 0.60
+    };
+
+    const rates: any = {
+        'USD': 1,
+        'SAR': 3.75,
+        'EUR': 0.92
+    };
+
+    const convert = () => {
+        const val = parseFloat(amount);
+        if (!val) return;
+        const priceInUSD = prices[coin];
+        const finalRate = rates[currency];
+        setRes((val * priceInUSD * finalRate).toLocaleString(undefined, { maximumFractionDigits: 2 }));
+    }
+
+    return (
+        <div className="tool-ui-group">
+            <div className="input-row">
+                <label>الكمية</label>
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="glass-input" />
+            </div>
+            <div style={{ display: 'flex', gap: '16px' }}>
+                <div className="input-row" style={{ flex: 1 }}>
+                    <label>العملة الرقمية</label>
+                    <select value={coin} onChange={e => setCoin(e.target.value)} className="glass-input">
+                        {Object.keys(prices).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                </div>
+                <div className="input-row" style={{ flex: 1 }}>
+                    <label>مقابل</label>
+                    <select value={currency} onChange={e => setCurrency(e.target.value)} className="glass-input">
+                        {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                </div>
+            </div>
+            <button onClick={convert} className="btn-primary full-width">حساب القيمة</button>
+            {res && (
+                <div className="result-box" style={{ textAlign: 'center' }}>
+                    <strong style={{ fontSize: '2em', color: 'var(--accent-pink)' }}>{res} {currency}</strong>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// --- 9. Invoice Generator ---
+function InvoiceGenerator() {
+    const [client, setClient] = useState('');
+    const [items, setItems] = useState<{ desc: string, price: number }[]>([]);
+    const [desc, setDesc] = useState('');
+    const [price, setPrice] = useState('');
+
+    const addItem = () => {
+        if (!desc || !price) return;
+        setItems([...items, { desc, price: parseFloat(price) }]);
+        setDesc('');
+        setPrice('');
+    };
+
+    const total = items.reduce((acc, curr) => acc + curr.price, 0);
+
+    return (
+        <div className="tool-ui-group">
+            <div className="input-row">
+                <label>اسم العميل / الشركة</label>
+                <input value={client} onChange={e => setClient(e.target.value)} className="glass-input" />
+            </div>
+
+            <div className="glass-panel p-4 mb-4">
+                <div className="flex gap-2 mb-2">
+                    <input value={desc} onChange={e => setDesc(e.target.value)} className="glass-input" placeholder="الوصف" style={{ flex: 2 }} />
+                    <input type="number" value={price} onChange={e => setPrice(e.target.value)} className="glass-input" placeholder="السعر" style={{ flex: 1 }} />
+                    <button onClick={addItem} className="btn-secondary">+</button>
+                </div>
+                {items.map((it, i) => (
+                    <div key={i} className="flex justify-between border-b border-gray-700 py-2">
+                        <span>{it.desc}</span>
+                        <span>{it.price} ريال</span>
+                    </div>
+                ))}
+                <div className="flex justify-between mt-4 font-bold text-lg">
+                    <span>الإجمالي</span>
+                    <span className="text-accent-pink">{total} ريال</span>
+                </div>
+            </div>
+
+            <button onClick={() => window.print()} className="btn-primary full-width">طباعة الفاتورة</button>
+        </div>
+    );
+}
+
+// --- 10. Bill Splitter ---
+function BillSplitter() {
+    const [total, setTotal] = useState('');
+    const [people, setPeople] = useState('2');
+    const [tip, setTip] = useState('0');
+
+    // Derived
+    const bill = parseFloat(total) || 0;
+    const count = parseFloat(people) || 1;
+    const tipPer = parseFloat(tip);
+
+    const tipAmount = bill * (tipPer / 100);
+    const totalPay = bill + tipAmount;
+    const perPerson = totalPay / count;
+
+    return (
+        <div className="tool-ui-group">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+                <div><label>Bill Amount</label><input type="number" value={total} onChange={e => setTotal(e.target.value)} className="glass-input w-full" /></div>
+                <div><label>People</label><input type="number" value={people} onChange={e => setPeople(e.target.value)} className="glass-input w-full" /></div>
+            </div>
+
+            <div className="mb-4">
+                <label>Tip % ({tip}%)</label>
+                <div className="flex gap-2 mt-2">
+                    {[0, 10, 15, 20].map(t => (
+                        <button key={t} onClick={() => setTip(t.toString())} className={`flex-1 py-1 rounded ${tip === t.toString() ? 'bg-accent-cyan text-black' : 'bg-gray-700'}`}>{t}%</button>
+                    ))}
+                    <input type="number" value={tip} onChange={e => setTip(e.target.value)} className="glass-input w-20 text-center" placeholder="Custom" />
+                </div>
+            </div>
+
+            <div className="glass-panel p-4 text-center">
+                <div className="text-gray-400 text-sm">Amount per person</div>
+                <div className="text-4xl font-bold text-accent-pink my-2">{perPerson.toFixed(2)}</div>
+                <div className="text-xs text-gray-500 flex justify-between px-4 mt-4 border-t border-gray-700 pt-2">
+                    <span>Subtotal: {bill}</span>
+                    <span>Tip: {tipAmount.toFixed(2)}</span>
+                    <span>Total: {totalPay.toFixed(2)}</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// --- 11. Tip Calculator (Standalone alias usually, but same logic) ---
+function TipCalculator() {
+    // Reusing logic or simplified view
+    return <BillSplitter />;
+}
+
 // --- Main Switcher ---
 export default function FinanceTools({ toolId }: ToolProps) {
     switch (toolId) {
@@ -265,11 +477,14 @@ export default function FinanceTools({ toolId }: ToolProps) {
         case 'net-salary': return <SalaryCalculator />;
         case 'zakat': return <ZakatCalculator />;
         case 'savings': return <SavingsCalculator />;
-        case 'fin-discount': // Using reusing generic text for now or implementation similar to VAT
-            // Quick inline implementation for Discount
-            return (
-                <SimpleDiscountCalc />
-            );
+        case 'fin-discount': return <SimpleDiscountCalc />;
+        case 'fin-currency': return <CurrencyConverter />;
+        case 'fin-crypto': return <CryptoConverter />;
+        case 'finance-invoice': return <InvoiceGenerator />;
+
+        case 'fin-split': return <BillSplitter />;
+        case 'fin-tip': return <TipCalculator />;
+
         default:
             return <div style={{ padding: '20px', textAlign: 'center' }}>Coming Soon... (Tool ID: {toolId})</div>;
     }

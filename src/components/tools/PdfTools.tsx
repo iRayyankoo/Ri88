@@ -591,13 +591,60 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
 
 
 // ----------------------------------------------------------------------
+// 10. WATERMARK
+function PDFWatermark() {
+    const [file, setFile] = useState<File | null>(null);
+    const [text, setText] = useState('CONFIDENTIAL');
+    const [processing, setProcessing] = useState(false);
+
+    const apply = async () => {
+        if (!file || !window.PDFLib) return;
+        setProcessing(true);
+        try {
+            const { PDFDocument, rgb, degrees } = window.PDFLib;
+            const bytes = await readFile(file);
+            const pdf = await PDFDocument.load(bytes);
+            const pages = pdf.getPages();
+
+            pages.forEach((page: any) => {
+                const { width, height } = page.getSize();
+                page.drawText(text, {
+                    x: width / 2 - (text.length * 15), // Rough center
+                    y: height / 2,
+                    size: 50,
+                    color: rgb(0.7, 0.7, 0.7), // Light gray
+                    opacity: 0.5,
+                    rotate: degrees(45),
+                });
+            });
+
+            const pdfBytes = await pdf.save();
+            download(pdfBytes, `watermarked_${file.name}`);
+        } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
+        setProcessing(false);
+    };
+
+    return (
+        <div className="tool-ui-group">
+            <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+                <Settings className="w-5 h-5 text-cyan-400" /> Add Watermark
+            </h3>
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input value={text} onChange={e => setText(e.target.value)} className="glass-input full-width mb-4" placeholder="Watermark Text" />
+            <button onClick={apply} disabled={!file || !text || processing} className="btn-primary full-width">
+                {processing ? 'Applying...' : 'Apply Watermark'}
+            </button>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
 // MAIN ROUTER
 export default function PdfTools({ toolId }: ToolProps) {
     const [libLoaded, setLibLoaded] = useState(false);
     const [pdfJsLoaded, setPdfJsLoaded] = useState(false);
 
     useEffect(() => {
-        // Check if already loaded
         if (window.PDFLib) setLibLoaded(true);
         if (window.pdfjsLib) setPdfJsLoaded(true);
     }, []);
@@ -627,20 +674,19 @@ export default function PdfTools({ toolId }: ToolProps) {
                     {toolId === 'pdf-split' && <PDFSplitter />}
                     {toolId === 'pdf-protect' && <PDFProtector />}
                     {toolId === 'pdf-unlock' && <PDFUnlock />}
-
                     {toolId === 'pdf-compress' && <PDFCompressor />}
                     {toolId === 'pdf-to-img' && (pdfJsLoaded ? <PDFToImages /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
                     {toolId === 'img-to-pdf' && <ImageToPDF />}
-
                     {toolId === 'pdf-rotate' && <PDFPageOps mode="rotate" />}
                     {toolId === 'pdf-rem' && <PDFPageOps mode="remove" />}
                     {toolId === 'pdf-ord' && <PDFPageOps mode="reorder" />}
                     {toolId === 'pdf-crop' && <PDFPageOps mode="crop" />}
                     {toolId === 'pdf-page-num' && <PDFPageOps mode="number" />}
+                    {toolId === 'pdf-watermark' && <PDFWatermark />}
                     {toolId === 'pdf-extract-text' && (pdfJsLoaded ? <PDFExtractText /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
-                    {toolId === 'pdf-extract-imgs' && (pdfJsLoaded ? <PDFToImages /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)} {/* Reuse ToImages for now */}
+                    {toolId === 'pdf-extract-imgs' && (pdfJsLoaded ? <PDFToImages /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
 
-                    {!['pdf-merge', 'pdf-split', 'pdf-protect', 'pdf-unlock', 'pdf-compress', 'pdf-to-img', 'img-to-pdf', 'pdf-rotate', 'pdf-rem', 'pdf-ord', 'pdf-crop', 'pdf-page-num', 'pdf-extract-text', 'pdf-extract-imgs'].includes(toolId) && (
+                    {!['pdf-merge', 'pdf-split', 'pdf-protect', 'pdf-unlock', 'pdf-compress', 'pdf-to-img', 'img-to-pdf', 'pdf-rotate', 'pdf-rem', 'pdf-ord', 'pdf-crop', 'pdf-page-num', 'pdf-watermark', 'pdf-extract-text', 'pdf-extract-imgs'].includes(toolId) && (
                         <div className="text-center py-12 text-gray-400">
                             <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
                             <h3 className="text-lg font-semibold mb-2">Tool Not Found</h3>

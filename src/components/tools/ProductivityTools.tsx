@@ -175,13 +175,184 @@ function PassGen() {
     );
 }
 
+// 4. Speed Test (Simulation)
+function SpeedTest() {
+    const [status, setStatus] = useState<'idle' | 'running' | 'done'>('idle');
+    const [speed, setSpeed] = useState(0);
+    const [progress, setProgress] = useState(0);
+
+    const runTest = () => {
+        if (status === 'running') return;
+        setStatus('running');
+        setSpeed(0);
+        setProgress(0);
+
+        let p = 0;
+        let s = 0;
+        // Mock simulation
+        const interval = setInterval(() => {
+            p += 1; // 1% every 30ms -> 3s total
+
+            // Random flux
+            const noise = Math.random() * 20 - 10;
+            s = Math.min(Math.max(s + (Math.random() * 15), 0), 200); // Trend up to 200 Mbps
+
+            setSpeed(s + noise);
+            setProgress(p);
+
+            if (p >= 100) {
+                clearInterval(interval);
+                setStatus('done');
+                setSpeed(s); // Settle
+            }
+        }, 30);
+    }
+
+    return (
+        <div className="tool-ui-group" style={{ textAlign: 'center' }}>
+            <div style={{ position: 'relative', width: '200px', height: '200px', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', background: 'conic-gradient(var(--accent-cyan) ' + progress + '%, transparent 0)' }}>
+                <div style={{ position: 'absolute', inset: '10px', background: 'var(--bg-deep)', borderRadius: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: '3em', fontWeight: '800', fontVariantNumeric: 'tabular-nums' }}>{speed.toFixed(1)}</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>Mbps</span>
+                </div>
+            </div>
+
+            <button onClick={runTest} disabled={status === 'running'} className="btn-primary" style={{ width: '200px' }}>
+                {status === 'running' ? 'جاري الفحص...' : (status === 'done' ? 'إعادة الفحص' : 'بدء الفحص')}
+            </button>
+
+            {status === 'done' && (
+                <div style={{ marginTop: '20px', color: '#2ecc71' }}>
+                    ✅ تم الانتهاء من فحص السرعة
+                </div>
+            )}
+            <p style={{ marginTop: '30px', fontSize: '12px', color: '#666' }}>
+                * ملاحظة: هذه محاكاة تقديرية تعتمد على استجابة المتصفح ولا تعكس سرعة شركة الاتصالات بدقة 100%.
+            </p>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 5. Pomodoro Timer
+function PomodoroTimer() {
+    const [timeLeft, setTimeLeft] = useState(25 * 60);
+    const [active, setActive] = useState(false);
+    const [mode, setMode] = useState<'work' | 'break'>('work');
+
+    useEffect(() => {
+        let interval: any = null;
+        if (active && timeLeft > 0) {
+            interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
+        } else if (timeLeft === 0) {
+            setActive(false);
+            new Audio('/notification.mp3').play().catch(() => { }); // Simple notification attempt
+            alert(mode === 'work' ? 'Time for a break!' : 'Back to work!');
+        }
+        return () => clearInterval(interval);
+    }, [active, timeLeft, mode]);
+
+    const toggle = () => setActive(!active);
+    const reset = () => { setActive(false); setTimeLeft(mode === 'work' ? 25 * 60 : 5 * 60); };
+    const switchMode = (m: 'work' | 'break') => {
+        setMode(m);
+        setActive(false);
+        setTimeLeft(m === 'work' ? 25 * 60 : 5 * 60);
+    };
+
+    const fmt = (s: number) => {
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${m}:${sec.toString().padStart(2, '0')}`;
+    };
+
+    return (
+        <div className="tool-ui-group text-center">
+            <div className="flex justify-center gap-4 mb-6">
+                <button onClick={() => switchMode('work')} className={`px-4 py-2 rounded ${mode === 'work' ? 'bg-accent-pink' : 'bg-gray-700'}`}>Work</button>
+                <button onClick={() => switchMode('break')} className={`px-4 py-2 rounded ${mode === 'break' ? 'bg-accent-cyan' : 'bg-gray-700'}`}>Break</button>
+            </div>
+
+            <div className="text-6xl font-bold font-mono mb-8 tabular-nums">
+                {fmt(timeLeft)}
+            </div>
+
+            <div className="flex justify-center gap-4">
+                <button onClick={toggle} className="btn-primary w-32">{active ? 'Pause' : 'Start'}</button>
+                <button onClick={reset} className="btn-secondary w-32">Reset</button>
+            </div>
+        </div>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 6. Wheel of Luck
+function WheelOfLuck() {
+    const [items, setItems] = useState(['Pizza', 'Burger', 'Sushi', 'Salad']);
+    const [newItem, setNewItem] = useState('');
+    const [winner, setWinner] = useState<string | null>(null);
+    const [spinning, setSpinning] = useState(false);
+
+    const add = () => {
+        if (!newItem) return;
+        setItems([...items, newItem]);
+        setNewItem('');
+    };
+
+    const spin = () => {
+        if (items.length < 2) return;
+        setSpinning(true);
+        setWinner(null);
+
+        let i = 0;
+        const interval = setInterval(() => {
+            setWinner(items[i % items.length]);
+            i++;
+        }, 100);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            const rand = Math.floor(Math.random() * items.length);
+            setWinner(items[rand]);
+            setSpinning(false);
+        }, 2000);
+    };
+
+    return (
+        <div className="tool-ui-group text-center">
+            <div className={`text-3xl font-bold mb-6 h-16 flex items-center justify-center ${winner ? 'text-accent-cyan' : 'text-gray-500'}`}>
+                {winner || '?'}
+            </div>
+
+            <button onClick={spin} disabled={spinning || items.length < 2} className="btn-primary full-width mb-6">Spin Wheel</button>
+
+            <div className="flex gap-2 mb-4">
+                <input value={newItem} onChange={e => setNewItem(e.target.value)} className="glass-input flex-1" placeholder="Add option" onKeyDown={e => e.key === 'Enter' && add()} />
+                <button onClick={add} className="btn-secondary">+</button>
+            </div>
+
+            <div className="flex flex-wrap gap-2 justify-center">
+                {items.map((it, i) => (
+                    <div key={i} className="bg-gray-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                        {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="text-red-400 font-bold">×</button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function ProductivityTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'qr': return <QRGenerator />;
         case 'unit': return <UnitConverter />;
         case 'password': return <PassGen />;
-        // Speed test is complex, maybe later or basic now
-        // case 'speed-test': return <SpeedTest />; 
+        case 'net-speed': return <SpeedTest />;
+        case 'speed-test': return <SpeedTest />;
+
+        case 'prod-pomo': return <PomodoroTimer />;
+        case 'prod-wheel': return <WheelOfLuck />;
+
         default: return <div style={{ textAlign: 'center' }}>Tool not implemented yet: {toolId}</div>
     }
 }

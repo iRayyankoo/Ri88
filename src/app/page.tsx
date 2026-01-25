@@ -127,12 +127,7 @@ export default function Home() {
 
       </main>
 
-      {/* Footer Stub */}
-      <footer className="fat-footer" style={{ marginTop: '100px', padding: '50px 0', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <div className="container" style={{ textAlign: 'center', opacity: 0.6 }}>
-          &copy; 2026 بوابة ريان. الإصدار Next.js v1.0
-        </div>
-      </footer>
+
 
       {/* Global Modal */}
       <Modal

@@ -171,12 +171,46 @@ function DateAdd() {
     );
 }
 
+// 5. World Clock
+function WorldClock() {
+    const [time, setTime] = useState(new Date());
+
+    useEffect(() => {
+        const t = setInterval(() => setTime(new Date()), 1000);
+        return () => clearInterval(t);
+    }, []);
+
+    const cities = [
+        { name: 'الرياض', zone: 'Asia/Riyadh' },
+        { name: 'دبي', zone: 'Asia/Dubai' },
+        { name: 'لندن', zone: 'Europe/London' },
+        { name: 'نيويورك', zone: 'America/New_York' },
+        { name: 'طوكيو', zone: 'Asia/Tokyo' },
+    ];
+
+    return (
+        <div className="tool-ui-group">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+                {cities.map(c => (
+                    <div key={c.name} className="glass-panel" style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>{c.name}</span>
+                        <strong style={{ fontSize: '1.2em' }}>
+                            {time.toLocaleTimeString('en-US', { timeZone: c.zone, hour: '2-digit', minute: '2-digit' })}
+                        </strong>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function TimeTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'hijri': return <HijriConverter />;
         case 'diff': return <DateDiff />;
         case 'timer': return <Timer />;
         case 'time-add': return <DateAdd />;
+        case 'time-zones': return <WorldClock />;
         default: return <div style={{ textAlign: 'center' }}>Tool not implemented yet: {toolId}</div>
     }
 }
