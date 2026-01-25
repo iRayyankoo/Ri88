@@ -349,9 +349,13 @@ export default function ProductivityTools({ toolId }: ToolProps) {
         case 'password': return <PassGen />;
         case 'net-speed': return <SpeedTest />;
         case 'speed-test': return <SpeedTest />;
+        case 'speed': return <SpeedTest />;
 
         case 'prod-pomo': return <PomodoroTimer />;
+        case 'prod-pomodoro': return <PomodoroTimer />;
+
         case 'prod-wheel': return <WheelOfLuck />;
+        case 'life-decision': return <WheelOfLuck />;
 
         default: return <div style={{ textAlign: 'center' }}>Tool not implemented yet: {toolId}</div>
     }
