@@ -74,18 +74,22 @@ export default function BetaHome() {
                             <button
                                 key={cat.id}
                                 onClick={() => setActiveCat(cat.id)}
+                                className="sidebar-item"
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px',
                                     borderRadius: '14px', cursor: 'pointer', border: 'none', width: '100%', textAlign: 'right',
                                     background: isActive ? 'linear-gradient(270deg, #6D4CFF, #8E44AD)' : 'transparent',
                                     color: isActive ? 'white' : '#8890AA',
-                                    transition: 'all 0.2s',
+                                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                                     fontWeight: isActive ? 600 : 500,
-                                    justifyContent: 'flex-start'
+                                    justifyContent: 'flex-start',
+                                    position: 'relative',
+                                    overflow: 'hidden'
                                 }}
                             >
-                                <Icon size={18} />
-                                <span style={{ fontSize: '14px' }}>{cat.nameAr}</span>
+                                <Icon size={18} style={{ position: 'relative', zIndex: 2 }} />
+                                <span style={{ fontSize: '14px', position: 'relative', zIndex: 2 }}>{cat.nameAr}</span>
+                                {isActive && <div style={{ position: 'absolute', right: 0, top: 0, width: '4px', height: '100%', background: '#fff', opacity: 0.3 }}></div>}
                             </button>
                         )
                     })}
@@ -266,6 +270,14 @@ export default function BetaHome() {
                     background: #2D2E40 !important;
                     border-color: #6D4CFF !important;
                     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                }
+                .sidebar-item:hover {
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    color: white !important;
+                    padding-right: 20px !important;
+                }
+                .sidebar-item:active {
+                    transform: scale(0.98);
                 }
             `}</style>
         </div>
