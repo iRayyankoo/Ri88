@@ -57,16 +57,16 @@ export default function BetaHome() {
     };
 
     return (
-        <div style={{ background: '#181926', minHeight: '100vh', color: '#fff', fontFamily: "'Inter', sans-serif", display: 'flex', overflow: 'hidden' }}>
+        <div style={{ background: '#181926', minHeight: '100vh', color: '#fff', fontFamily: "'Inter', sans-serif", display: 'flex', overflow: 'hidden', direction: 'rtl' }}>
 
             {/* --- SIDEBAR (Categories) --- */}
-            <aside style={{ width: '260px', padding: '30px 20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255,255,255,0.05)', background: '#13141f' }}>
+            <aside style={{ width: '260px', padding: '30px 20px', display: 'flex', flexDirection: 'column', borderLeft: '1px solid rgba(255,255,255,0.05)', background: '#13141f' }}>
                 <Link href="/" style={{ textDecoration: 'none' }}>
-                    <div style={{ marginBottom: '40px', fontWeight: 900, fontSize: '24px', letterSpacing: '-1px', color: 'white', paddingLeft: '10px' }}>Ri88<span style={{ color: '#D35BFF' }}>.</span></div>
+                    <div style={{ marginBottom: '40px', fontWeight: 900, fontSize: '24px', letterSpacing: '-1px', color: 'white', paddingRight: '10px' }}>Ri88<span style={{ color: '#D35BFF' }}>.</span></div>
                 </Link>
 
-                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingRight: '5px' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#555', paddingLeft: '12px', marginBottom: '5px', textTransform: 'uppercase' }}>Browse</div>
+                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '5px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#555', paddingRight: '12px', marginBottom: '5px', textTransform: 'uppercase' }}>تصفح</div>
                     {categories.map(cat => {
                         const Icon = CategoryIcons[cat.id] || LayoutGrid;
                         const isActive = activeCat === cat.id;
@@ -76,15 +76,16 @@ export default function BetaHome() {
                                 onClick={() => setActiveCat(cat.id)}
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px',
-                                    borderRadius: '14px', cursor: 'pointer', border: 'none', width: '100%', textAlign: 'left',
-                                    background: isActive ? 'linear-gradient(90deg, #6D4CFF, #8E44AD)' : 'transparent',
+                                    borderRadius: '14px', cursor: 'pointer', border: 'none', width: '100%', textAlign: 'right',
+                                    background: isActive ? 'linear-gradient(270deg, #6D4CFF, #8E44AD)' : 'transparent',
                                     color: isActive ? 'white' : '#8890AA',
                                     transition: 'all 0.2s',
-                                    fontWeight: isActive ? 600 : 500
+                                    fontWeight: isActive ? 600 : 500,
+                                    justifyContent: 'flex-start'
                                 }}
                             >
                                 <Icon size={18} />
-                                <span style={{ fontSize: '14px' }}>{cat.name}</span>
+                                <span style={{ fontSize: '14px' }}>{cat.nameAr}</span>
                             </button>
                         )
                     })}
@@ -97,22 +98,22 @@ export default function BetaHome() {
                 {/* Header / Search */}
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                     <div style={{ position: 'relative', width: '400px' }}>
-                        <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#666' }} />
+                        <Search size={18} style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', color: '#666' }} />
                         <input
                             type="text"
-                            placeholder="Search tools, calculators..."
+                            placeholder="بحث عن أداة، حاسبة..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             style={{
-                                width: '100%', padding: '12px 12px 12px 45px', borderRadius: '50px',
-                                background: '#232433', border: '1px solid #2E2F40', color: 'white', outline: 'none'
+                                width: '100%', padding: '12px 45px 12px 12px', borderRadius: '50px',
+                                background: '#232433', border: '1px solid #2E2F40', color: 'white', outline: 'none', textAlign: 'right'
                             }}
                         />
                     </div>
 
                     <div style={{ display: 'flex', gap: '15px' }}>
                         <button style={{ padding: '10px 20px', borderRadius: '50px', background: '#232433', border: '1px solid #2E2F40', color: 'white', fontSize: '13px', fontWeight: 600 }}>
-                            English / عربي
+                            عربي / English
                         </button>
                         <button style={{ padding: '10px', borderRadius: '50%', background: '#D35BFF', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Star size={18} fill="white" />
@@ -120,30 +121,33 @@ export default function BetaHome() {
                     </div>
                 </header>
 
-                {/* Hero / Welcome Block (Only show on 'All' or empty search) */}
+                {/* Hero / Welcome Block (ARABIC + FIXED LAYOUT) */}
                 {activeCat === 'all' && !searchQuery && (
                     <div style={{
                         background: 'linear-gradient(120deg, #232433 0%, #1e1f2b 100%)',
-                        borderRadius: '35px', padding: '40px', marginBottom: '40px', position: 'relative', overflow: 'hidden'
+                        borderRadius: '35px', padding: '40px 60px', marginBottom: '40px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        direction: 'rtl'
                     }}>
-                        <div style={{ position: 'relative', zIndex: 2, maxWidth: '600px' }}>
-                            <h1 style={{ fontSize: '32px', fontWeight: 800, marginBottom: '10px' }}>
-                                Advanced <span style={{ color: '#00FFF2' }}>Tools</span> for<br />
-                                Everyday <span style={{ color: '#D35BFF' }}>Needs</span>.
+                        {/* Text Side */}
+                        <div style={{ maxWidth: '500px', zIndex: 2 }}>
+                            <h1 style={{ fontSize: '36px', fontWeight: 800, marginBottom: '15px', lineHeight: '1.2' }}>
+                                أدوات <span style={{ color: '#00FFF2' }}>ذكية</span> لاحتياجاتك<br />
+                                <span style={{ color: '#D35BFF' }}>اليومية</span> المتجددة.
                             </h1>
-                            <p style={{ color: '#8890AA', marginBottom: '25px', lineHeight: '1.6' }}>
-                                Access 50+ free tools ranging from PDF editing to Finance calculators.
-                                Everything you need, all in one modern dashboard.
+                            <p style={{ color: '#8890AA', marginBottom: '30px', lineHeight: '1.6', fontSize: '15px' }}>
+                                أكثر من 50 أداة مجانية من تعديل ملفات PDF إلى الحسابات المالية.
+                                كل ما تحتاجه في لوحة تحكم عصرية واحدة.
                             </p>
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <button onClick={() => setActiveCat('finance')} style={{ background: 'white', color: 'black', padding: '10px 24px', borderRadius: '50px', fontWeight: 700, border: 'none', cursor: 'pointer' }}>
-                                    Start Calculating
+                                <button onClick={() => setActiveCat('finance')} style={{ background: 'white', color: 'black', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'transform 0.2s' }}>
+                                    ابدأ الحساب
                                 </button>
                             </div>
                         </div>
 
-                        {/* 3D Floating Element */}
-                        <div style={{ position: 'absolute', right: '50px', top: '20px', fontSize: '160px', transform: 'rotate(15deg)', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))' }}>
+                        {/* 3D Floating Element (Left Side for RTL) */}
+                        <div style={{ fontSize: '150px', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))', transform: 'rotate(-10deg) translateY(-10px)' }}>
                             🚀
                         </div>
                     </div>
@@ -158,8 +162,8 @@ export default function BetaHome() {
                         <>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                                 <h2 style={{ fontSize: '20px', fontWeight: 700 }}>
-                                    {categories.find(c => c.id === activeCat)?.name || 'Search Results'}
-                                    <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px', fontWeight: 400 }}>({filteredTools.length} items)</span>
+                                    {categories.find(c => c.id === activeCat)?.nameAr || 'نتائج البحث'}
+                                    <span style={{ fontSize: '12px', color: '#666', marginRight: '10px', fontWeight: 400 }}>({filteredTools.length} عنصر)</span>
                                 </h2>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
@@ -176,7 +180,7 @@ export default function BetaHome() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                                     <h2 style={{ fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <Star size={18} color="#F59E0B" /> Featured Tools
+                                        <Star size={18} color="#F59E0B" /> أدوات مميزة
                                     </h2>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
@@ -190,7 +194,7 @@ export default function BetaHome() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                                     <h2 style={{ fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <Zap size={18} color="#00E096" /> New Arrivals
+                                        <Zap size={18} color="#00E096" /> واصل حديثاً
                                     </h2>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
@@ -206,33 +210,33 @@ export default function BetaHome() {
                 </div>
 
                 {/* Footer (Integrated into Main Area) */}
-                <footer style={{ marginTop: '60px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px', paddingBottom: '20px' }}>
+                <footer style={{ marginTop: '60px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '40px', paddingBottom: '20px', direction: 'rtl' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 2fr', gap: '40px', marginBottom: '40px' }}>
                         <div>
                             <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px', color: 'white', marginBottom: '20px' }}>
                                 Ri88<span style={{ color: '#D35BFF' }}>.</span>
                             </div>
                             <p style={{ color: '#8890AA', fontSize: '14px', lineHeight: '1.6' }}>
-                                The ultimate toolbox for productivity, development, and daily tasks. <br />Designed for the modern web.
+                                بوابتك الرقمية الشاملة للإنتاجية والتطوير. <br />صممت للمبدع العربي الحديث.
                             </p>
                         </div>
                         <div>
-                            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>Explore</h4>
+                            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>استكشف</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px', color: '#8890AA' }}>
-                                <a href="#">Home</a>
-                                <a href="#">About</a>
-                                <a href="#">Contact</a>
+                                <a href="#">الرئيسية</a>
+                                <a href="#">من نحن</a>
+                                <a href="#">تواصل معنا</a>
                             </div>
                         </div>
                         <div>
-                            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>Legal</h4>
+                            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>قانوني</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px', color: '#8890AA' }}>
-                                <a href="#">Privacy</a>
-                                <a href="#">Terms</a>
+                                <a href="#">الخصوصية</a>
+                                <a href="#">الشروط</a>
                             </div>
                         </div>
                         <div>
-                            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>Connect</h4>
+                            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '20px' }}>تواصل</h4>
                             <div style={{ display: 'flex', gap: '15px' }}>
                                 <a href="#" style={{ color: '#8890AA' }}><Twitter size={20} /></a>
                                 <a href="#" style={{ color: '#8890AA' }}><Instagram size={20} /></a>
@@ -241,7 +245,7 @@ export default function BetaHome() {
                         </div>
                     </div>
                     <div style={{ textAlign: 'center', fontSize: '12px', color: '#444' }}>
-                        © 2026 Ri88. Made with ❤️
+                        © 2026 Ri88. صنع بكل حب ❤️ في الرياض.
                     </div>
                 </footer>
 
@@ -251,7 +255,7 @@ export default function BetaHome() {
             <Modal
                 isOpen={!!activeTool}
                 onClose={() => setActiveTool(null)}
-                title={activeTool?.title || ''}
+                title={activeTool?.titleAr || activeTool?.title || ''}
             >
                 {activeTool && <ToolRouter tool={activeTool} />}
             </Modal>
@@ -293,13 +297,13 @@ function ToolCard({ tool, onClick }: { tool: Tool, onClick: () => void }) {
                     background: tool.status === 'new' ? '#00E096' : 'rgba(255,255,255,0.05)',
                     color: tool.status === 'new' ? '#000' : '#666'
                 }}>
-                    {tool.status === 'new' ? 'NEW' : tool.cat}
+                    {tool.status === 'new' ? 'جديد' : tool.cat}
                 </div>
             </div>
 
             <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '5px' }}>{tool.title}</h3>
-                <p style={{ fontSize: '12px', color: '#8890AA', lineHeight: '1.4' }}>{tool.desc}</p>
+                <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '5px' }}>{tool.titleAr || tool.title}</h3>
+                <p style={{ fontSize: '12px', color: '#8890AA', lineHeight: '1.4' }}>{tool.descAr || tool.desc}</p>
             </div>
         </div>
     );
