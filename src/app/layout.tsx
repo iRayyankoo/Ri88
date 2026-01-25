@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "أدوات ذكية لاستخدامك اليومي - بوابة ريان (Rayyan Portal)",
 };
 
-import Footer from "@/components/Footer";
+import GlobalFooter from "@/components/GlobalFooter";
 
 export default function RootLayout({
   children,
@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body>
         {children}
-        <Footer />
+        <GlobalFooter />
       </body>
     </html>
   );
