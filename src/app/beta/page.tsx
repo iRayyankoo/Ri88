@@ -134,7 +134,7 @@ export default function BetaHome() {
                                 placeholder="بحث عن أداة، حاسبة..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+
                                 className="search-input"
                             />
                             <div className="search-shortcut">Ctrl K</div>
