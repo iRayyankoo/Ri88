@@ -5,6 +5,9 @@ import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Typ
 import Modal from '@/components/Modal';
 import ToolRouter from '@/components/tools/ToolRouter';
 import Link from 'next/link';
+import UserMenu from '@/components/auth/UserMenu';
+import LoginModal from '@/components/auth/LoginModal';
+import { useSession } from "next-auth/react";
 
 // Icon Map for Categories
 const CategoryIcons: any = {
@@ -27,10 +30,12 @@ const CategoryIcons: any = {
 };
 
 export default function BetaHome() {
+    const { data: session, status } = useSession();
     const [activeCat, setActiveCat] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTool, setActiveTool] = useState<Tool | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // Mobile Menu State
+    const [loginOpen, setLoginOpen] = useState(false); // Login Modal State
 
     // Initial View Logic (Featured/New)
     const featuredTools = useMemo(() => tools.filter(t => ['loan-calc', 'time-add', 'health-bmi', 'pdf-merge'].includes(t.id)), []);
@@ -119,7 +124,20 @@ export default function BetaHome() {
 
                         <div className="header-actions">
                             <button className="lang-btn">عربي / English</button>
-                            <button className="favorite-btn"><Star size={18} fill="white" /></button>
+
+                            {status === 'loading' ? (
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }}></div>
+                            ) : session ? (
+                                <UserMenu />
+                            ) : (
+                                <button
+                                    onClick={() => setLoginOpen(true)}
+                                    className="lang-btn"
+                                    style={{ background: '#6D4CFF', border: 'none', cursor: 'pointer' }}
+                                >
+                                    تسجيل الدخول
+                                </button>
+                            )}
                         </div>
                     </header>
 
@@ -234,7 +252,10 @@ export default function BetaHome() {
 
             </main>
 
-            {/* Modal */}
+            {/* Login Modal */}
+            <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
+
+            {/* Tool Modal */}
             <Modal
                 isOpen={!!activeTool}
                 onClose={() => setActiveTool(null)}

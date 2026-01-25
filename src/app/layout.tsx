@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 };
 
 import GlobalFooter from "@/components/GlobalFooter";
+import SessionWrapper from "@/components/auth/SessionWrapper";
 
 export default function RootLayout({
   children,
@@ -16,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body>
-        {children}
-        <GlobalFooter />
+        <SessionWrapper>
+          {children}
+          <GlobalFooter />
+        </SessionWrapper>
       </body>
     </html>
   );
