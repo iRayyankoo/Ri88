@@ -288,7 +288,7 @@ a {
 /* --- Hero Section --- */
 .hero-3d {
   position: relative;
-  height: 55vh;
+  min-height: 85vh; /* Changed from height: 55vh to avoid overlap */
   padding-top: 80px;
   display: flex;
   align-items: center;
@@ -338,7 +338,7 @@ a {
 }
 
 .hero-content h1 {
-  font-size: 5em;
+  font-size: 4em; /* Reduced from 5em to prevent overlap */
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 20px;

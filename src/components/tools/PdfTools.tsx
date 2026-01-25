@@ -161,7 +161,7 @@ function PDFCompressor() {
             const bytes = await readFile(file);
             // Load and save is often enough to "optimize" structure in pdf-lib
             const pdf = await PDFDocument.load(bytes);
-            
+
             // We can strictly copy pages to a fresh document to discard unused objects
             const newPdf = await PDFDocument.create();
             const copiedPages = await newPdf.copyPages(pdf, pdf.getPageIndices());
@@ -171,7 +171,7 @@ function PDFCompressor() {
             const pdfBytes = await newPdf.save({ useObjectStreams: false }); // Try disabling object streams for compatibility or enabling for size? 
             // Enabling object streams usually reduces size. default is true.
             // Let's try default save first.
-            
+
             download(pdfBytes, `compressed_${file.name}`);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
@@ -203,7 +203,7 @@ function PDFToImages() {
         try {
             const uri = URL.createObjectURL(file);
             const pdf = await window.pdfjsLib.getDocument(uri).promise;
-            
+
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const viewport = page.getViewport({ scale: 2.0 }); // High quality
@@ -213,7 +213,7 @@ function PDFToImages() {
                 canvas.width = viewport.width;
 
                 await page.render({ canvasContext: context, viewport }).promise;
-                
+
                 canvas.toBlob((blob) => {
                     if (blob) download(blob, `page_${i}.png`);
                 }, 'image/png');
@@ -255,11 +255,66 @@ function PDFExtractText() {
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const tokenizedText = await page.getTextContent();
+
+                // Smart merging logic
+                let pageText = '';
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const pageText = tokenizedText.items.map((t: any) => t.str).join(' ');
+                const items = tokenizedText.items as any[];
+
+                if (items.length > 0) {
+                    let lastY = -1;
+                    let lastX = -1;
+                    let lastW = 0;
+
+                    for (const item of items) {
+                        const str = item.str;
+                        // transform: [scaleX, skewY, skewX, scaleY, x, y]
+                        const tx = item.transform;
+                        const x = tx[4];
+                        const y = tx[5];
+                        const w = item.width;
+                        const h = Math.sqrt(tx[0] * tx[0] + tx[2] * tx[2]); // Approx font height
+
+                        if (lastY === -1) {
+                            pageText += str;
+                        } else {
+                            const dy = Math.abs(y - lastY);
+                            // New line detection (if Y diff is big enough)
+                            if (dy > h * 0.6) {
+                                pageText += '\n' + str;
+                            } else {
+                                // Same line: check lateral gap for space
+                                // Simple distance check (works for mixed LTR/RTL usually if stream is ordered)
+                                // Gap = distance between end of last and start of current?
+                                // OR just center-to-center?
+                                // Let's try: if x has jumped significantly, add space.
+                                // NOTE: In Arabic PDF, chars might be stored in reverse order or visual order.
+                                // But usually, if they are "close", they belong to same word.
+
+                                // Calculate gap assuming LTR flow: current X - (prev X + prev Width)
+                                const gapLTR = Math.abs(x - (lastX + lastW));
+                                // Calculate gap assuming RTL flow (prev is to the right): (prev X) - (current X + current Width)
+                                const gapRTL = Math.abs(lastX - (x + w));
+
+                                const minGap = Math.min(gapLTR, gapRTL);
+
+                                // Threshold: 20% of height (arbitrary but better than 'always space')
+                                if (minGap > h * 0.3 && str.trim() !== '') {
+                                    pageText += ' ' + str;
+                                } else {
+                                    pageText += str;
+                                }
+                            }
+                        }
+                        lastX = x;
+                        lastY = y;
+                        lastW = w;
+                    }
+                }
+
                 fullText += `--- Page ${i} ---\n${pageText}\n\n`;
             }
-            
+
             setTextResult(fullText);
             URL.revokeObjectURL(uri);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
@@ -341,12 +396,12 @@ function PDFUnlock() {
             // For now, let's just try loading. If it fails, ask for pass?
             // Simplified: Just "Remove Security" - often means "Resave without password".
             // If the browser can read it, we can save it.
-            
+
             const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true }); // Attempt to load
             const pdfBytes = await pdf.save(); // Save without encryption
             download(pdfBytes, `unlocked_${file.name}`);
-        } catch (e: unknown) { 
-            alert('Could not unlock. If the file has a password, this tool currently only removes owner restrictions or requires the password to open first.'); 
+        } catch (e: unknown) {
+            alert('Could not unlock. If the file has a password, this tool currently only removes owner restrictions or requires the password to open first.');
             console.error(e);
         }
         setProcessing(false);
@@ -382,7 +437,7 @@ function ImageToPDF() {
                 let image;
                 if (file.type === 'image/jpeg') image = await pdfDoc.embedJpg(arrayBuffer);
                 else if (file.type === 'image/png') image = await pdfDoc.embedPng(arrayBuffer);
-                else continue; 
+                else continue;
 
                 const page = pdfDoc.addPage([image.width, image.height]);
                 page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
@@ -427,10 +482,10 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
                 pdf.getPages().forEach((p: any) => {
                     p.setRotation(degrees(p.getRotation().angle + angle));
                 });
-            } 
+            }
             else if (mode === 'remove') {
                 // Must remove from end to start to avoid index shifting
-                const toRemove = param.split(',').map(x => parseInt(x.trim()) - 1).filter(x => x >= 0 && x < total).sort((a,b) => b-a);
+                const toRemove = param.split(',').map(x => parseInt(x.trim()) - 1).filter(x => x >= 0 && x < total).sort((a, b) => b - a);
                 toRemove.forEach(idx => pdf.removePage(idx));
             }
             else if (mode === 'reorder') {
@@ -468,7 +523,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 pdf.getPages().forEach((page: any) => {
                     const { width, height } = page.getSize();
-                    page.setSize(width - margin*2, height - margin*2);
+                    page.setSize(width - margin * 2, height - margin * 2);
                     // This is naive, proper crop updates MediaBox. 
                     // pdf-lib setSize changes media box.
                     // We might need to translate content too if we want to center crop, but setSize usually crops from top/right depending on coordinates.
@@ -476,7 +531,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
                     // Let's just set the MediaBox explicitly if possible, or use setSize.
                     // Improving crop:
                     // page.setCropBox(x, y, width, height)
-                    page.setCropBox(margin, margin, width - margin*2, height - margin*2);
+                    page.setCropBox(margin, margin, width - margin * 2, height - margin * 2);
                 });
             }
 
@@ -488,7 +543,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
 
     return (
         <div className="tool-ui-group">
-             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+            <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
                 {mode === 'rotate' && <RefreshCw className="w-5 h-5 text-blue-400" />}
                 {mode === 'remove' && <Trash2 className="w-5 h-5 text-red-400" />}
                 {mode === 'reorder' && <ArrowUpDown className="w-5 h-5 text-yellow-400" />}
@@ -502,7 +557,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
             </h3>
 
             <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
-            
+
             {mode === 'rotate' && (
                 <select value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4">
                     <option value="" disabled>Select Rotation</option>
@@ -519,11 +574,11 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
             {mode === 'reorder' && (
                 <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="New order (e.g. 3, 1, 2)" />
             )}
-            
+
             {mode === 'crop' && (
                 <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="Margin to crop (e.g. 50)" />
             )}
-            
+
             {/* 'number' needs no param for basic center-bottom */}
 
             <button onClick={run} disabled={!file || (process && mode !== 'number' && !param) || processing} className="btn-primary full-width">
@@ -548,16 +603,16 @@ export default function PdfTools({ toolId }: ToolProps) {
 
     return (
         <>
-            <Script 
-                src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" 
-                onLoad={() => setLibLoaded(true)} 
+            <Script
+                src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"
+                onLoad={() => setLibLoaded(true)}
             />
-            <Script 
-                src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" 
+            <Script
+                src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
                 onLoad={() => {
                     setPdfJsLoaded(true);
                     if (window.pdfjsLib) window.pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
-                }} 
+                }}
             />
 
             {!libLoaded ? (
@@ -571,11 +626,11 @@ export default function PdfTools({ toolId }: ToolProps) {
                     {toolId === 'pdf-split' && <PDFSplitter />}
                     {toolId === 'pdf-protect' && <PDFProtector />}
                     {toolId === 'pdf-unlock' && <PDFUnlock />}
-                    
+
                     {toolId === 'pdf-compress' && <PDFCompressor />}
                     {toolId === 'pdf-to-img' && (pdfJsLoaded ? <PDFToImages /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
                     {toolId === 'img-to-pdf' && <ImageToPDF />}
-                    
+
                     {toolId === 'pdf-rotate' && <PDFPageOps mode="rotate" />}
                     {toolId === 'pdf-rem' && <PDFPageOps mode="remove" />}
                     {toolId === 'pdf-ord' && <PDFPageOps mode="reorder" />}
@@ -583,12 +638,12 @@ export default function PdfTools({ toolId }: ToolProps) {
                     {toolId === 'pdf-page-num' && <PDFPageOps mode="number" />}
                     {toolId === 'pdf-extract-text' && (pdfJsLoaded ? <PDFExtractText /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
                     {toolId === 'pdf-extract-imgs' && (pdfJsLoaded ? <PDFToImages /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)} {/* Reuse ToImages for now */}
-                    
+
                     {!['pdf-merge', 'pdf-split', 'pdf-protect', 'pdf-unlock', 'pdf-compress', 'pdf-to-img', 'img-to-pdf', 'pdf-rotate', 'pdf-rem', 'pdf-ord', 'pdf-crop', 'pdf-page-num', 'pdf-extract-text', 'pdf-extract-imgs'].includes(toolId) && (
                         <div className="text-center py-12 text-gray-400">
-                           <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                           <h3 className="text-lg font-semibold mb-2">Tool Not Found</h3>
-                           <p>We are working on {toolId}...</p>
+                            <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                            <h3 className="text-lg font-semibold mb-2">Tool Not Found</h3>
+                            <p>We are working on {toolId}...</p>
                         </div>
                     )}
                 </div>
