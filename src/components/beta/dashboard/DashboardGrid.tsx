@@ -8,8 +8,13 @@ import AddWidgetModal from './AddWidgetModal';
 // --- Storage Key ---
 const STORAGE_KEY = 'bento_layout_v2';
 
+interface WidgetItem {
+    id: string;
+    size: 'sm' | 'md' | 'lg';
+}
+
 // --- Default Layout ---
-const DEFAULT_LAYOUT = [
+const DEFAULT_LAYOUT: WidgetItem[] = [
     { id: 'welcome', size: 'md' },  // 2 col
     { id: 'time', size: 'sm' },     // 1 col
     { id: 'date', size: 'sm' },     // 1 col
@@ -17,11 +22,6 @@ const DEFAULT_LAYOUT = [
     { id: 'gold', size: 'sm' },     // 1 col
     { id: 'events', size: 'md' },   // 2 col
 ];
-
-interface WidgetItem {
-    id: string;
-    size: 'sm' | 'md' | 'lg';
-}
 
 export default function DashboardGrid() {
     const [widgets, setWidgets] = useState<WidgetItem[]>([]);
