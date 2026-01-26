@@ -9,6 +9,8 @@ import UserMenu from '@/components/auth/UserMenu';
 import LoginModal from '@/components/auth/LoginModal';
 import CommandPalette from '@/components/CommandPalette';
 import { useSession } from "next-auth/react";
+import BetaHUD from '@/components/beta/BetaHUD';
+
 
 // Icon Map for Categories
 const CategoryIcons: any = {
@@ -159,92 +161,28 @@ export default function BetaHome() {
                         </div>
                     </header>
 
-                    {/* Hero / Welcome Block */}
-                    {activeCat === 'all' && !searchQuery && (
-                        <div className="beta-hero">
-                            <div className="hero-text">
-                                <h1 style={{ lineHeight: '1.2' }}>
-                                    أدوات <span style={{ color: '#00FFF2' }}>ذكية</span> لاحتياجاتك<br />
-                                    <span style={{ color: '#D35BFF' }}>اليومية</span> المتجددة.
-                                </h1>
-                                <p>
-                                    أكثر من 50 أداة مجانية من تعديل ملفات PDF إلى الحسابات المالية.
-                                    كل ما تحتاجه في لوحة تحكم عصرية واحدة.
-                                </p>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <button onClick={() => setActiveCat('finance')} className="cta-btn">ابدأ الحساب</button>
-                                </div>
+                    {/* Hero / HUD Block - Only Show when 'all' and no search */}
+                    {(activeCat === 'all' && !searchQuery) ? (
+                        <BetaHUD
+                            onExplore={() => setActiveCat('finance')}
+                            onSelectTool={(tool) => handleToolClick(tool)}
+                        />
+                    ) : (
+                        /* SEARCH & BROWSE VIEW */
+                        <div style={{ flex: 1 }} className="fade-in">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                                <h2 style={{ fontSize: '20px', fontWeight: 700 }}>
+                                    {categories.find(c => c.id === activeCat)?.nameAr || 'نتائج البحث'}
+                                    <span style={{ fontSize: '12px', color: '#666', marginRight: '10px', fontWeight: 400 }}>({filteredTools.length} عنصر)</span>
+                                </h2>
                             </div>
-                            <div className="hero-3d-element">🚀</div>
+                            <div className="tools-grid-responsive">
+                                {filteredTools.map(tool => (
+                                    <ToolCard key={tool.id} tool={tool} onClick={() => handleToolClick(tool)} />
+                                ))}
+                            </div>
                         </div>
                     )}
-
-                    {/* Content Logic */}
-                    <div style={{ flex: 1 }}>
-                        {(searchQuery || activeCat !== 'all') ? (
-                            <>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                    <h2 style={{ fontSize: '20px', fontWeight: 700 }}>
-                                        {categories.find(c => c.id === activeCat)?.nameAr || 'نتائج البحث'}
-                                        <span style={{ fontSize: '12px', color: '#666', marginRight: '10px', fontWeight: 400 }}>({filteredTools.length} عنصر)</span>
-                                    </h2>
-                                </div>
-                                <div className="tools-grid-responsive">
-                                    {filteredTools.map(tool => (
-                                        <ToolCard key={tool.id} tool={tool} onClick={() => handleToolClick(tool)} />
-                                    ))}
-                                </div>
-                            </>
-                        ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-                                {/* Featured */}
-                                <div>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                        <h2 style={{ fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <Star size={18} color="#F59E0B" /> أدوات مميزة
-                                        </h2>
-                                    </div>
-                                    <div className="tools-grid-responsive">
-                                        {featuredTools.map(tool => (
-                                            <ToolCard key={tool.id} tool={tool} onClick={() => handleToolClick(tool)} />
-                                        ))}
-                                    </div>
-                                </div>
-                                {/* New */}
-                                <div>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                        <h2 style={{ fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <Zap size={18} color="#00E096" /> واصل حديثاً
-                                        </h2>
-                                    </div>
-                                    <div className="tools-grid-responsive">
-                                        {newTools.map(tool => (
-                                            <ToolCard key={tool.id} tool={tool} onClick={() => handleToolClick(tool)} />
-                                        ))}
-                                    </div>
-                                </div>
-                                {/* Random / Discover */}
-                                <div>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                        <h2 style={{ fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <Shuffle size={18} color="#D35BFF" /> جرب شيئاً جديداً
-                                        </h2>
-                                        <button
-                                            onClick={() => window.location.reload()}
-                                            style={{ background: 'none', border: 'none', color: '#D35BFF', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}
-                                        >
-                                            <Shuffle size={14} /> تحديث
-                                        </button>
-                                    </div>
-                                    <div className="tools-grid-responsive">
-                                        {randomTools.map(tool => (
-                                            <ToolCard key={tool.id} tool={tool} onClick={() => handleToolClick(tool)} />
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 {/* Footer (Full Width, No Bottom Gap) */}
