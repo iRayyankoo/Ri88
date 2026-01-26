@@ -14,7 +14,7 @@ import DashboardGrid from '@/components/beta/dashboard/DashboardGrid';
 
 
 // Icon Map for Categories
-const CategoryIcons: any = {
+const CategoryIcons: { [key: string]: React.ElementType } = {
     all: LayoutGrid,
     favorites: Star,
     finance: Calculator,
@@ -87,8 +87,8 @@ export default function BetaHome() {
 
             {/* --- MOBILE HEADER (Visible only on mobile) --- */}
             <div className="mobile-header">
-                <div style={{ fontWeight: 900, fontSize: '20px', color: 'white' }}>Ri88<span style={{ color: '#D35BFF' }}>.</span></div>
-                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'white' }} aria-label="Toggle menu">
+                <div className="brand-logo-mobile">Ri88<span>.</span></div>
+                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="mobile-menu-btn" aria-label="Toggle menu">
                     <LayoutGrid size={24} />
                 </button>
             </div>
@@ -97,7 +97,7 @@ export default function BetaHome() {
             <aside className={`beta-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
                     <Link href="/" style={{ textDecoration: 'none' }}>
-                        <div style={{ fontWeight: 900, fontSize: '24px', letterSpacing: '-1px', color: 'white' }}>Ri88<span style={{ color: '#D35BFF' }}>.</span></div>
+                        <div className="sidebar-brand-text">Ri88<span>.</span></div>
                     </Link>
                     {/* Mobile Close Button */}
                     <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
@@ -148,14 +148,13 @@ export default function BetaHome() {
                             <button className="lang-btn">عربي / English</button>
 
                             {status === 'loading' ? (
-                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }}></div>
+                                <div className="user-avatar-placeholder"></div>
                             ) : session ? (
                                 <UserMenu />
                             ) : (
                                 <button
                                     onClick={() => setLoginOpen(true)}
-                                    className="lang-btn"
-                                    style={{ background: '#6D4CFF', border: 'none', cursor: 'pointer' }}
+                                    className="login-btn"
                                 >
                                     تسجيل الدخول
                                 </button>
@@ -174,10 +173,10 @@ export default function BetaHome() {
                     {(activeCat === 'all' && !searchQuery) ? null : (
                         /* SEARCH & BROWSE VIEW */
                         <div style={{ flex: 1 }} className="fade-in">
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                <h2 style={{ fontSize: '20px', fontWeight: 700 }}>
+                            <div className="browse-header">
+                                <h2 className="browse-title">
                                     {categories.find(c => c.id === activeCat)?.nameAr || 'نتائج البحث'}
-                                    <span style={{ fontSize: '12px', color: '#666', marginRight: '10px', fontWeight: 400 }}>({filteredTools.length} عنصر)</span>
+                                    <span className="browse-count">({filteredTools.length} عنصر)</span>
                                 </h2>
                             </div>
                             <div className="tools-grid-responsive">
@@ -193,10 +192,10 @@ export default function BetaHome() {
                 <footer className="beta-footer">
                     <div className="footer-grid">
                         <div className="footer-brand">
-                            <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px', color: 'white', marginBottom: '20px' }}>
-                                Ri88<span style={{ color: '#D35BFF' }}>.</span>
+                            <div className="footer-logo">
+                                Ri88<span>.</span>
                             </div>
-                            <p style={{ color: '#8890AA', fontSize: '14px', lineHeight: '1.6' }}>
+                            <p className="footer-desc">
                                 بوابتك الرقمية الشاملة للإنتاجية والتطوير. <br />صممت للمبدع العربي الحديث.
                             </p>
                         </div>
@@ -364,6 +363,25 @@ export default function BetaHome() {
                     border-color: #6D4CFF !important;
                     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
                 }
+
+                /* New Standard Classes replacing inline styles */
+                .brand-logo-mobile { font-weight: 900; font-size: 20px; color: white; }
+                .brand-logo-mobile span { color: #D35BFF; }
+                .mobile-menu-btn { background: none; border: none; color: white; cursor: pointer; }
+                
+                .sidebar-brand-text { font-weight: 900; font-size: 24px; letter-spacing: -1px; color: white; }
+                .sidebar-brand-text span { color: #D35BFF; }
+                
+                .user-avatar-placeholder { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+                .login-btn { padding: 10px 20px; border-radius: 50px; background: #6D4CFF; border: none; cursor: pointer; color: white; font-weight: 600; font-size: 13px; }
+                
+                .browse-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+                .browse-title { font-size: 20px; font-weight: 700; margin: 0; }
+                .browse-count { font-size: 12px; color: #666; margin-right: 10px; font-weight: 400; }
+
+                .footer-logo { font-weight: 900; font-size: 24px; letter-spacing: -1px; color: white; margin-bottom: 20px; }
+                .footer-logo span { color: #D35BFF; }
+                .footer-desc { color: #8890AA; font-size: 14px; line-height: 1.6; }
             `}</style>
         </div >
     );
@@ -389,34 +407,43 @@ function ToolCard({ tool, onClick }: { tool: Tool, onClick: () => void }) {
     return (
         <div
             onClick={onClick}
-            className="bento-card"
-            style={{
-                background: '#232433', borderRadius: '24px', padding: '24px',
-                border: '1px solid transparent', cursor: 'pointer', transition: 'all 0.2s',
-                display: 'flex', flexDirection: 'column', gap: '15px', position: 'relative', overflow: 'hidden'
-            }}
+            className="bento-card tool-card-wrapper"
         >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div style={{
-                    width: '48px', height: '48px', borderRadius: '14px',
-                    background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '20px', color: '#fff'
-                }}>
+            <div className="tool-card-header">
+                <div className="tool-icon-box">
                     {React.createElement(iconComponent, { size: 24 })}
                 </div>
-                <div style={{
-                    padding: '5px 12px', borderRadius: '20px', fontSize: '10px', fontWeight: 700,
-                    background: tool.status === 'new' ? '#00E096' : 'rgba(255,255,255,0.05)',
-                    color: tool.status === 'new' ? '#000' : '#666'
-                }}>
+                <div className={`tool-badge ${tool.status === 'new' ? 'badge-new' : 'badge-cat'}`}>
                     {tool.status === 'new' ? 'جديد' : (categories.find(c => c.id === tool.cat)?.nameAr || tool.cat)}
                 </div>
             </div>
 
             <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '5px' }}>{tool.titleAr || tool.title}</h3>
-                <p style={{ fontSize: '12px', color: '#8890AA', lineHeight: '1.4' }}>{tool.descAr || tool.desc}</p>
+                <h3 className="tool-title">{tool.titleAr || tool.title}</h3>
+                <p className="tool-desc">{tool.descAr || tool.desc}</p>
             </div>
+
+            <style jsx>{`
+                .tool-card-wrapper {
+                    background: #232433; border-radius: 24px; padding: 24px;
+                    border: 1px solid transparent; cursor: pointer; transition: all 0.2s;
+                    display: flex; flex-direction: column; gap: 15px; position: relative; overflow: hidden;
+                }
+                .tool-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+                .tool-icon-box {
+                    width: 48px; height: 48px; border-radius: 14px;
+                    background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
+                    font-size: 20px; color: #fff;
+                }
+                .tool-badge {
+                   padding: 5px 12px; border-radius: 20px; font-size: 10px; font-weight: 700;
+                }
+                .badge-new { background: #00E096; color: #000; }
+                .badge-cat { background: rgba(255,255,255,0.05); color: #666; }
+                
+                .tool-title { font-size: 16px; font-weight: 700; margin-bottom: 5px; margin-top: 0; }
+                .tool-desc { font-size: 12px; color: #8890AA; line-height: 1.4; margin: 0; }
+            `}</style>
         </div>
     );
 }
