@@ -71,7 +71,7 @@ function PDFMerger() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><Layers className="w-5 h-5 text-blue-400" /> Merge PDFs</h3>
-            <input type="file" multiple accept=".pdf" onChange={e => setFiles(e.target.files)} className="glass-input full-width mb-2" />
+            <input type="file" multiple accept=".pdf" onChange={e => setFiles(e.target.files)} className="glass-input full-width mb-2" aria-label="Upload PDF files to merge" />
             <div className="text-sm text-gray-400 mb-4">
                 {files ? `${files.length} files selected` : 'Select multiple PDF files to combine'}
             </div>
@@ -135,10 +135,10 @@ function PDFSplitter() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><Scissors className="w-5 h-5 text-green-400" /> Split PDF</h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to split" />
             <div className="input-row mb-4">
-                <label className="text-gray-300 block mb-1">Page Ranges (e.g. 1-3, 5)</label>
-                <input value={range} onChange={e => setRange(e.target.value)} className="glass-input bg-dark full-width" placeholder="e.g. 1-5, 8" />
+                <label htmlFor="split-range" className="text-gray-300 block mb-1">Page Ranges (e.g. 1-3, 5)</label>
+                <input id="split-range" value={range} onChange={e => setRange(e.target.value)} className="glass-input bg-dark full-width" placeholder="e.g. 1-5, 8" />
             </div>
             <button onClick={split} disabled={!file || processing} className="btn-primary full-width">
                 {processing ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Splitting...</> : 'Extract Pages'}
@@ -180,7 +180,7 @@ function PDFCompressor() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><Settings className="w-5 h-5 text-orange-400" /> Compress PDF</h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to compress" />
             <div className="text-sm text-gray-400 mb-4">
                 Note: This tool optimizes internal PDF structure. For scanned documents, visual quality remains unchanged.
             </div>
@@ -226,7 +226,7 @@ function PDFToImages() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><ImageIcon className="w-5 h-5 text-purple-400" /> PDF to Images</h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to convert to images" />
             <div className="text-sm text-gray-400 mb-4">
                 Converts all pages to high-quality PNG images.
             </div>
@@ -330,13 +330,14 @@ function PDFExtractText() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><FileText className="w-5 h-5 text-yellow-400" /> Extract Text</h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to extract text" />
             <button onClick={extract} disabled={!file || processing} className="btn-primary full-width mb-4">
                 {processing ? 'Extracting...' : 'Extract Text'}
             </button>
             {textResult && (
                 <div>
-                    <textarea value={textResult} readOnly className="glass-input full-width h-32 mb-2" />
+                    <label htmlFor="extracted-text" className="sr-only">Extracted Text</label>
+                    <textarea id="extracted-text" value={textResult} readOnly className="glass-input full-width h-32 mb-2" />
                     <button onClick={downloadText} className="btn-secondary full-width">Download .txt</button>
                 </div>
             )}
@@ -367,8 +368,8 @@ function PDFProtector() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><Lock className="w-5 h-5 text-red-400" /> Protect PDF</h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
-            <input type="password" value={pass} onChange={e => setPass(e.target.value)} className="glass-input bg-dark full-width mb-4" placeholder="Enter Password" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to protect" />
+            <input type="password" value={pass} onChange={e => setPass(e.target.value)} className="glass-input bg-dark full-width mb-4" placeholder="Enter Password" aria-label="Password for PDF protection" />
             <button onClick={protect} disabled={!file || !pass || processing} className="btn-primary full-width">
                 Encrypt PDF
             </button>
@@ -411,7 +412,7 @@ function PDFUnlock() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><Lock className="w-5 h-5 text-green-400" /> Unlock PDF</h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to unlock" />
             <button onClick={unlock} disabled={!file || processing} className="btn-primary full-width">
                 Remove Password / Security
             </button>
@@ -453,7 +454,7 @@ function ImageToPDF() {
     return (
         <div className="tool-ui-group">
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2"><FileUp className="w-5 h-5 text-pink-400" /> Images to PDF</h3>
-            <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="glass-input full-width mb-4" />
+            <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="glass-input full-width mb-4" aria-label="Upload images to convert to PDF" />
             <button onClick={convert} disabled={!files || processing} className="btn-primary full-width">
                 Convert to PDF
             </button>
@@ -557,10 +558,10 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
                 {mode === 'crop' && 'Crop Margins'}
             </h3>
 
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file" />
 
             {mode === 'rotate' && (
-                <select value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4">
+                <select value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" aria-label="Select rotation angle">
                     <option value="" disabled>Select Rotation</option>
                     <option value="90">90° Clockwise</option>
                     <option value="180">180°</option>
@@ -569,15 +570,15 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
             )}
 
             {mode === 'remove' && (
-                <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="Pages to remove (e.g. 1, 3, 5)" />
+                <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="Pages to remove (e.g. 1, 3, 5)" aria-label="Enter pages to remove" />
             )}
 
             {mode === 'reorder' && (
-                <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="New order (e.g. 3, 1, 2)" />
+                <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="New order (e.g. 3, 1, 2)" aria-label="Enter new page order" />
             )}
 
             {mode === 'crop' && (
-                <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="Margin to crop (e.g. 50)" />
+                <input value={param} onChange={e => setParam(e.target.value)} className="glass-input full-width mb-4" placeholder="Margin to crop (e.g. 50)" aria-label="Enter crop margin" />
             )}
 
             {/* 'number' needs no param for basic center-bottom */}
@@ -629,8 +630,8 @@ function PDFWatermark() {
             <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
                 <Settings className="w-5 h-5 text-cyan-400" /> Add Watermark
             </h3>
-            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" />
-            <input value={text} onChange={e => setText(e.target.value)} className="glass-input full-width mb-4" placeholder="Watermark Text" />
+            <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="glass-input full-width mb-4" aria-label="Upload PDF file to watermark" />
+            <input value={text} onChange={e => setText(e.target.value)} className="glass-input full-width mb-4" placeholder="Watermark Text" aria-label="Watermark Text" />
             <button onClick={apply} disabled={!file || !text || processing} className="btn-primary full-width">
                 {processing ? 'Applying...' : 'Apply Watermark'}
             </button>

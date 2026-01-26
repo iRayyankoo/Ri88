@@ -73,9 +73,12 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
 
         default:
             return (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                <div className="unknown-category">
                     <h3>🚧 Unknown Category</h3>
                     <p>Tool ID: {id} (Category: {cat})</p>
+                    <style jsx>{`
+                        .unknown-category { text-align: center; padding: 40px; color: #888; }
+                    `}</style>
                 </div>
             );
     }

@@ -24,9 +24,9 @@ function HijriConverter() {
         <div className="tool-ui-group">
             <div className="input-row">
                 <label>التاريخ الميلادي</label>
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" aria-label="التاريخ الميلادي" />
             </div>
-            <button onClick={convert} className="btn-primary full-width">تحويل للهجري</button>
+            <button onClick={convert} className="btn-primary full-width" style={{ background: 'linear-gradient(90deg, #6D4CFF 0%, #8E44AD 100%)', border: 'none' }}>تحويل للهجري</button>
             {res && (
                 <div className="result-box" style={{ textAlign: 'center' }}>
                     <strong style={{ fontSize: '1.5em', color: 'var(--accent-pink)' }}>{res.str}</strong>
@@ -41,7 +41,7 @@ function HijriConverter() {
 function DateDiff() {
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
-    const [res, setRes] = useState<any>(null);
+    const [res, setRes] = useState<{ days: number, weeks: string, y: number, m: number, d: number } | null>(null);
 
     const calc = () => {
         const s = new Date(start);
@@ -65,11 +65,11 @@ function DateDiff() {
         <div className="tool-ui-group">
             <div className="input-row">
                 <label>تاريخ البداية</label>
-                <input type="date" value={start} onChange={e => setStart(e.target.value)} className="glass-input" />
+                <input type="date" value={start} onChange={e => setStart(e.target.value)} className="glass-input" aria-label="تاريخ البداية" />
             </div>
             <div className="input-row">
                 <label>تاريخ النهاية</label>
-                <input type="date" value={end} onChange={e => setEnd(e.target.value)} className="glass-input" />
+                <input type="date" value={end} onChange={e => setEnd(e.target.value)} className="glass-input" aria-label="تاريخ النهاية" />
             </div>
             <button onClick={calc} className="btn-primary full-width">احسب المدة</button>
             {res && (
@@ -87,7 +87,7 @@ function DateDiff() {
 function Timer() {
     const [sec, setSec] = useState(0);
     const [running, setRunning] = useState(false);
-    const intervalRef = useRef<any>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const start = () => {
         if (running) return;
@@ -150,15 +150,15 @@ function DateAdd() {
         <div className="tool-ui-group">
             <div className="input-row">
                 <label>تاريخ البدء</label>
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" aria-label="تاريخ البدء" />
             </div>
             <div className="input-row">
                 <label>أضف أيام</label>
-                <input type="number" value={days} onChange={e => setDays(parseInt(e.target.value) || 0)} className="glass-input" />
+                <input type="number" value={days} onChange={e => setDays(parseInt(e.target.value) || 0)} className="glass-input" aria-label="أضف أيام" />
             </div>
             <div className="input-row">
                 <label>أضف شهور</label>
-                <input type="number" value={months} onChange={e => setMonths(parseInt(e.target.value) || 0)} className="glass-input" />
+                <input type="number" value={months} onChange={e => setMonths(parseInt(e.target.value) || 0)} className="glass-input" aria-label="أضف شهور" />
             </div>
             <button onClick={calc} className="btn-primary full-width">احسب</button>
             {res && (

@@ -59,51 +59,31 @@ export default function Home() {
       <Navbar />
       <Hero />
 
-      <main className="categories-section" id="tools" style={{ paddingTop: '50px' }}>
-
+      <main className="categories-section" id="tools">
         {/* Search & Header */}
-        <div className="section-header" style={{ flexWrap: 'wrap', gap: '20px' }}>
-          <h2 style={{ fontSize: '2em' }}>
+        <div className="section-header">
+          <h2>
             جميع الأدوات
-            <span id="totalToolsCount" style={{ fontSize: '0.6em', opacity: 0.7, marginRight: '10px' }}>
+            <span id="totalToolsCount" className="total-count">
               ({filteredTools.length})
             </span>
           </h2>
           <input
             type="text"
+            className="search-input"
             placeholder="ابحث عن أداة..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--glass-border)',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '50px',
-              width: '300px',
-              outline: 'none',
-              textAlign: 'right' // RTL
-            }}
           />
         </div>
 
         {/* Categories (Horizontal/Wrap) */}
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
+        <div className="categories-wrapper">
           {categories.map(cat => (
             <button
               key={cat.id}
-              className="glass-panel"
+              className={`glass-panel category-btn ${activeCat === cat.id ? 'active' : ''}`}
               onClick={() => setActiveCat(cat.id)}
-              style={{
-                padding: '10px 20px',
-                cursor: 'pointer',
-                border: activeCat === cat.id ? '1px solid var(--accent-pink)' : '1px solid var(--glass-border)',
-                background: activeCat === cat.id ? 'rgba(211, 91, 255, 0.2)' : 'var(--glass-bg)',
-                color: activeCat === cat.id ? 'white' : 'var(--text-secondary)',
-                borderRadius: '12px',
-                transition: 'all 0.2s',
-                fontWeight: '600'
-              }}
             >
               {cat.nameAr}
             </button>
@@ -119,7 +99,7 @@ export default function Home() {
               </div>
             ))
           ) : (
-            <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '50px', color: '#888' }}>
+            <div className="no-results">
               لا توجد أدوات مطابقة للبحث.
             </div>
           )}
@@ -142,6 +122,44 @@ export default function Home() {
           </>
         )}
       </Modal>
+
+      <style jsx>{`
+        .categories-section { padding-top: 50px; }
+        .section-header { display: flex; flex-wrap: wrap; gap: 20px; }
+        .section-header h2 { font-size: 2em; }
+        .total-count { font-size: 0.6em; opacity: 0.7; margin-right: 10px; }
+        
+        .search-input {
+          background: var(--glass-bg);
+          border: 1px solid var(--glass-border);
+          color: white;
+          padding: 12px 24px;
+          border-radius: 50px;
+          width: 300px;
+          outline: none;
+          text-align: right;
+        }
+
+        .categories-wrapper { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+        
+        .category-btn {
+          padding: 10px 20px;
+          cursor: pointer;
+          border: 1px solid var(--glass-border);
+          background: var(--glass-bg);
+          color: var(--text-secondary);
+          border-radius: 12px;
+          transition: all 0.2s;
+          font-weight: 600;
+        }
+        .category-btn.active {
+          border: 1px solid var(--accent-pink);
+          background: rgba(211, 91, 255, 0.2);
+          color: white;
+        }
+
+        .no-results { grid-column: 1/-1; text-align: center; padding: 50px; color: #888; }
+      `}</style>
     </>
   );
 }

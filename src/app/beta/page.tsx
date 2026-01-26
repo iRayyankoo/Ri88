@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useMemo } from 'react';
 import { tools, categories, Tool } from '@/data/tools';
-import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Type, Clock, Activity, Zap, Smartphone, Code, Flag, GraduationCap, Languages, Trophy, Palette, ArrowRight, Twitter, Instagram, Linkedin, Shuffle } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { Search, LayoutGrid, Star, Calculator, FileText, Image as ImageIcon, Type, Clock, Activity, Zap, Smartphone, Code, Flag, GraduationCap, Languages, Trophy, Palette, ArrowRight, Twitter, Instagram, Linkedin } from 'lucide-react';
 import Modal from '@/components/Modal';
 import ToolRouter from '@/components/tools/ToolRouter';
 import Link from 'next/link';
@@ -9,7 +10,7 @@ import UserMenu from '@/components/auth/UserMenu';
 import LoginModal from '@/components/auth/LoginModal';
 import CommandPalette from '@/components/CommandPalette';
 import { useSession } from "next-auth/react";
-import BetaHUD from '@/components/beta/BetaHUD';
+import DashboardGrid from '@/components/beta/dashboard/DashboardGrid';
 
 
 // Icon Map for Categories
@@ -41,12 +42,12 @@ export default function BetaHome() {
     const [loginOpen, setLoginOpen] = useState(false); // Login Modal State
 
     // Initial View Logic (Featured/New)
-    const featuredTools = useMemo(() => tools.filter(t => ['loan-calc', 'time-add', 'health-bmi', 'pdf-merge'].includes(t.id)), []);
-    const newTools = useMemo(() => tools.filter(t => t.status === 'new').slice(0, 4), []);
-    const [randomTools, setRandomTools] = useState<Tool[]>([]);
+    // const featuredTools = useMemo(() => tools.filter(t => ['loan-calc', 'time-add', 'health-bmi', 'pdf-merge'].includes(t.id)), []);
+    // const newTools = useMemo(() => tools.filter(t => t.status === 'new').slice(0, 4), []);
+    // const [randomTools, setRandomTools] = useState<Tool[]>([]);
 
-    // Smart Randomization Logic
-    React.useEffect(() => {
+    // Smart Randomization Logic (Disabled/Unused)
+    /* React.useEffect(() => {
         const excludedIds = new Set([...featuredTools.map(t => t.id), ...newTools.map(t => t.id)]);
         const candidates = tools.filter(t => !excludedIds.has(t.id));
 
@@ -57,7 +58,8 @@ export default function BetaHome() {
         }
 
         setRandomTools(candidates.slice(0, 8)); // Show 8 random tools
-    }, [featuredTools, newTools]);
+    }, [featuredTools, newTools]); */
+
 
     // Filter Logic
     const filteredTools = useMemo(() => {
@@ -86,7 +88,7 @@ export default function BetaHome() {
             {/* --- MOBILE HEADER (Visible only on mobile) --- */}
             <div className="mobile-header">
                 <div style={{ fontWeight: 900, fontSize: '20px', color: 'white' }}>Ri88<span style={{ color: '#D35BFF' }}>.</span></div>
-                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'white' }}>
+                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'white' }} aria-label="Toggle menu">
                     <LayoutGrid size={24} />
                 </button>
             </div>
@@ -98,7 +100,7 @@ export default function BetaHome() {
                         <div style={{ fontWeight: 900, fontSize: '24px', letterSpacing: '-1px', color: 'white' }}>Ri88<span style={{ color: '#D35BFF' }}>.</span></div>
                     </Link>
                     {/* Mobile Close Button */}
-                    <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)}>
+                    <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
                         <ArrowRight size={20} />
                     </button>
                 </div>
@@ -161,13 +163,15 @@ export default function BetaHome() {
                         </div>
                     </header>
 
-                    {/* Hero / HUD Block - Only Show when 'all' and no search */}
-                    {(activeCat === 'all' && !searchQuery) ? (
-                        <BetaHUD
-                            onExplore={() => setActiveCat('finance')}
-                            onSelectTool={(tool) => handleToolClick(tool)}
-                        />
-                    ) : (
+                    {/* Dashboard Grid - Always Visible on Top of 'all' Category */}
+                    {!searchQuery && activeCat === 'all' && (
+                        <div className="mb-10">
+                            <DashboardGrid />
+                        </div>
+                    )}
+
+                    {/* Browsing & Category Content - Only Show when 'all' and no search */}
+                    {(activeCat === 'all' && !searchQuery) ? null : (
                         /* SEARCH & BROWSE VIEW */
                         <div style={{ flex: 1 }} className="fade-in">
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
@@ -214,9 +218,9 @@ export default function BetaHome() {
                         <div className="footer-social">
                             <h4>تواصل</h4>
                             <div className="social-icons">
-                                <a href="#"><Twitter size={20} /></a>
-                                <a href="#"><Instagram size={20} /></a>
-                                <a href="#"><Linkedin size={20} /></a>
+                                <a href="#" title="Twitter"><Twitter size={20} /></a>
+                                <a href="#" title="Instagram"><Instagram size={20} /></a>
+                                <a href="#" title="LinkedIn"><Linkedin size={20} /></a>
                             </div>
                         </div>
                     </div>
@@ -366,7 +370,22 @@ export default function BetaHome() {
 }
 
 // Reusable Tool Card Component for cleanliness
+// Helper to convert kebab-case to PascalCase for icon lookup
+const getIconComponent = (iconName: string) => {
+    if (!iconName) return LucideIcons.Zap;
+
+    // Handle special cases or default mapping if needed
+    const pascalName = iconName.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+
+    // @ts-expect-error Dynamic access to Lucide icons
+    const Icon = LucideIcons[pascalName] || LucideIcons[iconName] || LucideIcons.Zap;
+    return Icon;
+};
+
+// Reusable Tool Card Component for cleanliness
 function ToolCard({ tool, onClick }: { tool: Tool, onClick: () => void }) {
+    const iconComponent = useMemo(() => getIconComponent(tool.icon), [tool.icon]);
+
     return (
         <div
             onClick={onClick}
@@ -383,7 +402,7 @@ function ToolCard({ tool, onClick }: { tool: Tool, onClick: () => void }) {
                     background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '20px', color: '#fff'
                 }}>
-                    <div className={`lucide-${tool.icon}`} /> ⚡
+                    {React.createElement(iconComponent, { size: 24 })}
                 </div>
                 <div style={{
                     padding: '5px 12px', borderRadius: '20px', fontSize: '10px', fontWeight: 700,

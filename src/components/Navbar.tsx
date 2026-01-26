@@ -11,10 +11,10 @@ export default function Navbar() {
             <nav className="navbar">
                 <div className="nav-container">
                     {/* Brand */}
-                    <Link href="/" className="brand" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Link href="/" className="brand">
                         {/* Note: We will move the logo image later, using text for now or placeholder */}
-                        <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px' }}>
-                            Ri88<span style={{ color: 'var(--accent-pink)' }}>.</span>
+                        <div className="brand-text">
+                            Ri88<span className="brand-dot">.</span>
                         </div>
                     </Link>
 
@@ -23,20 +23,16 @@ export default function Navbar() {
                         <Link href="/" className="nav-link active">الأدوات</Link>
                         <Link href="/about" className="nav-link">عن الموقع</Link>
                         <Link href="/blog" className="nav-link">المدونة</Link>
+                        <Link href="/beta" className="nav-link beta-link">تجربة البيتا 🚀</Link>
                     </div>
 
                     {/* Actions */}
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <div className="nav-actions">
                         <button
                             id="langToggle"
-                            style={{
-                                background: 'transparent',
-                                border: '1px solid rgba(255,255,255,0.2)',
-                                color: 'white',
-                                padding: '6px 12px',
-                                borderRadius: '12px',
-                                cursor: 'pointer'
-                            }}
+                            className="lang-toggle"
+                            title="Toggle Language"
+                            aria-label="Toggle Language"
                         >
                             عربي
                         </button>
@@ -45,7 +41,8 @@ export default function Navbar() {
                         <button
                             className="mobile-menu-toggle"
                             onClick={() => setMobileMenuOpen(true)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                            title="Open Menu"
+                            aria-label="Open Menu"
                         >
                             <Menu color="white" size={28} />
                         </button>
@@ -56,15 +53,34 @@ export default function Navbar() {
             {/* Mobile Menu Overlay */}
             <div className={`mobile-nav-overlay ${mobileMenuOpen ? 'active' : ''}`}>
                 <div className="mobile-nav-content">
-                    <button className="close-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
+                    <button className="close-mobile-nav" onClick={() => setMobileMenuOpen(false)} title="Close Menu" aria-label="Close Menu">
                         <X color="white" />
                     </button>
+                    <Link href="/beta" className="mobile-link beta-mobile-link" onClick={() => setMobileMenuOpen(false)}>تجربة البيتا 🚀</Link>
                     <Link href="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>الرئيسية</Link>
                     <Link href="/tools" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>الأدوات</Link>
                     <Link href="/about" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>عن الموقع</Link>
                     <Link href="/blog" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>المدونة</Link>
                 </div>
             </div>
+
+            <style jsx>{`
+                .brand { display: flex; align-items: center; }
+                .brand-text { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+                .brand-dot { color: var(--accent-pink); }
+                .beta-link { color: #D35BFF; font-weight: bold; }
+                .nav-actions { display: flex; gap: 16px; align-items: center; }
+                .beta-mobile-link { color: #D35BFF; }
+                .lang-toggle {
+                    background: transparent;
+                    border: 1px solid rgba(255,255,255,0.2);
+                    color: white;
+                    padding: 6px 12px;
+                    border-radius: 12px;
+                    cursor: pointer;
+                }
+                .mobile-menu-toggle { background: none; border: none; cursor: pointer; }
+            `}</style>
         </>
     );
 }

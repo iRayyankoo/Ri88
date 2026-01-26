@@ -517,7 +517,7 @@ export const tools: Tool[] = [
     // Life Utils (New)
     {
         id: 'life-bill', cat: 'productivity', icon: 'calculator', status: 'new',
-        title: 'Bill Splitter', titleAr: 'قاطة / تقسيم الفاتورة',
+        title: 'Bill Splitter', titleAr: 'قطة / تقسيم الفاتورة',
         desc: 'Split bills and calculate tips easily.', descAr: 'تقسيم الفاتورة وحساب الإكرامية بين الأصدقاء.'
     },
     {
