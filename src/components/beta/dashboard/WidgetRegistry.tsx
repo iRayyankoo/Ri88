@@ -10,7 +10,7 @@ export interface WidgetDef {
     id: string;
     title_ar: string;
     defaultSize: WidgetSize;
-    component: React.FC<any>;
+    component: React.FC<unknown>;
     icon: React.ElementType;
     gradient?: string; // Optional custom background gradient
 }
@@ -20,14 +20,15 @@ export interface WidgetDef {
 // 1. Welcome Widget
 const WelcomeWidget = () => {
     const { data: session } = useSession();
-    const [greeting, setGreeting] = useState('');
-
-    useEffect(() => {
+    const [greeting] = useState(() => {
+        if (typeof window === 'undefined') return '';
         const hour = new Date().getHours();
-        if (hour < 12) setGreeting('صباح الخير');
-        else if (hour < 17) setGreeting('مساء الخير');
-        else setGreeting('مساء النور');
-    }, []);
+        if (hour < 12) return 'صباح الخير';
+        if (hour < 17) return 'مساء الخير';
+        return 'مساء النور';
+    });
+
+    // Initial greeting logic moved to lazy state initialization to prevent hydration mismatch / sync setState issue
 
     const firstName = session?.user?.name ? session.user.name.split(' ')[0] : '';
 
@@ -35,13 +36,13 @@ const WelcomeWidget = () => {
         <div className="flex flex-col justify-center h-full">
             {session?.user ? (
                 <>
-                    <h3 className="text-4xl font-extrabold mb-3 leading-tight" style={{ color: '#fff' }}>
+                    <h3 className="text-4xl font-extrabold mb-3 leading-tight text-white">
                         {greeting}، {firstName}! <span className="inline-block animate-wave">👋</span>
                     </h3>
-                    <p className="text-xl font-medium" style={{ color: '#A0AEC0' }}>أتمنى لك يوماً مثمراً.</p>
+                    <p className="text-xl font-medium text-gray-400">أتمنى لك يوماً مثمراً.</p>
                 </>
             ) : (
-                <h3 className="text-5xl font-extrabold" style={{ color: '#fff' }}>
+                <h3 className="text-5xl font-extrabold text-white">
                     {greeting} <span className="inline-block">✨</span>
                 </h3>
             )}
@@ -60,10 +61,10 @@ const TimeWidget = () => {
 
     return (
         <div className="flex flex-col items-center justify-center h-full">
-            <div className="text-7xl font-black tracking-wider" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            <div className="text-7xl font-black tracking-wider tabular-nums">
                 {time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
             </div>
-            <div className="text-lg font-bold mt-4" style={{ color: '#D35BFF' }}>توقيت مكة المكرمة</div>
+            <div className="text-lg font-bold mt-4 text-[#D35BFF]">توقيت مكة المكرمة</div>
         </div>
     );
 };
@@ -77,7 +78,7 @@ const DateWidget = () => {
 
     return (
         <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="text-xl font-bold mb-2" style={{ color: '#D35BFF' }}>{dayName}</div>
+            <div className="text-xl font-bold mb-2 text-[#D35BFF]">{dayName}</div>
             <div className="text-7xl font-black my-2">{dayNum}</div>
             <div className="text-xl font-medium text-gray-300 mt-2">{month}</div>
         </div>
@@ -101,7 +102,7 @@ const WeatherWidget = () => {
 const GoldWidget = () => {
     return (
         <div className="flex flex-col justify-center h-full px-4">
-            <div className="flex items-center gap-3 mb-4" style={{ color: '#FFD700' }}>
+            <div className="flex items-center gap-3 mb-4 text-[#FFD700]">
                 <Coins size={28} />
                 <span className="font-bold text-lg">أونصة الذهب</span>
             </div>
@@ -117,11 +118,16 @@ const GoldWidget = () => {
 const AyahWidget = () => {
     return (
         <div className="flex flex-col justify-center h-full text-center relative overflow-hidden px-6">
-            <Quote size={140} style={{ position: 'absolute', top: -20, left: -20, opacity: 0.05 }} />
-            <p className="font-semibold mb-4" style={{ fontSize: '24px', lineHeight: '1.6' }}>
-                "وَقُل رَّبِّ زِدْنِي عِلْمًا"
+            <Quote size={140} className="ayah-bg-icon" />
+            <p className="font-semibold mb-4 text-2xl leading-relaxed">
+                &quot;وَقُل رَّبِّ زِدْنِي عِلْمًا&quot;
             </p>
-            <span className="font-bold block" style={{ fontSize: '16px', color: '#D35BFF' }}>سورة طه - آية 114</span>
+            <span className="font-bold block text-base text-[#D35BFF]">سورة طه - آية 114</span>
+            <style jsx>{`
+                :global(.ayah-bg-icon) {
+                    position: absolute; top: -20px; left: -20px; opacity: 0.05;
+                }
+            `}</style>
         </div>
     );
 };
@@ -157,12 +163,14 @@ const EventsWidget = () => {
 
 // 8. Quick Notes (Sticky Note)
 const QuickNotesWidget = () => {
-    const [note, setNote] = useState('');
+    const [note, setNote] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('widget_quick_note') || '';
+        }
+        return '';
+    });
 
-    useEffect(() => {
-        const saved = localStorage.getItem('widget_quick_note');
-        if (saved) setNote(saved);
-    }, []);
+    // Removed useEffect for loading state since we use lazy init now
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
@@ -177,11 +185,10 @@ const QuickNotesWidget = () => {
                 <span className="text-base font-bold">ملاحظات سريعة</span>
             </div>
             <textarea
-                className="flex-1 bg-transparent border-none resize-none text-xl outline-none w-full h-full placeholder-gray-600 font-medium leading-relaxed"
+                className="flex-1 bg-transparent border-none resize-none text-xl outline-none w-full h-full placeholder-gray-600 font-medium leading-relaxed text-[#eee]"
                 placeholder="اكتب شيئاً حتى لا تنساه..."
                 value={note}
                 onChange={handleChange}
-                style={{ color: '#eee' }}
                 onMouseDown={(e) => e.stopPropagation()}
             />
             <div className="absolute bottom-0 left-0 text-sm text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity font-medium">
@@ -225,11 +232,17 @@ const PomodoroWidget = () => {
         let interval: NodeJS.Timeout;
         if (isActive && timeLeft > 0) {
             interval = setInterval(() => {
-                setTimeLeft((prev) => prev - 1);
+                setTimeLeft((prev) => {
+                    if (prev <= 1) {
+                        // Timer finished
+                        setIsActive(false);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
             }, 1000);
-        } else if (timeLeft === 0) {
+        } else if (timeLeft === 0 && isActive) {
             setIsActive(false);
-            // Could play sound here
         }
         return () => clearInterval(interval);
     }, [isActive, timeLeft]);

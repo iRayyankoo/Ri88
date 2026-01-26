@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Activity, Flame, Droplets, Moon, Wind, Scale, Timer, Heart } from 'lucide-react';
+import { Flame, Scale, Droplets, Moon, Wind } from 'lucide-react';
 
 interface ToolProps {
     toolId: string;
 }
 
 // Reusable Widget Card Wrapper
-const WidgetCard = ({ title, icon: Icon, color, children, className = '' }: any) => (
+const WidgetCard = ({ title, icon: Icon, color, children, className = '' }: WidgetCardProps) => (
     <div className={`health-widget-card ${className}`}>
         <div className="widget-header">
-            <div className="widget-pill" style={{ '--pill-color': color } as React.CSSProperties}>
+            <div className={`widget-pill pill-${color.replace('#', '')}`}>
                 <Icon size={16} />
                 <span>{title}</span>
             </div>
@@ -206,7 +206,6 @@ function SleepCalculator() {
 function BreathingExercise() {
     const [active, setActive] = useState(false);
     const [text, setText] = useState('جاهز؟');
-    const [scale, setScale] = useState(1);
     const [phase, setPhase] = useState<'inhale' | 'hold' | 'exhale' | 'idle'>('idle');
 
     useEffect(() => {
@@ -215,7 +214,7 @@ function BreathingExercise() {
 
         const cycle = async () => {
             if (!mounted) return;
-            setPhase('inhale'); setText('شهيق...'); setScale(1.5);
+            setPhase('inhale'); setText('شهيق...');
             await new Promise(r => setTimeout(r, 4000));
 
             if (!mounted) return;
@@ -223,7 +222,7 @@ function BreathingExercise() {
             await new Promise(r => setTimeout(r, 4000));
 
             if (!mounted) return;
-            setPhase('exhale'); setText('زفير...'); setScale(1);
+            setPhase('exhale'); setText('زفير...');
             await new Promise(r => setTimeout(r, 4000));
 
             if (!mounted) return;
@@ -402,3 +401,14 @@ function HealthStyles() {
         `}</style>
     );
 }
+
+// ----------------------------------------------------------------------
+// Types for Typescript cleanliness
+interface WidgetCardProps {
+    title: string;
+    icon: React.ElementType;
+    color: string;
+    children: React.ReactNode;
+    className?: string;
+}
+

@@ -77,36 +77,13 @@ export default function WidgetCard({
                     <button
                         onClick={(e) => { e.stopPropagation(); onDelete(id); }}
                         aria-label="حذف الويدجت"
-                        style={{
-                            position: 'absolute',
-                            top: -10,
-                            left: -10,
-                            background: '#ff4444',
-                            color: 'white',
-                            borderRadius: '50%',
-                            width: '28px',
-                            height: '28px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            border: '2px solid #181926',
-                            zIndex: 10,
-                            cursor: 'pointer',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                        }}
+                        className="delete-widget-btn"
                     >
                         <X size={14} strokeWidth={3} />
                     </button>
 
                     {/* Drag Handle Indicator */}
-                    <div style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: '50%',
-                        transform: 'translateX(50%)',
-                        color: 'rgba(255,255,255,0.2)',
-                        pointerEvents: 'none'
-                    }}>
+                    <div className="drag-handle-indicator">
                         <GripHorizontal size={20} />
                     </div>
                 </>
@@ -120,6 +97,17 @@ export default function WidgetCard({
             <style jsx>{`
                 .widget-card {
                     border: 1px solid rgba(255,255,255,0.03);
+                }
+                .delete-widget-btn {
+                    position: absolute; top: -10px; left: -10px;
+                    background: #ff4444; color: white; border-radius: 50%;
+                    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+                    border: 2px solid #181926; z-index: 10; cursor: pointer;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                }
+                .drag-handle-indicator {
+                    position: absolute; top: 10px; right: 50%; transform: translateX(50%);
+                    color: rgba(255,255,255,0.2); pointer-events: none;
                 }
                 .widget-card:hover {
                     transform: translateY(-5px);

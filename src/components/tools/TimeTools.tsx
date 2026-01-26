@@ -26,11 +26,11 @@ function HijriConverter() {
                 <label>التاريخ الميلادي</label>
                 <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" aria-label="التاريخ الميلادي" />
             </div>
-            <button onClick={convert} className="btn-primary full-width" style={{ background: 'linear-gradient(90deg, #6D4CFF 0%, #8E44AD 100%)', border: 'none' }}>تحويل للهجري</button>
+            <button onClick={convert} className="btn-primary full-width magic-btn">تحويل للهجري</button>
             {res && (
-                <div className="result-box" style={{ textAlign: 'center' }}>
-                    <strong style={{ fontSize: '1.5em', color: 'var(--accent-pink)' }}>{res.str}</strong>
-                    <p style={{ opacity: 0.7, fontSize: '0.9em', marginTop: '8px' }}>Numeric: {res.num}</p>
+                <div className="result-box text-center">
+                    <strong className="result-text">{res.str}</strong>
+                    <p className="result-sub">Numeric: {res.num}</p>
                 </div>
             )}
         </div>
@@ -118,14 +118,14 @@ function Timer() {
     }
 
     return (
-        <div className="tool-ui-group" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '4em', fontWeight: '700', fontVariantNumeric: 'tabular-nums', letterSpacing: '-2px', color: 'white', margin: '20px 0' }}>
+        <div className="tool-ui-group text-center">
+            <div className="timer-display">
                 {fmt(sec)}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
-                <button onClick={start} className="btn-primary" style={{ background: '#2ecc71' }}>ابدأ</button>
-                <button onClick={stop} className="btn-primary" style={{ background: '#e74c3c' }}>توقف</button>
-                <button onClick={reset} className="btn-primary" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>تصفير</button>
+            <div className="timer-controls">
+                <button onClick={start} className="btn-primary btn-green">ابدأ</button>
+                <button onClick={stop} className="btn-primary btn-red">توقف</button>
+                <button onClick={reset} className="btn-primary btn-glass">تصفير</button>
             </div>
         </div>
     );
@@ -162,9 +162,9 @@ function DateAdd() {
             </div>
             <button onClick={calc} className="btn-primary full-width">احسب</button>
             {res && (
-                <div className="result-box" style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.9em', color: '#aaa' }}>التاريخ الناتج</div>
-                    <strong style={{ fontSize: '1.5em', color: 'var(--accent-cyan)' }}>{res}</strong>
+                <div className="result-box text-center">
+                    <div className="result-label">التاريخ الناتج</div>
+                    <strong className="result-value">{res}</strong>
                 </div>
             )}
         </div>
@@ -190,16 +190,37 @@ function WorldClock() {
 
     return (
         <div className="tool-ui-group">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
+            <div className="cities-grid">
                 {cities.map(c => (
-                    <div key={c.name} className="glass-panel" style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ color: 'var(--text-secondary)' }}>{c.name}</span>
-                        <strong style={{ fontSize: '1.2em' }}>
+                    <div key={c.name} className="glass-panel city-panel">
+                        <span className="city-name">{c.name}</span>
+                        <strong className="city-time">
                             {time.toLocaleTimeString('en-US', { timeZone: c.zone, hour: '2-digit', minute: '2-digit' })}
                         </strong>
                     </div>
                 ))}
             </div>
+
+            <style jsx>{`
+                .text-center { text-align: center; }
+                .magic-btn { background: linear-gradient(90deg, #6D4CFF 0%, #8E44AD 100%); border: none; }
+                .result-text { font-size: 1.5em; color: var(--accent-pink); }
+                .result-sub { opacity: 0.7; font-size: 0.9em; margin-top: 8px; }
+                
+                .timer-display { font-size: 4em; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -2px; color: white; margin: 20px 0; }
+                .timer-controls { display: flex; justify-content: center; gap: 16px; }
+                .btn-green { background: #2ecc71; }
+                .btn-red { background: #e74c3c; }
+                .btn-glass { background: var(--glass-bg); border: 1px solid var(--glass-border); }
+                
+                .result-label { font-size: 0.9em; color: #aaa; }
+                .result-value { font-size: 1.5em; color: var(--accent-cyan); }
+                
+                .cities-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+                .city-panel { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+                .city-name { color: var(--text-secondary); }
+                .city-time { font-size: 1.2em; }
+            `}</style>
         </div>
     );
 }
@@ -211,6 +232,6 @@ export default function TimeTools({ toolId }: ToolProps) {
         case 'timer': return <Timer />;
         case 'time-add': return <DateAdd />;
         case 'time-zones': return <WorldClock />;
-        default: return <div style={{ textAlign: 'center' }}>Tool not implemented yet: {toolId}</div>
+        default: return <div className="text-center">Tool not implemented yet: {toolId}</div>
     }
 }
