@@ -241,8 +241,6 @@ const PomodoroWidget = () => {
                     return prev - 1;
                 });
             }, 1000);
-        } else if (timeLeft === 0 && isActive) {
-            setIsActive(false);
         }
         return () => clearInterval(interval);
     }, [isActive, timeLeft]);
