@@ -96,7 +96,7 @@ export default function BetaHome() {
             {/* --- SIDEBAR --- */}
             <aside className={`beta-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <Link href="/" style={{ textDecoration: 'none' }}>
+                    <Link href="/" className="no-underline">
                         <div className="sidebar-brand-text">Ri88<span>.</span></div>
                     </Link>
                     {/* Mobile Close Button */}

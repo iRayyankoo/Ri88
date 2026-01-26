@@ -37,18 +37,18 @@ export default function WidgetCard({
 
     // Size Classes (using CSS Grid column spans)
     // sm = 1 col, md = 2 cols, lg = 4 cols (full width)
-    const getColSpan = () => {
+    const getColSpanClass = () => {
         switch (size) {
-            case 'lg': return 'span 4';
-            case 'md': return 'span 2';
+            case 'lg': return 'col-span-1 md:col-span-2 lg:col-span-4';
+            case 'md': return 'col-span-1 md:col-span-2';
             case 'sm':
-            default: return 'span 1';
+            default: return 'col-span-1';
         }
     };
 
     return (
         <div
-            className={`widget-card ${editMode ? 'edit-mode' : ''}`}
+            className={`widget-card ${editMode ? 'edit-mode' : ''} ${getColSpanClass()}`}
             draggable={editMode} // Only draggable in edit mode
             onDragStart={onDragStart}
             onDragOver={onDragOver}
@@ -57,19 +57,8 @@ export default function WidgetCard({
             onDragLeave={onDragLeave}
             data-id={id}
 
-            style={{
-                gridColumn: getColSpan(),
-                background: gradient || '#232433', // Use gradient if available
-                borderRadius: '24px',
-                padding: '24px',
-                border: editMode ? '1px dashed #6D4CFF' : '1px solid transparent',
-                position: 'relative',
-                transition: 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                minHeight: '160px',
-                boxShadow: editMode ? '0 0 0 1px rgba(109, 76, 255, 0.3)' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                cursor: editMode ? 'grab' : 'default',
-                userSelect: 'none'
-            }}
+            // We use inline style ONLY for dynamic background that can't be class-based easily
+            style={{ background: gradient || '#232433' } as React.CSSProperties}
         >
             {editMode && (
                 <>
@@ -97,6 +86,18 @@ export default function WidgetCard({
             <style jsx>{`
                 .widget-card {
                     border: 1px solid rgba(255,255,255,0.03);
+                    border-radius: 24px;
+                    padding: 24px;
+                    position: relative;
+                    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    min-height: 160px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    user-select: none;
+                }
+                .widget-card.edit-mode {
+                    border: 1px dashed #6D4CFF;
+                    box-shadow: 0 0 0 1px rgba(109, 76, 255, 0.3);
+                    cursor: grab;
                 }
                 .delete-widget-btn {
                     position: absolute; top: -10px; left: -10px;
@@ -123,11 +124,6 @@ export default function WidgetCard({
                 }
                 .widget-card:active {
                     cursor: grabbing;
-                }
-                
-                /* Mobile Override in CSS Grid logic, handled in parent, but here we can force spans if needed */
-                @media (max-width: 900px) {
-                   /* On mobile, we might want everything to be full width or 1 col grid handles it automatically */
                 }
             `}</style>
         </div>
