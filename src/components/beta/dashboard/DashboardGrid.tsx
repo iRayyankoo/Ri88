@@ -24,14 +24,13 @@ const DEFAULT_LAYOUT: WidgetItem[] = [
 ];
 
 export default function DashboardGrid() {
-    const [widgets, setWidgets] = useState<WidgetItem[]>([]);
+    const [widgets, setWidgets] = useState<WidgetItem[]>(DEFAULT_LAYOUT);
     const [editMode, setEditMode] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
     // --- 1. Load / Save Logic ---
     useEffect(() => {
-        // Load from LocalStorage
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
@@ -40,10 +39,7 @@ export default function DashboardGrid() {
                     setWidgets(parsed);
                 } catch (e) {
                     console.error("Failed to parse saved layout", e);
-                    setWidgets(DEFAULT_LAYOUT);
                 }
-            } else {
-                setWidgets(DEFAULT_LAYOUT);
             }
             setIsLoaded(true);
         }
