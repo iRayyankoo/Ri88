@@ -11,6 +11,8 @@ declare global {
         PDFLib: any;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         pdfjsLib: any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        pdfjsWorker: any;
     }
 }
 
@@ -78,6 +80,7 @@ function PDFMerger() {
                     accept=".pdf"
                     onChange={e => setFiles(e.target.files)}
                     className="ui-input"
+                    aria-label="Select PDF files to merge"
                 />
             </ToolInputRow>
 
@@ -151,6 +154,7 @@ function PDFSplitter() {
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
                     className="ui-input"
+                    aria-label="Select PDF file to split"
                 />
             </ToolInputRow>
 
@@ -160,8 +164,9 @@ function PDFSplitter() {
                     onChange={e => setRange(e.target.value)}
                     className="ui-input"
                     placeholder="e.g. 1-3, 5"
+                    aria-label="Page ranges"
                 />
-                <p className="tool-desc" style={{ fontSize: '12px', marginTop: '6px' }}>Leave empty to extract all pages.</p>
+                <p className="tool-desc text-xs mt-1.5">Leave empty to extract all pages.</p>
             </ToolInputRow>
 
             <button onClick={split} disabled={!file || processing} className="ui-btn primary ui-w-full">
@@ -203,9 +208,10 @@ function PDFCompressor() {
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
                     className="ui-input"
+                    aria-label="Select PDF file to compress"
                 />
             </ToolInputRow>
-            <p className="tool-desc ui-mb-4" style={{ fontSize: '12px' }}>Note: Optimizes internal structure. Scanned documents may not shrink significantly.</p>
+            <p className="tool-desc ui-mb-4 text-xs">Note: Optimizes internal structure. Scanned documents may not shrink significantly.</p>
             <button onClick={compress} disabled={!file || processing} className="ui-btn primary ui-w-full">
                 {processing ? 'Compressing...' : 'Compress PDF'}
             </button>
@@ -253,6 +259,7 @@ function PDFToImages() {
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
                     className="ui-input"
+                    aria-label="Select PDF file to convert to images"
                 />
             </ToolInputRow>
             <button onClick={convert} disabled={!file || processing} className="ui-btn primary ui-w-full">
@@ -312,6 +319,7 @@ function PDFExtractText() {
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
                     className="ui-input"
+                    aria-label="Select PDF file to extract text from"
                 />
             </ToolInputRow>
 
@@ -322,10 +330,10 @@ function PDFExtractText() {
             {textResult && (
                 <div className="ui-output">
                     <textarea
+                        aria-label="Extracted Text Result"
                         value={textResult}
                         readOnly
-                        className="ui-textarea ui-mb-4"
-                        style={{ background: 'transparent', border: 'none', padding: 0 }}
+                        className="ui-textarea ui-mb-4 bg-transparent border-none p-0"
                     />
                     <button onClick={downloadText} className="ui-btn ghost ui-w-full">Download .txt</button>
                 </div>
@@ -357,10 +365,10 @@ function PDFProtector() {
     return (
         <ToolShell description="Encrypt PDF with a password.">
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
+                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file to protect" />
             </ToolInputRow>
             <ToolInputRow label="Set Password">
-                <input type="password" value={pass} onChange={e => setPass(e.target.value)} className="ui-input" placeholder="Enter secure password" />
+                <input type="password" value={pass} onChange={e => setPass(e.target.value)} className="ui-input" placeholder="Enter secure password" aria-label="Password for PDF" />
             </ToolInputRow>
             <button onClick={protect} disabled={!file || !pass || processing} className="ui-btn primary ui-w-full">
                 Encrypt PDF
@@ -394,7 +402,7 @@ function PDFUnlock() {
     return (
         <ToolShell description="Remove PDF security/password (if openable).">
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
+                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file to unlock" />
             </ToolInputRow>
             <button onClick={unlock} disabled={!file || processing} className="ui-btn primary ui-w-full">
                 Remove Security
@@ -437,7 +445,7 @@ function ImageToPDF() {
     return (
         <ToolShell description="Combine images into a single PDF document.">
             <ToolInputRow label="Select Images">
-                <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="ui-input" />
+                <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="ui-input" aria-label="Select images to convert" />
             </ToolInputRow>
             <button onClick={convert} disabled={!files || processing} className="ui-btn primary ui-w-full">
                 Convert to PDF
@@ -465,7 +473,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
             if (mode === 'rotate') {
                 const angle = parseInt(param) || 90;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                pdf.getPages().forEach((p: any) => {
+                (pdf.getPages() as any[]).forEach((p) => {
                     p.setRotation(degrees(p.getRotation().angle + angle));
                 });
             }
@@ -520,12 +528,12 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
     return (
         <ToolShell description={labels[mode]}>
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
+                <input aria-label="Upload PDF" type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
             </ToolInputRow>
 
             {mode === 'rotate' && (
                 <ToolInputRow label="Rotation">
-                    <select value={param} onChange={e => setParam(e.target.value)} className="ui-select">
+                    <select value={param} onChange={e => setParam(e.target.value)} className="ui-select" aria-label="Rotation angle">
                         <option value="" disabled>Select Rotation</option>
                         <option value="90">90° Clockwise</option>
                         <option value="180">180°</option>
@@ -536,19 +544,19 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
 
             {mode === 'remove' && (
                 <ToolInputRow label="Pages to Remove">
-                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 1, 3, 5" />
+                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 1, 3, 5" aria-label="Pages to remove" />
                 </ToolInputRow>
             )}
 
             {mode === 'reorder' && (
                 <ToolInputRow label="New Order">
-                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 3, 1, 2" />
+                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 3, 1, 2" aria-label="New page order" />
                 </ToolInputRow>
             )}
 
             {mode === 'crop' && (
                 <ToolInputRow label="Crop Margin">
-                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 50" />
+                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 50" aria-label="Crop margin" />
                 </ToolInputRow>
             )}
 
@@ -575,7 +583,8 @@ function PDFWatermark() {
             const pdf = await PDFDocument.load(bytes);
             const pages = pdf.getPages();
 
-            pages.forEach((page: any) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (pages as any[]).forEach((page) => {
                 const { width, height } = page.getSize();
                 page.drawText(text, {
                     x: width / 2 - (text.length * 15),
@@ -596,10 +605,10 @@ function PDFWatermark() {
     return (
         <ToolShell description="Overlay text watermark on all pages.">
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
+                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file for watermark" />
             </ToolInputRow>
             <ToolInputRow label="Watermark Text">
-                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" />
+                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" aria-label="Watermark text" />
             </ToolInputRow>
             <button onClick={apply} disabled={!file || !text || processing} className="ui-btn primary ui-w-full">
                 Apply Watermark
@@ -615,9 +624,20 @@ export default function PdfTools({ toolId }: ToolProps) {
     const [pdfJsLoaded, setPdfJsLoaded] = useState(false);
 
     useEffect(() => {
-        if (window.PDFLib) setLibLoaded(true);
-        if (window.pdfjsLib) setPdfJsLoaded(true);
-    }, []);
+        let mounted = true;
+        const checkLibs = () => {
+            if (!mounted) return;
+            if (window.PDFLib && !libLoaded) setLibLoaded(true);
+            if (window.pdfjsLib && !pdfJsLoaded) setPdfJsLoaded(true);
+        };
+        const timer = setTimeout(checkLibs, 100);
+        const interval = setInterval(checkLibs, 500);
+        return () => {
+            mounted = false;
+            clearTimeout(timer);
+            clearInterval(interval);
+        };
+    }, [libLoaded, pdfJsLoaded]);
 
     return (
         <>

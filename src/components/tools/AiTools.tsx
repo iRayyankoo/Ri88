@@ -60,19 +60,12 @@ export default function AiTools() {
             }
         >
             {/* Tabs (Custom implementation for now as it's specific to AI tools, or could be generalized later) */}
-            <div className="ui-mb-4" style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.04)', padding: '6px', borderRadius: '14px', width: 'fit-content' }}>
+            <div className="ui-mb-4 flex gap-2 bg-white/5 p-1.5 rounded-xl w-fit">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`ui-btn ghost ${activeTab === tab.id ? 'active' : ''}`}
-                        style={{
-                            height: '36px',
-                            border: 'none',
-                            background: activeTab === tab.id ? 'var(--ui-grad-primary)' : 'transparent',
-                            color: activeTab === tab.id ? 'white' : 'var(--ui-text-muted)',
-                            boxShadow: activeTab === tab.id ? '0 4px 12px rgba(140,64,255,0.3)' : 'none'
-                        }}
+                        className={`ui-btn ghost h-9 border-none transition-all ${activeTab === tab.id ? 'active text-white shadow-[0_4px_12px_rgba(140,64,255,0.3)] bg-[var(--ui-grad-primary)]' : 'bg-transparent text-[var(--ui-text-muted)]'}`}
                     >
                         {tab.label}
                     </button>
@@ -81,12 +74,12 @@ export default function AiTools() {
 
             <ToolInputRow label="النص المدخل">
                 <textarea
-                    className="ui-textarea"
+                    className="ui-textarea min-h-[220px]"
                     placeholder="اكتب النص هنا..."
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     disabled={loading}
-                    style={{ minHeight: '220px' }}
+                    aria-label="AI Text Input"
                 />
             </ToolInputRow>
 

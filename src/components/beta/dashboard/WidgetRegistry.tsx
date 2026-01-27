@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import {
-    CloudSun, Calendar, Clock, Trophy, Quote, Coins, RefreshCw, StickyNote, Timer, Zap, CheckCircle2,
-    Settings2, Moon, Activity, Banknote, ListTodo, Link as LinkIcon, Rss, Wifi, Droplets, Wind, TrendingUp
+    Settings2, Moon, Activity, Banknote, ListTodo, Link as LinkIcon, Rss, Wifi, Droplets, Wind, TrendingUp,
+    RefreshCw, Clock, Calendar, CloudSun, Coins, Trophy, Zap, Quote, StickyNote, Timer, CheckCircle, Circle
 } from 'lucide-react';
 import { useSession } from "next-auth/react";
 
@@ -166,6 +166,7 @@ const WelcomeWidget = () => {
     const [greeting, setGreeting] = useState('أهلاً');
     useEffect(() => {
         const h = new Date().getHours();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setGreeting(h < 12 ? 'صباح الخير' : h < 17 ? 'مساء الخير' : 'مساء النور');
     }, []);
     const name = session?.user?.name?.split(' ')[0] || 'مبدع';
@@ -177,7 +178,7 @@ const WelcomeWidget = () => {
                 <div className="widgetIcon"><RefreshCw size={22} /></div>
             </div>
             <div className="flex flex-col gap-2">
-                <div className="widgetValue" style={{ fontSize: '24px' }}>{greeting}، {name}!</div>
+                <div className="widgetValue text-2xl">{greeting}، {name}!</div>
                 <div className="widgetSub">يومك سعيد ومليء بالإنجازات</div>
             </div>
             <div className="widgetMeta"><div className="widgetChip">✨ يوم سعيد</div></div>
@@ -274,16 +275,23 @@ const CurrencyWidget = () => (
 );
 
 // 10. Todo (NEW)
-const TodoWidget = () => (
-    <div className="widgetInner">
-        <div className="widgetHeader"><span className="widgetTitle">مهام سريعة</span><div className="widgetIcon"><ListTodo size={22} /></div></div>
-        <div className="flex flex-col gap-2 mt-2">
-            <div className="flex items-center gap-2 text-sm opacity-80"><div className="widget-checkbox checked">✓</div> <span>مراجعة الإيميل</span></div>
-            <div className="flex items-center gap-2 text-sm opacity-80"><div className="widget-checkbox"></div> <span>اجتماع الزوم</span></div>
+const TodoWidget = () => {
+    const tasks = [{ text: 'مراجعة الإيميل', done: true }, { text: 'اجتماع الزوم', done: false }];
+    return (
+        <div className="widgetInner">
+            <div className="widgetHeader"><span className="widgetTitle">مهام سريعة</span><div className="widgetIcon"><ListTodo size={22} /></div></div>
+            <div className="flex flex-col gap-2 mt-2">
+                {tasks.map((t, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm opacity-80">
+                        {t.done ? <CheckCircle size={18} className="text-green-400" /> : <Circle size={18} className="text-white/40" />}
+                        <span className={t.done ? "line-through decoration-white/50" : ""}>{t.text}</span>
+                    </div>
+                ))}
+            </div>
+            <div className="widgetMeta"><div className="widgetChip">1/2 منجز</div></div>
         </div>
-        <div className="widgetMeta"><div className="widgetChip">1/2 منجز</div></div>
-    </div>
-);
+    );
+};
 
 // 11. Habit (NEW)
 const HabitWidget = () => (
@@ -362,63 +370,7 @@ const PomodoroWidget = () => (<div className="widgetInner"><div className="widge
 const SettingsWidget = () => (<div className="widgetInner"><div className="widgetHeader"><span className="widgetTitle">الإعدادات</span><div className="widgetIcon"><Settings2 size={22} /></div></div></div>);
 
 
-// 11. Daily Progress Widget
-const DailyProgressWidget = () => {
-    const [tasks, setTasks] = useState<{ id: number, text: string, done: boolean }[]>(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('widget_daily_tasks');
-            return saved ? JSON.parse(saved) : [
-                { id: 1, text: 'شرب الماء', done: false },
-                { id: 2, text: 'قراءة ورد اليوم', done: false },
-                { id: 3, text: 'الرياضة', done: false }
-            ];
-        }
-        return [];
-    });
 
-    useEffect(() => {
-        localStorage.setItem('widget_daily_tasks', JSON.stringify(tasks));
-    }, [tasks]);
-
-    const toggleTask = (id: number) => {
-        setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
-    };
-
-    const completedCount = tasks.filter(t => t.done).length;
-    const progress = (completedCount / tasks.length) * 100;
-
-    return (
-        <div className="flex flex-col h-full justify-between p-1">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2 text-blue-400">
-                    <CheckCircle2 size={20} />
-                    <span className="font-bold">إنجاز اليوم</span>
-                </div>
-                <div className="text-sm font-bold opacity-60">{completedCount}/{tasks.length}</div>
-            </div>
-
-            <div className="space-y-3 mb-4 flex-1 overflow-y-auto custom-scrollbar">
-                {tasks.map(task => (
-                    <div
-                        key={task.id}
-                        onClick={(e) => { e.stopPropagation(); toggleTask(task.id); }}
-                        className={`flex items-center gap-3 cursor-pointer p-2 rounded-xl transition-all ${task.done ? 'bg-white/5 opacity-50' : 'hover:bg-white/5'}`}
-                    >
-                        {task.done ? <CheckCircle2 size={20} className="text-green-500" /> : <Circle size={20} className="text-gray-500" />}
-                        <span className={`text-base font-medium ${task.done ? 'line-through' : ''}`}>{task.text}</span>
-                    </div>
-                ))}
-            </div>
-
-            <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                />
-            </div>
-        </div>
-    );
-};
 
 // --- Registry ---
 export const WIDGET_REGISTRY: Record<string, WidgetDef> = {

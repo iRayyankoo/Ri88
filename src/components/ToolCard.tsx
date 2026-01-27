@@ -51,7 +51,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
             <div className="bg-blob"></div>
             <div className="card-content-wrapper">
                 {/* Favorite Button Stub */}
-                <button className="fav-btn" style={{ position: 'absolute', top: 15, right: 15, background: 'none', border: 'none', cursor: 'pointer', zIndex: 5 }}>
+                <button aria-label="Add to favorites" className="fav-btn absolute top-[15px] right-[15px] bg-transparent border-none cursor-pointer z-[5]">
                     <Star size={20} color="rgba(255,255,255,0.3)" />
                 </button>
 
@@ -65,7 +65,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 </div>
 
                 <div className="card-hover-reveal">
-                    <button className="tool-action btn-secondary" style={{ width: '100%', padding: '8px' }}>
+                    <button className="tool-action btn-secondary w-full p-2">
                         فتح الأداة
                     </button>
                 </div>

@@ -42,11 +42,12 @@ function QRGenerator() {
 
             {url && (
                 <div className="ui-output flex flex-col items-center">
-                    <div style={{ background: 'white', padding: '16px', borderRadius: '16px', marginBottom: '16px' }}>
-                        <img src={url} alt="QR Code" style={{ maxWidth: '200px', display: 'block' }} />
+                    <div className="bg-white p-4 rounded-2xl mb-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="Generated QR Code" className="max-w-[200px] block" />
                     </div>
-                    <button onClick={download} className="ui-btn ghost">
-                        <Download size={16} style={{ marginRight: '8px' }} /> تحميل الصورة
+                    <button onClick={download} className="ui-btn ghost gap-2">
+                        <Download size={16} /> تحميل الصورة
                     </button>
                 </div>
             )}
@@ -69,8 +70,12 @@ function UnitConverter() {
     };
 
     useEffect(() => {
-        setFrom(types[type][0]);
-        setTo(types[type][1]);
+        // Check if values need update to avoid infinite loop
+        if (from !== types[type][0] || to !== types[type][1]) {
+            setFrom(types[type][0]);
+            setTo(types[type][1]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type]);
 
     const convert = () => {
@@ -96,12 +101,12 @@ function UnitConverter() {
     return (
         <ToolShell description="تحويل الوحدات (طول، وزن، حرارة).">
             <ToolInputRow label="القيمة">
-                <input type="number" value={val} onChange={e => setVal(e.target.value)} className="ui-input" />
+                <input type="number" value={val} onChange={e => setVal(e.target.value)} className="ui-input" aria-label="Value" />
             </ToolInputRow>
             <div className="ui-grid-3">
                 <div className="ui-field">
                     <label className="ui-label">النوع</label>
-                    <select value={type} onChange={e => setType(e.target.value)} className="ui-input ui-select">
+                    <select value={type} onChange={e => setType(e.target.value)} aria-label="Unit Type" className="ui-input ui-select">
                         <option value="len">طول</option>
                         <option value="wgt">وزن</option>
                         <option value="tmp">حرارة</option>
@@ -109,21 +114,21 @@ function UnitConverter() {
                 </div>
                 <div className="ui-field">
                     <label className="ui-label">من</label>
-                    <select value={from} onChange={e => setFrom(e.target.value)} className="ui-input ui-select">
+                    <select value={from} onChange={e => setFrom(e.target.value)} aria-label="From Unit" className="ui-input ui-select">
                         {types[type].map((o: string) => <option key={o} value={o}>{o}</option>)}
                     </select>
                 </div>
                 <div className="ui-field">
                     <label className="ui-label">إلى</label>
-                    <select value={to} onChange={e => setTo(e.target.value)} className="ui-input ui-select">
+                    <select value={to} onChange={e => setTo(e.target.value)} aria-label="To Unit" className="ui-input ui-select">
                         {types[type].map((o: string) => <option key={o} value={o}>{o}</option>)}
                     </select>
                 </div>
             </div>
-            <button onClick={convert} className="ui-btn primary ui-w-full" style={{ marginTop: '16px' }}>تحويل</button>
+            <button onClick={convert} className="ui-btn primary ui-w-full mt-4">تحويل</button>
             {result && (
                 <div className="ui-output text-center">
-                    <strong style={{ fontSize: '2em', color: 'var(--ui-g2)' }}>{result} {to}</strong>
+                    <strong className="text-2xl text-[var(--ui-g2)]">{result} {to}</strong>
                 </div>
             )}
         </ToolShell>
@@ -151,7 +156,7 @@ function PassGen() {
     return (
         <ToolShell description="توليد كلمات مرور قوية وآمنة.">
             <ToolInputRow label={`الطول: ${len}`}>
-                <input type="range" min="6" max="32" value={len} onChange={e => setLen(parseInt(e.target.value))} style={{ width: '100%' }} />
+                <input type="range" min="6" max="32" value={len} aria-label="Password Length" onChange={e => setLen(parseInt(e.target.value))} className="w-full" />
             </ToolInputRow>
             <div className="ui-grid-2">
                 <label className="ui-checkbox"><input type="checkbox" checked={opt.upper} onChange={e => setOpt({ ...opt, upper: e.target.checked })} /> أحرف كبيرة</label>
@@ -159,10 +164,10 @@ function PassGen() {
                 <label className="ui-checkbox"><input type="checkbox" checked={opt.num} onChange={e => setOpt({ ...opt, num: e.target.checked })} /> أرقام</label>
                 <label className="ui-checkbox"><input type="checkbox" checked={opt.sym} onChange={e => setOpt({ ...opt, sym: e.target.checked })} /> رموز</label>
             </div>
-            <button onClick={generate} className="ui-btn primary ui-w-full" style={{ marginTop: '16px' }}>توليد</button>
+            <button onClick={generate} className="ui-btn primary ui-w-full mt-4">توليد</button>
             {pass && (
                 <div className="ui-output text-center">
-                    <input type="text" value={pass} readOnly className="ui-input text-center font-mono text-xl" />
+                    <input type="text" value={pass} readOnly aria-label="Generated Password" className="ui-input text-center font-mono text-xl" />
                 </div>
             )}
         </ToolShell>
@@ -195,15 +200,10 @@ function SpeedTest() {
     return (
         <ToolShell description="محاكاة فحص سرعة الإنترنت.">
             <div className="flex justify-center mb-8">
-                <div style={{
-                    width: '200px', height: '200px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    borderRadius: '50%', border: '4px solid var(--ui-stroke)',
-                    background: 'radial-gradient(circle, var(--ui-card), transparent)'
-                }}>
+                <div className="w-[200px] h-[200px] flex items-center justify-center rounded-full border-4 border-[var(--ui-stroke)] bg-[radial-gradient(circle,var(--ui-card),transparent)]">
                     <div className="text-center">
-                        <div style={{ fontSize: '3em', fontWeight: '800', fontFamily: 'monospace' }}>{speed.toFixed(1)}</div>
-                        <div style={{ color: 'var(--ui-text-muted)' }}>Mbps</div>
+                        <div className="text-[3em] font-extrabold font-mono">{speed.toFixed(1)}</div>
+                        <div className="text-[var(--ui-text-muted)]">Mbps</div>
                     </div>
                 </div>
             </div>
@@ -222,8 +222,15 @@ function PomodoroTimer() {
 
     useEffect(() => {
         let interval: any = null;
-        if (active && timeLeft > 0) interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
-        else if (timeLeft === 0) setActive(false);
+        if (active && timeLeft > 0) {
+            interval = setInterval(() => setTimeLeft(t => {
+                if (t <= 1) {
+                    setActive(false);
+                    return 0;
+                }
+                return t - 1;
+            }), 1000);
+        }
         return () => clearInterval(interval);
     }, [active, timeLeft]);
 
@@ -248,7 +255,7 @@ function PomodoroTimer() {
                 <button onClick={() => switchMode('break')} className={`ui-btn ${mode === 'break' ? 'primary' : 'ghost'}`}>راحة (5)</button>
             </div>
             <div className="text-center py-8">
-                <div style={{ fontSize: '5em', fontWeight: 'bold', fontFamily: 'monospace', color: 'var(--ui-text)' }}>{fmt(timeLeft)}</div>
+                <div className="text-5xl font-bold font-mono text-[var(--ui-text)]">{fmt(timeLeft)}</div>
             </div>
             <div className="ui-grid-2">
                 <button onClick={toggle} className="ui-btn primary">{active ? 'إيقاف' : 'ابدأ'}</button>
@@ -277,19 +284,19 @@ function WheelOfLuck() {
     return (
         <ToolShell description="عجلة الحظ للاختيار العشوائي.">
             <div className="text-center py-8">
-                <div style={{ fontSize: '2em', fontWeight: 'bold', color: winner ? 'var(--ui-g1)' : 'var(--ui-text-muted)' }}>{winner || '???'}</div>
+                <div className={`text-2xl font-bold ${winner ? 'text-[var(--ui-g1)]' : 'text-[var(--ui-text-muted)]'}`}>{winner || '???'}</div>
             </div>
             <button onClick={spin} disabled={spinning} className="ui-btn primary ui-w-full">دوّر العجلة</button>
 
             <div className="ui-output mt-4">
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <input value={newItem} onChange={e => setNewItem(e.target.value)} className="ui-input" placeholder="أضف خيار..." />
+                <div className="flex gap-2">
+                    <input value={newItem} onChange={e => setNewItem(e.target.value)} className="ui-input" placeholder="أضف خيار..." aria-label="New Item" />
                     <button onClick={add} className="ui-btn ghost">+</button>
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
+                <div className="flex flex-wrap gap-2 mt-4">
                     {items.map((it, i) => (
-                        <span key={i} className="ui-btn ghost" style={{ fontSize: '12px', padding: '4px 12px' }}>
-                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} style={{ marginLeft: '8px', color: 'red' }}>×</button>
+                        <span key={i} className="ui-btn ghost text-xs px-3 py-1">
+                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="ml-2 text-red-500">×</button>
                         </span>
                     ))}
                 </div>

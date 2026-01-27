@@ -15,7 +15,7 @@ function QuickTranslator() {
     };
     return (
         <ToolShell description="ترجمة سريعة باستخدام Google Translate.">
-            <textarea value={text} onChange={e => setText(e.target.value)} className="ui-input ui-textarea h-48 mb-4" placeholder="أدخل النص للترجمة..." />
+            <textarea value={text} onChange={e => setText(e.target.value)} aria-label="Translation Input" className="ui-input ui-textarea h-48 mb-4" placeholder="أدخل النص للترجمة..." />
             <button onClick={openTranslate} className="ui-btn primary ui-w-full">Translate on Google (New Tab)</button>
         </ToolShell>
     );
@@ -31,9 +31,9 @@ function ArabicCorrector() {
     };
     return (
         <ToolShell description="تصحيح الأخطاء الإملائية والشائعة في النصوص العربية.">
-            <textarea value={text} onChange={e => setText(e.target.value)} className="ui-input ui-textarea h-32 mb-4" placeholder="الصق النص هنا..." />
+            <textarea value={text} onChange={e => setText(e.target.value)} aria-label="Arabic Text" className="ui-input ui-textarea h-32 mb-4" placeholder="الصق النص هنا..." />
             <button onClick={fix} className="ui-btn primary ui-w-full">تصحيح</button>
-            {fixed && <div className="ui-output mt-4"><textarea readOnly value={fixed} className="ui-input ui-textarea h-32 text-white" /></div>}
+            {fixed && <div className="ui-output mt-4"><textarea readOnly value={fixed} aria-label="Corrected Output" className="ui-input ui-textarea h-32 text-white" /></div>}
         </ToolShell>
     );
 }
@@ -48,9 +48,9 @@ function EnglishCorrector() {
     };
     return (
         <ToolShell description="Fix punctuation and capitalization for English text.">
-            <textarea value={text} onChange={e => setText(e.target.value)} className="ui-input ui-textarea h-32 mb-4" placeholder="Paste English text..." />
+            <textarea value={text} onChange={e => setText(e.target.value)} aria-label="English Text" className="ui-input ui-textarea h-32 mb-4" placeholder="Paste English text..." />
             <button onClick={fix} className="ui-btn primary ui-w-full">Fix Text</button>
-            {fixed && <div className="ui-output mt-4"><textarea readOnly value={fixed} className="ui-input ui-textarea h-32 text-white" /></div>}
+            {fixed && <div className="ui-output mt-4"><textarea readOnly value={fixed} aria-label="Fixed Output" className="ui-input ui-textarea h-32 text-white" /></div>}
         </ToolShell>
     );
 }
@@ -68,7 +68,7 @@ function SmartEditor() {
                 <span>{words} كلمة</span>
                 <span>{lines} سطر</span>
             </div>
-            <textarea value={text} onChange={e => setText(e.target.value)} className="ui-input ui-textarea h-64 font-mono leading-relaxed mb-4" placeholder="ابدأ الكتابة..." />
+            <textarea value={text} onChange={e => setText(e.target.value)} aria-label="Smart Editor" className="ui-input ui-textarea h-64 font-mono leading-relaxed mb-4" placeholder="ابدأ الكتابة..." />
             <div className="ui-grid-2">
                 <button onClick={() => navigator.clipboard.writeText(text)} className="ui-btn primary">نسخ</button>
                 <button onClick={() => setText('')} className="ui-btn ghost text-red-400 hover:text-red-300">مسح</button>

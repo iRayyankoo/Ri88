@@ -43,7 +43,7 @@ function EOSCalculator() {
                 </ToolInputRow>
                 <div className="ui-field">
                     <label className="ui-label">سبب الإنهاء</label>
-                    <select value={reason} onChange={e => setReason(e.target.value)} className="ui-input ui-select">
+                    <select value={reason} onChange={e => setReason(e.target.value)} aria-label="Termination Reason" className="ui-input ui-select">
                         <option value="term">إنهاء (كامل)</option>
                         <option value="resign">استقالة</option>
                     </select>
@@ -54,7 +54,7 @@ function EOSCalculator() {
             {result && (
                 <div className="ui-output text-center">
                     <span className="ui-output-label">المكافأة التقديرية</span>
-                    <div style={{ fontSize: '2em', color: 'var(--ui-g1)', fontWeight: 'bold', margin: '8px 0' }}>{result}</div>
+                    <div className="text-[2em] text-[var(--ui-g1)] font-bold my-2">{result}</div>
                     <div className="text-xs text-gray-400">* تقدير مبني على نظام العمل السعودي.</div>
                 </div>
             )}
@@ -84,14 +84,14 @@ function VacationCalculator() {
     return (
         <ToolShell description="حساب راتب الإجازة المقدم وتاريخ العودة.">
             <ToolInputRow label="الراتب الإجمالي">
-                <input type="number" value={salary} onChange={e => setSalary(e.target.value)} className="ui-input" />
+                <input type="number" value={salary} onChange={e => setSalary(e.target.value)} className="ui-input" aria-label="Total Salary" />
             </ToolInputRow>
             <div className="ui-grid-2">
                 <ToolInputRow label="مدة الإجازة (أيام)">
-                    <input type="number" value={days} onChange={e => setDays(e.target.value)} className="ui-input" />
+                    <input type="number" value={days} onChange={e => setDays(e.target.value)} className="ui-input" aria-label="Vacation Days" />
                 </ToolInputRow>
                 <ToolInputRow label="تاريخ البداية">
-                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="ui-input" />
+                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="ui-input" aria-label="Start Date" />
                 </ToolInputRow>
             </div>
 
@@ -101,12 +101,12 @@ function VacationCalculator() {
                 <div className="ui-output ui-grid-2 text-center">
                     <div>
                         <span className="ui-output-label">الراتب المقدم</span>
-                        <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--ui-g1)' }}>{result} ريال</div>
+                        <div className="text-2xl font-bold text-[var(--ui-g1)]">{result} ريال</div>
                     </div>
                     {returnDate && (
                         <div>
                             <span className="ui-output-label">تاريخ العودة</span>
-                            <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--ui-g2)' }}>{returnDate}</div>
+                            <div className="text-2xl font-bold text-[var(--ui-g2)]">{returnDate}</div>
                         </div>
                     )}
                 </div>
@@ -129,7 +129,7 @@ function IbanValidator() {
     return (
         <ToolShell description="التحقق من صحة رقم الآيبان (IBAN) السعودي.">
             <ToolInputRow label="رقم الآيبان">
-                <input value={iban} onChange={e => setIban(e.target.value)} className="ui-input" placeholder="SA..." />
+                <input value={iban} onChange={e => setIban(e.target.value)} aria-label="IBAN" className="ui-input" placeholder="SA..." />
             </ToolInputRow>
             <button onClick={validate} className="ui-btn primary ui-w-full">تحقق</button>
             {valid !== null && (
@@ -167,7 +167,7 @@ function TafqeetTool() {
     return (
         <ToolShell description="تحويل الأرقام إلى نص عربي (تفقيط).">
             <ToolInputRow label="المبلغ">
-                <input type="number" value={num} onChange={e => setNum(e.target.value)} className="ui-input" placeholder="مثال: 150" />
+                <input type="number" value={num} onChange={e => setNum(e.target.value)} aria-label="Amount" className="ui-input" placeholder="مثال: 150" />
             </ToolInputRow>
             <button onClick={convert} className="ui-btn primary ui-w-full">تحويل</button>
             {text && (
@@ -181,14 +181,11 @@ function TafqeetTool() {
 
 // 3. Hijri
 function HijriDate() {
-    const [today, setToday] = useState('');
-    useEffect(() => {
-        setToday(new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date()));
-    }, []);
+    const [today] = useState(() => new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date()));
     return (
         <ToolShell description="عرض التاريخ الهجري لليوم.">
             <div className="ui-output text-center py-8">
-                <div style={{ fontSize: '2em', fontWeight: 'bold', color: 'var(--ui-g2)' }}>{today}</div>
+                <div className="text-[2em] font-bold text-[var(--ui-g2)]">{today}</div>
             </div>
         </ToolShell>
     );
@@ -200,12 +197,12 @@ function SaudiEvents() {
         <ToolShell description="أهم الأحداث والمناسبات السعودية.">
             <div className="ui-grid-2">
                 <div className="ui-output text-center">
-                    <div style={{ fontSize: '2em' }}>🎉</div>
+                    <div className="text-[2em]">🎉</div>
                     <b>يوم التأسيس</b>
                     <div className="text-gray-400">22 فبراير</div>
                 </div>
                 <div className="ui-output text-center">
-                    <div style={{ fontSize: '2em' }}>🇸🇦</div>
+                    <div className="text-[2em]">🇸🇦</div>
                     <b>اليوم الوطني</b>
                     <div className="text-gray-400">23 سبتمبر</div>
                 </div>

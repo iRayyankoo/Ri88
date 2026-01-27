@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Copy, Check, Info } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 
 interface ToolShellProps {
     title?: string;
@@ -38,8 +38,10 @@ export function ToolShell({ title, description, children, className = '', footer
 export function ToolInputRow({ label, children }: { label: string, children: React.ReactNode }) {
     return (
         <div className="ui-mb-4">
-            <label className="ui-label">{label}</label>
-            {children}
+            <label className="block w-full">
+                <span className="ui-label block mb-2">{label}</span>
+                {children}
+            </label>
         </div>
     );
 }
@@ -61,8 +63,7 @@ export function ToolOutput({ content, label = "النتيجة" }: { content: str
                 <span className="ui-output-label">{label}</span>
                 <button
                     onClick={handleCopy}
-                    className="ui-btn ghost"
-                    style={{ height: '32px', padding: '0 12px', fontSize: '12px' }}
+                    className="ui-btn ghost h-8 px-3 text-xs"
                 >
                     {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
                     {copied ? 'تم النسخ' : 'نسخ'}

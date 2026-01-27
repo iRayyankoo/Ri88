@@ -24,17 +24,17 @@ function HijriConverter() {
     return (
         <ToolShell description="Convert Gregorian date to Hijri date accurately.">
             <ToolInputRow label="Gregorian Date">
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="ui-input" />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="ui-input" aria-label="Gregorian date" />
             </ToolInputRow>
             <button onClick={convert} className="ui-btn primary ui-w-full">Convert to Hijri</button>
 
             {res && (
-                <div className="ui-output" style={{ textAlign: 'center' }}>
+                <div className="ui-output text-center">
                     <div className="ui-output-header">
                         <span className="ui-output-label">Result</span>
                     </div>
-                    <strong style={{ fontSize: '1.5em', color: 'var(--ui-text)' }}>{res.str}</strong>
-                    <p style={{ marginTop: '8px', color: 'var(--ui-text-muted)' }}>{res.num}</p>
+                    <strong className="text-2xl text-[var(--ui-text)] block">{res.str}</strong>
+                    <p className="mt-2 text-[var(--ui-text-muted)]">{res.num}</p>
                 </div>
             )}
         </ToolShell>
@@ -69,10 +69,10 @@ function DateDiff() {
         <ToolShell description="Calculate duration between two dates.">
             <div className="ui-grid-2">
                 <ToolInputRow label="Start Date">
-                    <input type="date" value={start} onChange={e => setStart(e.target.value)} className="ui-input" />
+                    <input type="date" value={start} onChange={e => setStart(e.target.value)} className="ui-input" aria-label="Start date" />
                 </ToolInputRow>
                 <ToolInputRow label="End Date">
-                    <input type="date" value={end} onChange={e => setEnd(e.target.value)} className="ui-input" />
+                    <input type="date" value={end} onChange={e => setEnd(e.target.value)} className="ui-input" aria-label="End date" />
                 </ToolInputRow>
             </div>
 
@@ -83,16 +83,16 @@ function DateDiff() {
                     <div className="ui-grid-2">
                         <div>
                             <span className="ui-output-label">Total Days</span>
-                            <div style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{res.days} Days</div>
+                            <div className="text-xl font-bold">{res.days} Days</div>
                         </div>
                         <div>
                             <span className="ui-output-label">Weeks</span>
-                            <div style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{res.weeks} Weeks</div>
+                            <div className="text-xl font-bold">{res.weeks} Weeks</div>
                         </div>
                     </div>
-                    <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--ui-stroke)' }}>
+                    <div className="mt-4 pt-4 border-t border-[var(--ui-stroke)]">
                         <span className="ui-output-label">Detailed Duration</span>
-                        <div style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{res.y} Years, {res.m} Months, {res.d} Days</div>
+                        <div className="text-xl font-bold">{res.y} Years, {res.m} Months, {res.d} Days</div>
                     </div>
                 </div>
             )}
@@ -136,19 +136,12 @@ function Timer() {
 
     return (
         <ToolShell description="Simple stopwatch timer.">
-            <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <div style={{
-                    fontSize: '5em',
-                    fontWeight: '700',
-                    fontVariantNumeric: 'tabular-nums',
-                    letterSpacing: '-2px',
-                    color: 'var(--ui-text)',
-                    textShadow: '0 0 30px rgba(59,130,246,0.3)'
-                }}>
+            <div className="text-center py-10">
+                <div className="text-7xl font-bold tabular-nums tracking-tighter text-[var(--ui-text)] drop-shadow-[0_0_30px_rgba(59,130,246,0.3)]">
                     {fmt(sec)}
                 </div>
             </div>
-            <div className="ui-btn-group" style={{ justifyContent: 'center' }}>
+            <div className="ui-btn-group justify-center">
                 <button onClick={start} className="ui-btn primary" disabled={running}>Start</button>
                 <button onClick={stop} className="ui-btn ghost" disabled={!running}>Pause</button>
                 <button onClick={reset} className="ui-btn ghost">Reset</button>
@@ -175,21 +168,21 @@ function DateAdd() {
     return (
         <ToolShell description="Add days or months to a specific date.">
             <ToolInputRow label="Start Date">
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="ui-input" />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="ui-input" aria-label="Start date" />
             </ToolInputRow>
             <div className="ui-grid-2">
                 <ToolInputRow label="Add Days">
-                    <input type="number" value={days} onChange={e => setDays(parseInt(e.target.value) || 0)} className="ui-input" />
+                    <input type="number" value={days} onChange={e => setDays(parseInt(e.target.value) || 0)} className="ui-input" aria-label="Days to add" />
                 </ToolInputRow>
                 <ToolInputRow label="Add Months">
-                    <input type="number" value={months} onChange={e => setMonths(parseInt(e.target.value) || 0)} className="ui-input" />
+                    <input type="number" value={months} onChange={e => setMonths(parseInt(e.target.value) || 0)} className="ui-input" aria-label="Months to add" />
                 </ToolInputRow>
             </div>
             <button onClick={calc} className="ui-btn primary ui-w-full">Calculate</button>
             {res && (
                 <div className="ui-output text-center">
                     <div className="ui-output-label">Result Date</div>
-                    <strong style={{ fontSize: '1.5em', display: 'block', marginTop: '8px' }}>{res}</strong>
+                    <strong className="text-2xl block mt-2">{res}</strong>
                 </div>
             )}
         </ToolShell>
@@ -215,11 +208,11 @@ function WorldClock() {
 
     return (
         <ToolShell description="Current time across major cities.">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
                 {cities.map(c => (
-                    <div key={c.name} className="ui-output" style={{ margin: 0, padding: '16px', textAlign: 'center' }}>
-                        <div className="ui-output-label" style={{ marginBottom: '8px' }}>{c.name}</div>
-                        <strong style={{ fontSize: '1.4em', color: 'var(--ui-text)' }}>
+                    <div key={c.name} className="ui-output m-0 p-4 text-center">
+                        <div className="ui-output-label mb-2">{c.name}</div>
+                        <strong className="text-2xl text-[var(--ui-text)]">
                             {time.toLocaleTimeString('en-US', { timeZone: c.zone, hour: '2-digit', minute: '2-digit' })}
                         </strong>
                     </div>

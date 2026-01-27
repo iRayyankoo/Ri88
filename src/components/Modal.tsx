@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
+// X unused
+// import { X } from 'lucide-react';
 
 interface ModalProps {
     isOpen: boolean;
@@ -15,6 +16,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = '60
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setMounted(true);
         return () => setMounted(false);
     }, []);
@@ -43,7 +45,8 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = '60
             <div
                 className="ai-modal"
                 onClick={e => e.stopPropagation()}
-                style={{ maxWidth: maxWidth }} // Dynamic width override
+                // eslint-disable-next-line
+                style={{ maxWidth }}
             >
                 <div className="ai-header">
                     <button className="ai-close" onClick={onClose} aria-label="إغلاق">×</button>

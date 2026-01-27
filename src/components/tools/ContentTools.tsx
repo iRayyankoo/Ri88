@@ -20,14 +20,14 @@ function SocialSizes() {
 
     return (
         <ToolShell description="دليل مقاسات الصور والفيديو لمنصات التواصل الاجتماعي.">
-            <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '16px', marginBottom: '8px' }}>
-                <button onClick={() => setFilter('All')} className={`ui-btn ghost ${filter === 'All' ? 'active' : ''}`} style={{ whiteSpace: 'nowrap', background: filter === 'All' ? 'rgba(255,255,255,0.1)' : undefined }}>الكل</button>
+            <div className="flex gap-2 overflow-x-auto pb-4 mb-2">
+                <button onClick={() => setFilter('All')} className={`ui-btn ghost whitespace-nowrap ${filter === 'All' ? 'active bg-white/10' : ''}`}>الكل</button>
                 {platforms.map(p => (
-                    <button key={p.name} onClick={() => setFilter(p.name)} className={`ui-btn ghost ${filter === p.name ? 'active' : ''}`} style={{ whiteSpace: 'nowrap', background: filter === p.name ? 'rgba(255,255,255,0.1)' : undefined }}>{p.name}</button>
+                    <button key={p.name} onClick={() => setFilter(p.name)} className={`ui-btn ghost whitespace-nowrap ${filter === p.name ? 'active bg-white/10' : ''}`}>{p.name}</button>
                 ))}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="flex flex-col gap-4">
                 {platforms.filter(p => filter === 'All' || p.name === filter).map(p => (
                     <div key={p.name} className="tool-card p-4">
                         <div className="flex items-center gap-2 mb-4 border-b border-white/5 pb-2">
@@ -67,7 +67,7 @@ function CaptionTemplates() {
                 <input value={topic} onChange={e => setTopic(e.target.value)} placeholder="إطلاق منتج جديد" className="ui-input" />
             </ToolInputRow>
             <ToolInputRow label="النبرة">
-                <select value={tone} onChange={e => setTone(e.target.value)} className="ui-input ui-select">
+                <select value={tone} onChange={e => setTone(e.target.value)} className="ui-input ui-select" aria-label="Caption Tone">
                     <option value="Arabic">عربي (عام)</option>
                     <option value="Professional">رسمي (English)</option>
                     <option value="Casual">ودي (English)</option>
@@ -78,7 +78,7 @@ function CaptionTemplates() {
                 {captions.map((c, i) => (
                     <div key={i} className="ui-output flex justify-between items-center">
                         <p className="m-0 text-sm">{c}</p>
-                        <button onClick={() => navigator.clipboard.writeText(c)} className="ui-btn ghost p-2"><Copy size={14} /></button>
+                        <button onClick={() => navigator.clipboard.writeText(c)} className="ui-btn ghost p-2" title="Copy to clipboard" aria-label="Copy to clipboard"><Copy size={14} /></button>
                     </div>
                 ))}
             </div>
@@ -96,7 +96,7 @@ function ContentIdeas() {
     return (
         <ToolShell description="توليد أفكار للمحتوى بناءً على المجال.">
             <ToolInputRow label="المجال">
-                <input value={niche} onChange={e => setNiche(e.target.value)} placeholder="التسويق, البرمجة..." className="ui-input" />
+                <input aria-label="Content Niche" value={niche} onChange={e => setNiche(e.target.value)} placeholder="التسويق, البرمجة..." className="ui-input" />
             </ToolInputRow>
             <button onClick={generate} className="ui-btn primary ui-w-full">اقتراح أفكار</button>
             {ideas.length > 0 && (
@@ -123,7 +123,7 @@ function Proofreading() {
 
     return (
         <ToolShell description="تدقيق النصوص العربية وتصحيح الأخطاء الشائعة (تجريبي).">
-            <textarea value={text} onChange={e => setText(e.target.value)} placeholder="اكتب النص هنا..." className="ui-input ui-textarea h-40 mb-4" />
+            <textarea aria-label="Text to proofread" value={text} onChange={e => setText(e.target.value)} placeholder="اكتب النص هنا..." className="ui-input ui-textarea h-40 mb-4" />
             <button onClick={check} className="ui-btn primary ui-w-full">تدقيق</button>
             {result && (
                 <div className="ui-output mt-4">

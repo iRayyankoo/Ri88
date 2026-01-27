@@ -25,18 +25,18 @@ function GradeCalculator() {
 
     return (
         <ToolShell description="حساب الدرجات والنسبة المئوية للمواد الدراسية.">
-            <div className="ui-grid-3" style={{ alignItems: 'end' }}>
+            <div className="ui-grid-3 items-end">
                 <ToolInputRow label="المادة/الاختبار">
-                    <input value={name} onChange={e => setName(e.target.value)} className="ui-input" placeholder="مثال: فيزياء" />
+                    <input value={name} onChange={e => setName(e.target.value)} className="ui-input" placeholder="مثال: فيزياء" aria-label="Course Name" />
                 </ToolInputRow>
                 <ToolInputRow label="الدرجة">
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <input type="number" value={score} onChange={e => setScore(e.target.value)} className="ui-input" placeholder="85" />
+                    <div className="flex gap-2 items-center">
+                        <input type="number" value={score} aria-label="Score" onChange={e => setScore(e.target.value)} className="ui-input" placeholder="85" />
                         <span>/</span>
-                        <input type="number" value={max} onChange={e => setMax(e.target.value)} className="ui-input" placeholder="100" />
+                        <input type="number" value={max} aria-label="Max Score" onChange={e => setMax(e.target.value)} className="ui-input" placeholder="100" />
                     </div>
                 </ToolInputRow>
-                <div style={{ paddingBottom: '16px' }}>
+                <div className="pb-4">
                     <button onClick={add} className="ui-btn primary ui-w-full">إضافة</button>
                 </div>
             </div>
@@ -44,12 +44,12 @@ function GradeCalculator() {
             {grades.length > 0 && (
                 <div className="ui-output mt-4">
                     {grades.map((g, i) => (
-                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '8px 0' }}>
+                        <div key={i} className="flex justify-between border-b border-white/10 py-2">
                             <span>{g.name}</span>
-                            <span className="font-mono">{g.score} / {g.max}</span>
+                            <span className="font-mono" dir="ltr">{g.score} / {g.max}</span>
                         </div>
                     ))}
-                    <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.2)', display: 'flex', justifyContent: 'space-between', fontSize: '1.2em', fontWeight: 'bold' }}>
+                    <div className="mt-4 pt-4 border-t border-white/20 flex justify-between text-xl font-bold">
                         <span>الإجمالي</span>
                         <span className="text-accent-cyan">{percent}% ({totalScore}/{totalMax})</span>
                     </div>
@@ -84,28 +84,28 @@ function GPACalculator() {
                 <label className="ui-checkbox"><input type="radio" name="scale" checked={scale === '4'} onChange={() => setScale('4')} /> من 4.0</label>
             </div>
 
-            <div className="ui-grid-3" style={{ alignItems: 'end' }}>
+            <div className="ui-grid-3 items-end">
                 <ToolInputRow label="نظام الدرجات">
-                    <select value={grade} onChange={e => setGrade(e.target.value)} className="ui-input ui-select">
+                    <select value={grade} onChange={e => setGrade(e.target.value)} aria-label="Grade" className="ui-input ui-select">
                         {Object.keys(pointsMap5).map(k => <option key={k} value={k}>{k}</option>)}
                     </select>
                 </ToolInputRow>
                 <ToolInputRow label="الساعات">
-                    <input type="number" value={hours} onChange={e => setHours(e.target.value)} className="ui-input" />
+                    <input type="number" value={hours} onChange={e => setHours(e.target.value)} className="ui-input" aria-label="Credit Hours" />
                 </ToolInputRow>
-                <div style={{ paddingBottom: '16px' }}>
+                <div className="pb-4">
                     <button onClick={add} className="ui-btn primary ui-w-full">إضافة مادة</button>
                 </div>
             </div>
 
             <div className="ui-output text-center mb-4">
                 <span className="ui-output-label">المعدل التراكمي</span>
-                <div style={{ fontSize: '3em', fontWeight: 'bold', color: 'var(--accent-pink)', lineHeight: '1.2' }}>{calc()}</div>
+                <div className="text-[3em] font-bold text-accent-pink leading-[1.2]">{calc()}</div>
             </div>
 
             <div className="flex flex-wrap gap-2 justify-center">
                 {courses.map((c, i) => (
-                    <span key={i} className="ui-btn ghost" style={{ fontSize: '0.8em', padding: '4px 8px' }}>
+                    <span key={i} className="ui-btn ghost text-[0.8em] px-2 py-1">
                         {c.grade} ({c.hours}h)
                     </span>
                 ))}

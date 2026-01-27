@@ -38,23 +38,24 @@ function JsonFormatter() {
                 className="ui-input ui-textarea font-mono"
                 rows={10}
                 placeholder="Paste JSON here..."
+                aria-label="JSON Input"
             ></textarea>
 
-            <div className="ui-grid-3" style={{ marginTop: '16px' }}>
+            <div className="ui-grid-3 mt-4">
                 <button onClick={() => process('fmt')} className="ui-btn primary">Format</button>
                 <button onClick={() => process('min')} className="ui-btn ghost">Minify</button>
                 <button onClick={() => process('val')} className="ui-btn ghost">Validate</button>
             </div>
 
             {msg && (
-                <div style={{ padding: '12px', marginTop: '16px', borderRadius: '12px', background: msg.type === 'error' ? 'rgba(231,76,60,0.2)' : 'rgba(46,204,113,0.2)', color: msg.type === 'error' ? '#ff7675' : '#2ecc71', fontWeight: 'bold', textAlign: 'center' }}>
+                <div className={`p-3 mt-4 rounded-xl text-center font-bold ${msg.type === 'error' ? 'bg-red-500/20 text-[#ff7675]' : 'bg-green-500/20 text-[#2ecc71]'}`}>
                     {msg.text}
                 </div>
             )}
 
             {output && (
                 <div className="ui-output mt-4">
-                    <textarea value={output} readOnly className="ui-input ui-textarea font-mono" rows={10} />
+                    <textarea value={output} readOnly aria-label="JSON Output" className="ui-input ui-textarea font-mono" rows={10} />
                 </div>
             )}
         </ToolShell>
@@ -70,8 +71,8 @@ function Base64Converter() {
 
     return (
         <ToolShell description="تشفير وفك تشفير النصوص بصيغة Base64.">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-32" placeholder="Text to encode/decode..."></textarea>
-            <div className="ui-grid-2" style={{ marginTop: '16px' }}>
+            <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="Base64 Input" className="ui-input ui-textarea h-32" placeholder="Text to encode/decode..."></textarea>
+            <div className="ui-grid-2 mt-4">
                 <button onClick={encode} className="ui-btn primary">Encode</button>
                 <button onClick={decode} className="ui-btn ghost">Decode</button>
             </div>
@@ -107,7 +108,7 @@ function RegexTester() {
 
             {result && (
                 <div className="ui-output text-center mt-4">
-                    <strong style={{ color: result.match ? '#2ecc71' : '#ff7675', fontSize: '1.2em' }}>
+                    <strong className={`text-[1.2em] ${result.match ? 'text-[#2ecc71]' : 'text-[#ff7675]'}`}>
                         {result.msg}
                     </strong>
                 </div>
@@ -135,13 +136,14 @@ function MetaGenerator() {
     return (
         <ToolShell description="توليد وسوم الميتا لمحركات البحث (SEO).">
             <ToolInputRow label="Page Title">
-                <input value={title} onChange={e => setTitle(e.target.value)} className="ui-input" />
+                <input value={title} onChange={e => setTitle(e.target.value)} className="ui-input" aria-label="Page Title" />
             </ToolInputRow>
             <ToolInputRow label="Description">
-                <textarea value={desc} onChange={e => setDesc(e.target.value)} className="ui-input ui-textarea" />
+                <textarea value={desc} onChange={e => setDesc(e.target.value)} className="ui-input ui-textarea" aria-label="Page Description" />
             </ToolInputRow>
             <button onClick={gen} className="ui-btn primary ui-w-full">Generate Tags</button>
-            {out && <div className="ui-output mt-4"><textarea value={out} readOnly className="ui-input ui-textarea font-mono h-40" /></div>}
+            <button onClick={gen} className="ui-btn primary ui-w-full">Generate Tags</button>
+            {out && <div className="ui-output mt-4"><textarea value={out} readOnly aria-label="Generated Meta Tags" className="ui-input ui-textarea font-mono h-40" /></div>}
         </ToolShell>
     );
 }
@@ -155,8 +157,8 @@ function UrlEncoder() {
 
     return (
         <ToolShell description="تشفير الروابط (URL Encode/Decode).">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-32" placeholder="Enter URL..."></textarea>
-            <div className="ui-grid-2" style={{ marginTop: '16px' }}>
+            <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="URL Input" className="ui-input ui-textarea h-32" placeholder="Enter URL..."></textarea>
+            <div className="ui-grid-2 mt-4">
                 <button onClick={encode} className="ui-btn primary">Encode</button>
                 <button onClick={decode} className="ui-btn ghost">Decode</button>
             </div>
@@ -183,7 +185,7 @@ function HashGenerator() {
                 <input value={text} onChange={e => setText(e.target.value)} className="ui-input" placeholder="Text to hash" />
             </ToolInputRow>
             <ToolInputRow label="Algorithm">
-                <select value={algo} onChange={e => setAlgo(e.target.value)} className="ui-input ui-select">
+                <select value={algo} onChange={e => setAlgo(e.target.value)} aria-label="Hash Algorithm" className="ui-input ui-select">
                     <option value="SHA-256">SHA-256 (Recommended)</option>
                     <option value="SHA-1">SHA-1</option>
                     <option value="SHA-384">SHA-384</option>
@@ -227,11 +229,11 @@ function JwtDebugger() {
             <div className="ui-grid-2">
                 <div>
                     <label className="ui-label">Header</label>
-                    <textarea value={header} readOnly className="ui-input ui-textarea font-mono h-40 text-xs" />
+                    <textarea value={header} readOnly aria-label="Header Output" className="ui-input ui-textarea font-mono h-40 text-xs" />
                 </div>
                 <div>
                     <label className="ui-label">Payload</label>
-                    <textarea value={payload} readOnly className="ui-input ui-textarea font-mono h-40 text-xs" />
+                    <textarea value={payload} readOnly aria-label="Payload Output" className="ui-input ui-textarea font-mono h-40 text-xs" />
                 </div>
             </div>
         </ToolShell>
@@ -257,8 +259,8 @@ function TextDiff() {
     return (
         <ToolShell description="مقارنة بين نصين لمعرفة الاختلافات.">
             <div className="ui-grid-2 mb-4">
-                <textarea value={t1} onChange={e => setT1(e.target.value)} className="ui-input ui-textarea h-40" placeholder="Original Text" />
-                <textarea value={t2} onChange={e => setT2(e.target.value)} className="ui-input ui-textarea h-40" placeholder="Modified Text" />
+                <textarea value={t1} onChange={e => setT1(e.target.value)} aria-label="Original Text" className="ui-input ui-textarea h-40" placeholder="Original Text" />
+                <textarea value={t2} onChange={e => setT2(e.target.value)} aria-label="Modified Text" className="ui-input ui-textarea h-40" placeholder="Modified Text" />
             </div>
             <button onClick={compare} className="ui-btn primary ui-w-full">Compare</button>
             {res && <div className="ui-output text-center font-bold mt-4">{res}</div>}
@@ -290,7 +292,7 @@ function ScreenInfo() {
     return (
         <ToolShell description="معلومات الشاشة والجهاز الحالية.">
             <div className="text-center py-8">
-                <div style={{ fontSize: '3em', fontWeight: 'bold', color: 'var(--ui-g2)' }}>
+                <div className="text-4xl font-bold text-gray-500">
                     {info.width} x {info.height}
                 </div>
             </div>

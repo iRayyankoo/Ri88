@@ -5,7 +5,7 @@ import { tools, categories, Tool } from '@/data/tools';
 import {
     SquaresFour, Star, Calculator, FileText, Image, TextT, Clock,
     Heartbeat, Lightning, ShareNetwork, Code, Flag, GraduationCap,
-    Translate, Trophy, PaintBrush, MagnifyingGlass, CaretRight, X, List
+    Translate, Trophy, PaintBrush, MagnifyingGlass, X, List
 } from '@phosphor-icons/react';
 import * as LucideIcons from 'lucide-react';
 

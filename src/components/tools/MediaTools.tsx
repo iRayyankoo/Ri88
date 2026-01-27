@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef } from 'react';
-import { Mic, Square, Download } from 'lucide-react';
+import { Mic, Square } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 
 interface ToolProps {
@@ -45,16 +45,17 @@ function ImageCompressor() {
     return (
         <ToolShell description="ضغط الصور لتقليل حجمها مع الحفاظ على الجودة.">
             <ToolInputRow label={`الجودة (${quality})`}>
-                <input type="range" min="0.1" max="1.0" step="0.1" value={quality} onChange={e => setQuality(parseFloat(e.target.value))} className="ui-input" style={{ padding: '0' }} />
+                <input type="range" min="0.1" max="1.0" step="0.1" value={quality} onChange={e => setQuality(parseFloat(e.target.value))} className="ui-input p-0" aria-label="Image Quality" />
             </ToolInputRow>
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>ضغط الصورة</button>
 
             {res && (
                 <div className="ui-output text-center">
-                    <p style={{ color: 'var(--ui-g2)', marginBottom: '10px' }}>الحجم الجديد: {size}</p>
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px', border: '1px solid var(--ui-stroke)' }} />
-                    <a href={res} download={`compressed_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>تحميل</a>
+                    <p className="text-[var(--ui-g2)] mb-2">الحجم الجديد: {size}</p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Compressed result" className="max-w-full max-h-[300px] rounded-lg border border-[var(--ui-stroke)]" />
+                    <a href={res} download={`compressed_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل</a>
                 </div>
             )}
         </ToolShell>
@@ -90,16 +91,17 @@ function ImageResizer() {
     return (
         <ToolShell description="تغيير أبعاد الصورة (بكسل).">
             <div className="ui-grid-2">
-                <ToolInputRow label="العرض (px)"><input type="number" value={w} onChange={e => setW(e.target.value)} className="ui-input" /></ToolInputRow>
-                <ToolInputRow label="الارتفاع (px)"><input type="number" value={h} onChange={e => setH(e.target.value)} className="ui-input" /></ToolInputRow>
+                <ToolInputRow label="العرض (px)"><input type="number" value={w} onChange={e => setW(e.target.value)} className="ui-input" aria-label="Width in pixels" /></ToolInputRow>
+                <ToolInputRow label="الارتفاع (px)"><input type="number" value={h} onChange={e => setH(e.target.value)} className="ui-input" aria-label="Height in pixels" /></ToolInputRow>
             </div>
             <div className="text-xs text-gray-400 mb-4">* اترك حقلاً فارغاً للحفاظ على الأبعاد.</div>
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>تغيير الحجم</button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
-                    <a href={res} download={`resized_${file?.name}`} className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>تحميل</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Resized result" className="max-w-full max-h-[300px] rounded-lg" />
+                    <a href={res} download={`resized_${file?.name}`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل</a>
                 </div>
             )}
         </ToolShell>
@@ -127,12 +129,13 @@ function WebPConverter() {
 
     return (
         <ToolShell description="تحويل الصور إلى صيغة WebP الحديثة.">
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>تحويل إلى WebP</button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
-                    <a href={res} download={`${file?.name.split('.')[0]}.webp`} className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>تحميل WebP</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="WebP result" className="max-w-full max-h-[300px] rounded-lg" />
+                    <a href={res} download={`${file?.name.split('.')[0]}.webp`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل WebP</a>
                 </div>
             )}
         </ToolShell>
@@ -171,15 +174,16 @@ function PhotoFilters() {
         <ToolShell description="تطبيق فلاتر احترافية على الصور.">
             <div className="ui-grid-3 mb-4">
                 {['grayscale', 'sepia', 'invert', 'brightness', 'contrast', 'blur'].map(f => (
-                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn ghost ${filter === f ? 'active' : ''}`} style={{ fontSize: '12px', background: filter === f ? 'rgba(255,255,255,0.1)' : undefined }}>{f}</button>
+                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn ghost ${filter === f ? 'active' : ''}`} style={{ fontSize: '12px', background: filter === f ? 'rgba(255,255,255,0.1)' : undefined }} aria-label={`Apply ${f} filter`}>{f}</button>
                 ))}
             </div>
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>تطبيق الفلتر</button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
-                    <a href={res} download={`filtered_${file?.name}`} className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>تحميل</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Filtered result" className="max-w-full max-h-[300px] rounded-lg" />
+                    <a href={res} download={`filtered_${file?.name}`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل</a>
                 </div>
             )}
         </ToolShell>
@@ -216,19 +220,16 @@ function AudioRecorder() {
     return (
         <ToolShell description="تسجيل الصوت مباشرة من المتصفح.">
             <div className="text-center py-8">
-                <button onClick={toggle} className="ui-btn" style={{
-                    width: '100px', height: '100px', borderRadius: '50%',
-                    background: recording ? '#e74c3c' : 'rgba(255,255,255,0.1)',
-                    border: '2px solid rgba(255,255,255,0.2)',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
-                }}>
+                <button onClick={toggle} className={`ui-btn w-[100px] h-[100px] rounded-full flex items-center justify-center border-2 border-white/20 ${recording ? 'bg-[#e74c3c]' : 'bg-white/10'}`}>
                     {recording ? <Square size={32} fill="white" /> : <Mic size={32} />}
                 </button>
                 <div className="mt-4 text-gray-400">{recording ? 'جاري التسجيل...' : 'اضغط للتسجيل'}</div>
             </div>
             {audioUrl && (
                 <div className="ui-output text-center">
+                    {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
                     <audio controls src={audioUrl} style={{ width: '100%' }} />
+                    {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
                     <a href={audioUrl} download="recording.ogg" className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>تحميل التسجيل</a>
                 </div>
             )}
@@ -243,9 +244,9 @@ function RemoveBackground() {
             <div className="ui-output text-center">
                 <p className="mb-4">للحصول على أفضل جودة، نوصي بهذه الأدوات المجانية:</p>
                 <div className="ui-grid-3">
-                    <a href="https://www.remove.bg" target="_blank" className="ui-btn primary" style={{ textDecoration: 'none' }}>remove.bg</a>
-                    <a href="https://pfpmaker.com" target="_blank" className="ui-btn primary" style={{ textDecoration: 'none', background: '#3498db' }}>PFPMaker</a>
-                    <a href="https://www.adobe.com/express/feature/image/remove-background" target="_blank" className="ui-btn primary" style={{ textDecoration: 'none', background: '#e74c3c' }}>Adobe</a>
+                    <a href="https://www.remove.bg" target="_blank" rel="noopener noreferrer" className="ui-btn primary no-underline">remove.bg</a>
+                    <a href="https://pfpmaker.com" target="_blank" rel="noopener noreferrer" className="ui-btn primary no-underline bg-[#3498db]">PFPMaker</a>
+                    <a href="https://www.adobe.com/express/feature/image/remove-background" target="_blank" rel="noopener noreferrer" className="ui-btn primary no-underline bg-[#e74c3c]">Adobe</a>
                 </div>
             </div>
         </ToolShell>
@@ -261,7 +262,7 @@ function HeicConverter() {
     const convert = async () => {
         if (!file) return; setConverting(true);
         try {
-            if (!(window as any).heic2any) {
+            if (!(window as { heic2any?: any }).heic2any) {
                 const script = document.createElement('script');
                 script.src = "https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js";
                 script.onload = () => runHeic();
@@ -270,7 +271,7 @@ function HeicConverter() {
         } catch (e) { alert('Error loading converter'); setConverting(false); }
     };
     const runHeic = () => {
-        const heic2any = (window as any).heic2any;
+        const heic2any = (window as { heic2any?: any }).heic2any;
         if (!heic2any) return;
         heic2any({ blob: file, toType: "image/jpeg", quality: 0.8 }).then((blob: Blob) => {
             setRes(URL.createObjectURL(blob)); setConverting(false);
@@ -279,14 +280,15 @@ function HeicConverter() {
 
     return (
         <ToolShell description="تحويل صور iPhone (HEIC) إلى JPG.">
-            <input type="file" accept=".heic, .heif" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload HEIC Image" type="file" accept=".heic, .heif" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={convert} disabled={!file || converting} className="ui-btn primary ui-w-full">
                 {converting ? 'جاري التحويل...' : 'Convert to JPG'}
             </button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', borderRadius: '8px' }} />
-                    <a href={res} download={`converted_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>Download</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Converted HEIC" className="max-w-full rounded-lg" />
+                    <a href={res} download={`converted_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
                 </div>
             )}
         </ToolShell>
@@ -311,11 +313,11 @@ function RemoveMetadata() {
     };
     return (
         <ToolShell description="حذف بيانات الميتا (الموقع، الجهاز) من الصورة.">
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Clean Image</button>
             {res && (
                 <div className="ui-output text-center">
-                    <a href={res} download={`clean_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full" style={{ display: 'block', textDecoration: 'none' }}>Download Clean Image</a>
+                    <a href={res} download={`clean_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full block no-underline">Download Clean Image</a>
                 </div>
             )}
         </ToolShell>
@@ -351,16 +353,17 @@ function AddFrame() {
     return (
         <ToolShell description="إضافة إطار وظل للصورة.">
             <div className="ui-grid-2">
-                <ToolInputRow label="Hamsih"><input type="number" value={padding} onChange={e => setPadding(parseInt(e.target.value))} className="ui-input" /></ToolInputRow>
-                <ToolInputRow label="Color"><input type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input" style={{ height: '48px', padding: '0' }} /></ToolInputRow>
+                <ToolInputRow label="Margin"><input type="number" value={padding} onChange={e => setPadding(parseInt(e.target.value))} className="ui-input" aria-label="Margin width" /></ToolInputRow>
+                <ToolInputRow label="Color"><input type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input h-12 p-0" aria-label="Frame color" /></ToolInputRow>
             </div>
             <label className="ui-checkbox mb-4 block"><input type="checkbox" checked={shadow} onChange={e => setShadow(e.target.checked)} /> Add Shadow</label>
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Generate</button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                    <a href={res} download="framed.png" className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>Download</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Framed result" className="max-w-full max-h-[300px]" />
+                    <a href={res} download="framed.png" className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
                 </div>
             )}
         </ToolShell>
@@ -407,7 +410,7 @@ function SocialPostPrep() {
         <ToolShell description="تجهيز الصور للنشر في وسائل التواصل الاجتماعي.">
             <div className="ui-grid-2">
                 <ToolInputRow label="Ratio">
-                    <select value={ratio} onChange={e => setRatio(e.target.value)} className="ui-input ui-select">
+                    <select aria-label="Select Ratio" value={ratio} onChange={e => setRatio(e.target.value)} className="ui-input ui-select">
                         <option value="1:1">Square (1:1)</option>
                         <option value="4:5">Portrait (4:5)</option>
                         <option value="9:16">Story (9:16)</option>
@@ -415,19 +418,20 @@ function SocialPostPrep() {
                     </select>
                 </ToolInputRow>
                 <ToolInputRow label="Background">
-                    <select value={bgMode} onChange={e => setBgMode(e.target.value as any)} className="ui-input ui-select">
+                    <select aria-label="Select Background" value={bgMode} onChange={e => setBgMode(e.target.value as 'blur' | 'white' | 'black')} className="ui-input ui-select">
                         <option value="blur">Blur</option>
                         <option value="white">White</option>
                         <option value="black">Black</option>
                     </select>
                 </ToolInputRow>
             </div>
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Fit Image</button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                    <a href={res} download="social_post.jpg" className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>Download</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Social post result" className="max-w-full max-h-[300px]" />
+                    <a href={res} download="social_post.jpg" className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
                 </div>
             )}
         </ToolShell>
@@ -454,12 +458,13 @@ function ImageCropper() {
     };
     return (
         <ToolShell description="قص الصور (مربع تلقائي).">
-            <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
             <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Crop Square</button>
             {res && (
                 <div className="ui-output text-center">
-                    <img src={res} style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                    <a href={res} download="cropped.jpg" className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>Download</a>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Cropped result" className="max-w-full max-h-[300px]" />
+                    <a href={res} download="cropped.jpg" className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
                 </div>
             )}
         </ToolShell>

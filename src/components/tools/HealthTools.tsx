@@ -18,13 +18,14 @@ interface HealthWidgetProps {
 // Reusable Widget Card -> Maps to .tool-card
 const WidgetCard = ({ title, icon: Icon, color, children }: HealthWidgetProps) => (
     <div className="tool-card h-full flex flex-col">
-        <div className="tool-header" style={{ padding: '16px', borderBottom: '1px solid var(--ui-stroke)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="tool-header p-4 border-b border-[var(--ui-stroke)] flex items-center gap-2.5">
+            {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
             <div style={{ color }}>
                 <Icon size={20} />
             </div>
-            <h3 style={{ fontSize: '1.1em', fontWeight: 'bold' }}>{title}</h3>
+            <h3 className="text-[1.1em] font-bold">{title}</h3>
         </div>
-        <div className="tool-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="tool-body flex-1 flex flex-col gap-4">
             {children}
         </div>
     </div>
@@ -51,12 +52,13 @@ function BMICalculator() {
 
     return (
         <WidgetCard title="حاسبة الكتلة (BMI)" icon={Scale} color="#3498db">
-            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن (كجم)" />
-            <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="ui-input" placeholder="الطول (سم)" />
+            <input aria-label="Weight in kg" type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن (كجم)" />
+            <input aria-label="Height in cm" type="number" value={height} onChange={e => setHeight(e.target.value)} className="ui-input" placeholder="الطول (سم)" />
             <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
             {result && (
                 <div className="ui-output text-center">
-                    <div style={{ fontSize: '2em', fontWeight: 'bold', color: result.color }}>{result.bmi}</div>
+                    {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
+                    <div className="text-[2em] font-bold" style={{ color: result.color }}>{result.bmi}</div>
                     <div className="text-sm text-gray-400">{result.cat}</div>
                 </div>
             )}
@@ -87,17 +89,17 @@ function BMRCalculator() {
     return (
         <WidgetCard title="السعرات (BMR)" icon={Flame} color="#e74c3c">
             <div className="ui-grid-2">
-                <select value={gender} onChange={e => setGender(e.target.value)} className="ui-input ui-select">
+                <select aria-label="Gender" value={gender} onChange={e => setGender(e.target.value)} className="ui-input ui-select">
                     <option value="m">ذكر</option>
                     <option value="f">أنثى</option>
                 </select>
-                <input type="number" value={age} onChange={e => setAge(e.target.value)} className="ui-input" placeholder="العمر" />
+                <input aria-label="Age" type="number" value={age} onChange={e => setAge(e.target.value)} className="ui-input" placeholder="العمر" />
             </div>
             <div className="ui-grid-2">
-                <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن" />
-                <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="ui-input" placeholder="الطول" />
+                <input aria-label="Weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن" />
+                <input aria-label="Height" type="number" value={height} onChange={e => setHeight(e.target.value)} className="ui-input" placeholder="الطول" />
             </div>
-            <select value={activity} onChange={e => setActivity(e.target.value)} className="ui-input ui-select">
+            <select aria-label="Activity Level" value={activity} onChange={e => setActivity(e.target.value)} className="ui-input ui-select">
                 <option value="1.2">خامل</option>
                 <option value="1.375">خفيف</option>
                 <option value="1.55">متوسط</option>
@@ -111,7 +113,7 @@ function BMRCalculator() {
                             <span>الأساسي</span>
                             <strong className="block text-lg">{result.bmr}</strong>
                         </div>
-                        <div style={{ color: '#2ecc71' }}>
+                        <div className="text-[#2ecc71]">
                             <span>اليومي</span>
                             <strong className="block text-lg">{result.tdee} 🔥</strong>
                         </div>
@@ -140,7 +142,7 @@ function WaterCalculator() {
             <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
             {result && (
                 <div className="ui-output text-center">
-                    <div style={{ fontSize: '2.5em', fontWeight: 'bold', color: '#3498db', lineHeight: '1' }}>{result.l}L</div>
+                    <div className="text-[2.5em] font-bold text-[#3498db] leading-none">{result.l}L</div>
                     <div className="text-sm text-gray-400 mt-2">{result.cups} أكواب تقريباً 💧</div>
                 </div>
             )}
@@ -171,14 +173,14 @@ function SleepCalculator() {
     return (
         <WidgetCard title="حاسبة النوم" icon={Moon} color="#8e44ad">
             <ToolInputRow label="وقت الاستيقاظ">
-                <input type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} className="ui-input" />
+                <input type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} className="ui-input" aria-label="Wake Up Time" />
             </ToolInputRow>
             <button onClick={calculate} className="ui-btn primary ui-w-full">أفضل وقت للنوم</button>
             {times.length > 0 && (
                 <div className="ui-output text-center">
-                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <div className="flex gap-2 justify-center flex-wrap">
                         {times.map((t, i) => (
-                            <span key={i} style={{ padding: '6px 12px', background: i === 1 ? 'rgba(142, 68, 173, 0.3)' : 'rgba(255,255,255,0.05)', borderRadius: '8px', border: i === 1 ? '1px solid #8e44ad' : '1px solid rgba(255,255,255,0.1)' }}>{t}</span>
+                            <span key={i} className={`px-3 py-1.5 rounded-lg border ${i === 1 ? 'bg-[#8e44ad]/30 border-[#8e44ad]' : 'bg-white/5 border-white/10'}`}>{t}</span>
                         ))}
                     </div>
                 </div>
@@ -209,14 +211,13 @@ function BreathingExercise() {
 
     return (
         <WidgetCard title="تمرين التنفس" icon={Wind} color="#00d2d3">
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
-                <div className={`breathing-circle ${phase}`} style={{
-                    width: '100px', height: '100px', borderRadius: '50%', border: '3px solid rgba(255,255,255,0.1)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 4s ease-in-out', transform: phase === 'inhale' || phase === 'hold' ? 'scale(1.5)' : 'scale(1)',
-                    borderColor: phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'
-                }}>
-                    <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{active ? text : 'ابدأ'}</span>
+            <div className="flex justify-center py-5">
+                <div className={`breathing-circle ${phase} w-[100px] h-[100px] rounded-full border-[3px] flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${phase === 'inhale' || phase === 'hold' ? 'scale-150' : 'scale-100'}`}
+                    // eslint-disable-next-line react-dom/no-unsafe-inline-style
+                    style={{
+                        borderColor: phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'
+                    }}>
+                    <span className="text-sm font-bold">{active ? text : 'ابدأ'}</span>
                 </div>
             </div>
             <button onClick={() => setActive(!active)} className={`ui-btn ${active ? 'ghost' : 'primary'} ui-w-full`}>
@@ -229,7 +230,7 @@ function BreathingExercise() {
 // MAIN LAYOUT
 export default function HealthTools() {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', width: '100%' }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 w-full">
             <BMICalculator />
             <BMRCalculator />
             <WaterCalculator />
