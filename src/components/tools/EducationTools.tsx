@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from 'react';
+import { ToolShell, ToolInputRow } from './ToolShell';
 
 interface ToolProps {
     toolId: string;
 }
 
-// ----------------------------------------------------------------------
 // 1. Grade Calculator
 function GradeCalculator() {
     const [grades, setGrades] = useState<{ name: string, score: number, max: number }[]>([]);
@@ -24,34 +24,41 @@ function GradeCalculator() {
     const percent = totalMax ? ((totalScore / totalMax) * 100).toFixed(2) : 0;
 
     return (
-        <div className="tool-ui-group">
-            <div className="flex gap-2 mb-4">
-                <input value={name} onChange={e => setName(e.target.value)} className="glass-input flex-2" placeholder="Subject/Exam" />
-                <div className="flex gap-1 flex-1">
-                    <input type="number" value={score} onChange={e => setScore(e.target.value)} className="glass-input" placeholder="Score" />
-                    <span className="self-center">/</span>
-                    <input type="number" value={max} onChange={e => setMax(e.target.value)} className="glass-input" placeholder="Max" />
+        <ToolShell description="حساب الدرجات والنسبة المئوية للمواد الدراسية.">
+            <div className="ui-grid-3" style={{ alignItems: 'end' }}>
+                <ToolInputRow label="المادة/الاختبار">
+                    <input value={name} onChange={e => setName(e.target.value)} className="ui-input" placeholder="مثال: فيزياء" />
+                </ToolInputRow>
+                <ToolInputRow label="الدرجة">
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <input type="number" value={score} onChange={e => setScore(e.target.value)} className="ui-input" placeholder="85" />
+                        <span>/</span>
+                        <input type="number" value={max} onChange={e => setMax(e.target.value)} className="ui-input" placeholder="100" />
+                    </div>
+                </ToolInputRow>
+                <div style={{ paddingBottom: '16px' }}>
+                    <button onClick={add} className="ui-btn primary ui-w-full">إضافة</button>
                 </div>
-                <button onClick={add} className="btn-secondary">+</button>
             </div>
 
-            <div className="glass-panel p-4 mb-4">
-                {grades.map((g, i) => (
-                    <div key={i} className="flex justify-between border-b border-gray-700 py-2">
-                        <span>{g.name}</span>
-                        <span>{g.score} / {g.max}</span>
+            {grades.length > 0 && (
+                <div className="ui-output mt-4">
+                    {grades.map((g, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '8px 0' }}>
+                            <span>{g.name}</span>
+                            <span className="font-mono">{g.score} / {g.max}</span>
+                        </div>
+                    ))}
+                    <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.2)', display: 'flex', justifyContent: 'space-between', fontSize: '1.2em', fontWeight: 'bold' }}>
+                        <span>الإجمالي</span>
+                        <span className="text-accent-cyan">{percent}% ({totalScore}/{totalMax})</span>
                     </div>
-                ))}
-                <div className="mt-4 pt-4 border-t border-gray-600 flex justify-between font-bold text-lg">
-                    <span>Total</span>
-                    <span className="text-accent-cyan">{percent}% ({totalScore}/{totalMax})</span>
                 </div>
-            </div>
-        </div>
+            )}
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 2. GPA Calculator
 function GPACalculator() {
     const [scale, setScale] = useState('5');
@@ -62,49 +69,48 @@ function GPACalculator() {
     const pointsMap5: any = { 'A+': 5.0, 'A': 4.75, 'B+': 4.5, 'B': 4.0, 'C+': 3.5, 'C': 3.0, 'D+': 2.5, 'D': 2.0, 'F': 1.0 };
     const pointsMap4: any = { 'A+': 4.0, 'A': 3.75, 'B+': 3.5, 'B': 3.0, 'C+': 2.5, 'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0.0 };
 
-    const add = () => {
-        setCourses([...courses, { grade, hours: parseFloat(hours) }]);
-    };
-
+    const add = () => { setCourses([...courses, { grade, hours: parseFloat(hours) }]); };
     const calc = () => {
         const map = scale === '5' ? pointsMap5 : pointsMap4;
-        let totalPoints = 0;
-        let totalHours = 0;
-        courses.forEach(c => {
-            totalPoints += (map[c.grade] || 0) * c.hours;
-            totalHours += c.hours;
-        });
+        let totalPoints = 0, totalHours = 0;
+        courses.forEach(c => { totalPoints += (map[c.grade] || 0) * c.hours; totalHours += c.hours; });
         return totalHours ? (totalPoints / totalHours).toFixed(2) : '0.00';
     };
 
     return (
-        <div className="tool-ui-group">
+        <ToolShell description="حساب المعدل التراكمي (GPA).">
             <div className="flex justify-center gap-4 mb-4">
-                <label><input type="radio" name="scale" checked={scale === '5'} onChange={() => setScale('5')} /> Out of 5.0</label>
-                <label><input type="radio" name="scale" checked={scale === '4'} onChange={() => setScale('4')} /> Out of 4.0</label>
+                <label className="ui-checkbox"><input type="radio" name="scale" checked={scale === '5'} onChange={() => setScale('5')} /> من 5.0</label>
+                <label className="ui-checkbox"><input type="radio" name="scale" checked={scale === '4'} onChange={() => setScale('4')} /> من 4.0</label>
             </div>
 
-            <div className="flex gap-2 mb-4">
-                <select value={grade} onChange={e => setGrade(e.target.value)} className="glass-input flex-1">
-                    {Object.keys(pointsMap5).map(k => <option key={k} value={k}>{k}</option>)}
-                </select>
-                <input type="number" value={hours} onChange={e => setHours(e.target.value)} className="glass-input flex-1" placeholder="Hours" />
-                <button onClick={add} className="btn-secondary">+</button>
+            <div className="ui-grid-3" style={{ alignItems: 'end' }}>
+                <ToolInputRow label="نظام الدرجات">
+                    <select value={grade} onChange={e => setGrade(e.target.value)} className="ui-input ui-select">
+                        {Object.keys(pointsMap5).map(k => <option key={k} value={k}>{k}</option>)}
+                    </select>
+                </ToolInputRow>
+                <ToolInputRow label="الساعات">
+                    <input type="number" value={hours} onChange={e => setHours(e.target.value)} className="ui-input" />
+                </ToolInputRow>
+                <div style={{ paddingBottom: '16px' }}>
+                    <button onClick={add} className="ui-btn primary ui-w-full">إضافة مادة</button>
+                </div>
             </div>
 
-            <div className="glass-panel p-4 text-center">
-                <div className="text-4xl font-bold text-accent-pink mb-2">{calc()}</div>
-                <div className="text-sm text-gray-400">Cumulative GPA</div>
+            <div className="ui-output text-center mb-4">
+                <span className="ui-output-label">المعدل التراكمي</span>
+                <div style={{ fontSize: '3em', fontWeight: 'bold', color: 'var(--accent-pink)', lineHeight: '1.2' }}>{calc()}</div>
             </div>
 
-            <div className="mt-4">
+            <div className="flex flex-wrap gap-2 justify-center">
                 {courses.map((c, i) => (
-                    <div key={i} className="inline-block bg-gray-700 rounded px-2 py-1 m-1 text-xs">
+                    <span key={i} className="ui-btn ghost" style={{ fontSize: '0.8em', padding: '4px 8px' }}>
                         {c.grade} ({c.hours}h)
-                    </div>
+                    </span>
                 ))}
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
@@ -112,6 +118,6 @@ export default function EducationTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'edu-grade': return <GradeCalculator />;
         case 'edu-gpa': return <GPACalculator />;
-        default: return <div style={{ padding: '20px', textAlign: 'center' }}>Tool coming soon: {toolId}</div>
+        default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
     }
 }

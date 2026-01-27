@@ -1,4 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap');
+
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/ui.tokens.css';
+@import '../styles/ui.components.css';
 
 :root {
   /* Colors */
@@ -819,4 +827,56 @@ html[dir="rtl"] .footer-col a:hover {
     /* Single column on small mobile */
     gap: 16px;
   }
+}
+
+/* === FIX NOW: turn list rows into grid cards === */
+
+/* 1) Make container grid */
+#toolsGrid,
+.tools-grid,
+.widgets-grid,
+.dashboard-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+}
+
+/* 2) Remove row separators if any */
+#toolsGrid>*,
+.tools-grid>*,
+.widgets-grid>*,
+.dashboard-grid>* {
+  border-bottom: none !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* 3) Force each tool to be a card */
+.tool,
+.widget,
+.tool-card,
+.widget-card,
+[data-tool],
+[data-widget] {
+  display: block !important;
+  border-radius: 22px !important;
+  padding: 16px 18px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(14px) !important;
+  overflow: hidden !important;
+}
+
+/* 4) Nice hover */
+.tool:hover,
+.widget:hover,
+.tool-card:hover,
+.widget-card:hover,
+[data-tool]:hover,
+[data-widget]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45) !important;
 }

@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from 'react';
+import { ToolShell, ToolInputRow } from './ToolShell';
 
 interface ToolProps {
     toolId: string;
 }
 
-// 1. Adobe Arabic Fixer (Reverses text)
+// 1. Adobe Arabic Fixer
 function AdobeFixer() {
     const [input, setInput] = useState('');
     const [output, setOutput] = useState('');
@@ -17,19 +18,25 @@ function AdobeFixer() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>النص العربي (المتقطع)</label>
-                <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" rows={4} placeholder="اكتب النص العربي هنا..."></textarea>
-            </div>
-            <button onClick={process} className="btn-primary full-width">إصلاح النص</button>
+        <ToolShell description="إصلاح النص العربي المتقطع لبرامج أدوبي (فوتوشوب، بريمير).">
+            <ToolInputRow label="النص العربي (المتقطع)">
+                <textarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    className="ui-input ui-textarea"
+                    rows={4}
+                    placeholder="اكتب النص العربي هنا..."
+                ></textarea>
+            </ToolInputRow>
+            <button onClick={process} className="ui-btn primary ui-w-full">إصلاح النص</button>
+
             {output && (
-                <div className="result-box">
-                    <label>النتيجة (انسخ والصق في أدوبي):</label>
-                    <textarea readOnly value={output} className="glass-input" rows={4} style={{ marginTop: '8px' }}></textarea>
+                <div className="ui-output">
+                    <span className="ui-output-label">النتيجة (انسخ والصق)</span>
+                    <textarea readOnly value={output} className="ui-input ui-textarea" rows={4} style={{ marginTop: '8px' }}></textarea>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
@@ -53,17 +60,27 @@ function TextCleaner() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" rows={6} placeholder="الصق النص هنا..."></textarea>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                <label><input type="checkbox" checked={opts.spaces} onChange={e => setOpts({ ...opts, spaces: e.target.checked })} /> حذف المسافات الزائدة</label>
-                <label><input type="checkbox" checked={opts.lines} onChange={e => setOpts({ ...opts, lines: e.target.checked })} /> حذف الأسطر الفارغة</label>
-                <label><input type="checkbox" checked={opts.emoji} onChange={e => setOpts({ ...opts, emoji: e.target.checked })} /> حذف الإيموجي</label>
-                <label><input type="checkbox" checked={opts.html} onChange={e => setOpts({ ...opts, html: e.target.checked })} /> حذف كود HTML</label>
+        <ToolShell description="تنظيف النصوص من المسافات الزائدة والإيموجي والتنسيقات.">
+            <ToolInputRow label="النص الأصلي">
+                <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea" rows={6} placeholder="الصق النص هنا..."></textarea>
+            </ToolInputRow>
+
+            <div className="ui-grid-2">
+                <label className="ui-checkbox"><input type="checkbox" checked={opts.spaces} onChange={e => setOpts({ ...opts, spaces: e.target.checked })} /> حذف المسافات</label>
+                <label className="ui-checkbox"><input type="checkbox" checked={opts.lines} onChange={e => setOpts({ ...opts, lines: e.target.checked })} /> حذف الأسطر</label>
+                <label className="ui-checkbox"><input type="checkbox" checked={opts.emoji} onChange={e => setOpts({ ...opts, emoji: e.target.checked })} /> حذف الإيموجي</label>
+                <label className="ui-checkbox"><input type="checkbox" checked={opts.html} onChange={e => setOpts({ ...opts, html: e.target.checked })} /> حذف كود HTML</label>
             </div>
-            <button onClick={clean} className="btn-primary full-width">تنظيف النص</button>
-            {output && <textarea readOnly value={output} className="glass-input" rows={6} style={{ marginTop: '20px' }}></textarea>}
-        </div>
+
+            <button onClick={clean} className="ui-btn primary ui-w-full" style={{ marginTop: '16px' }}>تنظيف النص</button>
+
+            {output && (
+                <div className="ui-output">
+                    <span className="ui-output-label">النص المنظف</span>
+                    <textarea readOnly value={output} className="ui-input ui-textarea" rows={6} style={{ marginTop: '8px' }}></textarea>
+                </div>
+            )}
+        </ToolShell>
     );
 }
 
@@ -76,19 +93,18 @@ function CaseConverter() {
         if (mode === 'upper') text = text.toUpperCase();
         else if (mode === 'lower') text = text.toLowerCase();
         else if (mode === 'title') text = text.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-
         setInput(text);
     }
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" rows={5} placeholder="Type text to convert..."></textarea>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                <button onClick={() => convert('upper')} className="btn-primary">UPPERCASE</button>
-                <button onClick={() => convert('lower')} className="btn-primary">lowercase</button>
-                <button onClick={() => convert('title')} className="btn-primary">Title Case</button>
+        <ToolShell description="تحويل حالة الأحرف الإنجليزية (Capital/Small).">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea" rows={5} placeholder="Type text to convert..."></textarea>
+            <div className="ui-grid-3" style={{ marginTop: '16px' }}>
+                <button onClick={() => convert('upper')} className="ui-btn ghost">UPPERCASE</button>
+                <button onClick={() => convert('lower')} className="ui-btn ghost">lowercase</button>
+                <button onClick={() => convert('title')} className="ui-btn ghost">Title Case</button>
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
@@ -107,11 +123,15 @@ function HashtagGen() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" rows={4} placeholder="كلمات مفتاحية أو جملة..."></textarea>
-            <button onClick={gen} className="btn-primary full-width">توليد الهاشتاقات</button>
-            {output && <div style={{ color: 'var(--accent-pink)', fontFamily: 'monospace', lineHeight: '1.6', marginTop: '20px' }}>{output}</div>}
-        </div>
+        <ToolShell description="توليد هاشتاقات من النص.">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea" rows={4} placeholder="كلمات مفتاحية أو جملة..."></textarea>
+            <button onClick={gen} className="ui-btn primary ui-w-full" style={{ marginTop: '16px' }}>توليد الهاشتاقات</button>
+            {output && (
+                <div className="ui-output">
+                    <div style={{ color: 'var(--ui-g1)', fontFamily: 'monospace', lineHeight: '1.6' }}>{output}</div>
+                </div>
+            )}
+        </ToolShell>
     );
 }
 
@@ -137,14 +157,29 @@ function UTMBuilder() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <input value={url} onChange={e => setUrl(e.target.value)} className="glass-input" placeholder="رابط الموقع (google.com)" />
-            <input value={source} onChange={e => setSource(e.target.value)} className="glass-input" placeholder="المصدر (twitter)" />
-            <input value={medium} onChange={e => setMedium(e.target.value)} className="glass-input" placeholder="الوسيلة (social)" />
-            <input value={camp} onChange={e => setCamp(e.target.value)} className="glass-input" placeholder="اسم الحملة (sale)" />
-            <button onClick={build} className="btn-primary full-width">بناء الرابط</button>
-            {result && <textarea readOnly value={result} className="glass-input" rows={3} style={{ marginTop: '20px' }}></textarea>}
-        </div>
+        <ToolShell description="بناء روابط تتبع الحملات (UTM).">
+            <ToolInputRow label="رابط الموقع">
+                <input value={url} onChange={e => setUrl(e.target.value)} className="ui-input" placeholder="google.com" />
+            </ToolInputRow>
+            <div className="ui-grid-3">
+                <ToolInputRow label="المصدر (Source)">
+                    <input value={source} onChange={e => setSource(e.target.value)} className="ui-input" placeholder="twitter" />
+                </ToolInputRow>
+                <ToolInputRow label="الوسيلة (Medium)">
+                    <input value={medium} onChange={e => setMedium(e.target.value)} className="ui-input" placeholder="social" />
+                </ToolInputRow>
+                <ToolInputRow label="الحملة (Campaign)">
+                    <input value={camp} onChange={e => setCamp(e.target.value)} className="ui-input" placeholder="sale" />
+                </ToolInputRow>
+            </div>
+            <button onClick={build} className="ui-btn primary ui-w-full">بناء الرابط</button>
+            {result && (
+                <div className="ui-output">
+                    <span className="ui-output-label">الرابط النهائي</span>
+                    <textarea readOnly value={result} className="ui-input ui-textarea" rows={3}></textarea>
+                </div>
+            )}
+        </ToolShell>
     );
 }
 
@@ -154,54 +189,48 @@ function LoremIpsum() {
     const [output, setOutput] = useState('');
 
     const gen = () => {
-        const text = "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.\n\nإذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد، النص لن يبدو مقسما ولا يحوي أخطاء لغوية، مولد النص العربى مفيد لمصممي المواقع على وجه الخصوص.";
+        const text = "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.\n\nإذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد.";
         let out = "";
         for (let i = 0; i < count; i++) out += text + "\n\n";
         setOutput(out.trim());
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>عدد الفقرات</label>
-                <input type="number" value={count} onChange={e => setCount(parseInt(e.target.value))} className="glass-input full-width" min="1" max="10" />
-            </div>
-            <button onClick={gen} className="btn-primary full-width">توليد النص</button>
-            {output && <textarea readOnly value={output} className="glass-input" rows={8} style={{ marginTop: '20px' }}></textarea>}
-        </div>
+        <ToolShell description="توليد نص عربي عشوائي (لوريم إيبسوم).">
+            <ToolInputRow label="عدد الفقرات">
+                <input type="number" value={count} onChange={e => setCount(parseInt(e.target.value))} className="ui-input" min="1" max="10" />
+            </ToolInputRow>
+            <button onClick={gen} className="ui-btn primary ui-w-full">توليد النص</button>
+            {output && <textarea readOnly value={output} className="ui-input ui-textarea mt-4" rows={8}></textarea>}
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 6. Markdown Viewer
 function MarkdownViewer() {
     const [input, setInput] = useState('# Hello World\nType your markdown here...');
     const [html, setHtml] = useState('');
 
     const render = () => {
-        // Simple regex-based markdown parser for demo (full implementation would use 'marked' or 'remark')
         let text = input
             .replace(/^# (.*$)/gim, '<h1>$1</h1>')
             .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
             .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
-            .replace(/\*(.*)\*/gim, '<i>$1</i>')
             .replace(/\n/gim, '<br />');
         setHtml(text);
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="grid grid-cols-2 gap-4">
-                <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input h-64" placeholder="Markdown Input..." />
-                <div className="glass-panel p-4 h-64 overflow-auto" dangerouslySetInnerHTML={{ __html: html || 'Preview will appear here...' }}></div>
+        <ToolShell description="معاينة نصوص Markdown بسيطة.">
+            <div className="ui-grid-2" style={{ height: '300px' }}>
+                <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-full" placeholder="Markdown Input..." />
+                <div className="ui-output h-full overflow-auto" dangerouslySetInnerHTML={{ __html: html || 'Preview will appear here...' }}></div>
             </div>
-            <button onClick={render} className="btn-primary full-width mt-4">Preview</button>
-        </div>
+            <button onClick={render} className="ui-btn primary ui-w-full mt-4">Preview</button>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 7. Link Extractor
 function LinkExtractor() {
     const [input, setInput] = useState('');
@@ -214,41 +243,38 @@ function LinkExtractor() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input h-32 mb-4" placeholder="Paste text containing URLs..." />
-            <button onClick={extract} className="btn-primary full-width mb-4">Extract URLs</button>
+        <ToolShell description="استخراج جميع الروابط من النص.">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-32 mb-4" placeholder="ألصق النص هنا..." />
+            <button onClick={extract} className="ui-btn primary ui-w-full">استخراج الروابط</button>
             {urls.length > 0 && (
-                <div className="glass-panel p-4 max-h-48 overflow-auto">
-                    {urls.map((u, i) => <div key={i} className="mb-1 text-accent-cyan break-all">{u}</div>)}
+                <div className="ui-output mt-4 max-h-48 overflow-auto">
+                    {urls.map((u, i) => <div key={i} style={{ color: 'var(--ui-g2)', marginBottom: '4px', wordBreak: 'break-all' }}>{u}</div>)}
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
-// 8. Remove Tashkeel (Diacritics)
+// 8. Remove Tashkeel
 function RemoveTashkeel() {
     const [input, setInput] = useState('');
     const [output, setOutput] = useState('');
 
     const remove = () => {
-        // Arabic Tashkeel Regex
         const tashkeel = /[\u064B-\u065F\u0670]/g;
         setOutput(input.replace(tashkeel, ''));
     }
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input h-32 mb-4" placeholder="النص المشكول..." />
-            <button onClick={remove} className="btn-primary full-width mb-4">إزالة التشكيل</button>
-            {output && <textarea readOnly value={output} className="glass-input h-32" />}
-        </div>
+        <ToolShell description="إزالة الحركات والتشكيل من النص العربي.">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-32 mb-4" placeholder="النص المشكول..." />
+            <button onClick={remove} className="ui-btn primary ui-w-full">إزالة التشكيل</button>
+            {output && <textarea readOnly value={output} className="ui-input ui-textarea mt-4 h-32" />}
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
-// 10. Arabic Numerals Converter
+// 10. Numerals
 function NumConverter() {
     const [input, setInput] = useState('');
     const [res, setRes] = useState('');
@@ -257,14 +283,14 @@ function NumConverter() {
     const toEnglish = (txt: string) => txt.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d).toString());
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input h-24 mb-4" placeholder="Numbers..." />
-            <div className="flex gap-4">
-                <button onClick={() => setRes(toArabic(input))} className="btn-primary full-width">١٢٣</button>
-                <button onClick={() => setRes(toEnglish(input))} className="btn-primary full-width">123</button>
+        <ToolShell description="تحويل الأرقام بين العربية والإنجليزية.">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-24 mb-4" placeholder="123 or ١٢٣..." />
+            <div className="ui-grid-2">
+                <button onClick={() => setRes(toArabic(input))} className="ui-btn primary">١٢٣</button>
+                <button onClick={() => setRes(toEnglish(input))} className="ui-btn primary">123</button>
             </div>
-            {res && <div className="mt-4 text-2xl text-center font-bold">{res}</div>}
-        </div>
+            {res && <div className="ui-output text-center text-2xl font-bold mt-4">{res}</div>}
+        </ToolShell>
     );
 }
 
@@ -276,12 +302,10 @@ export default function TextTools({ toolId }: ToolProps) {
         case 'hashtag': return <HashtagGen />;
         case 'utm': return <UTMBuilder />;
         case 'text-lorem': return <LoremIpsum />;
-
         case 'text-markdown': return <MarkdownViewer />;
         case 'text-urls': return <LinkExtractor />;
         case 'text-tashkeel': return <RemoveTashkeel />;
         case 'text-num': return <NumConverter />;
-
-        default: return <div style={{ textAlign: 'center' }}>Tool not implemented yet: {toolId}</div>
+        default: return <div className="text-center py-12 text-gray-400">Tool not implemented: {toolId}</div>
     }
 }

@@ -602,6 +602,11 @@ export const tools: Tool[] = [
         title: 'Screen Info', titleAr: 'معلومات الشاشة',
         desc: 'View screen resolution and specs.', descAr: 'عرض دقة الشاشة والمواصفات.'
     },
+    {
+        id: 'ai-text', cat: 'ai-tools', icon: 'sparkles', status: 'new',
+        title: 'AI Text Assistant', titleAr: 'مساعد النصوص الذكي',
+        desc: 'AI-powered text summarization and editing.', descAr: 'تبسيط وتحسين النصوص بالذكاء الاصطناعي.'
+    },
 ];
 
 export const categories = [
@@ -621,4 +626,5 @@ export const categories = [
     { id: 'languages', name: 'Languages', nameAr: 'لغات', icon: 'languages' },
     { id: 'sports', name: 'Sports', nameAr: 'رياضة', icon: 'trophy' },
     { id: 'design', name: 'Design', nameAr: 'تصميم', icon: 'palette' },
+    { id: 'ai-tools', name: 'AI Tools', nameAr: 'أدوات الذكاء الاصطناعي', icon: 'sparkles' },
 ];

@@ -1,0 +1,251 @@
+/* --- Tool Shell (Layout) --- */
+.tool-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 0;
+}
+
+/* --- Tool Card (The main glass container) --- */
+.tool-card {
+    background: var(--ui-grad-glass);
+    border: 1px solid var(--ui-stroke);
+    border-radius: var(--ui-r-lg);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* --- Header Section --- */
+.tool-header {
+    margin-bottom: 24px;
+    text-align: right;
+}
+
+.tool-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ui-text);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.tool-desc {
+    font-size: 14px;
+    color: var(--ui-text-muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 600px;
+}
+
+/* --- Body Section --- */
+.tool-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* --- Footer Section --- */
+.tool-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ui-stroke);
+}
+
+.tool-footer-info {
+    font-size: 13px;
+    color: var(--ui-text-muted);
+    font-family: monospace;
+}
+
+/* --- Inputs & Textareas --- */
+.ui-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ui-text-muted);
+    margin-bottom: 8px;
+}
+
+.ui-input,
+.ui-select,
+.ui-textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    /* Darker glass for inputs */
+    border: 1px solid var(--ui-stroke);
+    border-radius: var(--ui-r-md);
+    padding: 14px 16px;
+    color: var(--ui-text);
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.ui-input:focus,
+.ui-select:focus,
+.ui-textarea:focus {
+    border-color: var(--ui-g2);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.ui-input::placeholder,
+.ui-textarea::placeholder {
+    color: var(--ui-text-dim);
+}
+
+.ui-textarea {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* --- Buttons --- */
+.ui-btn-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.ui-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: var(--ui-r-md);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    border: 1px solid transparent;
+}
+
+.ui-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+.ui-btn.primary {
+    background: var(--ui-grad-primary);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.ui-btn.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.ui-btn.ghost {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--ui-text-muted);
+    border: 1px solid var(--ui-stroke);
+}
+
+.ui-btn.ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ui-text);
+    border-color: var(--ui-stroke-hover);
+}
+
+/* --- Output Box --- */
+.ui-output {
+    margin-top: 24px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--ui-stroke);
+    border-radius: var(--ui-r-md);
+    padding: 20px;
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.ui-output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--ui-stroke);
+}
+
+.ui-output-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ui-g2);
+    /* Blue accent */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ui-output-content {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ui-text);
+    white-space: pre-wrap;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Utilities --- */
+.ui-w-full {
+    width: 100%;
+}
+
+.ui-mb-4 {
+    margin-bottom: 16px;
+}
+
+.ui-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .ui-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .tool-header {
+        text-align: center;
+    }
+
+    .tool-footer {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .ui-btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .ui-btn {
+        width: 100%;
+    }
+}

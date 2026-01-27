@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from 'react';
+import { ToolShell, ToolInputRow } from './ToolShell';
 
 interface ToolProps {
     toolId: string;
 }
 
-// ----------------------------------------------------------------------
 // 1. JSON Formatter
 function JsonFormatter() {
     const [input, setInput] = useState('');
@@ -31,48 +31,54 @@ function JsonFormatter() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" style={{ height: '150px', fontFamily: 'monospace' }} placeholder="Paste JSON here..."></textarea>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button onClick={() => process('fmt')} className="btn-primary" style={{ flex: 1 }}>Format</button>
-                <button onClick={() => process('min')} className="btn-secondary" style={{ flex: 1 }}>Minify</button>
-                <button onClick={() => process('val')} className="btn-secondary" style={{ flex: 1 }}>Validate</button>
+        <ToolShell description="تنسيق وتشذيب والتحقق من أكواد JSON.">
+            <textarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                className="ui-input ui-textarea font-mono"
+                rows={10}
+                placeholder="Paste JSON here..."
+            ></textarea>
+
+            <div className="ui-grid-3" style={{ marginTop: '16px' }}>
+                <button onClick={() => process('fmt')} className="ui-btn primary">Format</button>
+                <button onClick={() => process('min')} className="ui-btn ghost">Minify</button>
+                <button onClick={() => process('val')} className="ui-btn ghost">Validate</button>
             </div>
+
             {msg && (
-                <div style={{ marginTop: '10px', color: msg.type === 'error' ? '#e74c3c' : '#2ecc71', fontWeight: 'bold' }}>
+                <div style={{ padding: '12px', marginTop: '16px', borderRadius: '12px', background: msg.type === 'error' ? 'rgba(231,76,60,0.2)' : 'rgba(46,204,113,0.2)', color: msg.type === 'error' ? '#ff7675' : '#2ecc71', fontWeight: 'bold', textAlign: 'center' }}>
                     {msg.text}
                 </div>
             )}
-            {output && <textarea value={output} readOnly className="glass-input" style={{ height: '150px', marginTop: '10px', fontFamily: 'monospace' }} />}
-        </div>
+
+            {output && (
+                <div className="ui-output mt-4">
+                    <textarea value={output} readOnly className="ui-input ui-textarea font-mono" rows={10} />
+                </div>
+            )}
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 2. Base64 Converter
 function Base64Converter() {
     const [input, setInput] = useState('');
 
-    const encode = () => {
-        try { setInput(btoa(input)); } catch (e) { alert('Invalid input'); }
-    }
-
-    const decode = () => {
-        try { setInput(atob(input)); } catch (e) { alert('Invalid Base64'); }
-    }
+    const encode = () => { try { setInput(btoa(input)); } catch (e) { alert('Invalid input'); } }
+    const decode = () => { try { setInput(atob(input)); } catch (e) { alert('Invalid Base64'); } }
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" placeholder="Text to encode/decode..." style={{ height: '100px' }}></textarea>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button onClick={encode} className="btn-primary full-width">Encode</button>
-                <button onClick={decode} className="btn-secondary full-width">Decode</button>
+        <ToolShell description="تشفير وفك تشفير النصوص بصيغة Base64.">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-32" placeholder="Text to encode/decode..."></textarea>
+            <div className="ui-grid-2" style={{ marginTop: '16px' }}>
+                <button onClick={encode} className="ui-btn primary">Encode</button>
+                <button onClick={decode} className="ui-btn ghost">Decode</button>
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 3. Regex Tester
 function RegexTester() {
     const [pattern, setPattern] = useState('');
@@ -90,21 +96,26 @@ function RegexTester() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <input value={pattern} onChange={e => setPattern(e.target.value)} className="glass-input" placeholder="Pattern (e.g. ^[a-z]+$)" />
-            <textarea value={text} onChange={e => setText(e.target.value)} className="glass-input" style={{ marginTop: '10px', height: '80px' }} placeholder="Test String"></textarea>
-            <button onClick={test} className="btn-primary full-width" style={{ marginTop: '10px' }}>Test Regex</button>
+        <ToolShell description="اختبار التعابير المنطقية (Regex).">
+            <ToolInputRow label="Pattern (Regex)">
+                <input value={pattern} onChange={e => setPattern(e.target.value)} className="ui-input font-mono" placeholder="e.g. ^[a-z]+$" />
+            </ToolInputRow>
+            <ToolInputRow label="Test String">
+                <textarea value={text} onChange={e => setText(e.target.value)} className="ui-input ui-textarea h-24" placeholder="Test text..." />
+            </ToolInputRow>
+            <button onClick={test} className="ui-btn primary ui-w-full">Test Regex</button>
 
             {result && (
-                <div style={{ marginTop: '10px', fontWeight: 'bold', color: result.match ? '#2ecc71' : '#e74c3c' }}>
-                    {result.msg}
+                <div className="ui-output text-center mt-4">
+                    <strong style={{ color: result.match ? '#2ecc71' : '#ff7675', fontSize: '1.2em' }}>
+                        {result.msg}
+                    </strong>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 4. Meta Tag Generator
 function MetaGenerator() {
     const [title, setTitle] = useState('');
@@ -117,23 +128,25 @@ function MetaGenerator() {
 <title>${title}</title>
 <meta name="title" content="${title}">
 <meta name="description" content="${desc}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-        `.trim();
+<meta name="viewport" content="width=device-width, initial-scale=1.0">`.trim();
         setOut(h);
     };
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row"><label>Title</label><input value={title} onChange={e => setTitle(e.target.value)} className="glass-input" /></div>
-            <div className="input-row"><label>Description</label><textarea value={desc} onChange={e => setDesc(e.target.value)} className="glass-input" /></div>
-            <button onClick={gen} className="btn-primary full-width">Generate Tags</button>
-            {out && <textarea value={out} readOnly className="glass-input" style={{ height: '150px', marginTop: '10px', fontFamily: 'monospace' }} />}
-        </div>
+        <ToolShell description="توليد وسوم الميتا لمحركات البحث (SEO).">
+            <ToolInputRow label="Page Title">
+                <input value={title} onChange={e => setTitle(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <ToolInputRow label="Description">
+                <textarea value={desc} onChange={e => setDesc(e.target.value)} className="ui-input ui-textarea" />
+            </ToolInputRow>
+            <button onClick={gen} className="ui-btn primary ui-w-full">Generate Tags</button>
+            {out && <div className="ui-output mt-4"><textarea value={out} readOnly className="ui-input ui-textarea font-mono h-40" /></div>}
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
-// 5. URL Encoder/Decoder
+// 5. URL Encoder
 function UrlEncoder() {
     const [input, setInput] = useState('');
 
@@ -141,18 +154,17 @@ function UrlEncoder() {
     const decode = () => setInput(decodeURIComponent(input));
 
     return (
-        <div className="tool-ui-group">
-            <textarea value={input} onChange={e => setInput(e.target.value)} className="glass-input" placeholder="Enter URL..." style={{ height: '100px' }}></textarea>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button onClick={encode} className="btn-primary full-width">Encode</button>
-                <button onClick={decode} className="btn-secondary full-width">Decode</button>
+        <ToolShell description="تشفير الروابط (URL Encode/Decode).">
+            <textarea value={input} onChange={e => setInput(e.target.value)} className="ui-input ui-textarea h-32" placeholder="Enter URL..."></textarea>
+            <div className="ui-grid-2" style={{ marginTop: '16px' }}>
+                <button onClick={encode} className="ui-btn primary">Encode</button>
+                <button onClick={decode} className="ui-btn ghost">Decode</button>
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
-// 6. Hash Generator (SHA/MD5)
+// 6. Hash Generator
 function HashGenerator() {
     const [text, setText] = useState('');
     const [algo, setAlgo] = useState('SHA-256');
@@ -166,26 +178,28 @@ function HashGenerator() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <input value={text} onChange={e => setText(e.target.value)} className="glass-input full-width mb-4" placeholder="Text to hash" />
-            <select value={algo} onChange={e => setAlgo(e.target.value)} className="glass-input full-width mb-4">
-                <option value="SHA-256">SHA-256 (Recommended)</option>
-                <option value="SHA-1">SHA-1</option>
-                <option value="SHA-384">SHA-384</option>
-                <option value="SHA-512">SHA-512</option>
-            </select>
-            <button onClick={generate} className="btn-primary full-width">Generate Hash</button>
+        <ToolShell description="توليد الهاش (Hash) للنصوص.">
+            <ToolInputRow label="Text">
+                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" placeholder="Text to hash" />
+            </ToolInputRow>
+            <ToolInputRow label="Algorithm">
+                <select value={algo} onChange={e => setAlgo(e.target.value)} className="ui-input ui-select">
+                    <option value="SHA-256">SHA-256 (Recommended)</option>
+                    <option value="SHA-1">SHA-1</option>
+                    <option value="SHA-384">SHA-384</option>
+                    <option value="SHA-512">SHA-512</option>
+                </select>
+            </ToolInputRow>
+            <button onClick={generate} className="ui-btn primary ui-w-full">Generate Hash</button>
             {hash && (
-                <div className="mt-4">
-                    <p className="text-sm text-gray-400 mb-1">Result:</p>
-                    <div className="glass-panel p-2 break-all font-mono text-sm select-all">{hash}</div>
+                <div className="ui-output mt-4 break-all font-mono text-xs">
+                    {hash}
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 7. JWT Debugger
 function JwtDebugger() {
     const [token, setToken] = useState('');
@@ -196,9 +210,7 @@ function JwtDebugger() {
         try {
             const parts = token.split('.');
             if (parts.length !== 3) throw new Error('Invalid Token Format');
-
             const dec = (str: string) => JSON.stringify(JSON.parse(atob(str.replace(/-/g, '+').replace(/_/g, '/'))), null, 2);
-
             setHeader(dec(parts[0]));
             setPayload(dec(parts[1]));
         } catch (e) {
@@ -208,65 +220,52 @@ function JwtDebugger() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <input value={token} onChange={e => setToken(e.target.value)} className="glass-input full-width mb-4" placeholder="Paste JWT Token (ey...)" />
-            <button onClick={decode} className="btn-primary full-width mb-4">Decode</button>
+        <ToolShell description="فحص وفك رموز توكن JWT.">
+            <textarea value={token} onChange={e => setToken(e.target.value)} className="ui-input ui-textarea h-24 mb-4 font-mono text-xs" placeholder="Paste JWT Token (ey...)" />
+            <button onClick={decode} className="ui-btn primary ui-w-full mb-4">Decode</button>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="ui-grid-2">
                 <div>
-                    <label className="block mb-2 text-sm text-gray-400">Header</label>
-                    <textarea value={header} readOnly className="glass-input full-width font-mono h-40 text-xs" />
+                    <label className="ui-label">Header</label>
+                    <textarea value={header} readOnly className="ui-input ui-textarea font-mono h-40 text-xs" />
                 </div>
                 <div>
-                    <label className="block mb-2 text-sm text-gray-400">Payload</label>
-                    <textarea value={payload} readOnly className="glass-input full-width font-mono h-40 text-xs" />
+                    <label className="ui-label">Payload</label>
+                    <textarea value={payload} readOnly className="ui-input ui-textarea font-mono h-40 text-xs" />
                 </div>
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 8. Text Diff
 function TextDiff() {
-    // Simple line-by-line diff mock or basic comparison
-    // Real diffing lib is heavy, so we'll do a basic "Are they equal?" + line count check
-    // Or a simple visual line check.
     const [t1, setT1] = useState('');
     const [t2, setT2] = useState('');
     const [res, setRes] = useState<string | null>(null);
 
     const compare = () => {
-        if (t1 === t2) {
-            setRes('Identical');
-            return;
-        }
-
-        // Simple comparison
+        if (t1 === t2) { setRes('Identical'); return; }
         const l1 = t1.split('\n');
         const l2 = t2.split('\n');
         let diffs = 0;
-        l1.forEach((line, i) => {
-            if (line !== l2[i]) diffs++;
-        });
+        l1.forEach((line, i) => { if (line !== l2[i]) diffs++; });
         diffs += Math.abs(l1.length - l2.length);
-
         setRes(`${diffs} lines difference found.`);
     };
 
     return (
-        <div className="tool-ui-group">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-                <textarea value={t1} onChange={e => setT1(e.target.value)} className="glass-input h-40" placeholder="Original Text" />
-                <textarea value={t2} onChange={e => setT2(e.target.value)} className="glass-input h-40" placeholder="Modified Text" />
+        <ToolShell description="مقارنة بين نصين لمعرفة الاختلافات.">
+            <div className="ui-grid-2 mb-4">
+                <textarea value={t1} onChange={e => setT1(e.target.value)} className="ui-input ui-textarea h-40" placeholder="Original Text" />
+                <textarea value={t2} onChange={e => setT2(e.target.value)} className="ui-input ui-textarea h-40" placeholder="Modified Text" />
             </div>
-            <button onClick={compare} className="btn-primary full-width">Compare</button>
-            {res && <div className="mt-4 text-center font-bold text-accent-cyan">{res}</div>}
-        </div>
+            <button onClick={compare} className="ui-btn primary ui-w-full">Compare</button>
+            {res && <div className="ui-output text-center font-bold mt-4">{res}</div>}
+        </ToolShell>
     );
 }
 
-// ----------------------------------------------------------------------
 // 9. Screen Info
 function ScreenInfo() {
     const [info, setInfo] = useState<any>({});
@@ -279,8 +278,6 @@ function ScreenInfo() {
                 availWidth: window.screen.availWidth,
                 availHeight: window.screen.availHeight,
                 colorDepth: window.screen.colorDepth,
-                pixelDepth: window.screen.pixelDepth,
-                orientation: window.screen.orientation?.type || 'Unknown',
                 dpr: window.devicePixelRatio,
                 userAgent: navigator.userAgent
             });
@@ -291,34 +288,28 @@ function ScreenInfo() {
     }, []);
 
     return (
-        <div className="tool-ui-group text-center">
-            <div className="text-accent-cyan text-4xl font-bold mb-4">
-                {info.width} x {info.height}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 text-left">
-                <div className="glass-panel p-3">
-                    <div className="text-gray-400 text-xs">Available Space</div>
-                    <div className="font-mono">{info.availWidth} x {info.availHeight}</div>
-                </div>
-                <div className="glass-panel p-3">
-                    <div className="text-gray-400 text-xs">Color Depth</div>
-                    <div className="font-mono">{info.colorDepth}-bit</div>
-                </div>
-                <div className="glass-panel p-3">
-                    <div className="text-gray-400 text-xs">Pixel Ratio</div>
-                    <div className="font-mono">{info.dpr}x</div>
-                </div>
-                <div className="glass-panel p-3">
-                    <div className="text-gray-400 text-xs">Orientation</div>
-                    <div className="font-mono">{info.orientation}</div>
+        <ToolShell description="معلومات الشاشة والجهاز الحالية.">
+            <div className="text-center py-8">
+                <div style={{ fontSize: '3em', fontWeight: 'bold', color: 'var(--ui-g2)' }}>
+                    {info.width} x {info.height}
                 </div>
             </div>
 
-            <div className="mt-4 text-xs text-gray-500 break-all glass-panel p-2">
+            <div className="ui-grid-2">
+                <div className="ui-output text-center">
+                    <span className="ui-output-label">Available Space</span>
+                    <strong className="block mt-2 font-mono">{info.availWidth} x {info.availHeight}</strong>
+                </div>
+                <div className="ui-output text-center">
+                    <span className="ui-output-label">Pixel Ratio</span>
+                    <strong className="block mt-2 font-mono">{info.dpr}x</strong>
+                </div>
+            </div>
+
+            <div className="ui-output mt-4 text-xs text-gray-400 break-all">
                 {info.userAgent}
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
@@ -328,13 +319,11 @@ export default function DeveloperTools({ toolId }: ToolProps) {
         case 'dev-base64': return <Base64Converter />;
         case 'dev-regex': return <RegexTester />;
         case 'dev-meta': return <MetaGenerator />;
-
         case 'dev-url': return <UrlEncoder />;
         case 'dev-hash': return <HashGenerator />;
         case 'dev-jwt': return <JwtDebugger />;
         case 'dev-diff': return <TextDiff />;
         case 'dev-screen': return <ScreenInfo />;
-
-        default: return <div style={{ padding: '20px', textAlign: 'center' }}>Tool {toolId} migrated soon.</div>
+        default: return <div className="text-center py-12">Tool coming soon: {toolId}</div>
     }
 }

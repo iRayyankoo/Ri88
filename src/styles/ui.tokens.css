@@ -1,0 +1,35 @@
+:root {
+  /* --- Colors --- */
+  --ui-bg: #070A12;
+  --ui-card: rgba(255, 255, 255, 0.06);
+  --ui-card-hover: rgba(255, 255, 255, 0.08);
+  --ui-stroke: rgba(255, 255, 255, 0.10);
+  --ui-stroke-hover: rgba(255, 255, 255, 0.20);
+
+  --ui-text: rgba(255, 255, 255, 0.92);
+  --ui-text-muted: rgba(255, 255, 255, 0.55);
+  --ui-text-dim: rgba(255, 255, 255, 0.35);
+
+  /* --- Accents (Gradients) --- */
+  --ui-g1: #8C40FF;
+  --ui-g2: #3B82F6;
+  /* Slightly reduced saturation/opacity for a 'Clean' look */
+  --ui-grad-primary: linear-gradient(135deg, rgba(140, 64, 255, .85), rgba(59, 130, 246, .85));
+  --ui-grad-hover: linear-gradient(135deg, rgba(160, 100, 255, 1), rgba(80, 150, 255, 1));
+  --ui-grad-glass: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+
+  /* --- Effects --- */
+  --ui-shadow: 0 24px 80px rgba(0, 0, 0, .55);
+  --ui-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --ui-glow: 0 0 0 4px rgba(59, 130, 246, .18), 0 18px 50px rgba(0, 0, 0, .35);
+
+  --ui-backdrop: blur(18px);
+
+  /* --- Dimensions --- */
+  --ui-r-sm: 12px;
+  --ui-r-md: 16px;
+  --ui-r-lg: 22px;
+
+  /* --- Fonts --- */
+  --ui-font: "Tajawal", "Cairo", system-ui, sans-serif;
+}

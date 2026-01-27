@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { ToolShell, ToolInputRow, ToolOutput } from './ToolShell';
 
 interface ToolProps {
     toolId: string;
@@ -21,19 +22,22 @@ function HijriConverter() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>التاريخ الميلادي</label>
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" aria-label="التاريخ الميلادي" />
-            </div>
-            <button onClick={convert} className="btn-primary full-width magic-btn">تحويل للهجري</button>
+        <ToolShell description="Convert Gregorian date to Hijri date accurately.">
+            <ToolInputRow label="Gregorian Date">
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <button onClick={convert} className="ui-btn primary ui-w-full">Convert to Hijri</button>
+
             {res && (
-                <div className="result-box text-center">
-                    <strong className="result-text">{res.str}</strong>
-                    <p className="result-sub">Numeric: {res.num}</p>
+                <div className="ui-output" style={{ textAlign: 'center' }}>
+                    <div className="ui-output-header">
+                        <span className="ui-output-label">Result</span>
+                    </div>
+                    <strong style={{ fontSize: '1.5em', color: 'var(--ui-text)' }}>{res.str}</strong>
+                    <p style={{ marginTop: '8px', color: 'var(--ui-text-muted)' }}>{res.num}</p>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
@@ -62,24 +66,37 @@ function DateDiff() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>تاريخ البداية</label>
-                <input type="date" value={start} onChange={e => setStart(e.target.value)} className="glass-input" aria-label="تاريخ البداية" />
+        <ToolShell description="Calculate duration between two dates.">
+            <div className="ui-grid-2">
+                <ToolInputRow label="Start Date">
+                    <input type="date" value={start} onChange={e => setStart(e.target.value)} className="ui-input" />
+                </ToolInputRow>
+                <ToolInputRow label="End Date">
+                    <input type="date" value={end} onChange={e => setEnd(e.target.value)} className="ui-input" />
+                </ToolInputRow>
             </div>
-            <div className="input-row">
-                <label>تاريخ النهاية</label>
-                <input type="date" value={end} onChange={e => setEnd(e.target.value)} className="glass-input" aria-label="تاريخ النهاية" />
-            </div>
-            <button onClick={calc} className="btn-primary full-width">احسب المدة</button>
+
+            <button onClick={calc} className="ui-btn primary ui-w-full">Calculate Duration</button>
+
             {res && (
-                <div className="result-box">
-                    <div className="res-item"><span>الأيام:</span> <strong>{res.days} يوم</strong></div>
-                    <div className="res-item"><span>الأسابيع:</span> <strong>{res.weeks} أسبوع</strong></div>
-                    <div className="res-item"><span>التفصيل:</span> <strong>{res.y} سنة, {res.m} شهر, {res.d} يوم</strong></div>
+                <div className="ui-output">
+                    <div className="ui-grid-2">
+                        <div>
+                            <span className="ui-output-label">Total Days</span>
+                            <div style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{res.days} Days</div>
+                        </div>
+                        <div>
+                            <span className="ui-output-label">Weeks</span>
+                            <div style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{res.weeks} Weeks</div>
+                        </div>
+                    </div>
+                    <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--ui-stroke)' }}>
+                        <span className="ui-output-label">Detailed Duration</span>
+                        <div style={{ fontSize: '1.2em', fontWeight: 'bold' }}>{res.y} Years, {res.m} Months, {res.d} Days</div>
+                    </div>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
@@ -118,16 +135,25 @@ function Timer() {
     }
 
     return (
-        <div className="tool-ui-group text-center">
-            <div className="timer-display">
-                {fmt(sec)}
+        <ToolShell description="Simple stopwatch timer.">
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{
+                    fontSize: '5em',
+                    fontWeight: '700',
+                    fontVariantNumeric: 'tabular-nums',
+                    letterSpacing: '-2px',
+                    color: 'var(--ui-text)',
+                    textShadow: '0 0 30px rgba(59,130,246,0.3)'
+                }}>
+                    {fmt(sec)}
+                </div>
             </div>
-            <div className="timer-controls">
-                <button onClick={start} className="btn-primary btn-green">ابدأ</button>
-                <button onClick={stop} className="btn-primary btn-red">توقف</button>
-                <button onClick={reset} className="btn-primary btn-glass">تصفير</button>
+            <div className="ui-btn-group" style={{ justifyContent: 'center' }}>
+                <button onClick={start} className="ui-btn primary" disabled={running}>Start</button>
+                <button onClick={stop} className="ui-btn ghost" disabled={!running}>Pause</button>
+                <button onClick={reset} className="ui-btn ghost">Reset</button>
             </div>
-        </div>
+        </ToolShell>
     );
 }
 
@@ -147,27 +173,26 @@ function DateAdd() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>تاريخ البدء</label>
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="glass-input" aria-label="تاريخ البدء" />
+        <ToolShell description="Add days or months to a specific date.">
+            <ToolInputRow label="Start Date">
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <div className="ui-grid-2">
+                <ToolInputRow label="Add Days">
+                    <input type="number" value={days} onChange={e => setDays(parseInt(e.target.value) || 0)} className="ui-input" />
+                </ToolInputRow>
+                <ToolInputRow label="Add Months">
+                    <input type="number" value={months} onChange={e => setMonths(parseInt(e.target.value) || 0)} className="ui-input" />
+                </ToolInputRow>
             </div>
-            <div className="input-row">
-                <label>أضف أيام</label>
-                <input type="number" value={days} onChange={e => setDays(parseInt(e.target.value) || 0)} className="glass-input" aria-label="أضف أيام" />
-            </div>
-            <div className="input-row">
-                <label>أضف شهور</label>
-                <input type="number" value={months} onChange={e => setMonths(parseInt(e.target.value) || 0)} className="glass-input" aria-label="أضف شهور" />
-            </div>
-            <button onClick={calc} className="btn-primary full-width">احسب</button>
+            <button onClick={calc} className="ui-btn primary ui-w-full">Calculate</button>
             {res && (
-                <div className="result-box text-center">
-                    <div className="result-label">التاريخ الناتج</div>
-                    <strong className="result-value">{res}</strong>
+                <div className="ui-output text-center">
+                    <div className="ui-output-label">Result Date</div>
+                    <strong style={{ fontSize: '1.5em', display: 'block', marginTop: '8px' }}>{res}</strong>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
@@ -181,47 +206,26 @@ function WorldClock() {
     }, []);
 
     const cities = [
-        { name: 'الرياض', zone: 'Asia/Riyadh' },
-        { name: 'دبي', zone: 'Asia/Dubai' },
-        { name: 'لندن', zone: 'Europe/London' },
-        { name: 'نيويورك', zone: 'America/New_York' },
-        { name: 'طوكيو', zone: 'Asia/Tokyo' },
+        { name: 'Riyadh', zone: 'Asia/Riyadh' },
+        { name: 'Dubai', zone: 'Asia/Dubai' },
+        { name: 'London', zone: 'Europe/London' },
+        { name: 'New York', zone: 'America/New_York' },
+        { name: 'Tokyo', zone: 'Asia/Tokyo' },
     ];
 
     return (
-        <div className="tool-ui-group">
-            <div className="cities-grid">
+        <ToolShell description="Current time across major cities.">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
                 {cities.map(c => (
-                    <div key={c.name} className="glass-panel city-panel">
-                        <span className="city-name">{c.name}</span>
-                        <strong className="city-time">
+                    <div key={c.name} className="ui-output" style={{ margin: 0, padding: '16px', textAlign: 'center' }}>
+                        <div className="ui-output-label" style={{ marginBottom: '8px' }}>{c.name}</div>
+                        <strong style={{ fontSize: '1.4em', color: 'var(--ui-text)' }}>
                             {time.toLocaleTimeString('en-US', { timeZone: c.zone, hour: '2-digit', minute: '2-digit' })}
                         </strong>
                     </div>
                 ))}
             </div>
-
-            <style jsx>{`
-                .text-center { text-align: center; }
-                .magic-btn { background: linear-gradient(90deg, #6D4CFF 0%, #8E44AD 100%); border: none; }
-                .result-text { font-size: 1.5em; color: var(--accent-pink); }
-                .result-sub { opacity: 0.7; font-size: 0.9em; margin-top: 8px; }
-                
-                .timer-display { font-size: 4em; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -2px; color: white; margin: 20px 0; }
-                .timer-controls { display: flex; justify-content: center; gap: 16px; }
-                .btn-green { background: #2ecc71; }
-                .btn-red { background: #e74c3c; }
-                .btn-glass { background: var(--glass-bg); border: 1px solid var(--glass-border); }
-                
-                .result-label { font-size: 0.9em; color: #aaa; }
-                .result-value { font-size: 1.5em; color: var(--accent-cyan); }
-                
-                .cities-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-                .city-panel { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-                .city-name { color: var(--text-secondary); }
-                .city-time { font-size: 1.2em; }
-            `}</style>
-        </div>
+        </ToolShell>
     );
 }
 
@@ -232,6 +236,6 @@ export default function TimeTools({ toolId }: ToolProps) {
         case 'timer': return <Timer />;
         case 'time-add': return <DateAdd />;
         case 'time-zones': return <WorldClock />;
-        default: return <div className="text-center">Tool not implemented yet: {toolId}</div>
+        default: return <div className="text-center py-12 text-gray-400">Tool not implemented yet: {toolId}</div>
     }
 }

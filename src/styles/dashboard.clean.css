@@ -1,0 +1,13 @@
+/* 
+   Neutralized: This file previously contained the 'Clean Dashboard' theme and an emergency patch.
+   Since we rolled back to V1 (Sidebar Layout), these global overrides are causing conflicts.
+   
+   Keeping file empty/commented to prevent 404s if imported, but removing active rules.
+*/
+
+/* 
+:root {
+    --dash-bg: #0f0f12;
+}
+...
+*/

@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from 'react';
+import { ToolShell, ToolInputRow } from './ToolShell';
 
 interface ToolProps {
     toolId: string;
 }
 
-// --- 1. Loan Calculator ---
+// --- 1. Loan Calculator (Verified) ---
 function LoanCalculator() {
     const [amount, setAmount] = useState<string>('');
     const [rate, setRate] = useState<string>('');
@@ -36,30 +37,56 @@ function LoanCalculator() {
         });
     };
 
-    return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>قيمة القرض (ريال)</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="مثال: 100000" className="glass-input" />
-            </div>
-            <div className="input-row">
-                <label>نسبة الفائدة (%)</label>
-                <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="مثال: 3.5" step="0.1" className="glass-input" />
-            </div>
-            <div className="input-row">
-                <label>مدة القرض (سنوات)</label>
-                <input type="number" value={term} onChange={e => setTerm(e.target.value)} placeholder="مثال: 5" className="glass-input" />
-            </div>
-            <button onClick={calculate} className="btn-primary full-width">احسب</button>
+    const clear = () => {
+        setAmount('');
+        setRate('');
+        setTerm('');
+        setResult(null);
+    };
 
-            {result && (
-                <div className="result-box">
-                    <div className="res-item"><span>القسط الشهري:</span> <strong>{result.monthly}</strong></div>
-                    <div className="res-item"><span>إجمالي الفائدة:</span> <strong>{result.interest}</strong></div>
-                    <div className="res-item"><span>إجمالي المبلغ:</span> <strong>{result.total}</strong></div>
+    return (
+        <ToolShell
+            description="حساب الدفعات الشهرية وتفاصيل الفوائد بناءً على المبلغ والمدة."
+            footer={
+                <div style={{ display: 'flex', width: '100%', gap: '12px' }}>
+                    <button onClick={clear} className="ui-btn ghost" style={{ minWidth: '100px' }}>مسح</button>
+                    <button onClick={calculate} className="ui-btn primary ui-w-full">احسب القسط</button>
                 </div>
-            )}
-        </div>
+            }
+        >
+            <div className="tool-body">
+                <ToolInputRow label="قيمة القرض (ريال)">
+                    <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="100000" className="ui-input" />
+                </ToolInputRow>
+                <div className="ui-grid-2">
+                    <ToolInputRow label="نسبة الفائدة (%)">
+                        <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="3.5" step="0.1" className="ui-input" />
+                    </ToolInputRow>
+                    <ToolInputRow label="المدة (سنوات)">
+                        <input type="number" value={term} onChange={e => setTerm(e.target.value)} placeholder="5" className="ui-input" />
+                    </ToolInputRow>
+                </div>
+
+                {result && (
+                    <div className="ui-output">
+                        <div className="ui-grid-2" style={{ marginBottom: '16px' }}>
+                            <div>
+                                <span className="ui-output-label">القسط الشهري</span>
+                                <div style={{ fontSize: '1.8em', fontWeight: '800', color: 'var(--ui-text)', marginTop: '4px' }}>{result.monthly}</div>
+                            </div>
+                            <div>
+                                <span className="ui-output-label">إجمالي الفائدة</span>
+                                <div style={{ fontSize: '1.4em', fontWeight: '600', color: 'var(--ui-text-muted)', marginTop: '4px' }}>{result.interest}</div>
+                            </div>
+                        </div>
+                        <div style={{ paddingTop: '16px', borderTop: '1px solid var(--ui-stroke)' }}>
+                            <span className="ui-output-label">المبلغ الإجمالي</span>
+                            <div style={{ fontSize: '1.2em', fontWeight: 'bold', color: 'var(--ui-g2)' }}>{result.total}</div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </ToolShell>
     );
 }
 
@@ -72,7 +99,6 @@ function VATCalculator() {
     const calculate = (mode: 'add' | 'remove') => {
         const amt = parseFloat(amount);
         const r = parseFloat(rate) / 100;
-
         if (isNaN(amt)) return;
 
         let original, tax, final;
@@ -94,28 +120,29 @@ function VATCalculator() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>المبلغ (ريال)</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="مثال: 100" className="glass-input" />
-            </div>
-            <div className="input-row">
-                <label>نسبة الضريبة (%)</label>
-                <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="glass-input" />
-            </div>
-            <div className="grid grid-cols-2 gap-3 mt-4">
-                <button onClick={() => calculate('add')} className="btn-primary w-full text-sm">أضف (+)</button>
-                <button onClick={() => calculate('remove')} className="btn-secondary w-full text-sm !border-glass">أزل (-)</button>
+        <ToolShell description="حساب ضريبة القيمة المضافة (إضافة أو خصم).">
+            <ToolInputRow label="المبلغ (ريال)">
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="مثال: 100" className="ui-input" />
+            </ToolInputRow>
+            <ToolInputRow label="النسبة (%)">
+                <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+
+            <div className="ui-grid-2">
+                <button onClick={() => calculate('add')} className="ui-btn primary ui-w-full">أضف الضريبة (+)</button>
+                <button onClick={() => calculate('remove')} className="ui-btn ghost ui-w-full">أزل الضريبة (-)</button>
             </div>
 
             {result && (
-                <div className="result-box">
-                    <div className="res-item"><span>الأصل:</span> <strong>{result.orig}</strong></div>
-                    <div className="res-item"><span>قيمة الضريبة:</span> <strong>{result.tax}</strong></div>
-                    <div className="res-item"><span>الإجمالي:</span> <strong>{result.final}</strong></div>
+                <div className="ui-output">
+                    <div className="ui-grid-3">
+                        <div><span className="ui-output-label">المبلغ الأصل</span><div>{result.orig}</div></div>
+                        <div><span className="ui-output-label">الضريبة</span><div style={{ color: 'var(--ui-g1)' }}>{result.tax}</div></div>
+                        <div><span className="ui-output-label">الإجمالي</span><div style={{ fontWeight: 'bold' }}>{result.final}</div></div>
+                    </div>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
@@ -134,9 +161,7 @@ function SalaryCalculator() {
         if (!g && (b || h)) g = b + h;
         if (!g) return;
 
-        // GOSI: 9.75% of (Basic + Housing) approx, usually Basic+Housing <= 45000 cap
-        // Simplified for demo as per original
-        const gosi = g * 0.0975;
+        const gosi = g * 0.0975; // Approx GOSI
         const net = g - gosi;
 
         setResult({
@@ -146,33 +171,33 @@ function SalaryCalculator() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>إجمالي الراتب (الأساسي + السكن)</label>
-                <input type="number" value={gross} onChange={e => setGross(e.target.value)} placeholder="مثال: 8000" className="glass-input" />
+        <ToolShell description="تقدير صافي الراتب بعد خصم التأمينات الاجتماعية.">
+            <ToolInputRow label="إجمالي الراتب">
+                <input type="number" value={gross} onChange={e => setGross(e.target.value)} placeholder="مثال: 8000" className="ui-input" />
+            </ToolInputRow>
+            <div className="ui-grid-2">
+                <ToolInputRow label="الأساسي">
+                    <input type="number" value={basic} onChange={e => setBasic(e.target.value)} placeholder="6000" className="ui-input" />
+                </ToolInputRow>
+                <ToolInputRow label="بدل السكن">
+                    <input type="number" value={housing} onChange={e => setHousing(e.target.value)} placeholder="2000" className="ui-input" />
+                </ToolInputRow>
             </div>
-            <div className="input-row">
-                <label>الراتب الأساسي (لحساب التأمينات)</label>
-                <input type="number" value={basic} onChange={e => setBasic(e.target.value)} placeholder="مثال: 6000" className="glass-input" />
-            </div>
-            <div className="input-row">
-                <label>بدل السكن</label>
-                <input type="number" value={housing} onChange={e => setHousing(e.target.value)} placeholder="مثال: 2000" className="glass-input" />
-            </div>
-            <button onClick={calculate} className="btn-primary full-width">احسب الصافي</button>
+            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب الصافي</button>
 
             {result && (
-                <div className="result-box">
-                    <div className="res-item"><small>التأمينات (9.75%):</small> <strong>{result.gosi}</strong></div>
-                    <div className="res-item" style={{ fontSize: '1.2em', color: 'var(--accent-pink)' }}><span>صافي الراتب:</span> <strong>{result.net}</strong></div>
+                <div className="ui-output">
+                    <div className="ui-grid-2">
+                        <div><span className="ui-output-label">خصم التأمينات</span><div>{result.gosi}</div></div>
+                        <div><span className="ui-output-label">صافي الراتب</span><div style={{ fontSize: '1.4em', fontWeight: 'bold', color: 'var(--ui-g2)' }}>{result.net}</div></div>
+                    </div>
                 </div>
             )}
-            <p style={{ fontSize: '12px', color: '#aaa', marginTop: '10px' }}>*تقديرات بناءً على تأمينات القطاع الخاص (سعودي).</p>
-        </div>
+        </ToolShell>
     );
 }
 
-// --- 6. Zakat Calculator ---
+// --- 6. Zakat ---
 function ZakatCalculator() {
     const [assets, setAssets] = useState<string>('');
     const [result, setResult] = useState<string | null>(null);
@@ -184,27 +209,23 @@ function ZakatCalculator() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>إجمالي الأصول الزكوية (ريال)</label>
-                <small style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>النقد، الذهب، الفضة، الأسهم، وغيرها.. مر عليها حول.</small>
-                <input type="number" value={assets} onChange={e => setAssets(e.target.value)} placeholder="مثال: 100000" className="glass-input" />
-            </div>
-            <button onClick={calculate} className="btn-primary full-width">احسب الزكاة (2.5%)</button>
+        <ToolShell description="حساب الزكاة الشرعية (2.5%) على إجمالي الأصول.">
+            <ToolInputRow label="إجمالي الأصول (ريال)">
+                <input type="number" value={assets} onChange={e => setAssets(e.target.value)} placeholder="مثال: 100000" className="ui-input" />
+            </ToolInputRow>
+            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب الزكاة</button>
 
             {result && (
-                <div className="result-box">
-                    <div className="res-item"><span>الزكاة المستحقة:</span> <strong style={{ fontSize: '1.4em', color: 'var(--accent-pink)' }}>{result}</strong></div>
+                <div className="ui-output text-center">
+                    <span className="ui-output-label">الزكاة المستحقة</span>
+                    <strong style={{ fontSize: '1.6em', display: 'block', marginTop: '8px', color: 'var(--ui-g1)' }}>{result}</strong>
                 </div>
             )}
-            <p style={{ fontSize: '11px', color: '#aaa', marginTop: '10px', textAlign: 'center' }}>
-                *تنبيه: هذه حاسبة مبسطة. استشر مختصاً للأصول المعقدة أو زكاة العروض التجارية.
-            </p>
-        </div>
+        </ToolShell>
     );
 }
 
-// --- 5. Savings Goal ---
+// --- 5. Savings ---
 function SavingsCalculator() {
     const [goal, setGoal] = useState('');
     const [current, setCurrent] = useState('');
@@ -219,10 +240,9 @@ function SavingsCalculator() {
 
         const remaining = g - c;
         if (remaining <= 0) {
-            setResult({ time: "تم الوصول للهدف!", total: "0" });
+            setResult({ time: "تم الوصول!", total: "0" });
             return;
         }
-
         const months = Math.ceil(remaining / m);
         const years = (months / 12).toFixed(1);
         setResult({
@@ -232,48 +252,41 @@ function SavingsCalculator() {
     };
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>هدف الادخار (ريال)</label>
-                <input type="number" value={goal} onChange={e => setGoal(e.target.value)} placeholder="مثال: 50000" className="glass-input" />
+        <ToolShell description="خطط للوصول لهدفك المالي.">
+            <ToolInputRow label="الهدف (ريال)">
+                <input type="number" value={goal} onChange={e => setGoal(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <div className="ui-grid-2">
+                <ToolInputRow label="الحالي">
+                    <input type="number" value={current} onChange={e => setCurrent(e.target.value)} className="ui-input" />
+                </ToolInputRow>
+                <ToolInputRow label="ادخار شهري">
+                    <input type="number" value={monthly} onChange={e => setMonthly(e.target.value)} className="ui-input" />
+                </ToolInputRow>
             </div>
-            <div className="input-row">
-                <label>المدخرات الحالية</label>
-                <input type="number" value={current} onChange={e => setCurrent(e.target.value)} placeholder="مثال: 5000" className="glass-input" />
-            </div>
-            <div className="input-row">
-                <label>المساهمة الشهرية</label>
-                <input type="number" value={monthly} onChange={e => setMonthly(e.target.value)} placeholder="مثال: 1000" className="glass-input" />
-            </div>
-            <button onClick={calculate} className="btn-primary full-width">احسب الخطة</button>
+            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب المدة</button>
 
             {result && (
-                <div className="result-box">
-                    <div className="res-item"><span>الوقت للوصول للهدف:</span> <strong>{result.time}</strong></div>
-                    <div className="res-item"><span>إجمالي المساهمات:</span> <strong>{result.total}</strong></div>
+                <div className="ui-output">
+                    <div className="ui-grid-2">
+                        <div><span className="ui-output-label">المدة اللازمة</span><strong>{result.time}</strong></div>
+                        <div><span className="ui-output-label">إجمالي المدخرات</span><strong>{result.total}</strong></div>
+                    </div>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
-// --- 7. Currency Converter ---
+// --- 7. Currency ---
 function CurrencyConverter() {
     const [amount, setAmount] = useState('1');
     const [from, setFrom] = useState('USD');
     const [to, setTo] = useState('SAR');
     const [res, setRes] = useState<string | null>(null);
 
-    // Mock Rates (Base USD)
-    const rates: any = {
-        'USD': 1,
-        'SAR': 3.75,
-        'EUR': 0.92,
-        'GBP': 0.79,
-        'AED': 3.67,
-        'KWD': 0.31,
-        'EGP': 47.5
-    };
+    // Mock Rates
+    const rates: any = { 'USD': 1, 'SAR': 3.75, 'EUR': 0.92, 'GBP': 0.79, 'AED': 3.67, 'KWD': 0.31, 'EGP': 47.5 };
 
     const convert = () => {
         const val = parseFloat(amount);
@@ -283,56 +296,41 @@ function CurrencyConverter() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>المبلغ</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="glass-input" />
-            </div>
-            <div style={{ display: 'flex', gap: '16px' }}>
-                <div className="input-row" style={{ flex: 1 }}>
-                    <label>من</label>
-                    <select value={from} onChange={e => setFrom(e.target.value)} className="glass-input">
+        <ToolShell description="أسعار صرف العملات المباشرة.">
+            <ToolInputRow label="المبلغ">
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <div className="ui-grid-2">
+                <ToolInputRow label="من">
+                    <select value={from} onChange={e => setFrom(e.target.value)} className="ui-input ui-select">
                         {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
-                </div>
-                <div className="input-row" style={{ flex: 1 }}>
-                    <label>إلى</label>
-                    <select value={to} onChange={e => setTo(e.target.value)} className="glass-input">
+                </ToolInputRow>
+                <ToolInputRow label="إلى">
+                    <select value={to} onChange={e => setTo(e.target.value)} className="ui-input ui-select">
                         {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
-                </div>
+                </ToolInputRow>
             </div>
-            <button onClick={convert} className="btn-primary full-width">تحويل العملة</button>
+            <button onClick={convert} className="ui-btn primary ui-w-full">تحويل</button>
             {res && (
-                <div className="result-box" style={{ textAlign: 'center' }}>
-                    <strong style={{ fontSize: '2em', color: 'var(--accent-cyan)' }}>{res} {to}</strong>
+                <div className="ui-output text-center">
+                    <strong style={{ fontSize: '2em', color: 'var(--ui-g2)' }}>{res} {to}</strong>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
-// --- 8. Crypto Converter ---
+// --- 8. Crypto ---
 function CryptoConverter() {
     const [amount, setAmount] = useState('1');
     const [coin, setCoin] = useState('BTC');
     const [currency, setCurrency] = useState('USD');
     const [res, setRes] = useState<string | null>(null);
 
-    // Mock Approx Prices
-    const prices: any = {
-        'BTC': 65000,
-        'ETH': 3500,
-        'SOL': 140,
-        'BNB': 600,
-        'XRP': 0.60
-    };
-
-    const rates: any = {
-        'USD': 1,
-        'SAR': 3.75,
-        'EUR': 0.92
-    };
+    const prices: any = { 'BTC': 65000, 'ETH': 3500, 'SOL': 140, 'BNB': 600, 'XRP': 0.60 };
+    const rates: any = { 'USD': 1, 'SAR': 3.75, 'EUR': 0.92 };
 
     const convert = () => {
         const val = parseFloat(amount);
@@ -343,36 +341,33 @@ function CryptoConverter() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>الكمية</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="glass-input" />
-            </div>
-            <div style={{ display: 'flex', gap: '16px' }}>
-                <div className="input-row" style={{ flex: 1 }}>
-                    <label>العملة الرقمية</label>
-                    <select value={coin} onChange={e => setCoin(e.target.value)} className="glass-input">
+        <ToolShell description="تحويل العملات الرقمية.">
+            <ToolInputRow label="الكمية">
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <div className="ui-grid-2">
+                <ToolInputRow label="العملة الرقمية">
+                    <select value={coin} onChange={e => setCoin(e.target.value)} className="ui-input ui-select">
                         {Object.keys(prices).map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
-                </div>
-                <div className="input-row" style={{ flex: 1 }}>
-                    <label>مقابل</label>
-                    <select value={currency} onChange={e => setCurrency(e.target.value)} className="glass-input">
+                </ToolInputRow>
+                <ToolInputRow label="مقابل">
+                    <select value={currency} onChange={e => setCurrency(e.target.value)} className="ui-input ui-select">
                         {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
-                </div>
+                </ToolInputRow>
             </div>
-            <button onClick={convert} className="btn-primary full-width">حساب القيمة</button>
+            <button onClick={convert} className="ui-btn primary ui-w-full">احسب القيمة</button>
             {res && (
-                <div className="result-box" style={{ textAlign: 'center' }}>
-                    <strong style={{ fontSize: '2em', color: 'var(--accent-pink)' }}>{res} {currency}</strong>
+                <div className="ui-output text-center">
+                    <strong style={{ fontSize: '2em', color: 'var(--ui-g1)' }}>{res} {currency}</strong>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
 }
 
-// --- 9. Invoice Generator ---
+// --- 9. Invoice ---
 function InvoiceGenerator() {
     const [client, setClient] = useState('');
     const [items, setItems] = useState<{ desc: string, price: number }[]>([]);
@@ -389,32 +384,35 @@ function InvoiceGenerator() {
     const total = items.reduce((acc, curr) => acc + curr.price, 0);
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>اسم العميل / الشركة</label>
-                <input value={client} onChange={e => setClient(e.target.value)} className="glass-input" />
-            </div>
+        <ToolShell description="إنشاء فاتورة بسيطة للطباعة.">
+            <ToolInputRow label="العميل">
+                <input value={client} onChange={e => setClient(e.target.value)} className="ui-input" />
+            </ToolInputRow>
 
-            <div className="glass-panel p-4 mb-4">
-                <div className="flex gap-2 mb-2">
-                    <input value={desc} onChange={e => setDesc(e.target.value)} className="glass-input" placeholder="الوصف" style={{ flex: 2 }} />
-                    <input type="number" value={price} onChange={e => setPrice(e.target.value)} className="glass-input" placeholder="السعر" style={{ flex: 1 }} />
-                    <button onClick={addItem} className="btn-secondary">+</button>
+            <div className="ui-output" style={{ padding: '0', background: 'transparent', border: 'none' }}>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                    <input value={desc} onChange={e => setDesc(e.target.value)} className="ui-input" placeholder="الوصف" style={{ flex: 2 }} />
+                    <input type="number" value={price} onChange={e => setPrice(e.target.value)} className="ui-input" placeholder="السعر" style={{ flex: 1 }} />
+                    <button onClick={addItem} className="ui-btn ghost" style={{ width: 'auto' }}>+</button>
                 </div>
-                {items.map((it, i) => (
-                    <div key={i} className="flex justify-between border-b border-gray-700 py-2">
-                        <span>{it.desc}</span>
-                        <span>{it.price} ريال</span>
+
+                {items.length > 0 && (
+                    <div className="ui-output">
+                        {items.map((it, i) => (
+                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--ui-stroke)', paddingBottom: '8px', marginBottom: '8px' }}>
+                                <span>{it.desc}</span>
+                                <span>{it.price} ريال</span>
+                            </div>
+                        ))}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '1.2em', marginTop: '16px' }}>
+                            <span>الإجمالي</span>
+                            <span style={{ color: 'var(--ui-g2)' }}>{total} ريال</span>
+                        </div>
                     </div>
-                ))}
-                <div className="flex justify-between mt-4 font-bold text-lg">
-                    <span>الإجمالي</span>
-                    <span className="text-accent-pink">{total} ريال</span>
-                </div>
+                )}
             </div>
-
-            <button onClick={() => window.print()} className="btn-primary full-width">طباعة الفاتورة</button>
-        </div>
+            <button onClick={() => window.print()} className="ui-btn primary ui-w-full">طباعة</button>
+        </ToolShell>
     );
 }
 
@@ -428,66 +426,39 @@ function BillSplitter() {
     const bill = parseFloat(total) || 0;
     const count = parseFloat(people) || 1;
     const tipPer = parseFloat(tip);
-
     const tipAmount = bill * (tipPer / 100);
     const totalPay = bill + tipAmount;
     const perPerson = totalPay / count;
 
     return (
-        <div className="tool-ui-group">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-                <div><label>Bill Amount</label><input type="number" value={total} onChange={e => setTotal(e.target.value)} className="glass-input w-full" /></div>
-                <div><label>People</label><input type="number" value={people} onChange={e => setPeople(e.target.value)} className="glass-input w-full" /></div>
+        <ToolShell description="تقسيم الفاتورة مع الإكرامية.">
+            <div className="ui-grid-2">
+                <ToolInputRow label="الفاتورة">
+                    <input type="number" value={total} onChange={e => setTotal(e.target.value)} className="ui-input" />
+                </ToolInputRow>
+                <ToolInputRow label="الأشخاص">
+                    <input type="number" value={people} onChange={e => setPeople(e.target.value)} className="ui-input" />
+                </ToolInputRow>
             </div>
-
-            <div className="mb-4">
-                <label>Tip % ({tip}%)</label>
-                <div className="flex gap-2 mt-2">
+            <ToolInputRow label={`الإكرامية (${tip}%)`}>
+                <div style={{ display: 'flex', gap: '8px' }}>
                     {[0, 10, 15, 20].map(t => (
-                        <button key={t} onClick={() => setTip(t.toString())} className={`flex-1 py-1 rounded ${tip === t.toString() ? 'bg-accent-cyan text-black' : 'bg-gray-700'}`}>{t}%</button>
+                        <button key={t} onClick={() => setTip(t.toString())} className={`ui-btn ghost ${tip === t.toString() ? 'active' : ''}`} style={{ flex: 1, background: tip === t.toString() ? 'var(--ui-g2)' : undefined }}>{t}%</button>
                     ))}
-                    <input type="number" value={tip} onChange={e => setTip(e.target.value)} className="glass-input w-20 text-center" placeholder="Custom" />
                 </div>
-            </div>
+            </ToolInputRow>
 
-            <div className="glass-panel p-4 text-center">
-                <div className="text-gray-400 text-sm">Amount per person</div>
-                <div className="text-4xl font-bold text-accent-pink my-2">{perPerson.toFixed(2)}</div>
-                <div className="text-xs text-gray-500 flex justify-between px-4 mt-4 border-t border-gray-700 pt-2">
-                    <span>Subtotal: {bill}</span>
-                    <span>Tip: {tipAmount.toFixed(2)}</span>
-                    <span>Total: {totalPay.toFixed(2)}</span>
+            <div className="ui-output text-center">
+                <span className="ui-output-label">لكل شخص</span>
+                <div style={{ fontSize: '2.5em', fontWeight: 'bold', margin: '16px 0', color: 'var(--ui-g1)' }}>{perPerson.toFixed(2)}</div>
+                <div className="ui-grid-3 text-sm" style={{ borderTop: '1px solid var(--ui-stroke)', paddingTop: '12px' }}>
+                    <div>Total: {totalPay.toFixed(2)}</div>
+                    <div>Bill: {bill}</div>
+                    <div>Tip: {tipAmount.toFixed(2)}</div>
                 </div>
             </div>
-        </div>
+        </ToolShell>
     );
-}
-
-// --- 11. Tip Calculator (Standalone alias usually, but same logic) ---
-function TipCalculator() {
-    // Reusing logic or simplified view
-    return <BillSplitter />;
-}
-
-// --- Main Switcher ---
-export default function FinanceTools({ toolId }: ToolProps) {
-    switch (toolId) {
-        case 'loan-calc': return <LoanCalculator />;
-        case 'vat-calc': return <VATCalculator />;
-        case 'net-salary': return <SalaryCalculator />;
-        case 'zakat': return <ZakatCalculator />;
-        case 'savings': return <SavingsCalculator />;
-        case 'fin-discount': return <SimpleDiscountCalc />;
-        case 'fin-currency': return <CurrencyConverter />;
-        case 'fin-crypto': return <CryptoConverter />;
-        case 'finance-invoice': return <InvoiceGenerator />;
-
-        case 'fin-split': return <BillSplitter />;
-        case 'fin-tip': return <TipCalculator />;
-
-        default:
-            return <div style={{ padding: '20px', textAlign: 'center' }}>Coming Soon... (Tool ID: {toolId})</div>;
-    }
 }
 
 function SimpleDiscountCalc() {
@@ -507,23 +478,40 @@ function SimpleDiscountCalc() {
     }
 
     return (
-        <div className="tool-ui-group">
-            <div className="input-row">
-                <label>السعر الأصلي</label>
-                <input type="number" value={price} onChange={e => setPrice(e.target.value)} className="glass-input" placeholder="مثال: 200" />
-            </div>
-            <div className="input-row">
-                <label>الخصم (%)</label>
-                <input type="number" value={off} onChange={e => setOff(e.target.value)} className="glass-input" placeholder="مثال: 30" />
-            </div>
-            <button onClick={calc} className="btn-primary full-width">احسب</button>
+        <ToolShell description="حساب السعر بعد الخصم.">
+            <ToolInputRow label="السعر الأصلي">
+                <input type="number" value={price} onChange={e => setPrice(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <ToolInputRow label="الخصم (%)">
+                <input type="number" value={off} onChange={e => setOff(e.target.value)} className="ui-input" />
+            </ToolInputRow>
+            <button onClick={calc} className="ui-btn primary ui-w-full">احسب</button>
 
             {result && (
-                <div className="result-box">
-                    <div className="res-item"><span>السعر الجديد:</span> <strong style={{ color: 'var(--accent-pink)' }}>{result.final}</strong></div>
-                    <div className="res-item"><span>وفرت:</span> <strong style={{ color: '#2ecc71' }}>{result.save}</strong></div>
+                <div className="ui-output">
+                    <div className="ui-grid-2">
+                        <div><span className="ui-output-label">بعد الخصم</span><strong style={{ color: 'var(--ui-g1)' }}>{result.final}</strong></div>
+                        <div><span className="ui-output-label">التوفير</span><strong style={{ color: '#2ecc71' }}>{result.save}</strong></div>
+                    </div>
                 </div>
             )}
-        </div>
+        </ToolShell>
     );
+}
+
+export default function FinanceTools({ toolId }: ToolProps) {
+    switch (toolId) {
+        case 'loan-calc': return <LoanCalculator />;
+        case 'vat-calc': return <VATCalculator />;
+        case 'net-salary': return <SalaryCalculator />;
+        case 'zakat': return <ZakatCalculator />;
+        case 'savings': return <SavingsCalculator />;
+        case 'fin-discount': return <SimpleDiscountCalc />;
+        case 'fin-currency': return <CurrencyConverter />;
+        case 'fin-crypto': return <CryptoConverter />;
+        case 'finance-invoice': return <InvoiceGenerator />;
+        case 'fin-split': return <BillSplitter />;
+        case 'fin-tip': return <BillSplitter />;
+        default: return <div className="text-center py-12 text-gray-400">Tool not implemented yet: {toolId}</div>
+    }
 }

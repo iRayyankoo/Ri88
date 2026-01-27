@@ -13,6 +13,7 @@ import DeveloperTools from './DeveloperTools';
 import EducationTools from './EducationTools';
 import DesignTools from './DesignTools';
 import LanguagesTools from './LanguagesTools';
+import AiTools from './AiTools';
 import SportsDashboard from '../sports/SportsDashboard';
 import { Tool } from '@/data/tools';
 
@@ -65,6 +66,9 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
 
         case 'languages':
             return <LanguagesTools toolId={id} />;
+
+        case 'ai-tools':
+            return <AiTools />;
 
         case 'sports':
             // All sport tools route to the main dashboard for now, 

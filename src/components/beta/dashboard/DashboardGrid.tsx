@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Settings2, Check } from 'lucide-react';
-import { WIDGET_REGISTRY } from './WidgetRegistry';
+import { WIDGET_REGISTRY, ColorInjector } from './WidgetRegistry';
 import WidgetCard from './WidgetCard';
 import AddWidgetModal from './AddWidgetModal';
 
@@ -18,7 +18,9 @@ const DEFAULT_LAYOUT: WidgetItem[] = [
     { id: 'welcome', size: 'md' },  // 2 col
     { id: 'time', size: 'sm' },     // 1 col
     { id: 'date', size: 'sm' },     // 1 col
+    { id: 'prayer', size: 'sm' },   // NEW: Prayer
     { id: 'weather', size: 'sm' },  // 1 col
+    { id: 'tasi', size: 'sm' },     // NEW: TASI
     { id: 'gold', size: 'sm' },     // 1 col
     { id: 'events', size: 'md' },   // 2 col
 ];
@@ -72,34 +74,38 @@ export default function DashboardGrid() {
 
     // --- 3. Drag & Drop Logic (Native HTML5) ---
     const dragItem = useRef<number | null>(null);
-    const dragOverItem = useRef<number | null>(null);
 
-    const handleDragStart = (e: React.DragEvent, position: number) => {
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, position: number) => {
         dragItem.current = position;
-        e.currentTarget.classList.add('grabbing');
+        const target = e.currentTarget as HTMLElement;
+        target.classList.add('grabbing');
     };
 
-    const handleDragEnter = (e: React.DragEvent, position: number) => {
-        dragOverItem.current = position;
-    };
+    const handleDragEnter = (position: number) => {
+        if (dragItem.current !== null && dragItem.current !== position) {
+            const dragIdx = dragItem.current;
+            const newWidgets = [...widgets];
+            const item = newWidgets[dragIdx];
+            newWidgets.splice(dragIdx, 1);
+            newWidgets.splice(position, 0, item);
 
-    const handleDragEnd = (e: React.DragEvent) => {
-        e.currentTarget.classList.remove('grabbing');
-        if (dragItem.current !== null && dragOverItem.current !== null) {
-            const copy = [...widgets];
-            const dragContent = copy[dragItem.current];
-            copy.splice(dragItem.current, 1);
-            copy.splice(dragOverItem.current, 0, dragContent);
-            saveLayout(copy);
+            dragItem.current = position;
+            setWidgets(newWidgets);
         }
+    };
+
+    const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+        const target = e.currentTarget as HTMLElement;
+        target.classList.remove('grabbing');
+        saveLayout(widgets);
         dragItem.current = null;
-        dragOverItem.current = null;
     };
 
     if (!isLoaded) return null; // Avoid hydration mismatch
 
     return (
         <section className="dashboard-section">
+            <ColorInjector />
             {/* Header Controls */}
             <div className="dashboard-header mb-8 flex flex-row justify-between items-end w-full relative z-10" dir="rtl">
                 <div className="flex items-center gap-6 w-full">
@@ -167,8 +173,8 @@ export default function DashboardGrid() {
                             // Drag Props
                             draggable={editMode}
                             onDragStart={(e) => handleDragStart(e, index)}
-                            onDragEnter={(e) => handleDragEnter(e, index)}
-                            onDragOver={(e) => e.preventDefault()} // Necessary for Drop
+                            onDragEnter={() => handleDragEnter(index)}
+                            onDragOver={(e) => e.preventDefault()}
                             onDrop={handleDragEnd}
                         >
                             <Component />
@@ -202,6 +208,7 @@ export default function DashboardGrid() {
                     grid-template-columns: repeat(4, 1fr); /* Desktop: 4 cols */
                     gap: 18px;
                     width: 100%;
+                    transition: all 0.3s ease;
                 }
 
                 /* Tablet: 2 Cols */
