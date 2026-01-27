@@ -2,15 +2,23 @@
 import React, { useState, useEffect } from 'react';
 import { Flame, Scale, Droplets, Moon, Wind } from 'lucide-react';
 
+interface HealthWidgetProps {
+    title: string;
+    icon: any;
+    color: string;
+    children: React.ReactNode;
+    className?: string;
+}
+
 interface ToolProps {
     toolId: string;
 }
 
 // Reusable Widget Card Wrapper
-const WidgetCard = ({ title, icon: Icon, color, children, className = '' }: any) => (
+const WidgetCard = ({ title, icon: Icon, color, children, className = '' }: HealthWidgetProps) => (
     <div className={`health-widget-card ${className}`}>
         <div className="widget-header">
-            <div className={`widget-pill`} style={{ '--pill-color': color } as React.CSSProperties}>
+            <div className="widget-pill" style={{ '--pill-color': color } as React.CSSProperties}>
                 <Icon size={16} />
                 <span>{title}</span>
             </div>
