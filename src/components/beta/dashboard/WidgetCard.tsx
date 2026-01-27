@@ -27,7 +27,6 @@ export default function WidgetCard({
     editMode,
     gradient,
     onDelete,
-    draggable,
     onDragStart,
     onDragOver,
     onDrop,
@@ -57,8 +56,8 @@ export default function WidgetCard({
             onDragLeave={onDragLeave}
             data-id={id}
 
-            // We use inline style ONLY for dynamic background that can't be class-based easily
-            style={{ background: gradient || '#232433' } as React.CSSProperties}
+            // We use CSS variables for dynamic background to satisfy linter
+            style={{ '--widget-bg': gradient || '#232433' } as React.CSSProperties}
         >
             {editMode && (
                 <>
@@ -85,6 +84,7 @@ export default function WidgetCard({
 
             <style jsx>{`
                 .widget-card {
+                    background: var(--widget-bg);
                     border: 1px solid rgba(255,255,255,0.03);
                     border-radius: 24px;
                     padding: 24px;

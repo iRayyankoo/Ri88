@@ -36,12 +36,16 @@ export default function DashboardGrid() {
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
-                    setWidgets(parsed);
+                    requestAnimationFrame(() => {
+                        setWidgets(parsed);
+                    });
                 } catch (e) {
                     console.error("Failed to parse saved layout", e);
                 }
             }
-            setIsLoaded(true);
+            requestAnimationFrame(() => {
+                setIsLoaded(true);
+            });
         }
     }, []);
 

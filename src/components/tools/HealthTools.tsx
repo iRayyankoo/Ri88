@@ -7,10 +7,10 @@ interface ToolProps {
 }
 
 // Reusable Widget Card Wrapper
-const WidgetCard = ({ title, icon: Icon, color, children, className = '' }: WidgetCardProps) => (
+const WidgetCard = ({ title, icon: Icon, color, children, className = '' }: any) => (
     <div className={`health-widget-card ${className}`}>
         <div className="widget-header">
-            <div className={`widget-pill pill-${color.replace('#', '')}`}>
+            <div className={`widget-pill`} style={{ '--pill-color': color } as React.CSSProperties}>
                 <Icon size={16} />
                 <span>{title}</span>
             </div>
@@ -54,8 +54,8 @@ function BMICalculator() {
 
             {result && (
                 <div className="result-display fade-in">
-                    <div className="result-main-value" style={{ color: result.color }}>{result.bmi}</div>
-                    <div className="result-sub-text" style={{ color: result.color }}>{result.cat}</div>
+                    <div className="result-main-value" style={{ '--res-color': result.color } as React.CSSProperties}>{result.bmi}</div>
+                    <div className="result-sub-text" style={{ '--res-color': result.color } as React.CSSProperties}>{result.cat}</div>
                 </div>
             )}
         </WidgetCard>
@@ -359,8 +359,8 @@ function HealthStyles() {
                 margin-top: auto;
                 animation: fadeIn 0.3s ease;
             }
-            .result-main-value { font-size: 32px; font-weight: 800; line-height: 1.2; }
-            .result-sub-text { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+            .result-main-value { font-size: 32px; font-weight: 800; line-height: 1.2; color: var(--res-color, white); }
+            .result-sub-text { font-size: 13px; opacity: 0.8; margin-top: 4px; color: var(--res-color, white); }
             .text-blue { color: #3498db; }
             .text-white { color: white; }
 

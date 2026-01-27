@@ -172,7 +172,7 @@ export default function BetaHome() {
                     {/* Browsing & Category Content - Only Show when 'all' and no search */}
                     {(activeCat === 'all' && !searchQuery) ? null : (
                         /* SEARCH & BROWSE VIEW */
-                        <div style={{ flex: 1 }} className="fade-in">
+                        <div className="flex-1 fade-in">
                             <div className="browse-header">
                                 <h2 className="browse-title">
                                     {categories.find(c => c.id === activeCat)?.nameAr || 'نتائج البحث'}
