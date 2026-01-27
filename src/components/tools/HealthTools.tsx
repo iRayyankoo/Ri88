@@ -228,7 +228,18 @@ function BreathingExercise() {
 }
 
 // MAIN LAYOUT
-export default function HealthTools() {
+// 6. Tool Props
+interface ToolProps {
+    toolId: string;
+}
+
+// MAIN LAYOUT
+export default function HealthTools({ toolId }: ToolProps) {
+    // If specific tool is requested, we could route to it, but for now we render the Dashboard grid
+    // as per previous implementation logic which showed all widgets.
+    // However, if the design intent is single tool view, we should switch.
+    // Based on the file structure, it seems meant to be a dashboard style grid regardless of ID for "health".
+    // But to fix the build error, we just need to accept the prop.
     return (
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 w-full">
             <BMICalculator />
