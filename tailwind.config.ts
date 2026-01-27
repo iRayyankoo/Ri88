@@ -14,10 +14,6 @@ const config: Config = {
             },
         },
     },
-    // IMPORTANT: Disable preflight to avoid breaking existing V1/V2 CSS
-    corePlugins: {
-        preflight: false,
-    },
     plugins: [],
 };
 export default config;

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ri88-v3.3';
+const CACHE_NAME = 'ri88-pwa-v1';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',

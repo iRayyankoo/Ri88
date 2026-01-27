@@ -145,6 +145,7 @@
 
 /* Modal Enhancements */
 .modal-overlay {
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     background: rgba(10, 14, 23, 0.6);
 }

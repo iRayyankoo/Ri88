@@ -45,8 +45,6 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = '60
             <div
                 className="ai-modal"
                 onClick={e => e.stopPropagation()}
-                // eslint-disable-next-line
-                style={{ maxWidth }}
             >
                 <div className="ai-header">
                     <button className="ai-close" onClick={onClose} aria-label="إغلاق">×</button>
@@ -69,6 +67,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = '60
 
                 .ai-modal {
                     width: min(920px, 92vw);
+                    max-width: ${maxWidth};
                     max-height: 85vh;
                     overflow-y: auto;
                     border-radius: ${vars.r};

@@ -1,0 +1,160 @@
+.sports-dashboard {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-deep);
+}
+
+.sports-nav {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.sports-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sports-nav-title {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.sports-status-message {
+    margin: 0;
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+.sports-status-message.error {
+    color: #ef4444;
+}
+
+.sports-status-message.success {
+    color: #22c55e;
+}
+
+.sports-content {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sports-leagues-scroll {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.league-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: white;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.league-btn.active {
+    background: var(--accent-pink);
+    border-color: var(--accent-pink);
+}
+
+.match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.match-card {
+    padding: 20px;
+    border-radius: 16px;
+}
+
+.match-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team-slot {
+    text-align: center;
+    flex: 1;
+}
+
+.team-logo {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.team-name {
+    font-weight: bold;
+}
+
+.score-slot {
+    text-align: center;
+    flex: 0.8;
+}
+
+.score-display {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent-pink);
+    letter-spacing: 4px;
+}
+
+.match-status {
+    font-size: 12px;
+    margin-top: 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+}
+
+.live-text {
+    color: #ef4444;
+}
+
+.finished-text {
+    color: #22c55e;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px;
+    color: #888;
+}
+
+.google-view-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.google-iframe {
+    width: 100%;
+    flex: 1;
+    border: none;
+    border-radius: 12px;
+    min-height: 500px;
+}

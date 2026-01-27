@@ -28,7 +28,7 @@ function QRGenerator() {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        } catch (e) {
+        } catch {
             window.open(url, '_blank');
         }
     }
@@ -63,7 +63,7 @@ function UnitConverter() {
     const [to, setTo] = useState('Kilometers');
     const [result, setResult] = useState<string | null>(null);
 
-    const types: any = {
+    const types: Record<string, string[]> = {
         len: ['Meters', 'Kilometers', 'Feet', 'Miles'],
         wgt: ['Kilograms', 'Grams', 'Pounds', 'Ounces'],
         tmp: ['Celsius', 'Fahrenheit', 'Kelvin']
@@ -85,10 +85,10 @@ function UnitConverter() {
         // Simple logic for brevity, assumed correctly handled in original
         if (from !== to) {
             if (type === 'len') {
-                const m: any = { 'Meters': 1, 'Kilometers': 1000, 'Feet': 0.3048, 'Miles': 1609.34 };
+                const m: Record<string, number> = { 'Meters': 1, 'Kilometers': 1000, 'Feet': 0.3048, 'Miles': 1609.34 };
                 res = (v * m[from]) / m[to];
             } else if (type === 'wgt') {
-                const g: any = { 'Grams': 1, 'Kilograms': 1000, 'Pounds': 453.592, 'Ounces': 28.3495 };
+                const g: Record<string, number> = { 'Grams': 1, 'Kilograms': 1000, 'Pounds': 453.592, 'Ounces': 28.3495 };
                 res = (v * g[from]) / g[to];
             } else if (type === 'tmp') {
                 if (from === 'Celsius' && to === 'Fahrenheit') res = (v * 9 / 5) + 32;
@@ -221,7 +221,7 @@ function PomodoroTimer() {
     const [mode, setMode] = useState<'work' | 'break'>('work');
 
     useEffect(() => {
-        let interval: any = null;
+        let interval: ReturnType<typeof setInterval> | null = null;
         if (active && timeLeft > 0) {
             interval = setInterval(() => setTimeLeft(t => {
                 if (t <= 1) {
@@ -231,7 +231,7 @@ function PomodoroTimer() {
                 return t - 1;
             }), 1000);
         }
-        return () => clearInterval(interval);
+        return () => { if (interval) clearInterval(interval); };
     }, [active, timeLeft]);
 
     const toggle = () => setActive(!active);

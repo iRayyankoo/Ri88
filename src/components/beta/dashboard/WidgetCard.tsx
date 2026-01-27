@@ -84,6 +84,7 @@ export default function WidgetCard({
                     border: 1px solid rgba(255,255,255,0.10);
                     background: rgba(255,255,255,0.035);
                     backdrop-filter: blur(14px);
+                    -webkit-backdrop-filter: blur(14px);
                     box-shadow: 0 18px 55px rgba(0,0,0,0.35);
                     transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
                     min-height: 160px; /* Conserve min-height */

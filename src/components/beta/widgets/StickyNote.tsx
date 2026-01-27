@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { StickyNote as NoteIcon } from 'lucide-react';
+
 
 export default function StickyNoteWidget() {
     const [note, setNote] = useState('');
 
     useEffect(() => {
         const saved = localStorage.getItem('ri88_note_content');
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (saved) setNote(saved);
     }, []);
 
@@ -21,7 +22,6 @@ export default function StickyNoteWidget() {
             <textarea
                 className="note-area"
                 placeholder="اكتب أفكارك هنا..."
-                style={{ marginTop: '20px' }}
                 value={note}
                 onChange={handleChange}
                 spellCheck={false}
@@ -40,6 +40,7 @@ export default function StickyNoteWidget() {
                     border: none; border-radius: 12px; padding: 15px;
                     color: #fff; font-family: inherit; font-size: 14px; line-height: 1.6;
                     resize: none; outline: none; transition: background 0.2s;
+                    margin-top: 20px;
                 }
                 .note-area:focus { background: rgba(245, 158, 11, 0.15); }
                 .note-area::placeholder { color: rgba(255,255,255,0.3); }

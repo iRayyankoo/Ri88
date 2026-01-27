@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { ToolShell, ToolInputRow, ToolOutput } from './ToolShell';
+import { ToolShell, ToolInputRow } from './ToolShell';
 
 interface ToolProps {
     toolId: string;

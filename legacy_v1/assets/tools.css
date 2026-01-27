@@ -30,8 +30,8 @@
     box-sizing: border-box;
     position: relative;
     transition: all 0.3s ease;
-    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     margin-bottom: 20px;
     direction: ltr;
     /* Default LTR, JS toggles class for RTL */
@@ -62,6 +62,7 @@
     font-weight: 700;
     background: linear-gradient(135deg, #fff, #a5b4fc);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 

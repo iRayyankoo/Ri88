@@ -54,7 +54,7 @@ function CaptionTemplates() {
     const [topic, setTopic] = useState('');
     const [tone, setTone] = useState('Professional');
     const [captions, setCaptions] = useState<string[]>([]);
-    const templates: any = {
+    const templates: Record<string, string[]> = {
         'Professional': ["We are thrilled to announce {topic}.", "Excited to share our latest work on {topic}.", "Efficiency meets innovation with {topic}."],
         'Casual': ["Guess what? {topic} is finally here! 🎉", "You asked, we delivered: {topic} 😎", "Weekend vibes with {topic}."],
         'Arabic': ["سعداء لإعلان {topic}. خطوة جديدة! 🚀", "أخيراً! {topic} أصبح متاحاً. شاركونا رأيكم 👇", "تميز مع {topic}."]

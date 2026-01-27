@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, RefreshCw, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import '@/styles/sports.css';
 
 interface Match {
     homeTeam: string;
@@ -13,6 +14,14 @@ interface Match {
     awayLogo: string;
     status: string;
     minute: string;
+}
+
+interface ApiMatch {
+    homeTeam: { name: string; shortName?: string };
+    awayTeam: { name: string; shortName?: string };
+    score: { fullTime: { home?: number; away?: number }; halfTime: { home?: number; away?: number } };
+    status: string;
+    minute?: number;
 }
 
 // Config
@@ -79,20 +88,20 @@ export default function SportsDashboard() {
     const [statusMessage, setStatusMessage] = useState<string>('');
     const [isApiError, setIsApiError] = useState(false);
 
-    const formatAPIData = (apiMatches: any[]): Match[] => {
-        return apiMatches.slice(0, 20).map((m: any) => ({
-            homeTeam: m.homeTeam.shortName || m.homeTeam.name,
-            awayTeam: m.awayTeam.shortName || m.awayTeam.name,
-            homeScore: m.score.fullTime.home ?? m.score.halfTime.home ?? 0,
-            awayScore: m.score.fullTime.away ?? m.score.halfTime.away ?? 0,
-            homeLogo: '', // API free tier limitation
-            awayLogo: '',
-            status: m.status === 'IN_PLAY' ? 'LIVE' : m.status,
-            minute: m.minute ? m.minute + "'" : ''
-        }));
-    };
+    const loadData = React.useCallback(async () => {
+        const formatAPIData = (apiMatches: ApiMatch[]): Match[] => {
+            return apiMatches.slice(0, 20).map((m) => ({
+                homeTeam: m.homeTeam.shortName || m.homeTeam.name,
+                awayTeam: m.awayTeam.shortName || m.awayTeam.name,
+                homeScore: m.score.fullTime.home ?? m.score.halfTime.home ?? 0,
+                awayScore: m.score.fullTime.away ?? m.score.halfTime.away ?? 0,
+                homeLogo: '', // API free tier limitation
+                awayLogo: '',
+                status: m.status === 'IN_PLAY' ? 'LIVE' : m.status,
+                minute: m.minute ? m.minute + "'" : ''
+            }));
+        };
 
-    const loadData = async () => {
         setLoading(true);
         setStatusMessage('');
         setIsApiError(false);
@@ -134,39 +143,35 @@ export default function SportsDashboard() {
             setStatusMessage('● Demo Mode (Mock Data)');
         }
         setLoading(false);
-    };
+    }, [query]);
 
     useEffect(() => {
         loadData();
-    }, [query]);
+    }, [loadData]);
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-main)' }}>
+        <div className="sports-dashboard">
             {/* Nav */}
-            <nav className="glass-panel" style={{ padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Link href="/" style={{ color: 'white', display: 'flex', alignItems: 'center' }}><ArrowLeft size={20} /></Link>
-                    <h2 style={{ margin: 0, fontSize: '1.2em' }}>Sports Live</h2>
+            <nav className="glass-panel sports-nav">
+                <div className="sports-nav-left">
+                    <Link href="/" className="flex items-center text-white"><ArrowLeft size={20} /></Link>
+                    <h2 className="sports-nav-title">Sports Live</h2>
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <p style={{ margin: 0, fontSize: '0.8em', opacity: 0.8, color: isApiError ? '#ef4444' : '#22c55e' }}>{statusMessage}</p>
-                    <button onClick={loadData} className="btn-icon"><RefreshCw size={18} /></button>
+                <div className="flex items-center gap-[10px]">
+                    <p className={`sports-status-message ${isApiError ? 'error' : 'success'}`}>{statusMessage}</p>
+                    <button onClick={loadData} className="btn-icon" title="Refresh Scores" aria-label="Refresh Scores"><RefreshCw size={18} /></button>
                 </div>
             </nav>
 
-            <div className="container" style={{ maxWidth: '800px', margin: '0 auto', width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div className="sports-content container">
 
                 {/* Controls */}
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '5px' }}>
+                <div className="sports-leagues-scroll">
                     {Object.keys(LEAGUES).map(q => (
                         <button
                             key={q}
                             onClick={() => setQuery(q)}
-                            style={{
-                                padding: '8px 16px', borderRadius: '20px', border: '1px solid var(--glass-border)',
-                                background: query === q ? 'var(--accent-pink)' : 'var(--glass-bg)',
-                                color: 'white', whiteSpace: 'nowrap', cursor: 'pointer'
-                            }}
+                            className={`league-btn ${query === q ? 'active' : ''}`}
                         >
                             {q}
                         </button>
@@ -174,63 +179,60 @@ export default function SportsDashboard() {
                 </div>
 
                 {viewMode === 'native' ? (
-                    <div style={{ flex: 1 }}>
+                    <div className="flex-1">
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '40px', color: '#aaa' }}>Loading scores...</div>
+                            <div className="empty-state">Loading scores...</div>
                         ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            <div className="match-list">
                                 {matches.length > 0 ? matches.map((m, idx) => (
-                                    <div key={idx} className="glass-panel" style={{ padding: '20px', borderRadius: '16px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div style={{ textAlign: 'center', flex: 1 }}>
-                                                <div style={{ fontSize: '32px', marginBottom: '5px' }}>{m.homeLogo || '⚽'}</div>
-                                                <div style={{ fontWeight: 'bold' }}>{m.homeTeam}</div>
+                                    <div key={idx} className="glass-panel match-card">
+                                        <div className="match-row">
+                                            <div className="team-slot">
+                                                <div className="team-logo">{m.homeLogo || '⚽'}</div>
+                                                <div className="team-name">{m.homeTeam}</div>
                                             </div>
 
-                                            <div style={{ textAlign: 'center', flex: 0.8 }}>
-                                                <div style={{ fontSize: '32px', fontWeight: 800, color: 'var(--accent-pink)', letterSpacing: '4px' }}>
+                                            <div className="score-slot">
+                                                <div className="score-display">
                                                     {m.homeScore}-{m.awayScore}
                                                 </div>
-                                                <div style={{
-                                                    fontSize: '12px', marginTop: '8px', fontWeight: 'bold',
-                                                    color: (m.status === 'LIVE' || m.status === 'IN_PLAY') ? '#ef4444' : '#22c55e',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
-                                                }}>
-                                                    {(m.status === 'LIVE' || m.status === 'IN_PLAY') && <span style={{ width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%' }}></span>}
+                                                <div className={`match-status ${(m.status === 'LIVE' || m.status === 'IN_PLAY') ? 'live-text' : 'finished-text'}`}>
+                                                    {(m.status === 'LIVE' || m.status === 'IN_PLAY') && <span className="status-dot"></span>}
                                                     {m.status} {m.minute}
                                                 </div>
                                             </div>
 
-                                            <div style={{ textAlign: 'center', flex: 1 }}>
-                                                <div style={{ fontSize: '32px', marginBottom: '5px' }}>{m.awayLogo || '⚽'}</div>
-                                                <div style={{ fontWeight: 'bold' }}>{m.awayTeam}</div>
+                                            <div className="team-slot">
+                                                <div className="team-logo">{m.awayLogo || '⚽'}</div>
+                                                <div className="team-name">{m.awayTeam}</div>
                                             </div>
                                         </div>
                                     </div>
                                 )) : (
-                                    <div style={{ textAlign: 'center', padding: '50px', color: '#888' }}>
+                                    <div className="empty-state">
                                         No matches found for this league today.
                                     </div>
                                 )}
                             </div>
                         )}
 
-                        <div style={{ marginTop: '30px', textAlign: 'center', marginBottom: '50px' }}>
-                            <button onClick={() => setViewMode('google')} className="btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <div className="mt-[30px] mb-[50px] text-center">
+                            <button onClick={() => setViewMode('google')} className="btn-secondary inline-flex items-center gap-[8px]" title="Switch to Google View" aria-label="Switch to Google View">
                                 <ExternalLink size={16} /> Switch to Google View
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ marginBottom: '10px', textAlign: 'center' }}>
-                            <button onClick={() => setViewMode('native')} className="btn-secondary">
+                    <div className="google-view-container">
+                        <div className="mb-[10px] text-center">
+                            <button onClick={() => setViewMode('native')} className="btn-secondary" title="Back to Native View" aria-label="Back to Native View">
                                 Back to Native View
                             </button>
                         </div>
                         <iframe
+                            title="Google Sports Search"
                             src={`https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1&pws=0`}
-                            style={{ width: '100%', flex: 1, border: 'none', borderRadius: '12px', minHeight: '500px' }}
+                            className="google-iframe"
                         />
                     </div>
                 )}

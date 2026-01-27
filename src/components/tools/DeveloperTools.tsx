@@ -25,8 +25,8 @@ function JsonFormatter() {
                 setOutput(JSON.stringify(obj));
                 setMsg({ text: 'Minified successfully', type: 'success' });
             }
-        } catch (e: any) {
-            setMsg({ text: 'Invalid JSON: ' + e.message, type: 'error' });
+        } catch (e: unknown) {
+            setMsg({ text: 'Invalid JSON: ' + (e instanceof Error ? e.message : 'Unknown error'), type: 'error' });
         }
     };
 
@@ -66,8 +66,8 @@ function JsonFormatter() {
 function Base64Converter() {
     const [input, setInput] = useState('');
 
-    const encode = () => { try { setInput(btoa(input)); } catch (e) { alert('Invalid input'); } }
-    const decode = () => { try { setInput(atob(input)); } catch (e) { alert('Invalid Base64'); } }
+    const encode = () => { try { setInput(btoa(input)); } catch { alert('Invalid input'); } }
+    const decode = () => { try { setInput(atob(input)); } catch { alert('Invalid Base64'); } }
 
     return (
         <ToolShell description="تشفير وفك تشفير النصوص بصيغة Base64.">
@@ -91,8 +91,8 @@ function RegexTester() {
             const regex = new RegExp(pattern);
             const match = regex.test(text);
             setResult({ match, msg: match ? 'Match Found!' : 'No Match' });
-        } catch (e: any) {
-            setResult({ match: false, msg: 'Invalid Regex: ' + e.message });
+        } catch (e: unknown) {
+            setResult({ match: false, msg: 'Invalid Regex: ' + (e instanceof Error ? e.message : 'Unknown error') });
         }
     };
 
@@ -215,7 +215,7 @@ function JwtDebugger() {
             const dec = (str: string) => JSON.stringify(JSON.parse(atob(str.replace(/-/g, '+').replace(/_/g, '/'))), null, 2);
             setHeader(dec(parts[0]));
             setPayload(dec(parts[1]));
-        } catch (e) {
+        } catch {
             setHeader('Error decoding header');
             setPayload('Error decoding payload');
         }
@@ -270,7 +270,7 @@ function TextDiff() {
 
 // 9. Screen Info
 function ScreenInfo() {
-    const [info, setInfo] = useState<any>({});
+    const [info, setInfo] = useState<Record<string, number | string>>({});
 
     React.useEffect(() => {
         const update = () => {

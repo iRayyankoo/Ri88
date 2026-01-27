@@ -66,8 +66,8 @@ function GPACalculator() {
     const [grade, setGrade] = useState('A+');
     const [hours, setHours] = useState('3');
 
-    const pointsMap5: any = { 'A+': 5.0, 'A': 4.75, 'B+': 4.5, 'B': 4.0, 'C+': 3.5, 'C': 3.0, 'D+': 2.5, 'D': 2.0, 'F': 1.0 };
-    const pointsMap4: any = { 'A+': 4.0, 'A': 3.75, 'B+': 3.5, 'B': 3.0, 'C+': 2.5, 'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0.0 };
+    const pointsMap5: Record<string, number> = { 'A+': 5.0, 'A': 4.75, 'B+': 4.5, 'B': 4.0, 'C+': 3.5, 'C': 3.0, 'D+': 2.5, 'D': 2.0, 'F': 1.0 };
+    const pointsMap4: Record<string, number> = { 'A+': 4.0, 'A': 3.75, 'B+': 3.5, 'B': 3.0, 'C+': 2.5, 'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0.0 };
 
     const add = () => { setCourses([...courses, { grade, hours: parseFloat(hours) }]); };
     const calc = () => {

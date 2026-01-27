@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Flame, Scale, Droplets, Moon, Wind } from 'lucide-react';
-import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolInputRow } from './ToolShell';
 
 // We will use a modified ToolShell or just the CSS classes since this is a Dashboard view.
 // However, to keep it consistent, we can wrap the whole dashboard in a generic shell or just use the layout classes.
@@ -19,10 +19,14 @@ interface HealthWidgetProps {
 const WidgetCard = ({ title, icon: Icon, color, children }: HealthWidgetProps) => (
     <div className="tool-card h-full flex flex-col">
         <div className="tool-header p-4 border-b border-[var(--ui-stroke)] flex items-center gap-2.5">
-            {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-            <div style={{ color }}>
+            <div className="icon-wrapper">
                 <Icon size={20} />
             </div>
+            <style jsx>{`
+                .icon-wrapper {
+                    color: ${color};
+                }
+            `}</style>
             <h3 className="text-[1.1em] font-bold">{title}</h3>
         </div>
         <div className="tool-body flex-1 flex flex-col gap-4">
@@ -57,8 +61,12 @@ function BMICalculator() {
             <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
             {result && (
                 <div className="ui-output text-center">
-                    {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-                    <div className="text-[2em] font-bold" style={{ color: result.color }}>{result.bmi}</div>
+                    <div className="text-[2em] font-bold bmi-result">{result.bmi}</div>
+                    <style jsx>{`
+                        .bmi-result {
+                            color: ${result.color};
+                        }
+                    `}</style>
                     <div className="text-sm text-gray-400">{result.cat}</div>
                 </div>
             )}
@@ -212,11 +220,12 @@ function BreathingExercise() {
     return (
         <WidgetCard title="تمرين التنفس" icon={Wind} color="#00d2d3">
             <div className="flex justify-center py-5">
-                <div className={`breathing-circle ${phase} w-[100px] h-[100px] rounded-full border-[3px] flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${phase === 'inhale' || phase === 'hold' ? 'scale-150' : 'scale-100'}`}
-                    // eslint-disable-next-line react-dom/no-unsafe-inline-style
-                    style={{
-                        borderColor: phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'
-                    }}>
+                <div className={`breathing-circle ${phase} w-[100px] h-[100px] rounded-full border-[3px] flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${phase === 'inhale' || phase === 'hold' ? 'scale-150' : 'scale-100'}`}>
+                    <style jsx>{`
+                        .breathing-circle {
+                            border-color: ${phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'};
+                        }
+                    `}</style>
                     <span className="text-sm font-bold">{active ? text : 'ابدأ'}</span>
                 </div>
             </div>
@@ -234,7 +243,7 @@ interface ToolProps {
 }
 
 // MAIN LAYOUT
-export default function HealthTools({ toolId }: ToolProps) {
+export default function HealthTools({ toolId: _toolId }: ToolProps) {
     // If specific tool is requested, we could route to it, but for now we render the Dashboard grid
     // as per previous implementation logic which showed all widgets.
     // However, if the design intent is single tool view, we should switch.

@@ -174,7 +174,7 @@ function PhotoFilters() {
         <ToolShell description="تطبيق فلاتر احترافية على الصور.">
             <div className="ui-grid-3 mb-4">
                 {['grayscale', 'sepia', 'invert', 'brightness', 'contrast', 'blur'].map(f => (
-                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn ghost ${filter === f ? 'active' : ''}`} style={{ fontSize: '12px', background: filter === f ? 'rgba(255,255,255,0.1)' : undefined }} aria-label={`Apply ${f} filter`}>{f}</button>
+                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn ghost text-[12px] ${filter === f ? 'bg-white/10 text-white' : ''}`} aria-label={`Apply ${f} filter`}>{f}</button>
                 ))}
             </div>
             <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
@@ -210,7 +210,7 @@ function AudioRecorder() {
                 };
                 mediaRecorderRef.current.start();
                 setRecording(true);
-            } catch (e) { alert('Microphone access denied.'); }
+            } catch { alert('Microphone access denied.'); }
         } else {
             mediaRecorderRef.current?.stop();
             setRecording(false);
@@ -227,10 +227,8 @@ function AudioRecorder() {
             </div>
             {audioUrl && (
                 <div className="ui-output text-center">
-                    {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-                    <audio controls src={audioUrl} style={{ width: '100%' }} />
-                    {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-                    <a href={audioUrl} download="recording.ogg" className="ui-btn primary ui-w-full mt-4" style={{ display: 'block', textDecoration: 'none' }}>تحميل التسجيل</a>
+                    <audio controls src={audioUrl} className="w-full" />
+                    <a href={audioUrl} download="recording.ogg" className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل التسجيل</a>
                 </div>
             )}
         </ToolShell>
@@ -254,6 +252,10 @@ function RemoveBackground() {
 }
 
 // 7. HEIC Converter
+interface WindowWithHeic extends Window {
+    heic2any?: (options: { blob: Blob; toType: string; quality: number }) => Promise<Blob>;
+}
+
 function HeicConverter() {
     const [file, setFile] = useState<File | null>(null);
     const [res, setRes] = useState<string | null>(null);
@@ -262,20 +264,20 @@ function HeicConverter() {
     const convert = async () => {
         if (!file) return; setConverting(true);
         try {
-            if (!(window as { heic2any?: any }).heic2any) {
+            if (!(window as unknown as WindowWithHeic).heic2any) {
                 const script = document.createElement('script');
                 script.src = "https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js";
                 script.onload = () => runHeic();
                 document.body.appendChild(script);
             } else runHeic();
-        } catch (e) { alert('Error loading converter'); setConverting(false); }
+        } catch { alert('Error loading converter'); setConverting(false); }
     };
     const runHeic = () => {
-        const heic2any = (window as { heic2any?: any }).heic2any;
-        if (!heic2any) return;
+        const heic2any = (window as unknown as WindowWithHeic).heic2any;
+        if (!heic2any || !file) return;
         heic2any({ blob: file, toType: "image/jpeg", quality: 0.8 }).then((blob: Blob) => {
             setRes(URL.createObjectURL(blob)); setConverting(false);
-        }).catch((e: any) => { alert('Error: ' + e.message); setConverting(false); });
+        }).catch((e: unknown) => { alert('Error: ' + (e instanceof Error ? e.message : 'Unknown error')); setConverting(false); });
     }
 
     return (

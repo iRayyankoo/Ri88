@@ -27,11 +27,15 @@ function ShadowGenerator() {
                     <ToolInputRow label="Color"><input aria-label="Shadow Color" type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input p-0 h-10" /></ToolInputRow>
                     <ToolInputRow label={`Opacity: ${opacity}`}><input aria-label="Shadow Opacity" type="range" min="0" max="1" step="0.01" value={opacity} onChange={e => setOpacity(parseFloat(e.target.value))} className="w-full" /></ToolInputRow>
                 </div>
-                {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-                <div className="h-32 w-full rounded-xl flex items-center justify-center transition-all bg-white" style={{ boxShadow: shadow }}>
+                <div className="h-32 w-full rounded-xl flex items-center justify-center transition-all bg-white preview-box">
                     <p className="text-gray-500 font-bold">Element</p>
                 </div>
             </div>
+            <style jsx>{`
+                .preview-box {
+                    box-shadow: ${shadow};
+                }
+            `}</style>
             <div className="ui-output mt-4 flex justify-between items-center">
                 <code className="text-xs">{`box-shadow: ${shadow};`}</code>
                 <button onClick={() => navigator.clipboard.writeText(`box-shadow: ${shadow};`)} className="ui-btn ghost text-xs">Copy</button>
@@ -54,8 +58,12 @@ function GradientGenerator() {
                 <input aria-label="Gradient Color 2" type="color" value={c2} onChange={e => setC2(e.target.value)} className="ui-input p-0 h-12" />
                 <div className="flex items-center"><input aria-label="Gradient Angle" type="number" value={deg} onChange={e => setDeg(parseInt(e.target.value))} className="ui-input" /><span className="ml-2">deg</span></div>
             </div>
-            {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-            <div className="h-32 w-full rounded-xl mb-6 transition-all" style={{ background: grad }} />
+            <div className="h-32 w-full rounded-xl mb-6 transition-all gradient-box" />
+            <style jsx>{`
+                .gradient-box {
+                    background: ${grad};
+                }
+            `}</style>
             <div className="ui-output flex justify-between items-center">
                 <code className="text-xs">{`background: ${grad};`}</code>
                 <button onClick={() => navigator.clipboard.writeText(`background: ${grad};`)} className="ui-btn ghost text-xs">Copy</button>
@@ -74,8 +82,13 @@ function ColorExtractor() {
             {img && <img src={img} alt="Preview" className="w-full h-48 object-cover rounded-lg mb-4 border border-white/10" />}
             <div className="flex gap-2 justify-center">
                 {colors.map(c => (
-                    // eslint-disable-next-line
-                    <div key={c} className="w-10 h-10 rounded-full cursor-pointer border-2 border-white/20" style={{ background: c }} onClick={() => navigator.clipboard.writeText(c)}></div>
+                    <div key={c} className="w-10 h-10 rounded-full cursor-pointer border-2 border-white/20 color-swatch" onClick={() => navigator.clipboard.writeText(c)}>
+                        <style jsx>{`
+                            .color-swatch {
+                                background: ${c};
+                            }
+                        `}</style>
+                    </div>
                 ))}
             </div>
         </ToolShell>
@@ -109,15 +122,23 @@ function ContrastChecker() {
                 <ToolInputRow label="Text"><input aria-label="Text Color" type="color" value={fg} onChange={e => setFg(e.target.value)} className="ui-input p-0 h-10" /></ToolInputRow>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-6">
-                {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-                <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors" style={{ backgroundColor: bg, color: fg }}>
+                <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors contrast-preview">
                     Text Preview
                 </div>
-                {/* eslint-disable-next-line react-dom/no-unsafe-inline-style */}
-                <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors" style={{ backgroundColor: fg, color: bg }}>
+                <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors contrast-preview-inv">
                     Inverted
                 </div>
             </div>
+            <style jsx>{`
+                .contrast-preview {
+                    background-color: ${bg};
+                    color: ${fg};
+                }
+                .contrast-preview-inv {
+                    background-color: ${fg};
+                    color: ${bg};
+                }
+            `}</style>
             {ratio && (
                 <div className="ui-output text-center mt-4">
                     <div className="text-3xl font-bold mb-2">{ratio.toFixed(2)}</div>

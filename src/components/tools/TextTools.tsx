@@ -216,7 +216,7 @@ function MarkdownViewer() {
     const [html, setHtml] = useState('');
 
     const render = () => {
-        let text = input
+        const text = input
             .replace(/^# (.*$)/gim, '<h1>$1</h1>')
             .replace(/^## (.*$)/gim, '<h2>$1</h2>')
             .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')

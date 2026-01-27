@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Sunrise, Sunset, Clock, MapPin } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 interface PrayerTimes {
     Fajr: string;

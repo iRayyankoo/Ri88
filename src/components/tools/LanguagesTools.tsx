@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolShell } from './ToolShell';
 
 interface ToolProps {
     toolId: string;
@@ -26,7 +26,7 @@ function ArabicCorrector() {
     const [text, setText] = useState('');
     const [fixed, setFixed] = useState('');
     const fix = () => {
-        let res = text.replace(/\s+/g, ' ').replace(/ \./g, '.').replace(/ \,/g, '،').replace(/ى\b/g, 'ي').replace(/ة\b/g, 'ه').trim().replace(/التي/g, 'التي');
+        const res = text.replace(/\s+/g, ' ').replace(/ \./g, '.').replace(/ \,/g, '،').replace(/ى\b/g, 'ي').replace(/ة\b/g, 'ه').trim().replace(/التي/g, 'التي');
         setFixed(res);
     };
     return (
@@ -43,7 +43,7 @@ function EnglishCorrector() {
     const [text, setText] = useState('');
     const [fixed, setFixed] = useState('');
     const fix = () => {
-        let res = text.replace(/\s+/g, ' ').replace(/ \./g, '.').replace(/ \,/g, ',').replace(/ i /g, ' I ').replace(/(^\w|\.\s+\w)/gm, l => l.toUpperCase()).trim();
+        const res = text.replace(/\s+/g, ' ').replace(/ \./g, '.').replace(/ \,/g, ',').replace(/ i /g, ' I ').replace(/(^\w|\.\s+\w)/gm, l => l.toUpperCase()).trim();
         setFixed(res);
     };
     return (

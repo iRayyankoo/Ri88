@@ -63,8 +63,8 @@ a {
 /* Glass Panel Utility */
 .glass-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--glass-shadow);
@@ -109,6 +109,7 @@ a {
     justify-content: center;
     z-index: 1000;
     background: rgba(11, 16, 38, 0.6);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--glass-border);
 }
@@ -156,6 +157,7 @@ a {
     width: 100%;
     height: 100vh;
     background: rgba(11, 16, 38, 0.95);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     z-index: 2000;
     display: flex;
@@ -328,6 +330,7 @@ a {
     font-size: 14px;
     color: var(--accent-cyan);
     margin-bottom: 24px;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -343,6 +346,7 @@ a {
     background: linear-gradient(to right, #6D4CFF, #D35BFF, #00FFF2, #6D4CFF);
     background-size: 300% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: gradientText 5s linear infinite;
 }
@@ -367,6 +371,7 @@ a {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
@@ -531,6 +536,7 @@ a {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     z-index: 2000;
     display: none;
@@ -636,8 +642,8 @@ a {
 }
 
 select.glass-input {
-    appearance: none;
     -webkit-appearance: none;
+    appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 1rem center;
@@ -721,78 +727,8 @@ select.glass-input option {
     transform: translateY(-2px);
 }
 
-/* --- v3.0 Animations --- */
 
-/* Base Animated Card Wrapper */
-.animated-card {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-    cursor: pointer;
-}
-
-.animated-card:hover {
-    box-shadow: 0 20px 50px rgba(239, 68, 68, 0.2);
-    /* Red glow match for sports */
-    border-color: rgba(239, 68, 68, 0.5);
-    background: rgba(255, 255, 255, 0.08);
-}
-
-/* Inner Content Container that moves up */
-.card-content-wrapper {
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.animated-card:hover .card-content-wrapper {
-    transform: translateY(-15px);
-}
-
-/* Elements to Hide/Show */
-.card-hover-reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s ease;
-    height: 0;
-    /* Collapsed by default */
-    overflow: hidden;
-}
-
-.animated-card:hover .card-hover-reveal {
-    opacity: 1;
-    transform: translateY(0);
-    height: auto;
-    margin-top: 10px;
-}
-
-/* Icon specific animation */
-.animated-icon {
-    transition: all 0.5s ease;
-}
-
-.animated-card:hover .animated-icon {
-    transform: translateY(-10px) scale(0.9);
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-}
-
-/* Background Blob Effect */
-.bg-blob {
-    position: absolute;
-    top: -50px;
-    left: -50px;
-    width: 150px;
-    height: 150px;
-    background: var(--accent);
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0;
-    transition: 0.5s;
-    pointer-events: none;
-    z-index: 0;
-}
+/* --- Animations --- */
 
 
 /* --- Fat Footer --- */
@@ -802,6 +738,7 @@ select.glass-input option {
     border-top: 1px solid var(--glass-border);
     padding: 80px 24px 40px;
     margin-top: 100px;
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     position: relative;
     z-index: 10;
