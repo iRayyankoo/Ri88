@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { CloudSun, Calendar, Clock, Trophy, Quote, Coins, RefreshCw, StickyNote, Timer, Zap } from 'lucide-react';
+import { CloudSun, Calendar, Clock, Trophy, Quote, Coins, RefreshCw, StickyNote, Timer, Zap, CheckCircle2, Circle } from 'lucide-react';
 
 // --- Types ---
 import { useSession } from "next-auth/react";
@@ -288,6 +288,64 @@ const PomodoroWidget = () => {
     );
 };
 
+// 11. Daily Progress Widget
+const DailyProgressWidget = () => {
+    const [tasks, setTasks] = useState<{ id: number, text: string, done: boolean }[]>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('widget_daily_tasks');
+            return saved ? JSON.parse(saved) : [
+                { id: 1, text: 'شرب الماء', done: false },
+                { id: 2, text: 'قراءة ورد اليوم', done: false },
+                { id: 3, text: 'الرياضة', done: false }
+            ];
+        }
+        return [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('widget_daily_tasks', JSON.stringify(tasks));
+    }, [tasks]);
+
+    const toggleTask = (id: number) => {
+        setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
+    };
+
+    const completedCount = tasks.filter(t => t.done).length;
+    const progress = (completedCount / tasks.length) * 100;
+
+    return (
+        <div className="flex flex-col h-full justify-between p-1">
+            <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-blue-400">
+                    <CheckCircle2 size={20} />
+                    <span className="font-bold">إنجاز اليوم</span>
+                </div>
+                <div className="text-sm font-bold opacity-60">{completedCount}/{tasks.length}</div>
+            </div>
+
+            <div className="space-y-3 mb-4 flex-1 overflow-y-auto custom-scrollbar">
+                {tasks.map(task => (
+                    <div
+                        key={task.id}
+                        onClick={(e) => { e.stopPropagation(); toggleTask(task.id); }}
+                        className={`flex items-center gap-3 cursor-pointer p-2 rounded-xl transition-all ${task.done ? 'bg-white/5 opacity-50' : 'hover:bg-white/5'}`}
+                    >
+                        {task.done ? <CheckCircle2 size={20} className="text-green-500" /> : <Circle size={20} className="text-gray-500" />}
+                        <span className={`text-base font-medium ${task.done ? 'line-through' : ''}`}>{task.text}</span>
+                    </div>
+                ))}
+            </div>
+
+            <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                <div
+                    className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                />
+            </div>
+        </div>
+    );
+};
+
 // --- Registry ---
 export const WIDGET_REGISTRY: Record<string, WidgetDef> = {
     'welcome': {
@@ -329,5 +387,9 @@ export const WIDGET_REGISTRY: Record<string, WidgetDef> = {
     'pomodoro': {
         id: 'pomodoro', title_ar: 'مؤقت التركيز', defaultSize: 'sm', component: PomodoroWidget, icon: Timer,
         gradient: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%)'
+    },
+    'progress': {
+        id: 'progress', title_ar: 'الإنجاز اليومي', defaultSize: 'sm', component: DailyProgressWidget, icon: CheckCircle2,
+        gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%)'
     },
 };
