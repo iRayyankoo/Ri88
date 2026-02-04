@@ -8,9 +8,13 @@ import MultiWindowWorkspace from '@/components/Pages/MultiWindowWorkspace';
 import AdminSuite from '@/components/Pages/AdminSuite';
 import DeveloperPortal from '@/components/Pages/DeveloperPortal';
 import ToolChainer from '@/components/Pages/ToolChainer';
+import ComingSoonOverlay from '@/components/Pages/ComingSoonOverlay';
+import { useSearchParams } from 'next/navigation';
 
 export default function Home() {
   const { currentView, isLoggedIn, setIsLoggedIn, setCurrentView } = useNavigation();
+  const searchParams = useSearchParams();
+  const isPreview = searchParams.get('preview') === 'true';
 
   // Unified rendering logic
   const renderContent = () => {
@@ -36,17 +40,21 @@ export default function Home() {
 
   return (
     <div className="min-h-full">
+      {!isPreview && <ComingSoonOverlay />}
+
       {renderContent()}
 
       {/* DEV FLOATING CONTROLS (Demo only) */}
-      <div className="fixed bottom-24 right-8 z-[100] flex flex-col gap-2">
-        <button
-          onClick={() => setIsLoggedIn(!isLoggedIn)}
-          className="bg-brand-primary/20 hover:bg-brand-primary/40 text-[9px] text-brand-primary font-black uppercase tracking-widest px-4 py-2 rounded-full border border-brand-primary/20 transition-all backdrop-blur-xl"
-        >
-          {isLoggedIn ? 'تسجيل خروج (Mock)' : 'تسجيل دخول (Mock)'}
-        </button>
-      </div>
+      {isPreview && (
+        <div className="fixed bottom-24 right-8 z-[100] flex flex-col gap-2">
+          <button
+            onClick={() => setIsLoggedIn(!isLoggedIn)}
+            className="bg-brand-primary/20 hover:bg-brand-primary/40 text-[9px] text-brand-primary font-black uppercase tracking-widest px-4 py-2 rounded-full border border-brand-primary/20 transition-all backdrop-blur-xl"
+          >
+            {isLoggedIn ? 'تسجيل خروج (Mock)' : 'تسجيل دخول (Mock)'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
