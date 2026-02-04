@@ -3,10 +3,12 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Zap, Construction, Filter, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { tools, categories, Tool } from '@/data/tools';
+import { useNavigation } from '@/context/NavigationContext';
 
 const ToolsDirectory = () => {
     const [activeCat, setActiveCat] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const { setCurrentView } = useNavigation();
 
     const filteredTools = useMemo(() => {
         let res = tools;
@@ -39,7 +41,7 @@ const ToolsDirectory = () => {
                     <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-brand-primary transition-colors" />
                     <input
                         type="text"
-                        className="w-full bg-brand-card border border-white/5 hover:border-white/10 rounded-2xl py-4 pr-16 pl-6 text-white text-sm outline-none focus:ring-4 focus:ring-brand-primary/10 transition-all text-right"
+                        className="w-full bg-white/5 border border-white/5 hover:border-white/10 rounded-2xl py-4 pr-16 pl-6 text-white text-sm outline-none focus:ring-4 focus:ring-brand-primary/10 transition-all text-right"
                         placeholder="ابحث عن اسم الأداة أو وصفها..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -52,8 +54,8 @@ const ToolsDirectory = () => {
                 <button
                     onClick={() => setActiveCat('all')}
                     className={`px-8 py-3.5 rounded-2xl font-black text-xs transition-all border ${activeCat === 'all'
-                            ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
-                            : 'bg-brand-card border-white/5 text-slate-500 hover:text-white'
+                        ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                        : 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
                         }`}
                 >
                     الكل
@@ -63,8 +65,8 @@ const ToolsDirectory = () => {
                         key={cat.id}
                         onClick={() => setActiveCat(cat.id)}
                         className={`px-8 py-3.5 rounded-2xl font-black text-xs transition-all border ${activeCat === cat.id
-                                ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
-                                : 'bg-brand-card border-white/5 text-slate-500 hover:text-white'
+                            ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                            : 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
                             }`}
                     >
                         {cat.nameAr}
@@ -83,24 +85,25 @@ const ToolsDirectory = () => {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                whileHover={{ y: -5 }}
-                                className="glass-card p-6 flex flex-col gap-6 group cursor-pointer hover:bg-brand-primary/5 transition-all text-right border-white/5"
+                                whileHover={{ y: -8, backgroundColor: 'rgba(139, 92, 246, 0.08)' }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => setCurrentView('workspace')}
+                                className="glass-card p-6 flex flex-col gap-6 group cursor-pointer transition-all text-right border-white/5 relative z-10"
                             >
-                                <div className="flex justify-between items-start">
+                                <div className="flex justify-between items-start pointer-events-none">
                                     <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner">
                                         <Zap className="w-6 h-6" />
                                     </div>
-                                    {/* Status Badge */}
                                     <span className="text-[9px] font-black uppercase tracking-widest bg-brand-secondary/10 text-brand-secondary px-2 py-0.5 rounded-md border border-brand-secondary/20">Active</span>
                                 </div>
 
-                                <div className="space-y-1">
+                                <div className="space-y-1 pointer-events-none">
                                     <h4 className="font-black text-white group-hover:text-brand-primary transition-colors">{tool.titleAr || tool.title}</h4>
                                     <p className="text-[11px] text-slate-500 font-medium leading-relaxed line-clamp-2 italic">{tool.descAr || tool.desc}</p>
                                 </div>
 
-                                <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5">
-                                    <ArrowLeft className="w-4 h-4 text-brand-primary translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
+                                <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5 pointer-events-none">
+                                    <ArrowLeft className="w-4 h-4 text-brand-primary translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all font-black" />
                                     <div className="flex items-center gap-2">
                                         <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{tool.cat}</span>
                                         <Construction className="w-3 h-3 text-slate-600" />

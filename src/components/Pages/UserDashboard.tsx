@@ -14,8 +14,10 @@ import {
     Layers
 } from 'lucide-react';
 import { tools } from '@/data/tools';
+import { useNavigation } from '@/context/NavigationContext';
 
 const UserDashboard = () => {
+    const { setCurrentView } = useNavigation();
     const topTools = tools.slice(0, 4);
 
     const analytics = [
@@ -25,10 +27,10 @@ const UserDashboard = () => {
     ];
 
     const quickActions = [
-        { title: 'تحويل سريع', icon: Zap, color: 'text-brand-secondary' },
-        { title: 'تصدير التقارير', icon: Share2, color: 'text-brand-primary' },
-        { title: 'محطة العمل', icon: Terminal, color: 'text-slate-400' },
-        { title: 'إدارة الطبقات', icon: Layers, color: 'text-orange-500' },
+        { title: 'تحويل سريع', icon: Zap, color: 'text-brand-secondary', id: 'workspace' },
+        { title: 'دليل الأدوات', icon: Share2, color: 'text-brand-primary', id: 'directory' },
+        { title: 'محطة العمل', icon: Terminal, color: 'text-slate-400', id: 'workspace' },
+        { title: 'أتمتة الأدوات', icon: Layers, color: 'text-orange-500', id: 'chainer' },
     ];
 
     const containerVariants = {
@@ -61,10 +63,16 @@ const UserDashboard = () => {
                         <h2 className="text-3xl font-black text-white">طابت أوقاتك، رياّن 👋</h2>
                         <p className="text-slate-400 font-medium max-w-lg">مرحباً بك مجدداً في مركز التحكم الخاص بك. لديك <span className="text-brand-primary">12 طلب</span> معلقة و <span className="text-brand-secondary">3 تقارير</span> جاهزة للتحميل.</p>
                         <div className="pt-4 flex gap-4">
-                            <button className="bg-brand-primary text-white font-black px-8 py-3 rounded-xl transition-all shadow-xl shadow-brand-primary/20 active:scale-95 text-xs">
+                            <button
+                                onClick={() => setCurrentView('workspace')}
+                                className="bg-brand-primary text-white font-black px-8 py-3 rounded-xl transition-all shadow-xl shadow-brand-primary/20 active:scale-95 text-xs relative z-20"
+                            >
                                 فتح آخر أداة
                             </button>
-                            <button className="bg-white/5 hover:bg-white/10 text-white font-bold px-8 py-3 rounded-xl transition-all border border-white/10 active:scale-95 text-xs">
+                            <button
+                                onClick={() => setCurrentView('directory')}
+                                className="bg-white/5 hover:bg-white/10 text-white font-bold px-8 py-3 rounded-xl transition-all border border-white/10 active:scale-95 text-xs relative z-20"
+                            >
                                 عرض السجل
                             </button>
                         </div>
@@ -77,12 +85,16 @@ const UserDashboard = () => {
                 {/* Quick Actions Grid */}
                 <motion.div variants={itemVariants} className="lg:col-span-4 grid grid-cols-2 gap-4">
                     {quickActions.map((action, i) => (
-                        <div key={i} className="glass-card flex flex-col items-center justify-center p-6 gap-3 group hover:border-brand-primary/30 transition-all cursor-pointer">
+                        <button
+                            key={i}
+                            onClick={() => setCurrentView(action.id as any)}
+                            className="glass-card flex flex-col items-center justify-center p-6 gap-3 group hover:border-brand-primary/30 transition-all cursor-pointer relative z-20 overflow-hidden"
+                        >
                             <div className={`w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center ${action.color} group-hover:scale-110 transition-transform`}>
                                 <action.icon className="w-6 h-6" />
                             </div>
                             <span className="text-[10px] font-black uppercase text-slate-400 group-hover:text-white transition-colors">{action.title}</span>
-                        </div>
+                        </button>
                     ))}
                 </motion.div>
             </div>
@@ -94,12 +106,16 @@ const UserDashboard = () => {
                 <motion.div variants={itemVariants} className="lg:col-span-8 space-y-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-xl font-black text-white">الأدوات الأكثر استخداماً</h3>
-                        <button className="text-brand-primary text-xs font-bold hover:underline">عرض الكل</button>
+                        <button onClick={() => setCurrentView('directory')} className="text-brand-primary text-xs font-bold hover:underline relative z-20">عرض الكل</button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {topTools.map((tool) => (
-                            <div key={tool.id} className="glass-card p-6 flex items-center gap-6 group cursor-pointer hover:bg-brand-primary/5 transition-all">
+                            <button
+                                key={tool.id}
+                                onClick={() => setCurrentView('workspace')}
+                                className="glass-card p-6 flex items-center gap-6 group cursor-pointer hover:bg-brand-primary/5 transition-all w-full text-right relative z-20"
+                            >
                                 <div className="w-16 h-16 bg-brand-primary/20 rounded-2xl flex items-center justify-center text-brand-primary shrink-0 group-hover:rotate-12 transition-transform">
                                     <Zap className="w-8 h-8" />
                                 </div>
@@ -107,10 +123,10 @@ const UserDashboard = () => {
                                     <h4 className="font-bold text-white group-hover:text-brand-primary transition-colors truncate">{tool.titleAr || tool.title}</h4>
                                     <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{tool.descAr || tool.desc}</p>
                                 </div>
-                                <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-slate-600 group-hover:bg-brand-primary group-hover:text-white transition-all">
+                                <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-slate-600 group-hover:bg-brand-primary group-hover:text-white transition-all shrink-0">
                                     <Play className="w-4 h-4 fill-current" />
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </motion.div>
@@ -156,8 +172,8 @@ const UserDashboard = () => {
                 <div className="flex items-center justify-between mb-8">
                     <h3 className="text-xl font-black text-white">النشاط الأخير</h3>
                     <div className="flex gap-2">
-                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors"><Download className="w-4 h-4" /></button>
-                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors"><Settings className="w-4 h-4" /></button>
+                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors relative z-20"><Download className="w-4 h-4" /></button>
+                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors relative z-20"><Settings className="w-4 h-4" /></button>
                     </div>
                 </div>
 
