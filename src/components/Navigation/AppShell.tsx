@@ -1,17 +1,31 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import BottomNav from './BottomNav';
 import FloatingAssistant from '../AIAssistant/FloatingAssistant';
 import { useNavigation } from '@/context/NavigationContext';
+import { useSearchParams } from 'next/navigation';
 
 interface AppShellProps {
     children: React.ReactNode;
 }
 
-const AppShell: React.FC<AppShellProps> = ({ children }) => {
+const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
     const { currentView } = useNavigation();
+    const searchParams = useSearchParams();
+    const isPreview = searchParams.get('preview') === 'true';
+
+    // If not in preview mode, we hide the structural elements
+    if (!isPreview) {
+        return (
+            <div className="min-h-screen bg-brand-bg text-slate-100 flex overflow-hidden lg:flex-row-reverse" dir="rtl">
+                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth relative">
+                    {children}
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-brand-bg text-slate-100 flex overflow-x-hidden lg:flex-row-reverse" dir="rtl">
@@ -40,6 +54,14 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
             </div>
 
         </div>
+    );
+};
+
+const AppShell: React.FC<AppShellProps> = (props) => {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-brand-bg" />}>
+            <AppShellContent {...props} />
+        </Suspense>
     );
 };
 
