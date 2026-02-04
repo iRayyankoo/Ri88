@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Visitor Landing Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#7f13ec",
+                "background-light": "#f7f6f8",
+                "background-dark": "#0a080d",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(48, 40, 57, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(127, 19, 236, 0.15) 0%, rgba(10, 8, 13, 0) 70%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white selection:bg-primary/30">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Sticky Top Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-dark/80 backdrop-blur-md border-b border-white/5">
+<div class="flex items-center gap-2">
+<div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[24px]">rocket_launch</span>
+</div>
+<h2 class="text-white text-xl font-extrabold tracking-tighter">RI88</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-white/70 text-sm font-semibold hover:text-white transition-colors">Sign In</button>
+<button class="bg-primary hover:bg-primary/90 text-white text-sm font-bold px-4 py-2 rounded-full transition-all">Sign Up</button>
+</div>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1">
+<!-- Search Bar Section -->
+<div class="px-4 pt-6 pb-2">
+<label class="relative flex items-center group">
+<span class="material-symbols-outlined absolute left-4 text-white/40 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-[#1e1a26] border-none rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/30 focus:ring-2 focus:ring-primary/50 text-base" placeholder="Search 100+ Productivity Tools..." type="text"/>
+</label>
+</div>
+<!-- Hero Section -->
+<section class="relative px-4 py-12 overflow-hidden hero-gradient">
+<div class="flex flex-col items-center text-center relative z-10">
+<div class="mb-6 relative h-48 w-48 flex items-center justify-center">
+<!-- Abstract 3D Mascot Silhouette Simulation -->
+<div class="absolute inset-0 bg-primary/20 blur-[60px] rounded-full"></div>
+<img class="h-40 w-40 object-contain drop-shadow-[0_0_20px_rgba(127,19,236,0.5)]" data-alt="3D abstract mascot silhouette glowing purple" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATrNgJjy8v7UcsBxOP0li2SBkbAT3ajbF6KqVqzn0AvS0d7jUuAom-m-KsP2j1TlD7DTUIEu1iZhJPUShDAbwp9F3c2V-agoAMML0S7FK59y6wxh_NEW0taTKvZj9mazqnxFSA2N5mbGz8Glc8nQg9fMUdzFCF1RLqSreB3OmPkzY1l5scsQIMWAWd3t60BmFCJV_3nZiYvfVjg0HAORwHUGt9kSWQKeDIZRG0HPZXH4mfhiBKPbZWvGoOzubbuUYzuFpjPjDRh-A"/>
+</div>
+<h1 class="text-4xl font-black leading-tight tracking-tight mb-3">
+                        All-in-One <br/><span class="text-primary">Tools Portal</span>
+</h1>
+<p class="text-white/60 text-base max-w-[280px] mb-8 font-medium">
+                        Your ultimate digital workspace for daily productivity.
+                    </p>
+<div class="flex gap-3 w-full max-w-sm">
+<button class="flex-1 bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20">Explore Tools</button>
+<button class="flex-1 bg-white/5 border border-white/10 text-white font-bold py-4 rounded-xl backdrop-blur-sm">How it works</button>
+</div>
+</div>
+</section>
+<!-- Popular Tools Grid -->
+<section class="px-4 py-8">
+<div class="flex items-center justify-between mb-5">
+<h3 class="text-xl font-bold">Popular Tools</h3>
+<a class="text-primary text-sm font-semibold" href="#">See All</a>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-5 rounded-2xl flex flex-col gap-3 group hover:border-primary/50 transition-all">
+<div class="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">calculate</span>
+</div>
+<div>
+<h4 class="font-bold text-white mb-1">Calculators</h4>
+<p class="text-white/40 text-xs leading-relaxed">Fast &amp; precise calculations for finance and math.</p>
+</div>
+</div>
+<div class="glass-card p-5 rounded-2xl flex flex-col gap-3 group hover:border-primary/50 transition-all">
+<div class="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div>
+<h4 class="font-bold text-white mb-1">PDF Utilities</h4>
+<p class="text-white/40 text-xs leading-relaxed">Merge, convert, and compress files easily.</p>
+</div>
+</div>
+<div class="glass-card p-5 rounded-2xl flex flex-col gap-3 group hover:border-primary/50 transition-all">
+<div class="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">text_fields</span>
+</div>
+<div>
+<h4 class="font-bold text-white mb-1">Text Tools</h4>
+<p class="text-white/40 text-xs leading-relaxed">Case conversion, counting and analysis.</p>
+</div>
+</div>
+<div class="glass-card p-5 rounded-2xl flex flex-col gap-3 group hover:border-primary/50 transition-all">
+<div class="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">imagesmode</span>
+</div>
+<div>
+<h4 class="font-bold text-white mb-1">Image Lab</h4>
+<p class="text-white/40 text-xs leading-relaxed">Resize and optimize images in seconds.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Why RI88 Section -->
+<section class="px-4 py-12 bg-white/[0.02]">
+<h3 class="text-2xl font-bold mb-8 text-center">Why RI88?</h3>
+<div class="flex flex-col gap-6">
+<div class="flex items-start gap-4">
+<div class="shrink-0 w-12 h-12 bg-[#2a2233] border border-white/5 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">bolt</span>
+</div>
+<div>
+<h4 class="font-bold text-lg mb-1">Lightning Speed</h4>
+<p class="text-white/50 text-sm">Processed locally on your device for instant results without server lag.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="shrink-0 w-12 h-12 bg-[#2a2233] border border-white/5 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">shield_lock</span>
+</div>
+<div>
+<h4 class="font-bold text-lg mb-1">Privacy First</h4>
+<p class="text-white/50 text-sm">We don't store your data. Everything stays on your browser, secure and private.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="shrink-0 w-12 h-12 bg-[#2a2233] border border-white/5 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">window</span>
+</div>
+<div>
+<h4 class="font-bold text-lg mb-1">Multi-window Mode</h4>
+<p class="text-white/50 text-sm">Run multiple tools side-by-side in your personal digital workspace.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom CTA Banner -->
+<section class="m-4 mb-20">
+<div class="bg-primary rounded-3xl p-8 text-center relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<h3 class="text-2xl font-black mb-2">Ready to optimize?</h3>
+<p class="text-white/80 text-sm mb-6 max-w-[240px] mx-auto">Create a free account to save your workspace and custom presets.</p>
+<button class="bg-white text-primary font-black px-8 py-4 rounded-xl w-full shadow-xl">Get Started for Free</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Minimal Bottom Nav (iOS Style) -->
+<nav class="fixed bottom-0 w-full bg-background-dark/90 backdrop-blur-xl border-t border-white/5 flex justify-around items-center py-4 px-6 z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-bold">Tools</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40">
+<span class="material-symbols-outlined">history</span>
+<span class="text-[10px] font-bold">Recent</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</button>
+</nav>
+</div>
+</body></html>

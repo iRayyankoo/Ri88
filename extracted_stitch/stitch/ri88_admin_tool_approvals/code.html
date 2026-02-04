@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Admin Tool Approvals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a050e", // Deeper dark for premium feel
+                        "card-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(25, 16, 34, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(127, 19, 236, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                    R
+                </div>
+<div>
+<h1 class="text-xl font-bold tracking-tight">RI88 Admin</h1>
+<p class="text-xs text-slate-500 dark:text-primary/70 font-medium">Master Portal Management</p>
+</div>
+</div>
+<button class="size-10 flex items-center justify-center rounded-full bg-slate-200 dark:bg-card-dark text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-3 bg-white dark:bg-card-dark border-none rounded-xl focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-500 dark:placeholder:text-slate-500 shadow-sm" placeholder="Search tool submissions..." type="text"/>
+</div>
+<!-- Category Filters -->
+<div class="flex gap-2 mt-4 overflow-x-auto custom-scrollbar pb-2">
+<button class="flex shrink-0 items-center justify-center px-4 py-2 rounded-full bg-primary text-white text-xs font-semibold">
+                Pending (12)
+            </button>
+<button class="flex shrink-0 items-center justify-center px-4 py-2 rounded-full bg-slate-200 dark:bg-card-dark text-slate-600 dark:text-slate-300 text-xs font-medium">
+                AI Tools
+            </button>
+<button class="flex shrink-0 items-center justify-center px-4 py-2 rounded-full bg-slate-200 dark:bg-card-dark text-slate-600 dark:text-slate-300 text-xs font-medium">
+                Security
+            </button>
+<button class="flex shrink-0 items-center justify-center px-4 py-2 rounded-full bg-slate-200 dark:bg-card-dark text-slate-600 dark:text-slate-300 text-xs font-medium">
+                Analytics
+            </button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="px-4 pb-32">
+<div class="flex items-center justify-between mb-4 mt-2">
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Submission Queue</h2>
+<span class="text-xs font-medium text-primary">Sort: Newest</span>
+</div>
+<!-- Tool Cards List -->
+<div class="space-y-3">
+<!-- Card 1 -->
+<div class="p-4 bg-white dark:bg-card-dark rounded-xl shadow-sm border border-slate-100 dark:border-primary/10">
+<div class="flex gap-4 items-start">
+<div class="size-14 rounded-lg bg-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="NeuralFlow Pro tool icon abstract gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCKP46_3Jv_VFzN-YlP8x0VQjI43U9dsZlP456muM-Vgktt63mFoFzXYjaIZT82HMxUxTwpVtisr-2jLx1p9mtCeCuYHqGVV2KovNMqTeEXLO2LklEql74RybSQJsn1MHXoctizDNhaODHVs6yDJssMl0clutfo8LJwiYvP1YJGDlmllhyre4TmSchpZI8jmZT4fWvXQBmQwhHFo8snzh1CFvvu0p7hHAjLdjZgFHlvL7gKHiXKbnHAp5ZWvKZ21-VvBEqTcPKvLzE");'></div>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-base font-bold truncate">NeuralFlow Pro</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-1">by Alex Rivera</p>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-tight">AI Model</span>
+<span class="text-[10px] text-slate-400">2h ago</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="size-8 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</button>
+<button class="size-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">cancel</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="p-4 bg-white dark:bg-card-dark rounded-xl shadow-sm border border-slate-100 dark:border-primary/10 opacity-90">
+<div class="flex gap-4 items-start">
+<div class="size-14 rounded-lg bg-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="CyberGuard dashboard preview" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzNBYHAn9lb7rgU10VV6IZKENYM1gEXU_u2dKhzuXLJJx2lyFwOcogmaY_6V2es2hZZai2nD89eatd1F_bUtikYrqoO3bxfOtYSUdHPieTZKBgjabnpp69YooTEILSv0nmXp03G2I3V6MrKHMFAU2wzZBw2W4bvsXcaK6BDx0N-p1iFYxqBeTAAeUUjcc4Fswp-6BrDxUIZcT5NgcW4BXiWi4P2n1p8Pwf2n3rit93_mcfoozPKT-i3nOi6TWtM3oUHqt38udGQmA");'></div>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-base font-bold truncate">CyberGuard X</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-1">by Studio Zenith</p>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase tracking-tight">Security</span>
+<span class="text-[10px] text-slate-400">5h ago</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="size-8 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</button>
+<button class="size-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">cancel</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="p-4 bg-white dark:bg-card-dark rounded-xl shadow-sm border border-slate-100 dark:border-primary/10">
+<div class="flex gap-4 items-start">
+<div class="size-14 rounded-lg bg-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="DataVise analytics tool icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC2xWVU4cRdAH_gPAkRllTngVe49SNEap60Zf_ytHr8BMfPe74mfMh8Y1EDHkatgQNdTAgye1AZzUk4fEcBkWVtTABcVQIj-WLn1FtxUi1DE3JsjMQMxQIIkX1ljWA7UmyIpkLUDN7PGYvcfc_I-RZndQ1vJmD6eAjWpy4fw1iIG09St14Qd2Qcg2T6Ts7T6VWkHPMCBRbEDIyhpPTCrm3EzZTgqEgOzmbZdME_CBOBtayQ-Q-i76KY1j4UnJmYnV_h5kZ1kj8IW3c");'></div>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-base font-bold truncate">DataVise</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-1">by Liam Chen</p>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-orange-500/10 text-orange-500 text-[10px] font-bold uppercase tracking-tight">Analytics</span>
+<span class="text-[10px] text-slate-400">8h ago</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="size-8 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</button>
+<button class="size-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">cancel</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="p-4 bg-white dark:bg-card-dark rounded-xl shadow-sm border border-slate-100 dark:border-primary/10">
+<div class="flex gap-4 items-start">
+<div class="size-14 rounded-lg bg-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="SocialSync management app icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDooj9ecsoHz4nWjGnOCJKJ0maSePgUB4MLr6pRmjSvquie-ePTx0pcM0CDUE4ugSDcv_OBknfMZfYEUICv-TpQgANjIn2aylbCMNsPEkYm4Cmh_pg3XopSB3KZRRIsLqO3HsoFMWthZEAuI-l4gffHrwJoMwaBOCX8vaB503YkFNcFbHwQQNQ8rVJkQfBADd8_gHQjieNBIhkOLYhCz6fDPu1NLY68KeLMWKukEQFOyHb7LoAjDX3jQ6IfHGD8ynI95apa2Cc7YQA");'></div>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-base font-bold truncate">SocialSync</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-1">by Elena S.</p>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-pink-500/10 text-pink-500 text-[10px] font-bold uppercase tracking-tight">Social</span>
+<span class="text-[10px] text-slate-400">1d ago</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="size-8 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</button>
+<button class="size-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">cancel</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Glass Side-Panel (Simulated as Mobile Drawer) -->
+<div class="fixed bottom-0 left-0 right-0 z-40 glass-panel rounded-t-3xl border-t border-primary/30 h-[60vh] overflow-hidden shadow-2xl translate-y-0 transition-transform duration-300">
+<div class="w-12 h-1.5 bg-slate-400/30 rounded-full mx-auto mt-3 mb-6"></div>
+<div class="px-6 h-full overflow-y-auto pb-24 custom-scrollbar">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="size-12 rounded-lg bg-primary/40 p-2 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="NeuralFlow Pro large icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAx6kAFCgE49JrhugRv--txuLmK-SxVJVROsgKZ0OsHB370WNxdpi0uyI1dMVwYk5otPLC_zEWpcmVJI4DpoQ1QoN1jP3G1TipB6ODzXHivWpLd1kWca4TMhjTmRJIbRwHURSAfu0VeUMitZXmzU4KaFxo5_QAMeDenWh4FmEypFDV5WuyFLgjhrDgiy_IYdEdcZ2B-XgmIBOQ_jYI4qRpjyx9t4SK_GgunGnBhYe0LHj-2sHtco-8M1wpGECZOhSpwuqeZbsfB4oE");'></div>
+</div>
+<div>
+<h2 class="text-lg font-bold text-white leading-tight">NeuralFlow Pro</h2>
+<span class="text-xs text-primary font-semibold">Submissions Asset v2.4.0</span>
+</div>
+</div>
+<button class="text-slate-400">
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+<div class="space-y-6">
+<!-- Assets Section -->
+<section>
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Technical Assets</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="p-3 rounded-xl bg-white/5 border border-white/10">
+<div class="flex items-center gap-2 text-primary mb-1">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span class="text-[10px] font-bold uppercase">Source Repo</span>
+</div>
+<p class="text-xs text-slate-300 truncate font-mono">github.com/alexr/nf-pro</p>
+</div>
+<div class="p-3 rounded-xl bg-white/5 border border-white/10">
+<div class="flex items-center gap-2 text-blue-400 mb-1">
+<span class="material-symbols-outlined text-sm">api</span>
+<span class="text-[10px] font-bold uppercase">Endpoint</span>
+</div>
+<p class="text-xs text-slate-300 truncate font-mono">api.neuralflow.io/v1</p>
+</div>
+</div>
+</section>
+<!-- Description Section -->
+<section>
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Tool Description</h3>
+<p class="text-sm text-slate-300 leading-relaxed">
+                        NeuralFlow Pro is a state-of-the-art latency optimization layer for LLM deployments. 
+                        It reduces token generation time by 40% using proprietary caching mechanisms. 
+                        Targeted at enterprise-grade AI applications requiring high throughput.
+                    </p>
+</section>
+<!-- Screenshots Gallery -->
+<section>
+<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Visual Assets</h3>
+<div class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+<div class="shrink-0 size-32 rounded-lg bg-white/10 border border-white/10 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="Screenshot of NeuralFlow Pro dashboard" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_79lkvmdh7UdF38p4eyKzqbEqQ0xWv9kXpcsIJFavDP2wTT8G-EMtCFqQkOFPTuRf_NTeONwvva45aFQejc0EyKWaorxs7q-DbAJMK1-7qYPEnOZbYKhByVTLmLpBVvLeJK_rgaA7j3lZnBO6Tes1OQjH7TlvuGVZz1NdYT3Pno3PE4xp9aevRpMHmFEdxmXDVXTypYx3oaeFxdRAJFvAFsGK0Vq3bSHGxu74id5PwJF3osHTLRw6iiPiZZRbpqQylt3ndD86y3c");'></div>
+</div>
+<div class="shrink-0 size-32 rounded-lg bg-white/10 border border-white/10 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="Screenshot of NeuralFlow Pro API settings" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAon2BlwgglBWbRe32wPM9qRO6n4VpcIZMrEa_o4H_83dB87w1EtDvEmFgzBR-FG_ohm9gjuGJLhw5BX341zEQeEn96Oe1QyNJVJGqJgVcnM5RKqElNE_hH5EV2hFId58Xw9ieqNHrDW1tMXIyLzQ12ILee7JZCOqR0yGFCOmClz7uDn2yEBr1qsvkdLJ9NO1BV0b_FDdpYcG_RaIywTvOGveNcLdC8ORq2hPd5iCHSJZb9iJbCDFMRpLKc_jIIwJh8NwLotdRuxeI");'></div>
+</div>
+<div class="shrink-0 size-32 rounded-lg bg-white/10 border border-white/10 overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="Screenshot of NeuralFlow Pro performance charts" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDKeD3dNCCkFKtMdhIe7JXs01uAHvrD0YjLh0N0xtcY_rW-w3ir5lYpKNN-rxVDKi1DqZHYbePSUjqDrQmkkvsxjxzITMbGEP7LDsOx-duMcXmsZwhTsikzHyTJgkLqUbMr-pzw-vjRRPrZBA47BFA1bssxMoOvvqXzBAPOloNnF6SjaGL44pcvNOnHYvQnnAe6ksALkB-mIocinRYS33B2koXsmj2TVQw7nmaMkVfiqWBEC9Wa_l6CPYQ6b9dbevDqYwnuaG3mJjE");'></div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Sticky Bottom Actions in Drawer -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-background-dark/95 border-t border-white/5 flex gap-4">
+<button class="flex-1 py-4 bg-slate-800 text-white font-bold rounded-xl text-sm transition-colors active:bg-slate-700">
+                REJECT
+            </button>
+<button class="flex-1 py-4 bg-primary text-white font-bold rounded-xl text-sm shadow-lg shadow-primary/20 transition-transform active:scale-[0.98]">
+                APPROVE TOOL
+            </button>
+</div>
+</div>
+<!-- Main Navigation Bar (Bottom) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-card-dark border-t border-slate-100 dark:border-primary/10 px-6 py-3 pb-6">
+<div class="flex items-center justify-between max-w-md mx-auto">
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Portal</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-1">approval_delegation</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Approvals</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">category</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Categories</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Devs</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium uppercase tracking-tighter">Admin</span>
+</button>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Mobile AI Assistant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a070e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(48, 40, 57, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .workflow-line::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #7f13ec 0%, #302839 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden">
+<div class="relative flex h-screen w-full flex-col max-w-md mx-auto overflow-hidden">
+<!-- Top App Bar -->
+<header class="flex items-center bg-background-dark/80 backdrop-blur-md sticky top-0 z-10 p-4 justify-between border-b border-white/5">
+<div class="text-white flex size-10 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<div class="flex flex-col items-center">
+<h2 class="text-white text-sm font-bold leading-tight tracking-tight uppercase opacity-60">RI88 Tools</h2>
+<h1 class="text-white text-base font-bold leading-tight">AI Assistant</h1>
+</div>
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="User profile avatar circle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCzMI9cP8z78Gh-wJf5BCQVrTS39rH2fmkrch1ai78WqfEJSxMIH7V4LaA8c1hjzDVWBisQwerbicCa3A8ASzpoLzZRHBlEK-VFxQal-OXm8X6yPiar_hjbo2Q36E_6iEuKGiJ079kBUwqw-aaS76PFFOYxAC5w4buph4g4Z_o1Tg9p_MOgfJVeSnS3cbLdVrt_-0kzGsjHPow-oQZlnoWfqOK5_awy3JHJ8_z59tzuaIV_cXG0Y0m8cXrym-51g3gfhztpJq_qnI0')"></div>
+</div>
+</header>
+<!-- Conversational Area -->
+<main class="flex-1 overflow-y-auto p-4 space-y-6">
+<!-- AI Welcome Message -->
+<div class="flex items-start gap-3">
+<div class="bg-primary aspect-square rounded-full w-8 shrink-0 flex items-center justify-center shadow-[0_0_15px_rgba(127,19,236,0.4)]">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+</div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-[#ab9db9] text-[12px] font-medium tracking-wide">RI88 AI</p>
+<div class="text-base font-normal leading-relaxed max-w-[85%] rounded-2xl rounded-tl-none px-4 py-3 glass-panel text-white/90">
+                        Ready to automate. I've analyzed your recent logs. Should we run the quarterly audit or fetch today's performance data?
+                    </div>
+</div>
+</div>
+<!-- Smart Suggestions Chips -->
+<div class="flex gap-2 py-2 overflow-x-auto no-scrollbar">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-panel px-5 border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-lg">description</span>
+<p class="text-white text-sm font-medium">Daily Report</p>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-panel px-5 border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-lg">security</span>
+<p class="text-white text-sm font-medium">Audit Security</p>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-panel px-5 border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-lg">database</span>
+<p class="text-white text-sm font-medium">Clean DB</p>
+</button>
+</div>
+<!-- User Response Placeholder -->
+<div class="flex items-start gap-3 justify-end">
+<div class="flex flex-col gap-1 items-end">
+<p class="text-[#ab9db9] text-[12px] font-medium tracking-wide">You</p>
+<div class="text-base font-normal leading-relaxed rounded-2xl rounded-tr-none px-4 py-3 bg-primary text-white">
+                        Analyze trends and export to PDF.
+                    </div>
+</div>
+</div>
+<!-- Workflow Proposed -->
+<div class="flex items-start gap-3">
+<div class="bg-primary aspect-square rounded-full w-8 shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+</div>
+<div class="flex flex-1 flex-col gap-3">
+<p class="text-[#ab9db9] text-[12px] font-medium tracking-wide">RI88 AI</p>
+<div class="text-base font-normal leading-relaxed rounded-2xl rounded-tl-none px-4 py-4 glass-panel text-white/90 border-l-4 border-l-primary">
+<p class="mb-4">Proposed Workflow: <span class="text-primary font-semibold">"Analytics Insight Chain"</span></p>
+<div class="space-y-6 relative">
+<!-- Step 1 -->
+<div class="flex items-start gap-4 relative z-10">
+<div class="bg-[#1e142b] size-10 rounded-lg flex items-center justify-center border border-white/5 shrink-0">
+<span class="material-symbols-outlined text-primary">cloud_download</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-semibold">Fetch Data</p>
+<p class="text-white/50 text-xs">RI88 Portal Connector</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex items-start gap-4 relative z-10">
+<div class="bg-[#1e142b] size-10 rounded-lg flex items-center justify-center border border-white/5 shrink-0">
+<span class="material-symbols-outlined text-primary">monitoring</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-semibold">Analyze Trends</p>
+<p class="text-white/50 text-xs">AnalyticsEngine v4</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex items-start gap-4 relative z-10">
+<div class="bg-[#1e142b] size-10 rounded-lg flex items-center justify-center border border-white/5 shrink-0">
+<span class="material-symbols-outlined text-primary">picture_as_pdf</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-semibold">Export to PDF</p>
+<p class="text-white/50 text-xs">PDFGen Service</p>
+</div>
+</div>
+<!-- Connecting Line -->
+<div class="absolute left-5 top-5 w-[2px] h-[calc(100%-20px)] bg-primary/20 -z-0"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions -->
+<div class="bg-background-dark/95 backdrop-blur-xl p-4 pt-2 space-y-4 border-t border-white/5">
+<!-- Voice/Text Input Bar -->
+<div class="flex items-center gap-3">
+<div class="flex-1 relative flex items-center">
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-primary/50 text-sm" placeholder="Type automation needs..." type="text"/>
+<div class="absolute right-2 flex items-center gap-2">
+<button class="p-1.5 text-white/50 hover:text-white">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+</button>
+<button class="p-1.5 text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Execute Now Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 shadow-[0_4px_20px_rgba(127,19,236,0.4)] transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">play_arrow</span>
+<span>EXECUTE NOW</span>
+</button>
+<!-- Bottom Safe Area Indicator -->
+<div class="h-4"></div>
+</div>
+</div>
+</body></html>

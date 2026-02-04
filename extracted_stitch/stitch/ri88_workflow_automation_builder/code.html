@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Workflow Automation Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a0a0a",
+                        "node-bg": "rgba(30, 20, 45, 0.6)",
+                        "accent-cyan": "#00f5ff",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .workflow-grid {
+            background-image: radial-gradient(circle, #2a1b3d 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-node {
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(127, 19, 236, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(127, 19, 236, 0.6);
+        }
+        .connection-line {
+            stroke: #7f13ec;
+            stroke-width: 2;
+            fill: none;
+            filter: drop-shadow(0 0 4px #7f13ec);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between px-4 pt-6 pb-4 bg-background-light dark:bg-background-dark border-b border-primary/10">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h1 class="text-sm font-bold tracking-tight">RI88 Workflow</h1>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest">v2.4 Automation</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 text-xs font-bold text-slate-400 uppercase">Save</button>
+<button class="bg-primary text-white size-10 rounded-full flex items-center justify-center neon-glow">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Run Workflow Button Area -->
+<div class="px-4 py-4">
+<button class="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-xl flex items-center justify-center gap-3 font-bold text-lg shadow-[0_0_20px_rgba(127,19,236,0.5)] transition-all">
+<span class="material-symbols-outlined fill-1">play_arrow</span>
+<span>Run Workflow</span>
+</button>
+</div>
+<!-- Main Workflow Canvas -->
+<main class="flex-1 relative overflow-hidden workflow-grid mx-4 mb-4 rounded-xl border border-primary/10 bg-slate-900/50">
+<!-- SVG Connections Layer -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none">
+<!-- Connection 1 to 2 -->
+<path class="connection-line" d="M 180 120 C 180 150, 180 150, 180 180"></path>
+<!-- Connection 2 to 3 -->
+<path class="connection-line" d="M 180 280 C 180 310, 180 310, 180 340"></path>
+<!-- Port Dots -->
+<circle cx="180" cy="120" fill="#7f13ec" r="4"></circle>
+<circle cx="180" cy="180" fill="#00f5ff" r="4"></circle>
+<circle cx="180" cy="280" fill="#7f13ec" r="4"></circle>
+<circle cx="180" cy="340" fill="#00f5ff" r="4"></circle>
+</svg>
+<!-- Node 1: Input -->
+<div class="absolute top-8 left-1/2 -translate-x-1/2 w-[85%] glass-node rounded-xl p-4 flex items-center gap-4 bg-node-bg">
+<div class="size-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1">
+<h3 class="text-sm font-bold">PDF to Text</h3>
+<p class="text-[11px] text-slate-400">Trigger: File Upload</p>
+</div>
+<div class="flex flex-col gap-1 items-end">
+<span class="text-[10px] text-accent-cyan font-bold px-2 py-0.5 rounded-full bg-accent-cyan/10">Active</span>
+<span class="material-symbols-outlined text-slate-500 text-sm">more_vert</span>
+</div>
+</div>
+<!-- Node 2: AI Processor -->
+<div class="absolute top-[180px] left-1/2 -translate-x-1/2 w-[85%] glass-node rounded-xl p-4 flex items-center gap-4 bg-node-bg border-l-4 border-l-primary">
+<div class="size-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div class="flex-1">
+<h3 class="text-sm font-bold">AI Summarizer</h3>
+<p class="text-[11px] text-slate-400">Model: GPT-4o-Turbo</p>
+</div>
+<div class="flex flex-col gap-1 items-end">
+<span class="text-[10px] text-primary font-bold px-2 py-0.5 rounded-full bg-primary/10">Processing</span>
+<span class="material-symbols-outlined text-slate-500 text-sm">settings</span>
+</div>
+</div>
+<!-- Node 3: Output -->
+<div class="absolute top-[340px] left-1/2 -translate-x-1/2 w-[85%] glass-node rounded-xl p-4 flex items-center gap-4 bg-node-bg">
+<div class="size-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">translate</span>
+</div>
+<div class="flex-1">
+<h3 class="text-sm font-bold">Translator</h3>
+<p class="text-[11px] text-slate-400">Target: Multi-Language</p>
+</div>
+<div class="flex flex-col gap-1 items-end">
+<span class="text-[10px] text-slate-500 font-bold px-2 py-0.5 rounded-full bg-slate-500/10">Pending</span>
+<span class="material-symbols-outlined text-slate-500 text-sm">more_vert</span>
+</div>
+</div>
+<!-- Zoom/Controls -->
+<div class="absolute bottom-6 left-6 flex flex-col gap-2">
+<button class="size-10 glass-node rounded-lg flex items-center justify-center text-white bg-node-bg">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="size-10 glass-node rounded-lg flex items-center justify-center text-white bg-node-bg">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<div class="absolute bottom-6 right-6">
+<button class="size-12 rounded-full bg-primary text-white flex items-center justify-center neon-glow">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+</main>
+<!-- Bottom Sheet Indicator (Mockup) -->
+<div class="bg-background-light dark:bg-background-dark p-4 pt-2 border-t border-primary/10">
+<div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-4"></div>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Toolbox Library</h2>
+<span class="text-xs text-primary font-medium">View All</span>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-6 no-scrollbar">
+<!-- Tool Item 1 -->
+<div class="min-w-[100px] flex flex-col items-center gap-2">
+<div class="size-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">database</span>
+</div>
+<span class="text-[10px] font-medium text-center">SQL Sync</span>
+</div>
+<!-- Tool Item 2 -->
+<div class="min-w-[100px] flex flex-col items-center gap-2">
+<div class="size-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">webhook</span>
+</div>
+<span class="text-[10px] font-medium text-center">Webhook</span>
+</div>
+<!-- Tool Item 3 -->
+<div class="min-w-[100px] flex flex-col items-center gap-2">
+<div class="size-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<span class="text-[10px] font-medium text-center">Email Notify</span>
+</div>
+<!-- Tool Item 4 -->
+<div class="min-w-[100px] flex flex-col items-center gap-2">
+<div class="size-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">data_object</span>
+</div>
+<span class="text-[10px] font-medium text-center">JSON Parser</span>
+</div>
+</div>
+</div>
+<!-- UI Background Elements (Abstract) -->
+<div class="fixed inset-0 pointer-events-none -z-10 opacity-20">
+<div class="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-primary blur-[120px] rounded-full"></div>
+<div class="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-accent-cyan blur-[120px] rounded-full"></div>
+</div>
+</body></html>

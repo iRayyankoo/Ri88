@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Mobile Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "accent-cyan": "#00f2ff",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a060f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(48, 40, 57, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(127, 19, 236, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<!-- Background Accents -->
+<div class="absolute top-[-10%] left-[-10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-accent-cyan/10 rounded-full blur-[100px]"></div>
+<div class="relative w-full max-w-[400px] flex flex-col items-center">
+<!-- Logo Area -->
+<div class="mb-8 flex flex-col items-center">
+<div class="w-20 h-20 bg-primary rounded-xl flex items-center justify-center shadow-lg mb-4" data-alt="RI88 corporate logo showing stylized letters">
+<span class="material-symbols-outlined text-white text-5xl">rocket_launch</span>
+</div>
+<h2 class="text-white text-3xl font-bold tracking-tight">RI88 <span class="text-primary">Portal</span></h2>
+</div>
+<!-- Glassmorphism Login Card -->
+<div class="glass-panel w-full rounded-xl p-8 shadow-2xl">
+<div class="text-center mb-8">
+<h1 class="text-white text-2xl font-bold mb-2">Welcome Back</h1>
+<p class="text-gray-400 text-sm">Secure access to your RI88 tools</p>
+</div>
+<!-- Social Logins -->
+<div class="flex justify-between gap-3 mb-8">
+<button class="flex-1 bg-[#211c27] border border-white/5 hover:border-primary/50 transition-all rounded-lg py-3 flex flex-col items-center gap-1 group">
+<div class="text-white group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">google</span>
+</div>
+<span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Google</span>
+</button>
+<button class="flex-1 bg-[#211c27] border border-white/5 hover:border-primary/50 transition-all rounded-lg py-3 flex flex-col items-center gap-1 group">
+<div class="text-white group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">link</span>
+</div>
+<span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">LinkedIn</span>
+</button>
+<button class="flex-1 bg-[#211c27] border border-white/5 hover:border-primary/50 transition-all rounded-lg py-3 flex flex-col items-center gap-1 group">
+<div class="text-white group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">code</span>
+</div>
+<span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">GitHub</span>
+</button>
+</div>
+<div class="relative flex items-center mb-8">
+<div class="flex-grow border-t border-white/10"></div>
+<span class="flex-shrink mx-4 text-gray-500 text-xs uppercase tracking-widest">or email</span>
+<div class="flex-grow border-t border-white/10"></div>
+</div>
+<!-- Credentials Form -->
+<div class="space-y-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-gray-300 text-xs font-semibold uppercase tracking-wider pl-1">Identifier</label>
+<div class="flex w-full items-stretch rounded-lg overflow-hidden border border-white/10 focus-within:border-primary bg-background-dark/50 transition-all">
+<input class="form-input flex w-full border-none bg-transparent text-white placeholder:text-gray-600 p-4 text-sm outline-none focus:ring-0" placeholder="Email or Username" type="text"/>
+<div class="flex items-center pr-4 text-gray-500">
+<span class="material-symbols-outlined text-xl">alternate_email</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center px-1">
+<label class="text-gray-300 text-xs font-semibold uppercase tracking-wider">Password</label>
+<a class="text-primary text-[10px] font-bold uppercase hover:text-accent-cyan transition-colors" href="#">Forgot?</a>
+</div>
+<div class="flex w-full items-stretch rounded-lg overflow-hidden border border-white/10 focus-within:border-primary bg-background-dark/50 transition-all">
+<input class="form-input flex w-full border-none bg-transparent text-white placeholder:text-gray-600 p-4 text-sm outline-none focus:ring-0" placeholder="••••••••" type="password"/>
+<button class="flex items-center pr-4 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-4">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-lg shadow-lg glow-effect transition-all flex items-center justify-center gap-2">
+<span>Sign In</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="mt-8 text-center">
+<p class="text-gray-400 text-sm">
+                New to the portal? 
+                <a class="text-accent-cyan font-semibold hover:underline decoration-accent-cyan/30 underline-offset-4" href="#">Create an account</a>
+</p>
+</div>
+<!-- Versioning for app feel -->
+<div class="mt-12 text-gray-600 text-[10px] uppercase tracking-[0.2em] font-medium">
+            v2.4.0 • Enterprise Edition
+        </div>
+</div>
+</body></html>

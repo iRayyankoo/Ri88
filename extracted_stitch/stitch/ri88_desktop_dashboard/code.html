@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Desktop Dashboard - Mobile View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a0a0a", // Deep dark for premium feel
+                        "surface-dark": "#16111d",
+                        "border-dark": "#2d2438",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-header {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(127, 19, 236, 0.2);
+        }
+        .premium-card {
+            background: linear-gradient(145deg, #1c1526, #14101b);
+            border: 1px solid #2d2438;
+        }
+        .glow-accent {
+            box-shadow: 0 0 15px rgba(127, 19, 236, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 glass-header">
+<div class="flex items-center justify-between p-4 h-16">
+<div class="flex items-center gap-3">
+<div class="size-9 bg-primary rounded-lg flex items-center justify-center glow-accent">
+<span class="material-symbols-outlined text-white text-xl">terminal</span>
+</div>
+<h1 class="text-white text-xl font-bold tracking-tight">RI88 <span class="text-primary">Tools</span></h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="relative">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<span class="absolute top-2 right-2 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary border border-background-dark"></span>
+</span>
+</div>
+<div class="size-8 rounded-full border-2 border-primary/30 overflow-hidden ml-1">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="User profile avatar circle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzri2iYD6H9Jqv1S-bZNJNktOhhAke-NsQP34A4Mz6jtahXKS_zCNvVitAwsHY8DdXkLMmfvm_rJQ5NYCJkSCFZ3ISsVVv7SjZbVt-9nPQ5z0RPY5OsMLi5UFPiO56yvimrMWhGmwEjbT3Xv2H_Af-Nifypm39u4wBYlHpD2_yTCkft4Hnoa1JNOO0KRr1ciPr-H3LExzE9-bvJRGrR_E4sQrPEIMNTWk_F3Aht9M1mO8H5yDR0YQEbXDOt7mwZsB3KRM_UYrUaWs"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-md mx-auto px-4 pt-4">
+<!-- Hero Banner Section -->
+<div class="@container mb-6">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-[#3c0970] p-6 shadow-2xl">
+<!-- Abstract Pattern Overlay -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+<div class="relative z-10 flex flex-col gap-4">
+<div>
+<p class="text-white/80 text-sm font-medium mb-1">Welcome back, Alex</p>
+<h2 class="text-white text-2xl font-bold leading-tight">Your Dashboard is ready.</h2>
+</div>
+<div class="flex gap-2">
+<button class="bg-white text-primary px-4 py-2 rounded-lg text-sm font-bold shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+                            Launch Tool
+                        </button>
+</div>
+</div>
+<!-- Decorative Graphic -->
+<div class="absolute -right-4 -bottom-4 opacity-20">
+<span class="material-symbols-outlined text-white text-[120px]">analytics</span>
+</div>
+</div>
+</div>
+<!-- Quick Stats -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="premium-card rounded-xl p-5 flex flex-col gap-1">
+<div class="flex items-center justify-between mb-2">
+<span class="text-primary material-symbols-outlined">bolt</span>
+<span class="text-green-500 text-xs font-bold">+12%</span>
+</div>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Active Tasks</p>
+<p class="text-white text-2xl font-bold">14</p>
+</div>
+<div class="premium-card rounded-xl p-5 flex flex-col gap-1">
+<div class="flex items-center justify-between mb-2">
+<span class="text-primary material-symbols-outlined">star</span>
+<span class="text-slate-400 text-xs font-bold">VIP</span>
+</div>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Points</p>
+<p class="text-white text-2xl font-bold">4.2k</p>
+</div>
+</div>
+<!-- Top Tools Grid -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="text-white text-lg font-bold">Top Tools</h3>
+<button class="text-primary text-sm font-semibold">View All</button>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="premium-card rounded-xl p-4 flex flex-col gap-3 group active:scale-95 transition-transform">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined">data_object</span>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">Data Parser</h4>
+<p class="text-slate-500 text-xs leading-tight">Raw log processing</p>
+</div>
+</div>
+<div class="premium-card rounded-xl p-4 flex flex-col gap-3 group active:scale-95 transition-transform">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">Validator</h4>
+<p class="text-slate-500 text-xs leading-tight">Integrity check</p>
+</div>
+</div>
+<div class="premium-card rounded-xl p-4 flex flex-col gap-3 group active:scale-95 transition-transform">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined">api</span>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">API Manager</h4>
+<p class="text-slate-500 text-xs leading-tight">Key management</p>
+</div>
+</div>
+<div class="premium-card rounded-xl p-4 flex flex-col gap-3 group active:scale-95 transition-transform">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined">query_stats</span>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">Scraper</h4>
+<p class="text-slate-500 text-xs leading-tight">Extract data</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity -->
+<div class="mb-4">
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="text-white text-lg font-bold">Recent Activity</h3>
+</div>
+<div class="flex flex-col gap-2">
+<div class="premium-card rounded-lg p-3 flex items-center gap-4">
+<div class="size-2 rounded-full bg-green-500"></div>
+<div class="flex-1">
+<p class="text-white text-sm font-medium">Log Parser Completed</p>
+<p class="text-slate-500 text-xs">2 minutes ago</p>
+</div>
+<span class="material-symbols-outlined text-slate-600 text-sm">chevron_right</span>
+</div>
+<div class="premium-card rounded-lg p-3 flex items-center gap-4">
+<div class="size-2 rounded-full bg-primary"></div>
+<div class="flex-1">
+<p class="text-white text-sm font-medium">API Key Rotated</p>
+<p class="text-slate-500 text-xs">45 minutes ago</p>
+</div>
+<span class="material-symbols-outlined text-slate-600 text-sm">chevron_right</span>
+</div>
+<div class="premium-card rounded-lg p-3 flex items-center gap-4">
+<div class="size-2 rounded-full bg-slate-600"></div>
+<div class="flex-1">
+<p class="text-white text-sm font-medium">System Update</p>
+<p class="text-slate-500 text-xs">2 hours ago</p>
+</div>
+<span class="material-symbols-outlined text-slate-600 text-sm">chevron_right</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-background-dark/95 backdrop-blur-md border-t border-border-dark px-6 py-3">
+<div class="flex items-center justify-between max-w-md mx-auto">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-bold">Tools</span>
+</button>
+<div class="-mt-8">
+<button class="size-14 rounded-full bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/40 border-4 border-background-dark">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-[10px] font-bold">Stats</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold">Settings</span>
+</button>
+</div>
+</nav>
+</body></html>

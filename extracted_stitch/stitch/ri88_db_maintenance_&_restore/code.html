@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 DB Maintenance &amp; Restore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "accent-cyan": "#00f5ff",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#121212",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .terminal-shadow {
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10">
+<div class="flex items-center justify-between p-4 max-w-md mx-auto">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex flex-col items-center">
+<h1 class="text-sm font-bold tracking-tight">RI88 DB ADMIN</h1>
+<div class="flex items-center gap-1.5">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-[10px] uppercase font-semibold text-green-500 tracking-wider">System Live</span>
+</div>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors text-primary">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto p-4 space-y-6 pb-32">
+<!-- Stats Summary -->
+<div class="grid grid-cols-2 gap-3">
+<div class="glass p-4 rounded-xl">
+<p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Database Size</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold">4.2</span>
+<span class="text-sm text-slate-400">GB</span>
+</div>
+<div class="mt-2 h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4 rounded-full"></div>
+</div>
+</div>
+<div class="glass p-4 rounded-xl">
+<p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Conns</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold">128</span>
+<span class="text-xs text-green-400 font-bold ml-1">↑ 12%</span>
+</div>
+<div class="mt-2 h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-accent-cyan w-1/2 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Optimization Section -->
+<section>
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-lg font-bold">Deep Maintenance</h2>
+<span class="text-xs text-slate-500">Scheduled: 04:00 AM</span>
+</div>
+<div class="glass p-5 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 size-24 bg-primary/10 rounded-full blur-2xl"></div>
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<h3 class="font-bold text-white">Full Cache Purge</h3>
+<p class="text-sm text-slate-400 leading-relaxed">Clears temporary session logs and redundant query caches.</p>
+<p class="text-[10px] font-mono text-primary uppercase mt-2 font-bold">Last run: 2h 14m ago</p>
+</div>
+<div class="p-3 bg-primary/20 rounded-xl text-primary">
+<span class="material-symbols-outlined">auto_fix_high</span>
+</div>
+</div>
+<button class="w-full mt-5 bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+                    Run Optimization
+                </button>
+</div>
+</section>
+<!-- Restore Point Selection -->
+<section>
+<h2 class="text-lg font-bold mb-3">Restore Point Snapshot</h2>
+<div class="space-y-2">
+<!-- Active Point -->
+<div class="glass p-4 rounded-xl border-l-4 border-primary bg-primary/5 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">history</span>
+</div>
+<div>
+<p class="text-sm font-bold">Latest Snapshot (Auto)</p>
+<p class="text-[11px] text-slate-400 font-mono">2023-11-24 14:20:01</p>
+</div>
+</div>
+<button class="text-xs font-bold text-primary uppercase px-3 py-1.5 rounded-lg border border-primary/30">Restore</button>
+</div>
+<!-- Previous Points -->
+<div class="glass p-4 rounded-xl flex items-center justify-between opacity-80">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-slate-500/10 rounded-lg text-slate-400">
+<span class="material-symbols-outlined">settings_backup_restore</span>
+</div>
+<div>
+<p class="text-sm font-bold">System Pre-Update</p>
+<p class="text-[11px] text-slate-400 font-mono">2023-11-23 09:15:44</p>
+</div>
+</div>
+<button class="text-xs font-bold text-slate-400 uppercase px-3 py-1.5 rounded-lg border border-white/5">Restore</button>
+</div>
+<div class="glass p-4 rounded-xl flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-slate-500/10 rounded-lg text-slate-400">
+<span class="material-symbols-outlined">cloud_done</span>
+</div>
+<div>
+<p class="text-sm font-bold">Weekly Cloud Sync</p>
+<p class="text-[11px] text-slate-400 font-mono">2023-11-20 00:00:12</p>
+</div>
+</div>
+<button class="text-xs font-bold text-slate-400 uppercase px-3 py-1.5 rounded-lg border border-white/5">Restore</button>
+</div>
+</div>
+</section>
+<!-- Live Operations Log (Terminal style) -->
+<section>
+<div class="flex items-center justify-between mb-2">
+<h2 class="text-sm font-bold text-slate-500 uppercase tracking-tighter">Live Activity Log</h2>
+<div class="flex gap-2">
+<span class="size-2 bg-accent-cyan rounded-full animate-pulse"></span>
+<span class="size-2 bg-primary rounded-full"></span>
+</div>
+</div>
+<div class="bg-black/80 rounded-xl p-4 font-mono text-[10px] leading-relaxed overflow-hidden terminal-shadow border border-white/5 h-48 overflow-y-auto">
+<p class="text-green-400"> [INFO] RI88 Maintenance Kernel v2.4.0 started.</p>
+<p class="text-slate-400"> [14:42:01] Scanning tables for fragmentation...</p>
+<p class="text-slate-400"> [14:42:05] Found 12 fragmented indexes in 'transactions_log'</p>
+<p class="text-accent-cyan"> [14:42:10] Executing OPTIMIZE TABLE `order_items`;</p>
+<p class="text-accent-cyan"> [14:42:12] Executing OPTIMIZE TABLE `user_sessions`;</p>
+<p class="text-primary"> [14:42:15] Warning: Table 'large_blobs' requires manual reindex.</p>
+<p class="text-slate-400"> [14:43:00] Purging temporary buffer cache...</p>
+<p class="text-green-400"> [14:43:05] Buffer cleared. 420MB freed.</p>
+<p class="text-slate-100 animate-pulse"> [14:43:08] _</p>
+</div>
+</section>
+</main>
+<!-- Confirm Restore Modal Overlay (Simulated) -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-6">
+<div class="w-full max-w-sm glass rounded-2xl p-6 shadow-2xl border border-red-500/30">
+<div class="flex justify-center mb-4">
+<div class="size-16 rounded-full bg-red-500/20 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined text-4xl">warning</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-center mb-2">Critical Restore</h3>
+<p class="text-slate-400 text-sm text-center mb-6 leading-relaxed">
+                This action will <span class="text-red-400 font-bold uppercase underline">overwrite all current production data</span>. This process cannot be undone.
+            </p>
+<div class="space-y-4">
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Type 'RESTORE' to confirm</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center font-bold tracking-widest focus:border-primary focus:ring-1 focus:ring-primary outline-none text-white" placeholder="RESTORE" type="text"/>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl transition-colors">
+                        Cancel
+                    </button>
+<button class="flex-[2] bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-red-900/20">
+                        Confirm &amp; Restore
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Tab Bar (iOS style) -->
+<nav class="fixed bottom-0 inset-x-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-slate-200 dark:border-white/10 px-6 pb-8 pt-2">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Overview</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">database</span>
+<span class="text-[10px] font-medium">DB Maint</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">security</span>
+<span class="text-[10px] font-medium">Access</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</div>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Web System Changelog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a0a0a",
+                        "glass": "rgba(255, 255, 255, 0.03)",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(30, 20, 45, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-gray-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-white/5">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<div class="flex size-10 items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined">shield_person</span>
+</div>
+<div>
+<h1 class="text-sm font-bold tracking-tight text-primary">RI88 PORTAL</h1>
+<h2 class="text-lg font-bold leading-tight">System Changelog</h2>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex size-10 items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="flex gap-2 p-4 pt-0 overflow-x-auto custom-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 text-white shadow-lg shadow-primary/20">
+<span class="text-sm font-semibold leading-normal">All</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-white/5 px-4 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+<span class="size-2 rounded-full bg-primary"></span>
+<span class="text-sm font-medium leading-normal">New</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-white/5 px-4 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+<span class="size-2 rounded-full bg-cyan-400"></span>
+<span class="text-sm font-medium leading-normal">Improved</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-white/5 px-4 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+<span class="size-2 rounded-full bg-orange-500"></span>
+<span class="text-sm font-medium leading-normal">Fixed</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-white/5 px-4 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span class="text-sm font-medium leading-normal">Sort</span>
+</button>
+</div>
+</header>
+<main class="p-4 space-y-8 pb-20 relative">
+<!-- Date Marker -->
+<div class="flex items-center gap-4 mb-2">
+<span class="text-xs font-bold uppercase tracking-widest text-primary/80">October 2023</span>
+<div class="h-px grow bg-gradient-to-r from-primary/30 to-transparent"></div>
+</div>
+<!-- Timeline Card 1 -->
+<div class="relative pl-6 before:absolute before:left-[11px] before:top-2 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-primary/50 before:to-transparent">
+<!-- Timeline Dot -->
+<div class="absolute left-0 top-1.5 z-10 size-6 rounded-full border-4 border-background-dark bg-primary shadow-[0_0_15px_rgba(127,19,236,0.4)]"></div>
+<div class="glass-card rounded-xl p-5 space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<span class="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-bold text-primary border border-primary/30 uppercase tracking-tighter">v2.4.1 Release</span>
+<h3 class="mt-2 text-xl font-bold tracking-tight">System Core Stability</h3>
+</div>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Oct 24, 2023</span>
+</div>
+<div class="space-y-4">
+<!-- Section: New -->
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-primary"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-primary">New Features</span>
+</div>
+<ul class="space-y-2 pl-4 border-l border-white/5">
+<li class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+<span class="font-semibold text-gray-900 dark:text-white">API Monitoring:</span> Integrated real-time monitoring for all RI88 portal endpoints.
+                            </li>
+<li class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+<span class="font-semibold text-gray-900 dark:text-white">Activity Logs:</span> New centralized dashboard for admin tracking.
+                            </li>
+</ul>
+</div>
+<!-- Section: Improved -->
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-cyan-400"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Improved</span>
+</div>
+<ul class="space-y-2 pl-4 border-l border-white/5">
+<li class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Dashboard loading speed optimized by <span class="text-cyan-400 font-bold">40%</span>.
+                            </li>
+</ul>
+</div>
+</div>
+<div class="pt-4 border-t border-white/5">
+<button class="w-full py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                        View Detailed Documentation
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Timeline Card 2 -->
+<div class="relative pl-6 before:absolute before:left-[11px] before:top-2 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-primary/50 before:to-primary/5">
+<!-- Timeline Dot -->
+<div class="absolute left-0 top-1.5 z-10 size-6 rounded-full border-4 border-background-dark bg-primary/40 shadow-[0_0_10px_rgba(127,19,236,0.2)]"></div>
+<div class="glass-card rounded-xl p-5 space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<span class="inline-flex items-center rounded-full bg-gray-500/20 px-2.5 py-0.5 text-xs font-bold text-gray-400 border border-gray-500/30 uppercase tracking-tighter">v2.4.0 Patch</span>
+<h3 class="mt-2 text-lg font-bold tracking-tight">Safari Compatibility Fix</h3>
+</div>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Oct 12, 2023</span>
+</div>
+<div class="space-y-4">
+<!-- Section: Fixed -->
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-orange-500"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-orange-500">Bug Fixes</span>
+</div>
+<ul class="space-y-2 pl-4 border-l border-white/5">
+<li class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Fixed critical session timeout bug occurring on <span class="text-orange-500">Mobile Safari</span> browsers.
+                            </li>
+<li class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Resolved UI misalignment on the 'Settings' tab for iPhone 14 Pro users.
+                            </li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Date Marker (Previous Month) -->
+<div class="flex items-center gap-4 mt-12 mb-2">
+<span class="text-xs font-bold uppercase tracking-widest text-gray-500">September 2023</span>
+<div class="h-px grow bg-gray-200 dark:bg-white/5"></div>
+</div>
+<!-- Timeline Card 3 -->
+<div class="relative pl-6">
+<div class="absolute left-0 top-1.5 z-10 size-6 rounded-full border-4 border-background-dark bg-gray-600"></div>
+<div class="glass-card rounded-xl p-5 space-y-4">
+<div class="flex items-start justify-between">
+<div>
+<span class="inline-flex items-center rounded-full bg-gray-500/20 px-2.5 py-0.5 text-xs font-bold text-gray-400 border border-gray-500/30 uppercase tracking-tighter">v2.3.9 Stable</span>
+<h3 class="mt-2 text-lg font-bold tracking-tight">Security Hardening</h3>
+</div>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Sep 28, 2023</span>
+</div>
+<div class="space-y-4 text-center py-4 bg-primary/5 rounded-lg border border-primary/10">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">verified_user</span>
+<p class="text-sm font-medium text-gray-300">Biometric Authentication Security Layer Updated</p>
+<p class="text-xs text-gray-500">Official security patch compliant with RI88 Global Standards.</p>
+</div>
+</div>
+</div>
+<!-- Floating Action Button for Support -->
+<button class="fixed bottom-6 right-6 size-14 rounded-full bg-primary text-white shadow-2xl shadow-primary/40 flex items-center justify-center z-50">
+<span class="material-symbols-outlined text-2xl">support_agent</span>
+</button>
+<!-- Bottom Navigation Spacer -->
+<div class="h-10"></div>
+</main>
+<!-- Bottom Tab Bar (iOS Style) -->
+<nav class="fixed bottom-0 inset-x-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-gray-200 dark:border-white/5 px-6 pb-6 pt-2 z-50">
+<div class="flex items-center justify-between max-w-md mx-auto">
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium">Reports</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-primary">history</span>
+<span class="text-[10px] font-bold">Changelog</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Portal</span>
+</div>
+</div>
+</nav>
+<!-- Decorative Gradients -->
+<div class="fixed top-[-10%] right-[-10%] size-96 bg-primary/10 blur-[120px] pointer-events-none rounded-full"></div>
+<div class="fixed bottom-[-5%] left-[-10%] size-80 bg-cyan-500/5 blur-[100px] pointer-events-none rounded-full"></div>
+</body></html>

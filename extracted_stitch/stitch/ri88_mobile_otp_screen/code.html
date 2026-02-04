@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Mobile OTP Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a0a0a",
+                        "cyan-accent": "#00f2ff",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-purple {
+            box-shadow: 0 0 40px rgba(127, 19, 236, 0.3);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+        }
+        .bg-gradient-mesh {
+            background-color: #0a0a0a;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(127, 19, 236, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.08) 0px, transparent 50%);
+        }
+        /* Custom Keypad spacing for iOS feel */
+        .keypad-button {
+            transition: background-color 0.2s;
+        }
+        .keypad-button:active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased overflow-hidden">
+<!-- Main Background Wrapper -->
+<div class="relative flex h-screen w-full flex-col bg-gradient-mesh overflow-hidden">
+<!-- Status Bar & Top Navigation Area -->
+<div class="flex items-center justify-between px-6 pt-12 pb-4">
+<button class="flex items-center justify-center size-10 rounded-full bg-white/5 border border-white/10 text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<div class="flex flex-col items-center">
+<div class="h-8 w-24 bg-contain bg-center bg-no-repeat" data-alt="RI88 corporate brand logo text" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuACg5niP3_YB3Og_GjPYVM59-hIjlWmlsCYYD0b-dCeZSOP14hAWoUNNwjeTQJ3Adynr8iYqry8NyancPv7aYkjcT6ZbKlqHhOISfabzqmWVIoEPgn7gbxRj7AO43TKF3ZPbVLW_z3RHD3nzGPOhrk81TirrUZCIlV1cJl6FNa1x1_psbU03Jk0PyyytLB5-SekEP9lNIPynfCRRXKilr0wNvFnK7GsswmwFEMTi8j7lO9b6WsZtjenpyq-AkO2RRZbpXST_C-k6h0')"></div>
+</div>
+<div class="size-10"></div> <!-- Placeholder for balance -->
+</div>
+<!-- Content Container -->
+<div class="flex-1 flex flex-col px-6 pt-6">
+<div class="text-center mb-8">
+<h1 class="text-3xl font-bold tracking-tight text-white mb-2">Verification Code</h1>
+<p class="text-slate-400 text-sm font-medium">Enter the 4-digit code sent to <span class="text-white">+1 ••• ••• 88</span></p>
+</div>
+<!-- Glass OTP Card -->
+<div class="glass-panel rounded-xl p-8 mb-10 glow-purple relative overflow-hidden">
+<!-- Inner soft accent -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="flex justify-between gap-4 max-w-xs mx-auto mb-8">
+<!-- Digit Inputs -->
+<div class="relative flex-1 aspect-square">
+<input class="w-full h-full bg-white/5 border-2 border-primary rounded-lg text-center text-3xl font-bold text-white focus:outline-none glow-purple" maxlength="1" type="text" value="8"/>
+</div>
+<div class="relative flex-1 aspect-square">
+<input class="w-full h-full bg-white/5 border border-white/10 rounded-lg text-center text-3xl font-bold text-white focus:outline-none focus:border-primary" maxlength="1" type="text" value="5"/>
+</div>
+<div class="relative flex-1 aspect-square">
+<input class="w-full h-full bg-white/5 border border-white/10 rounded-lg text-center text-3xl font-bold text-slate-600 focus:outline-none focus:border-primary placeholder-slate-700" maxlength="1" placeholder="-" type="text"/>
+</div>
+<div class="relative flex-1 aspect-square">
+<input class="w-full h-full bg-white/5 border border-white/10 rounded-lg text-center text-3xl font-bold text-slate-600 focus:outline-none focus:border-primary placeholder-slate-700" maxlength="1" placeholder="-" type="text"/>
+</div>
+</div>
+<div class="text-center">
+<p class="text-slate-400 text-sm mb-1">Didn't receive code?</p>
+<button class="text-cyan-accent font-semibold text-sm hover:opacity-80 transition-opacity">
+                        Resend in <span class="tabular-nums">00:55</span>
+</button>
+</div>
+</div>
+<!-- Action Button -->
+<div class="mt-auto pb-10">
+<button class="w-full py-4 bg-primary text-white font-bold text-lg rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-all hover:bg-primary/90 flex items-center justify-center gap-2">
+                    Verify
+                    <span class="material-symbols-outlined text-[20px]">verified_user</span>
+</button>
+</div>
+</div>
+<!-- Simulated Numeric Keypad -->
+<div class="bg-white/5 backdrop-blur-md border-t border-white/10 px-2 py-4 grid grid-cols-3 gap-1">
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">1</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">2</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">3</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">4</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">5</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">6</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">7</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">8</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">9</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg"><span class="text-2xl font-medium text-white">0</span></div>
+<div class="h-12 flex items-center justify-center keypad-button rounded-lg">
+<span class="material-symbols-outlined text-slate-400">backspace</span>
+</div>
+<!-- iOS Home Indicator -->
+<div class="col-span-3 flex justify-center pt-2 pb-1">
+<div class="w-32 h-1.5 bg-white/20 rounded-full"></div>
+</div>
+</div>
+</div>
+</body></html>

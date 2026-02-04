@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Tool Submission Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a070e",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                        "glass-bg": "rgba(255, 255, 255, 0.05)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(30, 20, 45, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .step-active {
+            box-shadow: 0 0 15px rgba(127, 19, 236, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Navigation -->
+<nav class="sticky top-0 z-50 flex items-center bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-white/5">
+<div class="flex items-center gap-3">
+<div class="text-white flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20">
+<span class="material-symbols-outlined text-primary">terminal</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight">Submit Tool</h2>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-slate-400">help</span>
+</button>
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-slate-400">close</span>
+</button>
+</div>
+</nav>
+<!-- Progress Stepper -->
+<div class="px-6 pt-6 pb-2">
+<div class="flex items-center justify-between relative">
+<!-- Line background -->
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 z-0"></div>
+<!-- Line active -->
+<div class="absolute top-1/2 left-0 w-1/2 h-0.5 bg-primary -translate-y-1/2 z-0"></div>
+<!-- Steps -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold step-active">1</div>
+<span class="text-[10px] mt-2 font-medium text-primary uppercase tracking-widest">Info</span>
+</div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="h-8 w-8 rounded-full bg-background-dark border-2 border-white/20 flex items-center justify-center text-slate-400 text-sm font-bold">2</div>
+<span class="text-[10px] mt-2 font-medium text-slate-500 uppercase tracking-widest">Assets</span>
+</div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="h-8 w-8 rounded-full bg-background-dark border-2 border-white/20 flex items-center justify-center text-slate-400 text-sm font-bold">3</div>
+<span class="text-[10px] mt-2 font-medium text-slate-500 uppercase tracking-widest">Config</span>
+</div>
+</div>
+</div>
+<!-- Main Form Content -->
+<main class="flex-1 px-4 py-6 pb-32">
+<div class="mb-8">
+<h1 class="text-white text-3xl font-bold tracking-tight mb-2">Basic Information</h1>
+<p class="text-slate-400 text-sm">Fill in the essential details to list your RI88 utility in the ecosystem.</p>
+</div>
+<section class="glass-effect rounded-xl p-6 space-y-6">
+<!-- Tool Name -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-slate-300 ml-1">Tool Name</label>
+<input class="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="e.g. NeoNexus Utility" type="text"/>
+</div>
+<!-- Short Catchphrase -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-slate-300 ml-1">Tagline</label>
+<input class="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="The ultimate dev companion" type="text"/>
+</div>
+<!-- Description -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-slate-300 ml-1">Detailed Description</label>
+<textarea class="w-full min-h-[120px] bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none" placeholder="Explain what your tool does, the key features, and how it helps the RI88 community..."></textarea>
+</div>
+<!-- Category -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-slate-300 ml-1">Category</label>
+<div class="relative">
+<select class="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-4 text-white appearance-none focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+<option>Developer Tools</option>
+<option>Data Analytics</option>
+<option>Security &amp; Auth</option>
+<option>Automation</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-4 text-slate-500 pointer-events-none">expand_more</span>
+</div>
+</div>
+</section>
+<!-- Live Preview Section (Mobile Focused) -->
+<div class="mt-10">
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="text-white text-lg font-bold">Live Preview</h3>
+<span class="text-[10px] font-bold bg-primary/20 text-primary px-2 py-1 rounded uppercase tracking-wider">Store View</span>
+</div>
+<div class="relative overflow-hidden group">
+<!-- Glass Preview Card -->
+<div class="glass-effect rounded-2xl p-5 border-primary/20 bg-gradient-to-br from-primary/10 to-transparent">
+<div class="flex items-start gap-4">
+<div class="size-16 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-3xl">token</span>
+</div>
+<div class="flex-1">
+<h4 class="text-white font-bold text-lg mb-0.5">NeoNexus Utility</h4>
+<p class="text-slate-400 text-xs line-clamp-1 mb-2">The ultimate dev companion for RI88 platform.</p>
+<div class="flex items-center gap-2">
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-yellow-500 text-xs fill-1">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-xs fill-1">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-xs fill-1">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-xs fill-1">star</span>
+<span class="material-symbols-outlined text-slate-600 text-xs">star</span>
+</div>
+<span class="text-[10px] text-slate-500">(128 reviews)</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+<span class="text-xs font-medium text-slate-500 uppercase tracking-tighter">Developer: DevTeam_01</span>
+<button class="bg-primary hover:bg-primary/90 text-white text-[10px] font-bold px-4 py-1.5 rounded-full transition-all">
+                                INSTALL
+                            </button>
+</div>
+</div>
+<!-- Decorative blur -->
+<div class="absolute -top-10 -right-10 size-32 bg-primary/20 blur-[60px] rounded-full pointer-events-none"></div>
+</div>
+</div>
+</main>
+<!-- Fixed Footer Actions -->
+<footer class="fixed bottom-0 left-0 w-full p-4 bg-background-dark/80 backdrop-blur-xl border-t border-white/5 z-50">
+<div class="max-w-md mx-auto flex gap-3">
+<button class="flex-1 h-14 rounded-xl border border-white/10 text-white font-bold flex items-center justify-center gap-2 hover:bg-white/5 transition-all">
+                    Save Draft
+                </button>
+<button class="flex-[2] h-14 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                    Next Step
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</footer>
+<!-- Image Background Elements (Abstract) -->
+<div class="fixed top-20 -left-20 size-64 bg-primary/10 blur-[100px] rounded-full -z-10"></div>
+<div class="fixed bottom-20 -right-20 size-80 bg-purple-900/10 blur-[120px] rounded-full -z-10"></div>
+</div>
+<!-- Hidden decorative images as per instructions -->
+<div class="hidden">
+<img data-alt="Abstract vibrant purple and deep violet gradients with digital noise texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHQ_qbEr0dUSstwih5OgC2rj1kfzbZpsjUG7uKySEddcWXDCrDLtyQ10D0RI8A8KtL8Be-RYkp39fb73kX5P6bI4Cmfc0895KZI47R77j4Xf0bhzR2zeKQydZt7wzpSOTkZ4hiFhMl7ERBRaJhJ8PVnoaMHLsC7LwL-lDCgsQNfeeKXA-nu1_wEHcUbOxggMDp6KVll5s9SGW4M6YCAgO-ije40tq3PBCX3f4HbgnsPpV9HSnz7UXhAoorHK8UQm-V1pzmTudrcVo"/>
+<img data-alt="A futuristic minimalist 3D app icon with purple glowing elements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8A-ie1w5xgJcIYpeFU9jLY889H_YdZI2Y4O-66mhzDqyTy3zuwS7L37GOWr7n94K2fB3krmNSJXVkN7J0VwJuv62j1NvUVUYkPVBZukq6QSi-T3MIc3Tirn7MrqxNgJZxGNynnBwo_IfpaJsyRD2tKECiWOuZcgvqPomq_Cl5y-4pLp-gI7gMpgsp0VxcXJzHm83UVIvbayIB8DzP8eYJIwHniFhpPaPKJcNDcCTUfiPGnpRmEU8xUoQUuZgT2NXp3tDk5cwo3-0"/>
+</div>
+</body></html>

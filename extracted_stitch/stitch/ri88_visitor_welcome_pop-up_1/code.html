@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Visitor Welcome</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(25, 16, 34, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .mesh-bg {
+            background-color: #191022;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(127, 19, 236, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 255, 255, 0.1) 0px, transparent 50%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark overflow-hidden h-screen w-full relative mesh-bg">
+<!-- Mocked Background Content (Blurred Dashboard) -->
+<div class="fixed inset-0 z-0 blur-xl scale-110 opacity-40 pointer-events-none">
+<div class="p-6 space-y-8">
+<div class="flex justify-between items-center">
+<div class="w-12 h-12 rounded-full bg-white/10"></div>
+<div class="w-32 h-6 rounded bg-white/10"></div>
+<div class="w-12 h-12 rounded-full bg-white/10"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+</div>
+<div class="h-64 rounded-xl bg-white/5 border border-white/10"></div>
+</div>
+</div>
+<!-- Modal Backdrop Overlay -->
+<div class="fixed inset-0 z-10 bg-black/40 backdrop-blur-sm flex items-center justify-center p-6">
+<!-- Welcome Pop-up Modal -->
+<div class="glass w-full max-w-sm rounded-xl overflow-hidden shadow-2xl relative flex flex-col items-center">
+<!-- Close Button (Implicitly "Maybe Later" but common UI pattern) -->
+<button class="absolute top-4 right-4 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- RI88 Subtle Logo Top -->
+<div class="pt-8 pb-4 flex items-center gap-2 opacity-60">
+<div class="bg-primary w-6 h-6 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white">bolt</span>
+</div>
+<span class="text-white text-sm font-bold tracking-widest uppercase">RI88 Tools</span>
+</div>
+<!-- 3D Hero Illustration Placeholder -->
+<div class="relative w-full aspect-square max-w-[200px] flex items-center justify-center">
+<!-- Radial Glow behind asset -->
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-75"></div>
+<!-- Mock 3D Gift Box Image -->
+<div class="relative z-10 w-48 h-48 bg-center bg-contain bg-no-repeat" data-alt="3D floating purple gift box with glowing cyan ribbons" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiAIev_xVuqGb0QdtuNBAFx5yStCsx-VgcmTiguPh1lq0RITXEv-0vZJHDVriq7RWPRRNFaHFuzsmBHUI_QUybRIchQUiNFiyDMcM0HUKbWu6yyXNafcmS4Pny7oU--AWbcseR6Qu9NU1kjDvdbWWhP61cYaLgx5n7BmxMoQwPc4zejRgU_gJFpeTTiNckGytriO4VuEoDqRE2rXuThJIydU5vwL3-GPLRzVPi1OZw8omGk0LKJrRKi1yi3yOiYEPKkA9GK4C6eh8');">
+</div>
+</div>
+<!-- Text Content -->
+<div class="px-8 pb-8 text-center">
+<h1 class="text-white text-3xl font-extrabold tracking-tight mb-3">
+                    Enjoying RI88?
+                </h1>
+<p class="text-white/70 text-sm leading-relaxed mb-8">
+                    Create a free account to save your results, enable multi-window mode, and access 100+ premium tools.
+                </p>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary hover:bg-[#8c23ff] text-white font-bold py-4 px-6 rounded-full transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2">
+<span>Create Free Account</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="w-full text-white/50 hover:text-white text-sm font-semibold py-2 transition-colors">
+                        Maybe Later
+                    </button>
+</div>
+</div>
+<!-- Bottom Accent Border -->
+<div class="h-1 w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
+</div>
+</div>
+<!-- UI Background Decoration -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+</body></html>

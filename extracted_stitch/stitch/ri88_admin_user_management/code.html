@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Admin User Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "cyan-accent": "#06b6d4",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-dropdown {
+            background: rgba(48, 40, 57, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .user-card-gradient {
+            background: linear-gradient(145deg, rgba(48, 40, 57, 0.4) 0%, rgba(25, 16, 34, 1) 100%);
+        }
+        .active-dot {
+            box-shadow: 0 0 8px #06b6d4;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header Section -->
+<header class="sticky top-0 z-30 bg-background-dark/95 backdrop-blur-md border-b border-white/5">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="text-white flex size-10 shrink-0 items-center justify-center rounded-lg bg-white/5 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<div class="flex flex-col items-center">
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight">User Management</h2>
+<p class="text-primary text-[10px] uppercase font-bold tracking-widest">RI88 Admin Portal</p>
+</div>
+<div class="flex size-10 items-center justify-end">
+<button class="flex items-center justify-center size-10 rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">person_add</span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col w-full">
+<div class="flex w-full items-stretch rounded-xl h-12 bg-[#302839] border border-white/5 focus-within:border-primary/50 transition-all">
+<div class="text-[#ab9db9] flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full border-none bg-transparent focus:ring-0 text-white placeholder:text-[#ab9db9] px-3 text-sm font-normal" placeholder="Search name, email or role..." value=""/>
+<div class="flex items-center pr-4">
+<span class="material-symbols-outlined text-[#ab9db9] text-[20px]">tune</span>
+</div>
+</div>
+</label>
+</div>
+<!-- Filter Tabs -->
+<div class="flex gap-2 p-3 pb-4 overflow-x-auto no-scrollbar scroll-smooth">
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20">
+                    All Users
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-[#302839] text-[#ab9db9] border border-white/5 text-xs font-medium">
+                    Admins
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-[#302839] text-[#ab9db9] border border-white/5 text-xs font-medium">
+                    Developers
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-[#302839] text-[#ab9db9] border border-white/5 text-xs font-medium">
+                    Suspended
+                </button>
+</div>
+</header>
+<!-- User List Area -->
+<main class="flex-1 px-4 py-4 space-y-4">
+<!-- User Row 1 -->
+<div class="user-card-gradient p-4 rounded-xl border border-white/5 relative group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="size-12 rounded-full border-2 border-primary bg-cover bg-center" data-alt="Portrait of a male tech professional" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBnXJIWGYXtu2K-7tDGBvJ_Hoqd1cWm0kaK2cZ-RpVpWEPuBjpX61C9e6pAHvPiBNxTaZHqv2wrodGJkpjVG7A7qg4c-mdeX2ag9wHxz8c68-AS1-byKMfT1PVvWuXx0S4shjotnZLxm9V87g2tKHmWNNsJ5vj_2xVv1YT9kLcIS7q1f7nBxoDHkfKmqeQ04mGw_NZqcNjjPy7jAbB08-ZV_kyIDzz_-O_bRTbAGL1XAYak2WeoToJnaD3oPXV40esKtyS7hFDImg4');"></div>
+<div class="absolute bottom-0 right-0 size-3 bg-cyan-accent rounded-full border-2 border-[#191022] active-dot"></div>
+</div>
+<div>
+<h3 class="text-white font-semibold text-base">Alex Rivera</h3>
+<p class="text-[#ab9db9] text-xs">alex.r@ri88.io</p>
+</div>
+</div>
+<button class="text-[#ab9db9] p-1 hover:text-white">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded-md bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider">Admin</span>
+<span class="px-2 py-1 rounded-md bg-cyan-accent/10 text-cyan-accent text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="text-right">
+<p class="text-[#6b5d7a] text-[10px] uppercase font-bold">Last Login</p>
+<p class="text-white text-xs">2 mins ago</p>
+</div>
+</div>
+</div>
+<!-- User Row 2 (Developer) -->
+<div class="user-card-gradient p-4 rounded-xl border border-white/5 relative">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="size-12 rounded-full border-2 border-cyan-accent/50 bg-cover bg-center" data-alt="Portrait of a female software developer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDVBS4UsL4EltpMKWf9fWm8VbI7SmaN1BMs3hhk6VbAW_hW1p9eMlCOA6z0caZIAOpSe6JhcSmAWA19cMkSD_Tz1RVcxBaco_fMEDTXtAMXgBhQFowfgKAfeJVSjDd0ooNf8SukeFIpvaDcTLRIk8qehjjN9jBaKkiXgFybXQ-WUmMVdbG1UzlhYiQXNrwdaLiuV5YQsULkmq5YHkzFkK9KH7cfJvZZ8dpiaR22a01Gad_KhiMah-AjxGOzyXOhFo48H7ozMkH7Bao');"></div>
+<div class="absolute bottom-0 right-0 size-3 bg-cyan-accent rounded-full border-2 border-[#191022] active-dot"></div>
+</div>
+<div>
+<h3 class="text-white font-semibold text-base">Jordan Smith</h3>
+<p class="text-[#ab9db9] text-xs">j.smith@ri88.io</p>
+</div>
+</div>
+<button class="text-[#ab9db9] p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded-md bg-cyan-accent/20 text-cyan-accent text-[10px] font-bold uppercase tracking-wider">Developer</span>
+<span class="px-2 py-1 rounded-md bg-cyan-accent/10 text-cyan-accent text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="text-right">
+<p class="text-[#6b5d7a] text-[10px] uppercase font-bold">Last Login</p>
+<p class="text-white text-xs">Yesterday, 14:20</p>
+</div>
+</div>
+</div>
+<!-- Glass Dropdown Example (Simulated Open State for User 3) -->
+<div class="relative">
+<div class="user-card-gradient p-4 rounded-xl border border-white/5 opacity-50">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="size-12 rounded-full border-2 border-red-500/50 bg-cover bg-center" data-alt="User avatar for suspended account" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBM9M79O2eB0iuC2WEDfWukcgLD4eQFDtJI_mwYpOnfrKaPAmQOj_AC5rNePCPhcbyQ-bRgz70lSsHzc5vhyRSyfLvSkGXGFZMCAtMfcH8Phm8E0Ajc-I6QLFccuit1Rs9xY3ViBZxoQ3O9FXForLknMlMdB-ebYVGZCo5LigGuNiz4s0oGZofMJVa8obCplOt1t-Gid8BeUgxjx3Zz-1TxI87IR_uJelViqkFOj0V20UkU121e0iUNSfLh4G5xJ9MZAOILvXx-j5g');"></div>
+<div>
+<h3 class="text-white font-semibold text-base">Casey Chen</h3>
+<p class="text-[#ab9db9] text-xs">c.chen@ri88.io</p>
+</div>
+</div>
+<button class="text-primary p-1 bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded-md bg-white/5 text-white/40 text-[10px] font-bold uppercase tracking-wider">User</span>
+<span class="px-2 py-1 rounded-md bg-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-wider">Suspended</span>
+</div>
+<div class="text-right">
+<p class="text-[#6b5d7a] text-[10px] uppercase font-bold">Last Login</p>
+<p class="text-white text-xs">12 Oct 2023</p>
+</div>
+</div>
+</div>
+<!-- Glass Dropdown Overlay -->
+<div class="absolute top-2 right-2 w-56 glass-dropdown rounded-xl z-50 overflow-hidden shadow-2xl border border-white/10">
+<div class="flex flex-col py-1">
+<button class="flex items-center gap-3 px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">account_circle</span>
+                            View Profile
+                        </button>
+<button class="flex items-center gap-3 px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors border-t border-white/5">
+<span class="material-symbols-outlined text-cyan-accent text-[20px]">admin_panel_settings</span>
+                            Edit Permissions
+                        </button>
+<button class="flex items-center gap-3 px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors border-t border-white/5">
+<span class="material-symbols-outlined text-amber-500 text-[20px]">lock_reset</span>
+                            Reset Password
+                        </button>
+<button class="flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors border-t border-white/5">
+<span class="material-symbols-outlined text-[20px]">block</span>
+                            Unsuspend User
+                        </button>
+</div>
+</div>
+</div>
+<!-- User Row 4 -->
+<div class="user-card-gradient p-4 rounded-xl border border-white/5 relative">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="size-12 rounded-full border-2 border-white/10 bg-cover bg-center" data-alt="Portrait of a young male professional" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAAgucBxRZVNEDUaE3VTP8_Jf93k_2qzb9mWg5SPPkxgpMU4NOesgRHXDyVWYQ4hc-Og0CO84A9RXkl-p5aixW0gphZBOMW1UQ3SryDzSWRLypCaWrG5rq-SXtwTZJht4aZpQWJpl5M6F01-UU_bvTVN_7flol19-lDOTHDauuc252gZJLfnQIiFc5Rkcmx9UJcBHz8lZPaKF9t5OdU44qaBaym64mX0Hg6p7rPvqYmzG818r169FwAk4jnwTGp_AtjFR0AesCRxmQ');"></div>
+<div>
+<h3 class="text-white font-semibold text-base">Taylor Brooks</h3>
+<p class="text-[#ab9db9] text-xs">t.brooks@ri88.io</p>
+</div>
+</div>
+<button class="text-[#ab9db9] p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded-md bg-white/10 text-[#ab9db9] text-[10px] font-bold uppercase tracking-wider">User</span>
+<span class="px-2 py-1 rounded-md bg-cyan-accent/10 text-cyan-accent text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+<div class="text-right">
+<p class="text-[#6b5d7a] text-[10px] uppercase font-bold">Last Login</p>
+<p class="text-white text-xs">3 days ago</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Aesthetic) -->
+<nav class="sticky bottom-0 bg-background-dark/90 backdrop-blur-lg border-t border-white/5 px-6 py-3 flex justify-between items-center z-40">
+<button class="flex flex-col items-center gap-1 text-[#ab9db9]">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold">Users</span>
+</button>
+<div class="size-12 rounded-full bg-primary flex items-center justify-center -mt-8 shadow-lg shadow-primary/40 border-4 border-background-dark">
+<span class="material-symbols-outlined text-white">add</span>
+</div>
+<button class="flex flex-col items-center gap-1 text-[#ab9db9]">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium">Stats</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#ab9db9]">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+<!-- Decorative elements -->
+<div class="fixed top-0 left-0 w-full h-1/2 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none -z-10"></div>
+<div class="fixed bottom-0 right-0 size-64 bg-cyan-accent/5 blur-[120px] rounded-full -z-10"></div>
+</div>
+</body></html>

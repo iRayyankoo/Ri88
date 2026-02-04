@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Mobile My Extensions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#120d1a",
+                        "card-dark": "#1d1429",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ios-toggle:checked ~ .toggle-bg {
+            background-color: #7f13ec;
+        }
+        .ios-toggle:checked ~ .toggle-dot {
+            transform: translateX(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300">
+<!-- Main Container -->
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto border-x border-transparent dark:border-slate-800">
+<!-- Top Navigation Bar -->
+<div class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+<div class="flex items-center justify-between mb-4">
+<button class="text-slate-900 dark:text-white flex size-10 items-center justify-center rounded-full bg-slate-200/50 dark:bg-slate-800/50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">My Extensions</h1>
+<button class="text-slate-900 dark:text-white flex size-10 items-center justify-center rounded-full bg-slate-200/50 dark:bg-slate-800/50">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<!-- Search Bar Component -->
+<div class="pb-2">
+<label class="relative flex flex-col w-full group">
+<div class="flex w-full items-stretch rounded-xl h-12 bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-700/50 focus-within:border-primary transition-all">
+<div class="text-slate-400 dark:text-slate-500 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full border-none bg-transparent focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-base font-normal px-3" placeholder="Search installed tools..." type="text"/>
+</div>
+</label>
+</div>
+</div>
+<!-- Extension List -->
+<div class="flex flex-col gap-3 p-4">
+<p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Active Tools</p>
+<!-- Extension Item 1 -->
+<div class="flex flex-col bg-white dark:bg-card-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-3xl">monitoring</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-bold text-base leading-tight">Market Analyzer</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">v2.4.0 • Updated 2d ago</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer ios-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
+<p class="text-sm text-slate-600 dark:text-slate-400">Real-time market data analysis</p>
+<button class="text-rose-500 p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">delete_outline</span>
+</button>
+</div>
+</div>
+<!-- Extension Item 2 -->
+<div class="flex flex-col bg-white dark:bg-card-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-3xl">database</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-bold text-base leading-tight">Data Scraper</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">v1.1.2 • Updated 1w ago</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer ios-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
+<p class="text-sm text-slate-600 dark:text-slate-400">Automated web data extraction</p>
+<button class="text-rose-500 p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">delete_outline</span>
+</button>
+</div>
+</div>
+<p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1 mt-4">Inactive Tools</p>
+<!-- Extension Item 3 (Disabled) -->
+<div class="flex flex-col bg-white/60 dark:bg-card-dark/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/30 opacity-70">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="flex size-12 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400">
+<span class="material-symbols-outlined text-3xl">hub</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-bold text-base leading-tight">API Bridge</h3>
+<p class="text-xs text-slate-400">Disabled by user</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer ios-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
+<p class="text-sm text-slate-500">Connect external data sources</p>
+<button class="text-rose-500 p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">delete_outline</span>
+</button>
+</div>
+</div>
+<!-- Extension Item 4 (Disabled) -->
+<div class="flex flex-col bg-white/60 dark:bg-card-dark/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/30 opacity-70">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="flex size-12 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400">
+<span class="material-symbols-outlined text-3xl">token</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-bold text-base leading-tight">Crypto Watch</h3>
+<p class="text-xs text-slate-400">Disabled by user</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer ios-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
+<p class="text-sm text-slate-500">Token performance monitoring</p>
+<button class="text-rose-500 p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">delete_outline</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Add More Banner -->
+<div class="px-4 py-2 mb-20">
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-purple-800 p-6 text-white shadow-lg">
+<div class="relative z-10">
+<h2 class="text-lg font-bold mb-1">Discover More Tools</h2>
+<p class="text-white/80 text-sm mb-4">Browse our marketplace for new extensions.</p>
+<button class="bg-white text-primary font-bold px-6 py-2 rounded-xl text-sm active:scale-95 transition-transform">
+                        Explore Marketplace
+                    </button>
+</div>
+<div class="absolute -right-6 -bottom-6 opacity-20">
+<span class="material-symbols-outlined text-9xl">apps</span>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 px-6 py-3 max-w-md mx-auto">
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">extension</span>
+<span class="text-[10px] font-bold">Extensions</span>
+</button>
+<div class="relative -top-6">
+<button class="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/40 ring-4 ring-background-light dark:ring-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">insights</span>
+<span class="text-[10px] font-medium">Analytics</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</div>
+</body></html>

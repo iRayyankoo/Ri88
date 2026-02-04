@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Visitor Welcome</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .glass {
+            background: rgba(25, 16, 34, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .mesh-bg {
+            background-color: #191022;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(127, 19, 236, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 255, 255, 0.1) 0px, transparent 50%);
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(127, 19, 236, 0.8), 0 0 20px rgba(127, 19, 236, 0.4);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark overflow-hidden h-screen w-full relative mesh-bg">
+<div class="fixed inset-0 z-0 blur-xl scale-110 opacity-40 pointer-events-none">
+<div class="p-6 space-y-8">
+<div class="flex justify-between items-center">
+<div class="w-12 h-12 rounded-full bg-white/10"></div>
+<div class="w-32 h-6 rounded bg-white/10"></div>
+<div class="w-12 h-12 rounded-full bg-white/10"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+<div class="h-40 rounded-xl bg-white/5 border border-white/10"></div>
+</div>
+<div class="h-64 rounded-xl bg-white/5 border border-white/10"></div>
+</div>
+</div>
+<div class="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm flex items-center justify-center p-6">
+<div class="glass w-full max-w-sm rounded-xl overflow-hidden shadow-2xl relative flex flex-col items-center">
+<div class="w-full bg-primary/20 border-b border-primary/30 py-3 px-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">timer</span>
+<span class="text-white/80 text-[10px] font-bold uppercase tracking-wider">Limited Time Offer</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-white/60 text-[10px] font-medium">Ends in</span>
+<div class="flex items-center gap-1 font-mono text-white font-bold neon-glow">
+<span>02</span><span class="animate-pulse">:</span><span>59</span><span class="animate-pulse">:</span><span>59</span>
+</div>
+</div>
+</div>
+<button class="absolute top-14 right-4 text-white/40 hover:text-white transition-colors z-20">
+<span class="material-symbols-outlined">close</span>
+</button>
+<div class="pt-6 pb-2 flex items-center gap-2 opacity-60">
+<div class="bg-primary w-5 h-5 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-white">bolt</span>
+</div>
+<span class="text-white text-xs font-bold tracking-[0.2em] uppercase">RI88 Tools</span>
+</div>
+<div class="relative w-full aspect-square max-w-[160px] flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-75"></div>
+<div class="relative z-10 w-40 h-40 bg-center bg-contain bg-no-repeat" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAiAIev_xVuqGb0QdtuNBAFx5yStCsx-VgcmTiguPh1lq0RITXEv-0vZJHDVriq7RWPRRNFaHFuzsmBHUI_QUybRIchQUiNFiyDMcM0HUKbWu6yyXNafcmS4Pny7oU--AWbcseR6Qu9NU1kjDvdbWWhP61cYaLgx5n7BmxMoQwPc4zejRgU_gJFpeTTiNckGytriO4VuEoDqRE2rXuThJIydU5vwL3-GPLRzVPi1OZw8omGk0LKJrRKi1yi3yOiYEPKkA9GK4C6eh8');">
+</div>
+</div>
+<div class="px-8 pb-8 text-center">
+<h1 class="text-white text-2xl font-extrabold tracking-tight mb-2">
+                    Enjoying RI88?
+                </h1>
+<p class="text-white/60 text-xs leading-relaxed mb-4">
+                    Create a free account to save your results, enable multi-window mode, and access 100+ premium tools.
+                </p>
+<div class="bg-primary/10 border border-primary/20 rounded-lg p-3 mb-6">
+<p class="text-white text-xs font-semibold leading-snug">
+                        Register now and get <span class="text-primary-light text-white underline decoration-primary">30 days of Premium Tools</span> for free!
+                    </p>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary hover:bg-[#8c23ff] text-white font-bold py-3.5 px-6 rounded-full transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 text-sm">
+<span>Create Free Account</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="w-full text-white/40 hover:text-white text-xs font-semibold py-1 transition-colors">
+                        Maybe Later
+                    </button>
+</div>
+</div>
+<div class="h-1 w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-30"></div>
+</div>
+</div>
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+</body></html>

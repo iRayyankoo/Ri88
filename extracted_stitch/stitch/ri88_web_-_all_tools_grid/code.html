@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Web - All Tools Grid</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0b0611",
+                        "surface-dark": "#191022",
+                        "card-dark": "#231a2e"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .tool-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 0 15px rgba(127, 19, 236, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-primary/10">
+<div class="flex items-center justify-between px-4 h-16">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-lg hover:bg-gray-100 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-300">menu</span>
+</button>
+<div class="flex flex-col">
+<h1 class="text-lg font-bold leading-tight tracking-tight text-primary dark:text-white">RI88 Tools</h1>
+<p class="text-[10px] uppercase tracking-widest text-primary font-bold opacity-80">Premium Portal</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary border border-primary/20">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<div class="size-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs ring-2 ring-background-dark ring-offset-2 ring-offset-primary/20">
+                    JD
+                </div>
+</div>
+</div>
+</header>
+<main class="pb-24">
+<!-- Hero Search Section -->
+<div class="px-4 pt-6 pb-2">
+<h2 class="text-2xl font-bold mb-4">All Tools Directory</h2>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="block w-full pl-12 pr-4 py-4 bg-white dark:bg-surface-dark border-0 rounded-xl text-sm focus:ring-2 focus:ring-primary shadow-sm dark:shadow-none placeholder-gray-400 dark:placeholder-gray-500" placeholder="Search over 150+ premium tools..." type="text"/>
+</div>
+</div>
+<!-- Horizontal Categories -->
+<div class="flex gap-3 px-4 py-4 overflow-x-auto custom-scrollbar">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-5 text-sm font-semibold shadow-lg shadow-primary/20">
+                All
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-300 px-5 text-sm font-medium border border-gray-100 dark:border-white/5">
+<span class="material-symbols-outlined text-[18px]">payments</span> Finance
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-300 px-5 text-sm font-medium border border-gray-100 dark:border-white/5">
+<span class="material-symbols-outlined text-[18px]">article</span> Text
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-300 px-5 text-sm font-medium border border-gray-100 dark:border-white/5">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span> PDF
+            </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-300 px-5 text-sm font-medium border border-gray-100 dark:border-white/5">
+<span class="material-symbols-outlined text-[18px]">code</span> Dev
+            </button>
+</div>
+<!-- Tools Grid Section: Finance -->
+<section class="mt-4">
+<div class="flex items-center justify-between px-4 mb-4">
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Finance Tools</h3>
+<span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">12 TOOLS</span>
+</div>
+<div class="grid grid-cols-2 gap-3 px-4">
+<!-- Tool Card 1 -->
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all active:scale-95">
+<div class="size-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-emerald-500">currency_exchange</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Currency</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Real-time market rates</p>
+</div>
+<!-- Tool Card 2 -->
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-blue-500">calculate</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Loan Calc</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Mortgage &amp; APR tool</p>
+</div>
+<!-- Tool Card 3 -->
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-amber-500">savings</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Investment</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Compound interest</p>
+</div>
+<!-- Tool Card 4 -->
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-rose-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-rose-500">receipt_long</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Tax Est.</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Global tax calculator</p>
+</div>
+</div>
+</section>
+<!-- Tools Grid Section: PDF -->
+<section class="mt-8">
+<div class="flex items-center justify-between px-4 mb-4">
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">PDF &amp; Document</h3>
+<span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">24 TOOLS</span>
+</div>
+<div class="grid grid-cols-2 gap-3 px-4">
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary">merge</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Merge PDF</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Combine files instantly</p>
+</div>
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-orange-500">compress</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Compress</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Optimize file size</p>
+</div>
+</div>
+</section>
+<!-- Large Content Card -->
+<section class="mt-8 px-4">
+<div class="relative overflow-hidden bg-primary rounded-2xl p-6 text-white shadow-xl shadow-primary/30">
+<div class="relative z-10">
+<h4 class="text-lg font-bold mb-1">Premium Access</h4>
+<p class="text-xs text-white/80 mb-4 max-w-[200px]">Unlock batch processing and secure cloud storage for all tools.</p>
+<button class="px-4 py-2 bg-white text-primary rounded-lg text-xs font-bold uppercase tracking-wide">Upgrade Now</button>
+</div>
+<div class="absolute -right-4 -bottom-4 size-32 opacity-20">
+<span class="material-symbols-outlined text-[120px]">workspace_premium</span>
+</div>
+<div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+</div>
+</section>
+<!-- Tools Grid Section: Text -->
+<section class="mt-8">
+<div class="flex items-center justify-between px-4 mb-4">
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Text &amp; Content</h3>
+<span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">18 TOOLS</span>
+</div>
+<div class="grid grid-cols-2 gap-3 px-4">
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-purple-500">format_size</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Word Count</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Deep text analysis</p>
+</div>
+<div class="tool-card flex flex-col p-4 bg-white dark:bg-surface-dark rounded-xl border border-gray-100 dark:border-white/5 transition-all">
+<div class="size-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-cyan-500">translate</span>
+</div>
+<p class="text-sm font-bold leading-tight mb-1">Translate</p>
+<p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">Multi-lang support</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (iOS Style) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-surface-dark/90 backdrop-blur-xl border-t border-gray-200 dark:border-white/5 px-6 pb-6 pt-3">
+<div class="flex items-center justify-between max-w-md mx-auto">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-bold">Tools</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">history</span>
+<span class="text-[10px] font-medium">History</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<div class="size-10 bg-primary rounded-full flex items-center justify-center -mt-8 border-4 border-background-dark shadow-lg shadow-primary/40 text-white">
+<span class="material-symbols-outlined">star</span>
+</div>
+<span class="text-[10px] font-medium">Favorites</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Account</span>
+</button>
+</div>
+</nav>
+</body></html>

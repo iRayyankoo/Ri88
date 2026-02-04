@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Admin Server Monitor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "accent-cyan": "#00f5ff",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0f0f12",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(25, 16, 34, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(127, 19, 236, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 15px rgba(127, 19, 236, 0.4);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.4);
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .5; transform: scale(1.2); }
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7f13ec;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 glass-card border-x-0 border-t-0 bg-opacity-80 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 flex items-center justify-center bg-primary rounded-xl text-white">
+<span class="material-symbols-outlined">dns</span>
+</div>
+<div>
+<h1 class="text-sm font-bold tracking-tight">RI88 MONITOR</h1>
+<div class="flex items-center gap-1.5">
+<span class="size-2 bg-green-500 rounded-full status-pulse"></span>
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Node-01 Active</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="size-10 flex items-center justify-center rounded-full glass-card border-primary/20">
+<span class="material-symbols-outlined text-primary text-xl">refresh</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-full glass-card border-primary/20">
+<span class="material-symbols-outlined text-white text-xl">notifications</span>
+</button>
+</div>
+</header>
+<main class="p-4 space-y-6">
+<!-- Metrics Grid (Gauges) -->
+<section class="grid grid-cols-2 gap-4">
+<!-- CPU Gauge -->
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden group">
+<div class="relative size-20">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="58" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-lg font-bold">42%</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-slate-400 uppercase mt-2 tracking-tighter">CPU Usage</p>
+<div class="absolute top-0 right-0 p-1">
+<span class="material-symbols-outlined text-primary text-xs">trending_up</span>
+</div>
+</div>
+<!-- RAM Gauge -->
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden">
+<div class="relative size-20">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-accent-cyan" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="32" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-lg font-bold">68%</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-slate-400 uppercase mt-2 tracking-tighter">RAM Util</p>
+<div class="absolute top-0 right-0 p-1 text-accent-cyan">
+<span class="material-symbols-outlined text-xs">memory</span>
+</div>
+</div>
+<!-- Disk Gauge -->
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden">
+<div class="relative size-20">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="85" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-lg font-bold">15%</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-slate-400 uppercase mt-2 tracking-tighter">Disk I/O</p>
+</div>
+<!-- Network Gauge -->
+<div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center relative overflow-hidden">
+<div class="relative size-20">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-accent-cyan" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="92" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-lg font-bold">8%</span>
+</div>
+</div>
+<p class="text-[11px] font-bold text-slate-400 uppercase mt-2 tracking-tighter">Net Latency</p>
+</div>
+</section>
+<!-- Charts Section -->
+<section class="space-y-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-primary px-1">Performance Trends</h3>
+<!-- Request Traffic Chart -->
+<div class="glass-card rounded-xl p-5 border-l-4 border-l-primary">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-xs text-slate-400 font-medium">Request Traffic</p>
+<p class="text-2xl font-bold tracking-tight">1.24M <span class="text-xs text-green-400">+12%</span></p>
+</div>
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<div class="h-32 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 400 100">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#7f13ec" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#7f13ec" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q50,20 100,50 T200,30 T300,70 T400,20 L400,100 L0,100 Z" fill="url(#chartGradient)"></path>
+<path d="M0,80 Q50,20 100,50 T200,30 T300,70 T400,20" fill="none" stroke="#7f13ec" stroke-linecap="round" stroke-width="3"></path>
+<circle class="status-pulse" cx="400" cy="20" fill="#7f13ec" r="4"></circle>
+</svg>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-slate-500 font-bold">
+<span>00:00</span>
+<span>08:00</span>
+<span>16:00</span>
+<span>NOW</span>
+</div>
+</div>
+<!-- Server Load Chart -->
+<div class="glass-card rounded-xl p-5 border-l-4 border-l-accent-cyan">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-xs text-slate-400 font-medium">Server Load</p>
+<p class="text-2xl font-bold tracking-tight">74.5% <span class="text-xs text-red-400">-3%</span></p>
+</div>
+<span class="material-symbols-outlined text-accent-cyan">speed</span>
+</div>
+<div class="h-32 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 400 100">
+<defs>
+<lineargradient id="chartGradientCyan" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#00f5ff" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#00f5ff" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,40 Q50,70 100,40 T200,60 T300,30 T400,50 L400,100 L0,100 Z" fill="url(#chartGradientCyan)"></path>
+<path d="M0,40 Q50,70 100,40 T200,60 T300,30 T400,50" fill="none" stroke="#00f5ff" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</section>
+<!-- System Logs Console -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold uppercase tracking-widest text-primary">System Logs</h3>
+<span class="text-[10px] font-mono text-slate-500">streaming live...</span>
+</div>
+<div class="glass-card rounded-lg bg-black/40 p-3 font-mono text-[10px] h-48 overflow-y-auto border border-white/5">
+<div class="space-y-1.5">
+<p class="text-accent-cyan">[14:22:01] <span class="text-white">INFO:</span> Handshake successful with Load Balancer v4</p>
+<p class="text-primary">[14:22:05] <span class="text-white">WARN:</span> Node-B latency spikes detected (124ms)</p>
+<p class="text-accent-cyan">[14:22:12] <span class="text-white">INFO:</span> Cache purged for resource ID #8892</p>
+<p class="text-red-500">[14:23:01] <span class="text-white font-bold">ERR:</span> Database connection timeout on shard-2</p>
+<p class="text-accent-cyan">[14:23:15] <span class="text-white">INFO:</span> Auto-scaling initiated: +2 worker nodes</p>
+<p class="text-accent-cyan">[14:24:00] <span class="text-white">INFO:</span> Background cleanup task completed in 4s</p>
+<p class="text-slate-500 animate-pulse">_ blinking cursor...</p>
+</div>
+</div>
+</section>
+<!-- Active Processes -->
+<section class="space-y-3">
+<h3 class="text-sm font-bold uppercase tracking-widest text-primary px-1">Active Processes</h3>
+<div class="glass-card rounded-xl overflow-hidden divide-y divide-white/5">
+<!-- Process 1 -->
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">settings_ethernet</span>
+</div>
+<div>
+<p class="text-xs font-bold">nginx_worker</p>
+<p class="text-[10px] text-slate-500">PID: 4421</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-primary">14.2% CPU</p>
+<div class="w-20 h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
+<div class="h-full bg-primary w-[40%]"></div>
+</div>
+</div>
+</div>
+<!-- Process 2 -->
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded bg-accent-cyan/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-cyan text-sm">database</span>
+</div>
+<div>
+<p class="text-xs font-bold">redis-server</p>
+<p class="text-[10px] text-slate-500">PID: 1092</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-mono text-accent-cyan">8.5% CPU</p>
+<div class="w-20 h-1 bg-slate-800 rounded-full mt-1 overflow-hidden">
+<div class="h-full bg-accent-cyan w-[25%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 glass-card border-x-0 border-b-0 rounded-t-2xl py-2 px-6 flex justify-between items-center bg-opacity-90">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-1">dashboard</span>
+<span class="text-[10px] font-bold">Monitor</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">terminal</span>
+<span class="text-[10px] font-bold">Console</span>
+</button>
+<div class="relative -top-6">
+<button class="size-14 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/40 ring-4 ring-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">lan</span>
+<span class="text-[10px] font-bold">Nodes</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold">Config</span>
+</button>
+</nav>
+</body></html>

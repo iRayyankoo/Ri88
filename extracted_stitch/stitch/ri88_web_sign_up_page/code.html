@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Web Sign Up Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a070e", // Deep charcoal with a hint of purple
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-button:active {
+            background: rgba(127, 19, 236, 0.2);
+            border-color: rgba(127, 19, 236, 0.5);
+            transform: scale(0.95);
+        }
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(127, 19, 236, 0.4);
+        }
+        .bg-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen relative overflow-x-hidden selection:bg-primary/30">
+<!-- Background Accents -->
+<div class="bg-orb bg-primary top-[-100px] left-[-100px]"></div>
+<div class="bg-orb bg-primary/40 bottom-[-100px] right-[-100px]"></div>
+<div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12">
+<!-- Logo Area -->
+<div class="mb-8 flex flex-col items-center">
+<div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 mb-4">
+<span class="material-symbols-outlined text-white text-4xl">all_inclusive</span>
+</div>
+<h1 class="text-white text-2xl font-bold tracking-tight">RI88 <span class="text-primary">Portal</span></h1>
+<p class="text-white/50 text-sm mt-1">Premium Tools &amp; Analytics</p>
+</div>
+<!-- Main Glass Card -->
+<div class="glass-card w-full max-w-[420px] rounded-[24px] p-8 shadow-2xl">
+<h2 class="text-white text-xl font-semibold text-center mb-2">Create Account</h2>
+<p class="text-white/60 text-center text-sm mb-8">Join the elite network of developers</p>
+<!-- Social Auth -->
+<div class="flex justify-center gap-4 mb-8">
+<button class="glass-button w-14 h-14 rounded-full flex items-center justify-center text-white hover:text-primary">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12.48 10.92v3.28h7.84c-.24 1.84-.908 3.152-1.928 4.176-1.248 1.248-3.216 2.592-6.912 2.592-5.904 0-10.72-4.784-10.72-10.72s4.816-10.72 10.72-10.72c3.152 0 5.488 1.248 7.152 2.848l2.304-2.304c-1.928-1.84-4.528-3.328-9.456-3.328-7.856 0-14.288 6.432-14.288 14.288s6.432 14.288 14.288 14.288c4.256 0 7.488-1.408 9.936-3.952 2.544-2.544 3.328-6.112 3.328-8.944 0-.88-.08-1.712-.24-2.48h-13.04z"></path>
+</svg>
+</button>
+<button class="glass-button w-14 h-14 rounded-full flex items-center justify-center text-white hover:text-primary">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+</svg>
+</button>
+<button class="glass-button w-14 h-14 rounded-full flex items-center justify-center text-white hover:text-primary">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+</svg>
+</button>
+</div>
+<div class="relative flex items-center mb-8">
+<div class="flex-grow border-t border-white/10"></div>
+<span class="px-4 text-xs text-white/30 uppercase tracking-widest">Or continue with</span>
+<div class="flex-grow border-t border-white/10"></div>
+</div>
+<!-- Form -->
+<form class="space-y-5">
+<!-- Full Name -->
+<div class="space-y-1.5">
+<label class="text-xs font-medium text-white/50 ml-1">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-xl">person</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="John Doe" type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div class="space-y-1.5">
+<label class="text-xs font-medium text-white/50 ml-1">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-xl">mail</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="john@ri88.com" type="email"/>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-1.5">
+<label class="text-xs font-medium text-white/50 ml-1">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-xl">lock</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-12 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="••••••••" type="password"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-xl cursor-pointer hover:text-white transition-colors">visibility</span>
+</div>
+<!-- Password Strength Meter -->
+<div class="flex gap-1 mt-2 px-1">
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+<div class="h-1 flex-1 bg-primary/30 rounded-full"></div>
+<div class="h-1 flex-1 bg-primary/30 rounded-full"></div>
+</div>
+<p class="text-[10px] text-primary/80 font-medium ml-1">Medium strength</p>
+</div>
+<!-- Terms -->
+<div class="flex items-center gap-3 py-2 px-1">
+<div class="relative flex items-center">
+<input class="peer h-5 w-5 appearance-none rounded border border-white/20 bg-white/5 checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer" id="terms" type="checkbox"/>
+<span class="material-symbols-outlined absolute opacity-0 peer-checked:opacity-100 text-white text-sm pointer-events-none left-1/2 -translate-x-1/2">check</span>
+</div>
+<label class="text-xs text-white/60 cursor-pointer" for="terms">
+                        I agree to the <a class="text-primary hover:underline" href="#">Terms &amp; Conditions</a> and <a class="text-primary hover:underline" href="#">Privacy Policy</a>
+</label>
+</div>
+<!-- CTA Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-full shadow-lg shadow-primary/25 glow-primary transition-all transform active:scale-[0.98] mt-4 flex items-center justify-center gap-2" type="submit">
+                    Create Account
+                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</form>
+<div class="mt-8 text-center">
+<p class="text-white/40 text-sm">
+                    Already have an account? 
+                    <a class="text-primary font-semibold hover:underline" href="#">Sign In</a>
+</p>
+</div>
+</div>
+<!-- Support Link -->
+<div class="mt-8 flex items-center gap-2 text-white/30 text-xs">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Need help with authentication? Contact Support</span>
+</div>
+</div>
+</body></html>

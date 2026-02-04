@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RI88 Mobile Store</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0a070e",
+                        "card-dark": "rgba(48, 40, 57, 0.4)",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 pt-12 pb-4">
+<div class="flex items-center justify-between mb-4">
+<h1 class="text-2xl font-bold tracking-tight">RI88 Store</h1>
+<div class="flex gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-200 dark:bg-white/10">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border border-primary/30">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A smiling professional user profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM6vGb2Mv74yKSTacskNodcjPNX71fJweW_Br2jZBfrv3ASsM5fvxuXW16YslTmgzuB33FKBjkRl0WlAcCtJ8pbevxw42W1b7Kt6d7jDvqyT3JAq0Lc2lDrSJeQJdV64LUyrNrXXnegz2bjgl8vzBkYt738Kpv_orYzbHm_jhSX9UIe4gb_ie_7Rpie1YUFlpCPj8TogNC_WlrzgYsQGCVNht5swRCTfLC0w0fGeiZB4thC0zk_7-2rTSs-5hkm1OIMDUPGPmg5E8"/>
+</div>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full h-12 pl-12 pr-4 bg-slate-200 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary text-sm placeholder:text-slate-500" placeholder="Search tools and extensions..." type="text"/>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Editor's Choice Section -->
+<section class="mt-4">
+<div class="px-6 flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold">Editor's Choice</h2>
+<button class="text-primary text-sm font-semibold">See all</button>
+</div>
+<div class="flex overflow-x-auto gap-4 px-6 pb-2 no-scrollbar">
+<!-- Card 1 -->
+<div class="glass-card min-w-[260px] p-5 rounded-xl flex flex-col gap-4">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-purple-400 flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-3xl">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-bold text-base mb-1">AI Logic Pro</h3>
+<p class="text-xs text-slate-400 leading-relaxed">Advanced automation scripts for complex workflows.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-xs font-medium text-slate-500">Free Trial</span>
+<button class="px-5 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-lg shadow-primary/20">Add</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card min-w-[260px] p-5 rounded-xl flex flex-col gap-4">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+<span class="material-symbols-outlined text-3xl">query_stats</span>
+</div>
+<div>
+<h3 class="font-bold text-base mb-1">Data Visualizer</h3>
+<p class="text-xs text-slate-400 leading-relaxed">Convert raw logs into interactive charts and graphs.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-xs font-medium text-slate-500">$4.99</span>
+<button class="px-5 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-lg shadow-primary/20">Add</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card min-w-[260px] p-5 rounded-xl flex flex-col gap-4">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+<span class="material-symbols-outlined text-3xl">security</span>
+</div>
+<div>
+<h3 class="font-bold text-base mb-1">Shield Guard</h3>
+<p class="text-xs text-slate-400 leading-relaxed">Real-time vulnerability scanning for your assets.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-xs font-medium text-slate-500">Essential</span>
+<button class="px-5 py-2 bg-primary text-white text-xs font-bold rounded-lg shadow-lg shadow-primary/20">Add</button>
+</div>
+</div>
+</div>
+</section>
+<!-- New Releases Section -->
+<section class="mt-8 px-6">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold">New Releases</h2>
+<div class="flex items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span class="text-sm">Filter</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Release 1 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-slate-200/50 dark:bg-white/5 border border-transparent hover:border-primary/20 transition-all">
+<div class="w-16 h-16 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-indigo-400 text-3xl">code_blocks</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-sm">Snippet Sync</h4>
+<p class="text-[11px] text-slate-500 mb-1">Developer Tools • v1.2.0</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-yellow-500 fill-current">star</span>
+<span class="text-[11px] font-medium">4.8</span>
+</div>
+</div>
+<button class="h-8 px-4 bg-primary/10 text-primary text-xs font-bold rounded-full hover:bg-primary hover:text-white transition-colors">Add</button>
+</div>
+<!-- Release 2 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-slate-200/50 dark:bg-white/5 border border-transparent hover:border-primary/20 transition-all">
+<div class="w-16 h-16 rounded-lg bg-orange-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-400 text-3xl">api</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-sm">API Bridge</h4>
+<p class="text-[11px] text-slate-500 mb-1">Integration • v0.9.4</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-yellow-500 fill-current">star</span>
+<span class="text-[11px] font-medium">4.5</span>
+</div>
+</div>
+<button class="h-8 px-4 bg-primary/10 text-primary text-xs font-bold rounded-full hover:bg-primary hover:text-white transition-colors">Add</button>
+</div>
+<!-- Release 3 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-slate-200/50 dark:bg-white/5 border border-transparent hover:border-primary/20 transition-all">
+<div class="w-16 h-16 rounded-lg bg-pink-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-pink-400 text-3xl">palette</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-sm">Theme Engine</h4>
+<p class="text-[11px] text-slate-500 mb-1">Customization • v2.1.0</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-yellow-500 fill-current">star</span>
+<span class="text-[11px] font-medium">4.9</span>
+</div>
+</div>
+<button class="h-8 px-4 bg-primary/10 text-primary text-xs font-bold rounded-full hover:bg-primary hover:text-white transition-colors">Add</button>
+</div>
+<!-- Release 4 -->
+<div class="flex items-center gap-4 p-3 rounded-xl bg-slate-200/50 dark:bg-white/5 border border-transparent hover:border-primary/20 transition-all">
+<div class="w-16 h-16 rounded-lg bg-amber-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-400 text-3xl">speed</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-sm">Turbo Cache</h4>
+<p class="text-[11px] text-slate-500 mb-1">Performance • v1.0.2</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-yellow-500 fill-current">star</span>
+<span class="text-[11px] font-medium">4.7</span>
+</div>
+</div>
+<button class="h-8 px-4 bg-primary/10 text-primary text-xs font-bold rounded-full hover:bg-primary hover:text-white transition-colors">Add</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 glass-card border-t border-white/5 py-3 px-8 flex justify-between items-center z-50 rounded-t-2xl">
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-current">store</span>
+<span class="text-[10px] font-bold">Store</span>
+</button>
+<div class="relative -mt-8">
+<button class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/40 border-4 border-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">extension</span>
+<span class="text-[10px] font-medium">My Tools</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>
