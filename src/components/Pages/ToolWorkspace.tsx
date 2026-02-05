@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 import { tools } from '@/data/tools';
+import ToolRouter from '../tools/ToolRouter';
 
 const ToolWorkspace = () => {
     const { activeToolId, setCurrentView } = useNavigation();
