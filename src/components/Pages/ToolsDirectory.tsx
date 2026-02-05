@@ -1,140 +1,169 @@
 "use client";
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Zap, Construction, Filter, CheckCircle2, ArrowLeft } from 'lucide-react';
-import { tools, categories, Tool } from '@/data/tools';
+import { Search, Star, Zap, Grid, BookOpen, Code, Image as ImageIcon, Briefcase, Filter, ArrowRightLToR } from 'lucide-react';
+import { tools } from '@/data/tools'; // Assuming this exists, or we mock it locally if needed
 import { useNavigation } from '@/context/NavigationContext';
 
-const ToolsDirectory = () => {
-    const [activeCat, setActiveCat] = useState('all');
-    const [searchQuery, setSearchQuery] = useState('');
-    const { setCurrentView } = useNavigation();
+// Categories for Sidebar & Chips
+const categories = [
+    { id: 'all', label: 'الكل', icon: Grid },
+    { id: 'finance', label: 'المالية', icon: Briefcase },
+    { id: 'text', label: 'النصوص', icon: BookOpen },
+    { id: 'dev', label: 'المطورين', icon: Code },
+    { id: 'image', label: 'الصور', icon: ImageIcon },
+    { id: 'productivity', label: 'الإنتاجية', icon: Zap },
+];
 
-    const filteredTools = useMemo(() => {
-        let res = tools;
-        if (activeCat !== 'all') {
-            res = res.filter(t => t.cat === activeCat);
+const ToolsDirectory = () => {
+    const { launchTool } = useNavigation();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeCategory, setActiveCategory] = useState('all');
+    const [favorites, setFavorites] = useState<string[]>([]);
+
+    // Filter Logic
+    const filteredTools = tools.filter(tool => {
+        const matchesSearch = (tool.title?.includes(searchQuery) || tool.titleAr?.includes(searchQuery));
+        const matchesCat = activeCategory === 'all' || tool.category === activeCategory;
+        return matchesSearch && matchesCat;
+    });
+
+    const toggleFavorite = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.05 }
         }
-        if (searchQuery.trim()) {
-            const q = searchQuery.toLowerCase();
-            res = res.filter(t =>
-                (t.title && t.title.toLowerCase().includes(q)) ||
-                (t.titleAr && t.titleAr.includes(q)) ||
-                (t.desc && t.desc.toLowerCase().includes(q)) ||
-                (t.descAr && t.descAr.includes(q))
-            );
-        }
-        return res;
-    }, [activeCat, searchQuery]);
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
 
     return (
-        <div className="space-y-12">
+        <div className="flex flex-col lg:flex-row gap-8 min-h-screen">
 
-            {/* HEADER & SEARCH */}
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-8 pb-8 border-b border-white/5">
-                <div className="text-right space-y-2">
-                    <h2 className="text-3xl font-black text-white">دليل الأدوات الذكية</h2>
-                    <p className="text-slate-500 font-medium">استكشف أكثر من <span className="text-brand-primary">60 أداة</span> احترافية مقسمة حسب الفئات.</p>
+            {/* 1. VERTICAL SIDEBAR (Desktop) */}
+            <aside className="hidden lg:block w-64 shrink-0 sticky top-24 h-[calc(100vh-8rem)] stitch-glass rounded-3xl p-6 overflow-y-auto">
+                <div className="flex items-center gap-3 mb-8 px-2">
+                    <Filter className="w-5 h-5 text-brand-primary" />
+                    <h3 className="text-lg font-black text-white">التصنيفات</h3>
+                </div>
+                <div className="space-y-2">
+                    {categories.map(cat => (
+                        <button
+                            key={cat.id}
+                            onClick={() => setActiveCategory(cat.id)}
+                            className={`w-full flex items-center justify-between p-3 rounded-xl text-sm font-bold transition-all group ${activeCategory === cat.id
+                                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <cat.icon className={`w-4 h-4 ${activeCategory === cat.id ? 'text-white' : 'text-slate-500 group-hover:text-white'}`} />
+                                <span>{cat.label}</span>
+                            </div>
+                            {activeCategory === cat.id && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                        </button>
+                    ))}
+                </div>
+            </aside>
+
+            <div className="flex-1 space-y-8">
+                {/* 2. TOP AREA: SEARCH & CHIPS */}
+                <div className="space-y-6">
+                    {/* Floating Search Input */}
+                    <div className="relative group max-w-2xl mx-auto">
+                        <div className="absolute inset-0 bg-brand-primary/20 blur-2xl rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+                        <div className="relative flex items-center">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="ابحث عن أداة (مثال: حاسبة، تحويل PDF...)"
+                                className="w-full h-14 bg-[#0D0D0F]/60 backdrop-blur-xl border border-white/10 rounded-2xl pr-14 pl-6 text-white placeholder:text-slate-500 outline-none focus:border-brand-primary/50 focus:ring-4 focus:ring-brand-primary/10 transition-all shadow-2xl text-lg text-right"
+                            />
+                            <Search className="absolute right-5 w-6 h-6 text-slate-500 group-focus-within:text-brand-primary transition-colors" />
+                        </div>
+                    </div>
+
+                    {/* Horizontal Chips (Mobile/Tablet primarily, but visible on all) */}
+                    <div className="lg:hidden flex gap-3 overflow-x-auto pb-4 no-scrollbar">
+                        {categories.map(cat => (
+                            <button
+                                key={cat.id}
+                                onClick={() => setActiveCategory(cat.id)}
+                                className={`shrink-0 px-5 py-2.5 rounded-full text-xs font-black border transition-all ${activeCategory === cat.id
+                                        ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20 transform scale-105'
+                                        : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
+                                    }`}
+                            >
+                                {cat.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="relative w-full lg:max-w-md group">
-                    <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-brand-primary transition-colors" />
-                    <input
-                        type="text"
-                        className="w-full bg-white/5 border border-white/5 hover:border-white/10 rounded-2xl py-4 pr-16 pl-6 text-white text-sm outline-none focus:ring-4 focus:ring-brand-primary/10 transition-all text-right"
-                        placeholder="ابحث عن اسم الأداة أو وصفها..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-            </div>
-
-            {/* FILTER CHIPS */}
-            <div className="flex flex-wrap gap-3 justify-center">
-                <button
-                    onClick={() => setActiveCat('all')}
-                    className={`px-8 py-3.5 rounded-2xl font-black text-xs transition-all border ${activeCat === 'all'
-                        ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
-                        : 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
-                        }`}
-                >
-                    الكل
-                </button>
-                {categories.filter(c => c.id !== 'all').map(cat => (
-                    <button
-                        key={cat.id}
-                        onClick={() => setActiveCat(cat.id)}
-                        className={`px-8 py-3.5 rounded-2xl font-black text-xs transition-all border ${activeCat === cat.id
-                            ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
-                            : 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
-                            }`}
+                {/* 3. TOOLS GRID */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeCategory + searchQuery}
+                        initial="hidden"
+                        animate="visible"
+                        variants={containerVariants}
+                        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
                     >
-                        {cat.nameAr}
-                    </button>
-                ))}
-            </div>
-
-            {/* TOOLS GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <AnimatePresence mode="popLayout">
-                    {filteredTools.length > 0 ? (
-                        filteredTools.map((tool) => (
+                        {filteredTools.map((tool) => (
                             <motion.div
                                 key={tool.id}
-                                layout
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                whileHover={{ y: -8, backgroundColor: 'rgba(139, 92, 246, 0.08)' }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => setCurrentView('workspace')}
-                                className="glass-card p-6 flex flex-col gap-6 group cursor-pointer transition-all text-right border-white/5 relative z-10"
+                                variants={cardVariants}
+                                whileHover={{ y: -8, boxShadow: '0 20px 40px -10px rgba(139, 92, 246, 0.2)' }}
+                                onClick={() => launchTool(tool.id)}
+                                className="group relative bg-[#13131A] border border-white/5 hover:border-brand-primary/40 rounded-[28px] p-6 cursor-pointer transition-all duration-300 overflow-hidden"
                             >
-                                <div className="flex justify-between items-start pointer-events-none">
-                                    <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner">
-                                        <Zap className="w-6 h-6" />
-                                    </div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest bg-brand-secondary/10 text-brand-secondary px-2 py-0.5 rounded-md border border-brand-secondary/20">Active</span>
-                                </div>
+                                {/* Gradient Blob on Hover */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/20 blur-[60px] rounded-full translate-x-10 -translate-y-10 group-hover:bg-brand-primary/30 transition-all" />
 
-                                <div className="space-y-1 pointer-events-none">
-                                    <h4 className="font-black text-white group-hover:text-brand-primary transition-colors">{tool.titleAr || tool.title}</h4>
-                                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed line-clamp-2 italic">{tool.descAr || tool.desc}</p>
-                                </div>
-
-                                <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5 pointer-events-none">
-                                    <ArrowLeft className="w-4 h-4 text-brand-primary translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all font-black" />
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{tool.cat}</span>
-                                        <Construction className="w-3 h-3 text-slate-600" />
+                                <div className="relative z-10 flex flex-col items-center text-center h-full">
+                                    {/* Icon */}
+                                    <div className="w-14 h-14 rounded-2xl bg-white/5 group-hover:bg-brand-primary group-hover:text-white flex items-center justify-center text-slate-400 transition-colors mb-4 border border-white/5 group-hover:border-brand-primary shadow-inner">
+                                        <Zap className="w-7 h-7" />
                                     </div>
+
+                                    {/* Text */}
+                                    <h3 className="text-base font-bold text-white mb-2 line-clamp-1">{tool.titleAr || tool.title}</h3>
+                                    <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed h-8">{tool.descAr || tool.desc}</p>
+
+                                    {/* Favorite Button */}
+                                    <button
+                                        onClick={(e) => toggleFavorite(e, tool.id)}
+                                        className="absolute top-4 left-4 text-slate-600 hover:text-yellow-400 opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                                    >
+                                        <Star className={`w-4 h-4 ${favorites.includes(tool.id) ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+                                    </button>
                                 </div>
                             </motion.div>
-                        ))
-                    ) : (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="col-span-full py-32 flex flex-col items-center justify-center gap-6 glass-card border-dashed border-white/10"
-                        >
-                            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-slate-700">
-                                <Filter className="w-10 h-10" />
-                            </div>
-                            <div className="text-center space-y-2">
-                                <p className="text-xl font-black text-slate-400 italic">عذراً، لم نجد نتائج لبحثك</p>
-                                <p className="text-sm text-slate-600 font-medium tracking-tight">جرب استخدام كلمات بحث مختلفة أو فئة أخرى.</p>
-                            </div>
-                            <button
-                                onClick={() => { setSearchQuery(''); setActiveCat('all'); }}
-                                className="text-brand-primary font-black text-xs hover:underline decoration-brand-primary/30 underline-offset-4"
-                            >
-                                إعادة تعيين المرشحات
-                            </button>
-                        </motion.div>
-                    )}
+                        ))}
+                    </motion.div>
                 </AnimatePresence>
-            </div>
 
+                {/* Empty State */}
+                {filteredTools.length === 0 && (
+                    <div className="text-center py-20">
+                        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-600">
+                            <Search className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">لا توجد نتائج</h3>
+                        <p className="text-slate-500 text-sm">جرب البحث بكلمات مختلفة أو تغيير التصنيف.</p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

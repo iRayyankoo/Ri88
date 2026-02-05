@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { ResultExporter } from '../Outputs/ResultExporter';
+import { FinalResultView } from '../Outputs/FinalResultView';
 
 interface ToolProps {
     toolId: string;
@@ -411,8 +413,21 @@ function InvoiceGenerator() {
                     </div>
                 )}
             </div>
-            <button onClick={() => window.print()} className="ui-btn primary ui-w-full">طباعة</button>
-        </ToolShell>
+            <button onClick={() => window.print()} className="ui-btn ghost ui-w-full mb-4">طباعة سريعة</button>
+
+            {
+                items.length > 0 && (
+                    <div className="mt-8">
+                        <FinalResultView
+                            resultData={items.map(i => ({ 'الصنف': i.desc, 'السعر': i.price + ' ريال' }))}
+                            type="code"
+                            title={`فاتورة: ${client || 'عميل'}`}
+                            onDownload={() => window.print()}
+                        />
+                    </div>
+                )
+            }
+        </ToolShell >
     );
 }
 

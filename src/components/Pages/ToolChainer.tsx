@@ -1,147 +1,190 @@
 "use client";
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import {
     Zap,
-    ArrowRight,
     Play,
     Plus,
     Database,
     Settings2,
     Cpu,
     Workflow,
-    Sparkles
+    Sparkles,
+    FileText,
+    Share2
 } from 'lucide-react';
+import { useNavigation } from '@/context/NavigationContext';
 
 interface Node {
     id: string;
-    type: string;
+    type: 'input' | 'process' | 'output';
     title: string;
+    icon: any;
     x: number;
     y: number;
 }
 
 const ToolChainer = () => {
+    // Initial Node State
     const [nodes, setNodes] = useState<Node[]>([
-        { id: '1', type: 'input', title: 'مصدر البيانات (PDF)', x: 100, y: 150 },
-        { id: '2', type: 'process', title: 'استخراج النصوص', x: 450, y: 150 },
-        { id: '3', type: 'output', title: 'تحليل المشاعر', x: 800, y: 150 },
+        { id: '1', type: 'input', title: 'مصدر البيانات (PDF)', icon: Database, x: 50, y: 100 },
+        { id: '2', type: 'process', title: 'استخراج النصوص', icon: FileText, x: 400, y: 100 },
+        { id: '3', type: 'process', title: 'تحليل المشاعر (AI)', icon: Sparkles, x: 750, y: 100 },
+        { id: '4', type: 'output', title: 'تصدير JSON', icon: Share2, x: 1100, y: 100 },
     ]);
 
-    const itemVariants = {
-        hidden: { opacity: 0, scale: 0.9 },
-        visible: { opacity: 1, scale: 1 }
+    // Handle Drag - Simplified for smooth demo (updating state onDragEnd or standard React state for lines)
+    // For a truly performant app we'd use useMotionValue, but for this demo state is fine for lines.
+    const updateNodePos = (id: string, x: number, y: number) => {
+        setNodes(prev => prev.map(n => n.id === id ? { ...n, x, y } : n));
+    };
+
+    // Calculate Bezier Paths
+    const getPath = (start: Node, end: Node) => {
+        const startX = start.x + 240; // Card width approx
+        const startY = start.y + 60;  // Card height/2 approx
+        const endX = end.x;
+        const endY = end.y + 60;
+
+        return `M ${startX} ${startY} C ${startX + 80} ${startY} ${endX - 80} ${endY} ${endX} ${endY}`;
     };
 
     return (
-        <div className="relative h-[75vh] w-full bg-black/40 rounded-[48px] border border-white/5 overflow-hidden flex flex-col p-10">
+        <div className="relative h-[80vh] w-full bg-[#0D0D0F] rounded-[32px] border border-white/5 overflow-hidden flex flex-col shadow-2xl">
 
-            {/* BACKGROUND GRID */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #8B5CF6 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+            {/* GRID BACKGROUND */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none"
+                style={{
+                    backgroundImage: 'linear-gradient(#22D3EE 1px, transparent 1px), linear-gradient(90deg, #22D3EE 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0F] via-transparent to-[#0D0D0F]/80 pointer-events-none" />
 
-            {/* HEADER */}
-            <div className="relative z-10 flex items-center justify-between mb-20">
-                <div className="text-right">
-                    <h2 className="text-3xl font-black text-white flex items-center gap-3 justify-end">
-                        أتمتة تسلسل الأدوات
-                        <Workflow className="w-8 h-8 text-brand-secondary" />
-                    </h2>
-                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">النموذج التجريبي لربط الأدوات (V1.0 Beta)</p>
-                </div>
-
-                <div className="flex gap-4">
-                    <button className="bg-white/5 hover:bg-white/10 text-slate-400 font-black px-6 py-3 rounded-2xl border border-white/5 text-xs transition-all flex items-center gap-2">
+            {/* HEADER OVERLAY */}
+            <div className="absolute top-0 left-0 right-0 p-8 z-20 flex items-center justify-between pointer-events-none">
+                <div className="pointer-events-auto flex gap-3">
+                    <button className="stitch-glass px-6 py-3 text-xs font-bold text-white hover:bg-white/5 flex items-center gap-2">
                         <Settings2 className="w-4 h-4" />
                         الإعدادات
                     </button>
-                    <button className="bg-emerald-500 hover:bg-emerald-600 text-white font-black px-10 py-3 rounded-2xl transition-all shadow-xl shadow-emerald-500/30 flex items-center gap-3 text-sm">
-                        <Play className="w-5 h-5 fill-white" />
-                        تشغيل المسار
+                    <button className="bg-brand-primary text-white px-8 py-3 rounded-xl font-bold text-xs shadow-[0_0_20px_rgba(139,92,246,0.4)] flex items-center gap-2 hover:scale-105 transition-transform">
+                        <Play className="w-4 h-4 fill-white" />
+                        تشغيل
                     </button>
+                </div>
+                <div className="text-right pointer-events-auto">
+                    <h2 className="text-2xl font-black text-white flex items-center gap-2 justify-end">
+                        أتمتة المهام
+                        <Workflow className="w-6 h-6 text-brand-secondary" />
+                    </h2>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Stitch Flow Engine</p>
                 </div>
             </div>
 
-            {/* CANVAS AREA */}
-            <div className="relative flex-1">
-                {/* CONNECTING LINES (Static for prototype) */}
+            {/* CANVAS */}
+            <div className="relative flex-1 overflow-hidden cursor-dot">
+
+                {/* CONNECTIONS LAYER */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
                     <defs>
-                        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.5" />
-                            <stop offset="100%" stopColor="#22D3EE" stopOpacity="0.5" />
+                        <linearGradient id="flowGradient" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stopColor="#8B5CF6" />
+                            <stop offset="100%" stopColor="#22D3EE" />
                         </linearGradient>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#22D3EE" />
+                        </marker>
                     </defs>
-                    {/* Line 1 to 2 */}
-                    <motion.path
-                        d="M 310 190 L 450 190"
-                        stroke="url(#lineGrad)"
-                        strokeWidth="3"
-                        fill="none"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        strokeDasharray="10 5"
-                        className="animate-[dash_20s_linear_infinite]"
-                    />
-                    {/* Line 2 to 3 */}
-                    <motion.path
-                        d="M 660 190 L 800 190"
-                        stroke="url(#lineGrad)"
-                        strokeWidth="3"
-                        fill="none"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        strokeDasharray="10 5"
-                        className="animate-[dash_20s_linear_infinite]"
-                    />
+
+                    {/* Draw lines between sequential nodes */}
+                    {nodes.slice(0, -1).map((node, i) => {
+                        const nextNode = nodes[i + 1];
+                        return (
+                            <g key={i}>
+                                {/* Background Line */}
+                                <motion.path
+                                    d={getPath(node, nextNode)}
+                                    stroke="rgba(255,255,255,0.1)"
+                                    strokeWidth="4"
+                                    fill="none"
+                                />
+                                {/* Animated Line */}
+                                <motion.path
+                                    d={getPath(node, nextNode)}
+                                    stroke="url(#flowGradient)"
+                                    strokeWidth="2"
+                                    fill="none"
+                                    strokeDasharray="10 5"
+                                    markerEnd="url(#arrowhead)"
+                                    className="animate-[flow_30s_linear_infinite]"
+                                />
+                            </g>
+                        );
+                    })}
                 </svg>
 
-                {/* NODES */}
+                {/* NODES LAYER */}
                 {nodes.map((node) => (
                     <motion.div
                         key={node.id}
                         drag
                         dragMomentum={false}
-                        style={{ x: node.x, y: node.y }}
-                        className="absolute w-52 glass-card p-6 border-brand-primary/20 cursor-grab active:cursor-grabbing hover:border-brand-primary/50 transition-colors shadow-2xl"
+                        onDrag={(e, info) => {
+                            // Simple bounding box constraints or just free drag
+                            // In a real app we'd update state here or onDragEnd to redraw lines
+                            updateNodePos(node.id, node.x + info.delta.x, node.y + info.delta.y);
+                        }}
+                        initial={{ x: node.x, y: node.y, opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="absolute w-60 stitch-glass p-0 overflow-hidden cursor-grab active:cursor-grabbing group"
                     >
-                        <div className="flex flex-col items-center text-center gap-4">
-                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${node.type === 'input' ? 'bg-orange-500/20 text-orange-500' :
-                                    node.type === 'process' ? 'bg-brand-primary/20 text-brand-primary' :
-                                        'bg-brand-secondary/20 text-brand-secondary'
-                                }`}>
-                                {node.type === 'input' ? <Database className="w-6 h-6" /> :
-                                    node.type === 'process' ? <Cpu className="w-6 h-6" /> :
-                                        <Sparkles className="w-6 h-6" />}
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-black text-white leading-tight">{node.title}</h4>
-                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{node.type}</span>
+                        {/* Node Header */}
+                        <div className={`h-1 w-full ${node.type === 'input' ? 'bg-orange-500' :
+                                node.type === 'output' ? 'bg-green-500' : 'bg-brand-primary'
+                            }`} />
+
+                        <div className="p-5">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${node.type === 'input' ? 'bg-orange-500/20 text-orange-400' :
+                                        node.type === 'output' ? 'bg-green-500/20 text-green-400' : 'bg-brand-primary/20 text-brand-primary'
+                                    }`}>
+                                    <node.icon className="w-5 h-5" />
+                                </div>
+                                <button className="text-slate-500 hover:text-white transition-colors">
+                                    <Settings2 className="w-4 h-4" />
+                                </button>
                             </div>
 
-                            {/* Connection Ports */}
-                            <div className="absolute top-1/2 -right-2 w-4 h-4 bg-brand-primary rounded-full border-4 border-brand-bg shadow-lg" />
-                            <div className="absolute top-1/2 -left-2 w-4 h-4 bg-brand-secondary rounded-full border-4 border-brand-bg shadow-lg" />
+                            <h4 className="text-white font-bold text-sm mb-1">{node.title}</h4>
+                            <p className="text-[10px] text-slate-500 font-mono uppercase">{node.id}.{node.type.toUpperCase()}</p>
                         </div>
+
+                        {/* Ports */}
+                        {node.type !== 'input' && (
+                            <div className="absolute top-1/2 -right-1.5 w-3 h-3 bg-slate-700 rounded-full border-2 border-[#0D0D0F] group-hover:bg-brand-secondary transition-colors" />
+                        )}
+                        {node.type !== 'output' && (
+                            <div className="absolute top-1/2 -left-1.5 w-3 h-3 bg-slate-700 rounded-full border-2 border-[#0D0D0F] group-hover:bg-brand-primary transition-colors" />
+                        )}
                     </motion.div>
                 ))}
 
-                {/* ADD BUTTON */}
+                {/* FAB */}
                 <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    className="absolute bottom-10 right-10 w-16 h-16 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-all shadow-xl"
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="absolute bottom-8 right-8 w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-brand-primary/40 z-30"
                 >
                     <Plus className="w-8 h-8" />
                 </motion.button>
             </div>
 
             <style jsx>{`
-         @keyframes dash {
-           to {
-             stroke-dashoffset: -1000;
-           }
-         }
-      `}</style>
-
+                @keyframes flow {
+                    to { stroke-dashoffset: -1000; }
+                }
+            `}</style>
         </div>
     );
 };

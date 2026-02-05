@@ -2,201 +2,187 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-    Zap,
-    BarChart3,
-    Settings,
-    ArrowUpRight,
-    Clock,
-    Play,
-    Share2,
-    Download,
-    Terminal,
-    Layers
+    Activity, ArrowRight, Grid, Layout, Star,
+    Settings, Search, Bell, User, Zap, Terminal, Code,
+    FileText, Calculator, Image as ImageIcon, Briefcase,
+    TrendingUp, Shield, HelpCircle
 } from 'lucide-react';
-import { tools } from '@/data/tools';
 import { useNavigation } from '@/context/NavigationContext';
 
+// Reusable Premium Glass Card Component
+const GlassCard = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay }}
+        whileHover={{ y: -5, boxShadow: "0 20px 40px rgba(139, 92, 246, 0.1)" }}
+        className={`bg-[#13131A] backdrop-blur-xl border border-white/5 rounded-[24px] p-6 transition-all relative overflow-hidden ${className}`}
+    >
+        {children}
+    </motion.div>
+);
+
 const UserDashboard = () => {
-    const { setCurrentView } = useNavigation();
-    const topTools = tools.slice(0, 4);
-
-    const analytics = [
-        { name: 'معالجة البيانات', usage: 78, color: 'bg-brand-primary' },
-        { name: 'استهلاك الـ API', usage: 45, color: 'bg-brand-secondary' },
-        { name: 'التخزين السحابي', usage: 92, color: 'bg-orange-500' },
-    ];
-
-    const quickActions = [
-        { title: 'تحويل سريع', icon: Zap, color: 'text-brand-secondary', id: 'workspace' },
-        { title: 'دليل الأدوات', icon: Share2, color: 'text-brand-primary', id: 'directory' },
-        { title: 'محطة العمل', icon: Terminal, color: 'text-slate-400', id: 'workspace' },
-        { title: 'أتمتة الأدوات', icon: Layers, color: 'text-orange-500', id: 'chainer' },
-    ];
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
-    };
+    const { setCurrentView, launchTool } = useNavigation();
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="space-y-10"
-        >
+        <div className="space-y-8 pb-10">
 
-            {/* TOP ROW: WELCOME & QUICK ACTIONS */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-                {/* Welcome Section */}
-                <motion.div variants={itemVariants} className="lg:col-span-8 relative overflow-hidden rounded-[32px] bg-gradient-to-br from-brand-card to-brand-primary/10 p-10 border border-white/5 shadow-2xl">
-                    <div className="relative z-10 space-y-4">
-                        <h2 className="text-3xl font-black text-white">طابت أوقاتك، رياّن 👋</h2>
-                        <p className="text-slate-400 font-medium max-w-lg">مرحباً بك مجدداً في مركز التحكم الخاص بك. لديك <span className="text-brand-primary">12 طلب</span> معلقة و <span className="text-brand-secondary">3 تقارير</span> جاهزة للتحميل.</p>
-                        <div className="pt-4 flex gap-4">
-                            <button
-                                onClick={() => setCurrentView('workspace')}
-                                className="bg-brand-primary text-white font-black px-8 py-3 rounded-xl transition-all shadow-xl shadow-brand-primary/20 active:scale-95 text-xs relative z-20"
-                            >
-                                فتح آخر أداة
-                            </button>
-                            <button
-                                onClick={() => setCurrentView('directory')}
-                                className="bg-white/5 hover:bg-white/10 text-white font-bold px-8 py-3 rounded-xl transition-all border border-white/10 active:scale-95 text-xs relative z-20"
-                            >
-                                عرض السجل
-                            </button>
-                        </div>
+            {/* HERO SECTION */}
+            <GlassCard className="bg-gradient-to-r from-brand-primary/10 to-transparent p-10">
+                <div className="max-w-2xl relative z-10 space-y-6">
+                    <div>
+                        <h2 className="text-3xl lg:text-4xl font-black text-white mb-2 leading-tight">
+                            مرحباً بك في لوحة تحكم <span className="text-brand-primary">RI88 PRO</span>
+                        </h2>
+                        <p className="text-slate-400 text-sm leading-relaxed max-w-lg">
+                            قم بإدارة أدواتك الذكية، متابعة استهلاك الخوادم، وإنشاء سلاسل أتمتة متقدمة من مكان واحد.
+                        </p>
                     </div>
-                    <div className="absolute top-1/2 left-10 -translate-y-1/2 opacity-10 pointer-events-none">
-                        <Zap className="w-48 h-48 text-brand-primary rotate-12" />
-                    </div>
-                </motion.div>
 
-                {/* Quick Actions Grid */}
-                <motion.div variants={itemVariants} className="lg:col-span-4 grid grid-cols-2 gap-4">
-                    {quickActions.map((action, i) => (
+                    <div className="flex flex-wrap gap-4">
                         <button
-                            key={i}
-                            onClick={() => setCurrentView(action.id as any)}
-                            className="glass-card flex flex-col items-center justify-center p-6 gap-3 group hover:border-brand-primary/30 transition-all cursor-pointer relative z-20 overflow-hidden"
+                            onClick={() => setCurrentView('directory')}
+                            className="bg-brand-primary hover:bg-brand-primary/90 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-brand-primary/30 transition-all active:scale-95"
                         >
-                            <div className={`w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center ${action.color} group-hover:scale-110 transition-transform`}>
-                                <action.icon className="w-6 h-6" />
-                            </div>
-                            <span className="text-[10px] font-black uppercase text-slate-400 group-hover:text-white transition-colors">{action.title}</span>
+                            تصفح الأدوات
                         </button>
-                    ))}
-                </motion.div>
-            </div>
-
-            {/* SECOND ROW: TOP TOOLS & ANALYTICS */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-                {/* Top Tools List */}
-                <motion.div variants={itemVariants} className="lg:col-span-8 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-black text-white">الأدوات الأكثر استخداماً</h3>
-                        <button onClick={() => setCurrentView('directory')} className="text-brand-primary text-xs font-bold hover:underline relative z-20">عرض الكل</button>
+                        <button
+                            onClick={() => setCurrentView('chainer')}
+                            className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-3 rounded-xl font-bold text-sm transition-all active:scale-95"
+                        >
+                            إنشاء سلسلة (Chain)
+                        </button>
                     </div>
+                </div>
+                {/* Visual Decorative Element */}
+                <div className="absolute left-0 top-0 w-80 h-80 bg-brand-primary/20 blur-[100px] rounded-full -translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+            </GlassCard>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {topTools.map((tool) => (
-                            <button
-                                key={tool.id}
-                                onClick={() => setCurrentView('workspace')}
-                                className="glass-card p-6 flex items-center gap-6 group cursor-pointer hover:bg-brand-primary/5 transition-all w-full text-right relative z-20"
-                            >
-                                <div className="w-16 h-16 bg-brand-primary/20 rounded-2xl flex items-center justify-center text-brand-primary shrink-0 group-hover:rotate-12 transition-transform">
-                                    <Zap className="w-8 h-8" />
-                                </div>
-                                <div className="flex-1 overflow-hidden">
-                                    <h4 className="font-bold text-white group-hover:text-brand-primary transition-colors truncate">{tool.titleAr || tool.title}</h4>
-                                    <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{tool.descAr || tool.desc}</p>
-                                </div>
-                                <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-slate-600 group-hover:bg-brand-primary group-hover:text-white transition-all shrink-0">
-                                    <Play className="w-4 h-4 fill-current" />
-                                </div>
-                            </button>
-                        ))}
+            {/* DASHBOARD GRID */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                {/* COLUMN 1: TOP TOOLS */}
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center px-2">
+                        <h3 className="text-xs font-black tracking-widest uppercase text-slate-500">الأدوات الشائعة</h3>
+                        <button onClick={() => setCurrentView('directory')} className="text-[10px] text-brand-primary font-bold hover:underline">عرض الكل</button>
                     </div>
-                </motion.div>
+                    <GlassCard delay={0.1} className="min-h-[300px]">
+                        <div className="space-y-3">
+                            {[
+                                { title: 'تحويل العملات', icon: Activity, id: 'currency-converter' },
+                                { title: 'تحويل PDF إلى Excel', icon: FileText, id: 'pdf-to-excel' },
+                                { title: 'منسق JSON', icon: Code, id: 'json-formatter' },
+                                { title: 'ضغط الصور', icon: ImageIcon, id: 'image-compressor' }
+                            ].map((tool, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => launchTool(tool.id)} // Assuming IDs might match or handled
+                                    className="w-full flex items-center justify-between p-3.5 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 hover:border-brand-primary/30 transition-all group group"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-all">
+                                            <tool.icon className="w-5 h-5" />
+                                        </div>
+                                        <span className="text-sm font-bold text-white text-right">{tool.title}</span>
+                                    </div>
+                                    <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-brand-primary rtl:rotate-180 transition-colors" />
+                                </button>
+                            ))}
+                        </div>
+                    </GlassCard>
+                </div>
 
-                {/* Analytics Section */}
-                <motion.div variants={itemVariants} className="lg:col-span-4 glass-card p-8 space-y-8">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-black text-white">إحصائيات الاستخدام</h3>
-                        <BarChart3 className="w-5 h-5 text-brand-secondary" />
-                    </div>
-
-                    <div className="space-y-6">
-                        {analytics.map((item, i) => (
-                            <div key={i} className="space-y-3">
-                                <div className="flex justify-between text-xs font-bold">
-                                    <span className="text-slate-400">{item.name}</span>
-                                    <span className="text-white">{item.usage}%</span>
+                {/* COLUMN 2: ANALYTICS */}
+                <div className="space-y-4">
+                    <h3 className="text-xs font-black tracking-widest uppercase text-slate-500 px-2">إحصائيات الاستخدام</h3>
+                    <GlassCard delay={0.2} className="h-full min-h-[300px] flex flex-col justify-center gap-8">
+                        <div className="space-y-6">
+                            {/* Stat 1 */}
+                            <div>
+                                <div className="flex justify-between text-xs font-bold mb-3 text-slate-400">
+                                    <span>الأدوات المالية</span>
+                                    <span className="text-white">84%</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
-                                        animate={{ width: `${item.usage}%` }}
-                                        transition={{ duration: 1, delay: 0.5 + i * 0.1 }}
-                                        className={`h-full ${item.color} rounded-full shadow-[0_0_10px_rgba(139,92,246,0.3)]`}
+                                        animate={{ width: "84%" }}
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+                                        className="h-full bg-brand-primary shadow-[0_0_15px_rgba(139,92,246,0.5)] rounded-full"
                                     />
                                 </div>
                             </div>
-                        ))}
-                    </div>
 
-                    <div className="pt-4 p-4 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-between">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-slate-500 uppercase">معدل الدقة</span>
-                            <span className="text-lg font-black text-brand-secondary">99.8%</span>
-                        </div>
-                        <ArrowUpRight className="w-6 h-6 text-brand-secondary" />
-                    </div>
-                </motion.div>
-            </div>
-
-            {/* THIRD ROW: RECENT ACTIVITY (Placeholder) */}
-            <motion.section variants={itemVariants} className="glass-card p-8">
-                <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-xl font-black text-white">النشاط الأخير</h3>
-                    <div className="flex gap-2">
-                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors relative z-20"><Download className="w-4 h-4" /></button>
-                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors relative z-20"><Settings className="w-4 h-4" /></button>
-                    </div>
-                </div>
-
-                <div className="space-y-4">
-                    {[1, 2, 3].map((n) => (
-                        <div key={n} className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/[0.02] transition-colors border border-transparent hover:border-white/5">
-                            <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-500">
-                                    <Clock className="w-5 h-5" />
+                            {/* Stat 2 */}
+                            <div>
+                                <div className="flex justify-between text-xs font-bold mb-3 text-slate-400">
+                                    <span>سلاسل الأتمتة</span>
+                                    <span className="text-white">42%</span>
                                 </div>
-                                <div className="flex flex-col">
-                                    <span className="font-bold text-sm text-white">تم معالجة "invoice_final.pdf"</span>
-                                    <span className="text-[10px] text-slate-600 font-medium">منذ حولي 15 دقيقة</span>
+                                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: "42%" }}
+                                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                                        className="h-full bg-brand-secondary shadow-[0_0_15px_rgba(34,211,238,0.5)] rounded-full"
+                                    />
                                 </div>
                             </div>
-                            <span className="text-[10px] font-black uppercase text-brand-secondary px-3 py-1 bg-brand-secondary/10 rounded-lg">ناجح</span>
-                        </div>
-                    ))}
-                </div>
-            </motion.section>
 
-        </motion.div>
+                            {/* Stat 3 */}
+                            <div>
+                                <div className="flex justify-between text-xs font-bold mb-3 text-slate-400">
+                                    <span>معالجة النصوص</span>
+                                    <span className="text-white">65%</span>
+                                </div>
+                                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: "65%" }}
+                                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
+                                        className="h-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] rounded-full"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </GlassCard>
+                </div>
+
+                {/* COLUMN 3: SHORTCUTS */}
+                <div className="space-y-4">
+                    <h3 className="text-xs font-black tracking-widest uppercase text-slate-500 px-2">روابط سريعة</h3>
+                    <GlassCard delay={0.3} className="min-h-[300px]">
+                        <div className="grid grid-cols-2 gap-4 h-full">
+                            {[
+                                { label: 'تطبيق جديد', icon: Layout, action: 'submit-tool' },
+                                { label: 'النشر', icon: RocketIcon, action: 'admin-server' }, // RocketIcon wrapper below
+                                { label: 'السجلات', icon: Terminal, action: 'error-logs' },
+                                { label: 'مفاتيح API', icon: Shield, action: 'settings' },
+                            ].map((item, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentView(item.action as any)}
+                                    className="flex flex-col items-center justify-center p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-brand-primary/50 hover:bg-white/10 transition-all cursor-pointer group aspect-square"
+                                >
+                                    <div className="text-slate-500 group-hover:text-brand-primary mb-3 transition-colors">
+                                        <item.icon className="w-8 h-8" />
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-300 group-hover:text-white transition-colors">{item.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </GlassCard>
+                </div>
+            </div>
+        </div>
     );
 };
+
+// Helper for icon mapped manually if needed, or stick to import
+const RocketIcon = ({ className }: { className?: string }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>
+);
 
 export default UserDashboard;

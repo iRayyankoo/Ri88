@@ -1,119 +1,190 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageSquare,
     X,
     Send,
-    Sparkles,
     Zap,
-    BrainCircuit,
-    Command
+    Cpu,
+    Sparkles,
+    Bot,
+    User,
+    Cloud,
+    Mic,
+    MicOff
 } from 'lucide-react';
+import { useSession } from '@/hooks/useSession';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 const FloatingAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        { role: 'assistant', content: 'مرحباً رياّن! أنا مساعدك الذكي في RI88 PRO. كيف يمكنني مساعدتك في أتمتة مهامك اليوم؟' }
+
+    // PERSISTENCE
+    const [messages, setMessages] = useSession('ai_chat_history', [
+        { id: 1, role: 'ai', text: 'أهلاً بك! أنا مساعد RI88 الذكي. كيف يمكنني مساعدتك في أدواتك اليوم؟' }
     ]);
+
     const [inputText, setInputText] = useState('');
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // VOICE RECOGNITION HOOK
+    const { isListening, startListening, stopListening } = useSpeechRecognition((text) => {
+        setInputText(text);
+    });
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     const handleSend = () => {
         if (!inputText.trim()) return;
-        setMessages([...messages, { role: 'user', content: inputText }]);
+        const newMsg = { id: Date.now(), role: 'user', text: inputText };
+        setMessages(prev => [...prev, newMsg]);
         setInputText('');
 
-        // Mock response
         setTimeout(() => {
             setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: 'جاري تحليل طلبك.. هل تود ربط "محول العملات" بـ "حاسبة الضريبة" آلياً؟'
+                id: Date.now() + 1,
+                role: 'ai',
+                text: 'جاري تحليل طلبك... 🤖 (هذا رد تجريبي)'
             }]);
-        }, 1000);
+        }, 1200);
     };
+
+    // Auto-save Indicator (Simulated logic)
+    const [saved, setSaved] = useState(false);
+    useEffect(() => {
+        if (messages.length > 1) {
+            setSaved(true);
+            const t = setTimeout(() => setSaved(false), 2000);
+            return () => clearTimeout(t);
+        }
+    }, [messages]);
 
     return (
         <>
-            {/* Floating Trigger */}
+            {/* Trigger Button */}
             <motion.button
-                onClick={() => setIsOpen(!isOpen)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="fixed bottom-28 lg:bottom-12 left-10 lg:left-12 z-[60] w-16 h-16 bg-brand-primary text-white rounded-2xl shadow-2xl shadow-brand-primary/40 flex items-center justify-center border border-white/20"
+                onClick={() => setIsOpen(true)}
+                className="fixed bottom-8 right-8 w-16 h-16 bg-brand-primary rounded-full shadow-[0_0_20px_rgba(139,92,246,0.5)] flex items-center justify-center text-white z-[9999] border border-white/20"
             >
-                <Sparkles className="w-8 h-8 fill-white/20" />
+                <Cpu className="w-8 h-8 animate-pulse text-white" />
             </motion.button>
 
-            {/* Assistant Panel */}
+            {/* Chat Drawer */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 50, scale: 0.9, x: 20 }}
-                        animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
-                        exit={{ opacity: 0, y: 50, scale: 0.9, x: 20 }}
-                        className="fixed bottom-48 lg:bottom-32 left-10 lg:left-12 z-[60] w-[380px] h-[550px] glass-card flex flex-col overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.6)] border-brand-primary/30"
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed top-0 right-0 h-screen w-full md:w-[400px] bg-[#0D0D0F]/80 backdrop-blur-3xl border-l border-white/10 z-[99999] flex flex-col shadow-2xl"
+                        dir="rtl"
                     >
                         {/* Header */}
-                        <div className="p-6 bg-brand-primary/10 border-b border-white/5 flex items-center justify-between flex-row-reverse">
-                            <div className="flex items-center gap-3 flex-row-reverse">
-                                <div className="w-10 h-10 bg-brand-primary/20 rounded-xl flex items-center justify-center text-brand-primary">
-                                    <BrainCircuit className="w-6 h-6" />
+                        <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/5">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-brand-primary/20 rounded-xl flex items-center justify-center border border-brand-primary/20">
+                                    <Zap className="w-5 h-5 text-brand-primary" />
                                 </div>
-                                <div className="text-right">
-                                    <h4 className="text-sm font-black text-white">المساعد الذكي</h4>
-                                    <div className="flex items-center gap-1.5 justify-end">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-pulse" />
-                                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">متصل الآن</span>
+                                <div>
+                                    <h3 className="text-sm font-bold text-white">المساعد الذكي</h3>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-bold">متصل الآن</p>
+                                        {saved && (
+                                            <span className="flex items-center gap-1 text-[9px] text-slate-500 animate-pulse">
+                                                <Cloud className="w-3 h-3" /> تم الحفظ
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white transition-colors">
-                                <X className="w-5 h-5" />
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="p-2 hover:bg-white/10 rounded-full transition-colors group"
+                            >
+                                <X className="w-5 h-5 text-slate-400 group-hover:text-white" />
                             </button>
                         </div>
 
-                        {/* Chat Area */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
-                            {messages.map((msg, i) => (
-                                <div key={i} className={`flex ${msg.role === 'assistant' ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-medium leading-relaxed ${msg.role === 'assistant'
-                                            ? 'bg-white/5 text-slate-200 rounded-tr-none text-right'
-                                            : 'bg-brand-primary text-white rounded-tl-none shadow-lg'
-                                        }`}>
-                                        {msg.content}
+                        {/* Chat Content */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                            {messages.map((msg: any) => (
+                                <div key={msg.id} className={`flex ${msg.role === 'ai' ? 'justify-start' : 'justify-end'}`}>
+                                    <div className={`
+                                        max-w-[85%] p-4 rounded-2xl text-xs font-medium leading-relaxed
+                                        ${msg.role === 'ai'
+                                            ? 'bg-brand-primary/10 border border-brand-primary/20 text-slate-200 rounded-tr-none'
+                                            : 'bg-brand-primary text-white border border-brand-primary rounded-tl-none'}
+                                    `}>
+                                        {msg.text}
                                     </div>
                                 </div>
                             ))}
+                            <div ref={messagesEndRef} />
+
+                            {/* Suggestions */}
+                            <div className="pt-4 space-y-3 border-t border-white/5 mt-4">
+                                <div className="flex items-center gap-2">
+                                    <Sparkles className="w-3 h-3 text-brand-secondary" />
+                                    <p className="text-[10px] text-slate-500 uppercase font-black">اقتراحات ذكية</p>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {['أتمتة ملفات PDF', 'حساب الضريبة', 'تحويل العملات'].map((action) => (
+                                        <button
+                                            key={action}
+                                            onClick={() => setInputText(action)}
+                                            className="text-[10px] font-bold bg-white/5 border border-white/10 px-3 py-2 rounded-lg hover:border-brand-primary/50 hover:text-brand-primary transition-all text-slate-400"
+                                        >
+                                            {action}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Suggestions */}
-                        <div className="px-6 pb-4 flex flex-wrap gap-2 justify-end">
-                            {['أين أدوات الـ PDF؟', 'كيف أربط الأدوات؟', 'تحليل الاستخدام'].map((s) => (
-                                <button key={s} className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[10px] text-slate-400 font-bold hover:text-white hover:border-white/20 transition-all">
-                                    {s}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Input Area */}
-                        <div className="p-6 pt-2 border-t border-white/5 relative bg-brand-bg/50">
-                            <div className="relative group">
-                                <button
-                                    onClick={handleSend}
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-brand-primary text-white rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition-transform"
-                                >
-                                    <Send className="w-4 h-4 -rotate-45" />
-                                </button>
+                        {/* Input Footer */}
+                        <div className="p-6 border-t border-white/5 bg-white/5">
+                            <form
+                                onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+                                className="relative"
+                            >
                                 <input
                                     type="text"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-12 text-xs text-white outline-none focus:ring-2 focus:ring-brand-primary/30 transition-all text-right"
-                                    placeholder="اسألني عن أي شيء..."
                                     value={inputText}
                                     onChange={(e) => setInputText(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                                    placeholder={isListening ? "جاري الاستماع..." : "اسأل الذكاء الاصطناعي..."}
+                                    className={`w-full bg-[#0D0D0F] border rounded-2xl py-4 pr-12 pl-14 focus:outline-none focus:border-brand-primary transition-all text-xs text-white placeholder:text-slate-600
+                                        ${isListening ? 'border-brand-primary shadow-[0_0_15px_rgba(139,92,246,0.3)] animate-pulse ring-1 ring-brand-primary' : 'border-white/10'}
+                                    `}
                                 />
-                                <Command className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 w-4 h-4" />
-                            </div>
+
+                                {/* Mic Button */}
+                                <button
+                                    type="button"
+                                    onClick={isListening ? stopListening : startListening}
+                                    className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isListening ? 'text-red-500 hover:bg-red-500/10' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                >
+                                    {isListening ? <MicOff className="w-5 h-5 animate-bounce" /> : <Mic className="w-5 h-5" />}
+                                </button>
+
+                                {/* Send Button */}
+                                <button
+                                    type="submit"
+                                    disabled={!inputText.trim()}
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/30 hover:bg-brand-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Send className="w-4 h-4 text-white rtl:rotate-180" />
+                                </button>
+                            </form>
                         </div>
                     </motion.div>
                 )}

@@ -5,28 +5,28 @@ import Logo from '../Brand/Logo';
 import {
     Home,
     LayoutGrid,
-    Construction,
-    Cpu,
-    FileText,
-    ShieldCheck,
-    Settings,
-    Search,
     Zap,
     Terminal,
-    Workflow
+    Workflow,
+    ShieldCheck,
+    Cpu,
+    Search,
+    User,
+    Settings,
+    LogOut
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigation } from '@/context/NavigationContext';
 
 const Sidebar = () => {
-    const { currentView, setCurrentView, isLoggedIn } = useNavigation();
+    const { currentView, setCurrentView, isLoggedIn, setIsLoggedIn } = useNavigation();
 
     const navItems = [
         { name: 'الرئيسية', icon: Home, id: 'landing' },
         { name: 'لوحة التحكم', icon: LayoutGrid, id: 'dashboard' },
         { name: 'دليل الأدوات', icon: Zap, id: 'directory' },
         { name: 'مساحة العمل', icon: Terminal, id: 'workspace' },
-        { name: 'أتمتة الأدوات', icon: Workflow, id: 'chainer' },
+        { name: 'أتمتة المهام (Chain)', icon: Workflow, id: 'chainer' },
     ];
 
     const adminItems = [
@@ -35,9 +35,9 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className="hidden lg:flex w-72 h-screen sidebar-ri88 border-l border-white/5 flex-col p-8 shrink-0 z-40 sticky top-0 shadow-[20px_0_40px_rgba(0,0,0,0.5)]">
+        <aside className="hidden lg:flex w-72 h-screen bg-[#0D0D0F]/95 backdrop-blur-2xl border-l border-white/5 flex-col p-6 shrink-0 z-50 sticky top-0">
             {/* Logo Section */}
-            <div className="mb-12">
+            <div className="mb-10 px-2">
                 <Logo size="md" />
             </div>
 
@@ -46,13 +46,13 @@ const Sidebar = () => {
                 <div className="absolute inset-y-0 right-4 flex items-center text-slate-500 group-hover:text-brand-primary transition-colors">
                     <Search className="w-4 h-4" />
                 </div>
-                <div className="bg-white/5 border border-white/5 rounded-2xl py-3 pr-11 pl-4 text-xs text-slate-400 font-medium group-hover:border-white/10 transition-all text-right">
-                    بحث سريع عن أداة...
+                <div className="bg-white/5 border border-white/5 rounded-2xl py-3.5 pr-11 pl-4 text-xs text-slate-400 font-medium group-hover:border-brand-primary/30 group-hover:bg-brand-primary/5 transition-all text-right shadow-inner">
+                    بحث سريع (Ctrl + K)
                 </div>
             </div>
 
             {/* Primary Navigation */}
-            <nav className="flex-1 space-y-2 text-right">
+            <nav className="flex-1 space-y-2 text-right overflow-y-auto no-scrollbar pb-6">
                 <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-4 select-none">القائمة الرئيسية</p>
                 {navItems.map((item) => {
                     const isActive = currentView === item.id;
@@ -64,20 +64,26 @@ const Sidebar = () => {
                         >
                             <motion.div
                                 whileHover={{ x: -4 }}
-                                className={`w-full flex items-center justify-end gap-4 px-4 py-3.5 rounded-2xl transition-all group ${isActive
-                                    ? 'bg-brand-primary text-white shadow-xl shadow-brand-primary/20'
+                                className={`w-full flex items-center justify-end gap-3 px-4 py-3 rounded-xl transition-all group relative overflow-hidden ${isActive
+                                    ? 'text-white shadow-[0_0_25px_rgba(139,92,246,0.3)]'
                                     : 'text-slate-500 hover:text-white hover:bg-white/5'
                                     }`}
                             >
-                                <span className="font-bold text-sm">{item.name}</span>
-                                <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-brand-primary'}`} />
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="sidebar-active"
+                                        className="absolute inset-0 bg-brand-primary rounded-xl -z-10"
+                                    />
+                                )}
+                                <span className={`font-bold text-sm relative z-10 ${isActive ? 'text-white' : ''}`}>{item.name}</span>
+                                <item.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-brand-primary'}`} />
                             </motion.div>
                         </button>
                     );
                 })}
 
                 <div className="pt-8">
-                    <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-4 select-none">المستوى المتقدم</p>
+                    <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-4 select-none">أدوات متقدمة</p>
                     {adminItems.map((item) => {
                         const isActive = currentView === item.id;
                         return (
@@ -88,9 +94,9 @@ const Sidebar = () => {
                             >
                                 <motion.div
                                     whileHover={{ x: -4 }}
-                                    className={`w-full flex items-center justify-end gap-4 px-4 py-3.5 rounded-2xl transition-all group ${isActive
-                                        ? 'bg-white/10 text-brand-secondary border border-brand-secondary/30'
-                                        : 'text-slate-500 hover:text-white hover:bg-white/5'
+                                    className={`w-full flex items-center justify-end gap-3 px-4 py-3 rounded-xl transition-all group border ${isActive
+                                        ? 'bg-brand-secondary/10 border-brand-secondary/20 text-brand-secondary'
+                                        : 'border-transparent text-slate-500 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
                                     <span className="font-bold text-sm">{item.name}</span>
@@ -104,20 +110,30 @@ const Sidebar = () => {
 
             {/* Profile Footer */}
             <div className="mt-auto pt-6 border-t border-white/5">
-                <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-4 p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer border border-white/0 hover:border-white/5"
-                >
-                    <div className="flex-1 text-right">
-                        <p className="text-xs font-black text-white">رياّن المطور</p>
-                        <p className="text-[9px] text-brand-secondary font-bold uppercase tracking-widest">خطة بريميوم</p>
-                    </div>
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-secondary p-0.5">
-                        <div className="w-full h-full bg-brand-bg rounded-[9px] flex items-center justify-center overflow-hidden">
-                            <img src="https://ui-avatars.com/api/?name=R&background=8B5CF6&color=fff" alt="User" className="w-full h-full object-cover" />
+                {isLoggedIn ? (
+                    <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="flex items-center gap-3 p-3 rounded-2xl bg-[#13131A] hover:bg-white/5 transition-all cursor-pointer border border-white/5 group"
+                    >
+                        <button onClick={() => setIsLoggedIn(false)} className="p-2 hover:bg-red-500/10 rounded-lg text-slate-500 hover:text-red-500 transition-colors">
+                            <LogOut className="w-4 h-4" />
+                        </button>
+                        <div className="flex-1 text-right">
+                            <p className="text-xs font-black text-white group-hover:text-brand-primary transition-colors">رياّن المطور</p>
+                            <p className="text-[9px] text-brand-secondary font-bold uppercase tracking-widest">PRO MEMBER</p>
                         </div>
-                    </div>
-                </motion.div>
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-blue-600 flex items-center justify-center text-white shadow-lg shadow-brand-primary/20">
+                            <User className="w-5 h-5" />
+                        </div>
+                    </motion.div>
+                ) : (
+                    <button
+                        onClick={() => setCurrentView('auth')}
+                        className="w-full flex items-center justify-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-brand-primary/20 transition-all"
+                    >
+                        <span>تسجيل الدخول</span>
+                    </button>
+                )}
             </div>
         </aside>
     );

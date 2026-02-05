@@ -1,13 +1,17 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type ViewType = 'landing' | 'dashboard' | 'directory' | 'workspace' | 'admin' | 'dev' | 'chainer' | 'favorites' | 'settings' | 'categories';
+export type ViewType = 'landing' | 'dashboard' | 'directory' | 'workspace' | 'admin' | 'dev' | 'chainer' | 'visitor-preview' | 'plans' | 'store' | 'extensions' | 'wallet' | 'favorites' | 'settings' | 'categories' | 'submit-tool' | 'api-docs' | 'error-logs' | 'auth' | 'admin-users' | 'admin-server' | 'admin-changelog' | 'checkout';
 
 interface NavigationContextType {
     currentView: ViewType;
     setCurrentView: (view: ViewType) => void;
     isLoggedIn: boolean;
     setIsLoggedIn: (status: boolean) => void;
+    activeToolId: string | null;
+    launchTool: (toolId: string) => void;
+    isSidebarOpen: boolean;
+    setIsSidebarOpen: (isOpen: boolean) => void;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -15,9 +19,25 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     const [currentView, setCurrentView] = useState<ViewType>('landing');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [activeToolId, setActiveToolId] = useState<string | null>(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const launchTool = (toolId: string) => {
+        setActiveToolId(toolId);
+        setCurrentView('workspace');
+    };
 
     return (
-        <NavigationContext.Provider value={{ currentView, setCurrentView, isLoggedIn, setIsLoggedIn }}>
+        <NavigationContext.Provider value={{
+            currentView,
+            setCurrentView,
+            isLoggedIn,
+            setIsLoggedIn,
+            activeToolId,
+            launchTool,
+            isSidebarOpen,
+            setIsSidebarOpen
+        }}>
             {children}
         </NavigationContext.Provider>
     );

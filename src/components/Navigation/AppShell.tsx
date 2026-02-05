@@ -4,44 +4,33 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import BottomNav from './BottomNav';
 import FloatingAssistant from '../AIAssistant/FloatingAssistant';
-import { useNavigation } from '@/context/NavigationContext';
-import { useSearchParams } from 'next/navigation';
 
 interface AppShellProps {
     children: React.ReactNode;
 }
 
 const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
-    const { currentView } = useNavigation();
-    const searchParams = useSearchParams();
-    const isPreview = searchParams.get('preview') === 'true';
-
-    // If not in preview mode, we hide the structural elements
-    if (!isPreview) {
-        return (
-            <div className="min-h-screen bg-brand-bg text-slate-100 flex overflow-hidden lg:flex-row-reverse" dir="rtl">
-                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth relative">
-                    {children}
-                </main>
-            </div>
-        );
-    }
-
     return (
-        <div className="min-h-screen bg-brand-bg text-slate-100 flex overflow-x-hidden lg:flex-row-reverse" dir="rtl">
+        <div className="min-h-screen flex overflow-hidden lg:flex-row-reverse relative" dir="rtl">
+
+            {/* BACKGROUND EFFECTS */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-brand-primary/10 blur-[120px] rounded-full mix-blend-screen" />
+                <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-brand-secondary/5 blur-[100px] rounded-full mix-blend-screen" />
+            </div>
 
             {/* Desktop Sidebar (Right side for RTL) */}
             <Sidebar />
 
-            {/* Main Container */}
-            <div className="flex-1 flex flex-col min-h-screen relative">
+            {/* Main Container - Glass Dashboard Frame */}
+            <div className="flex-1 flex flex-col h-screen relative z-10">
 
                 {/* Global Header */}
                 <Header />
 
-                {/* Dynamic Content Area */}
-                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth relative z-10">
-                    <div className="max-w-[1600px] mx-auto p-6 lg:p-12 pb-44 lg:pb-24">
+                {/* Dynamic Content Area - 2 Columns by default in pages */}
+                <main className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth relative p-6 lg:p-10 pb-32">
+                    <div className="max-w-[1920px] mx-auto h-full">
                         {children}
                     </div>
                 </main>
@@ -59,7 +48,7 @@ const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
 
 const AppShell: React.FC<AppShellProps> = (props) => {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-brand-bg" />}>
+        <Suspense fallback={<div className="min-h-screen bg-brand-bg flex items-center justify-center text-brand-primary">Loading RI88 PRO...</div>}>
             <AppShellContent {...props} />
         </Suspense>
     );

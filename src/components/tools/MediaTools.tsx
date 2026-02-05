@@ -2,6 +2,8 @@
 import React, { useState, useRef } from 'react';
 import { Mic, Square } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { FileUploadZone } from '../Inputs/FileUploadZone';
+import { FinalResultView } from '../Outputs/FinalResultView';
 
 interface ToolProps {
     toolId: string;
@@ -47,15 +49,30 @@ function ImageCompressor() {
             <ToolInputRow label={`الجودة (${quality})`}>
                 <input type="range" min="0.1" max="1.0" step="0.1" value={quality} onChange={e => setQuality(parseFloat(e.target.value))} className="ui-input p-0" aria-label="Image Quality" />
             </ToolInputRow>
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
+
+            {/* NEW DRAG & DROP ZONE */}
+            <div className="mb-8">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
             <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>ضغط الصورة</button>
 
             {res && (
-                <div className="ui-output text-center">
-                    <p className="text-[var(--ui-g2)] mb-2">الحجم الجديد: {size}</p>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Compressed result" className="max-w-full max-h-[300px] rounded-lg border border-[var(--ui-stroke)]" />
-                    <a href={res} download={`compressed_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل</a>
+                <div className="mt-8">
+                    <FinalResultView
+                        resultData={res}
+                        type="image"
+                        title="تم ضغط الصورة بنجاح"
+                        onDownload={() => {
+                            const link = document.createElement('a');
+                            link.href = res;
+                            link.download = `compressed_${file?.name.split('.')[0]}.jpg`;
+                            link.click();
+                        }}
+                    />
                 </div>
             )}
         </ToolShell>
