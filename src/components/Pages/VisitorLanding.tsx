@@ -43,7 +43,6 @@ const VisitorLanding = () => {
 
     return (
         <motion.div
-            <motion.div
             animate="visible"
             variants={containerVariants}
             className="space-y-24 pb-20"
