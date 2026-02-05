@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Star, Zap, Grid, BookOpen, Code, Image as ImageIcon, Briefcase, Filter, ArrowRightLToR } from 'lucide-react';
+import { Search, Star, Zap, Grid, BookOpen, Code, Image as ImageIcon, Briefcase, Filter } from 'lucide-react';
 import { tools } from '@/data/tools'; // Assuming this exists, or we mock it locally if needed
 import { useNavigation } from '@/context/NavigationContext';
 
@@ -24,7 +24,7 @@ const ToolsDirectory = () => {
     // Filter Logic
     const filteredTools = tools.filter(tool => {
         const matchesSearch = (tool.title?.includes(searchQuery) || tool.titleAr?.includes(searchQuery));
-        const matchesCat = activeCategory === 'all' || tool.category === activeCategory;
+        const matchesCat = activeCategory === 'all' || tool.cat === activeCategory;
         return matchesSearch && matchesCat;
     });
 
@@ -61,8 +61,8 @@ const ToolsDirectory = () => {
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
                             className={`w-full flex items-center justify-between p-3 rounded-xl text-sm font-bold transition-all group ${activeCategory === cat.id
-                                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20'
-                                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                                : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                 }`}
                         >
                             <div className="flex items-center gap-3">
@@ -100,8 +100,8 @@ const ToolsDirectory = () => {
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={`shrink-0 px-5 py-2.5 rounded-full text-xs font-black border transition-all ${activeCategory === cat.id
-                                        ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20 transform scale-105'
-                                        : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
+                                    ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20 transform scale-105'
+                                    : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
                                     }`}
                             >
                                 {cat.label}
