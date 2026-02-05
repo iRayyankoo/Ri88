@@ -123,10 +123,10 @@ function HomeContent() {
   const isMaintenanceMode = true; // Force enabled for public
 
   if (isMaintenanceMode && !isAdmin) {
-    // Return overlay, but pass a way to confirm if we are still checking? 
-    // Actually, on first render isAdmin is false. 
-    // This implies a flash of "Coming Soon" before unlock. That is acceptable for a secret backdoor.
-    return <ComingSoonOverlay />;
+    return <ComingSoonOverlay onUnlock={() => {
+      setIsAdmin(true);
+      localStorage.setItem('ri88_admin_access', 'true');
+    }} />;
   }
 
   return (
