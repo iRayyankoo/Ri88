@@ -28,7 +28,7 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
 
             {/* Bottom Credit & Unlock */}
             <div className="absolute bottom-10 left-10 lg:left-12 opacity-30 hover:opacity-100 transition-opacity flex items-center gap-4">
-                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">© 2026 RI88 PRO ARCHITECTURE</p>
+                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">© 2026 RI88 PRO ARCHITECTURE.</p>
                 <button onClick={handleAdminUnlock} className="p-2 hover:bg-white/10 rounded-full transition-colors group">
                     <ShieldCheck className="w-4 h-4 text-slate-700 group-hover:text-brand-primary" />
                 </button>
