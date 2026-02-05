@@ -120,7 +120,7 @@ function HomeContent() {
     }
   }, [searchParams]);
 
-  const isMaintenanceMode = true; // Force enabled for public
+  const isMaintenanceMode = false; // Emergency Open
 
   if (isMaintenanceMode && !isAdmin) {
     return <ComingSoonOverlay onUnlock={() => {
