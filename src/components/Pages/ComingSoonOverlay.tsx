@@ -74,8 +74,12 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
                 {[...Array(20)].map((_, i) => (
                     <motion.div
                         key={i}
-                        initial={{ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, opacity: 0 }}
-                        animate={{ y: [null, Math.random() * -100], opacity: [0, 0.5, 0] }}
+                        initial={{
+                            x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : 0,
+                            y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : 0,
+                            opacity: 0
+                        }}
+                        animate={{ y: [null, -100], opacity: [0, 0.5, 0] }}
                         transition={{ duration: Math.random() * 5 + 5, repeat: Infinity, delay: Math.random() * 5 }}
                         className="absolute w-1 h-1 bg-white rounded-full blur-[1px]"
                     />
