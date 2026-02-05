@@ -42,10 +42,12 @@ const download = (data: Uint8Array | Blob, filename: string) => {
 };
 
 // ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
 // 1. MERGE PDFs
 function PDFMerger() {
     const [files, setFiles] = useState<FileList | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const merge = async () => {
         if (!files || !window.PDFLib) return;
@@ -65,6 +67,7 @@ function PDFMerger() {
 
             const pdfBytes = await mergedPdf.save();
             download(pdfBytes, 'merged.pdf');
+            setLastFile('merged.pdf');
         } catch (e: unknown) {
             alert('Error: ' + (e as Error).message);
         }
@@ -72,7 +75,19 @@ function PDFMerger() {
     };
 
     return (
-        <ToolShell description="Combine multiple PDF files into one document.">
+        <ToolShell
+            description="Combine multiple PDF files into one document."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">✅</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Merged Successfully!</h3>
+                    <p className="text-slate-400 mb-6">Your file has been downloaded.</p>
+                    <button onClick={merge} className="ui-btn ghost ui-w-full">
+                        Sync Again
+                    </button>
+                </div>
+            )}
+        >
             <ToolInputRow label="Choose Files">
                 <input
                     type="file"
@@ -108,6 +123,7 @@ function PDFSplitter() {
     const [file, setFile] = useState<File | null>(null);
     const [range, setRange] = useState('');
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const split = async () => {
         if (!file || !window.PDFLib) return;
@@ -141,13 +157,23 @@ function PDFSplitter() {
 
             const pdfBytes = await newPdf.save();
             download(pdfBytes, `split_${file.name}`);
+            setLastFile(`split_${file.name}`);
 
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
 
     return (
-        <ToolShell description="Extract specific pages from your PDF.">
+        <ToolShell
+            description="Extract specific pages from your PDF."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">✂️</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Splitting Complete!</h3>
+                    <p className="text-slate-400 mb-6">Pages extracted successfully.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input
                     type="file"
@@ -182,6 +208,7 @@ function PDFSplitter() {
 function PDFCompressor() {
     const [file, setFile] = useState<File | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const compress = async () => {
         if (!file || !window.PDFLib) return;
@@ -196,12 +223,22 @@ function PDFCompressor() {
             copiedPages.forEach((p: any) => newPdf.addPage(p));
             const pdfBytes = await newPdf.save({ useObjectStreams: false });
             download(pdfBytes, `compressed_${file.name}`);
+            setLastFile(`compressed_${file.name}`);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
 
     return (
-        <ToolShell description="Optimize PDF file size.">
+        <ToolShell
+            description="Optimize PDF file size."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">🗜️</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Compression Complete!</h3>
+                    <p className="text-slate-400 mb-6">Your file is ready.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input
                     type="file"
@@ -224,10 +261,12 @@ function PDFCompressor() {
 function PDFToImages() {
     const [file, setFile] = useState<File | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [count, setCount] = useState(0);
 
     const convert = async () => {
         if (!file || !window.pdfjsLib) return;
         setProcessing(true);
+        setCount(0);
         try {
             const uri = URL.createObjectURL(file);
             const pdf = await window.pdfjsLib.getDocument(uri).promise;
@@ -246,13 +285,23 @@ function PDFToImages() {
                     if (blob) download(blob, `page_${i}.png`);
                 }, 'image/png');
             }
+            setCount(pdf.numPages);
             URL.revokeObjectURL(uri);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
 
     return (
-        <ToolShell description="Convert PDF pages to high-quality PNG images.">
+        <ToolShell
+            description="Convert PDF pages to high-quality PNG images."
+            results={count > 0 && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">🖼️</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Converted {count} Pages!</h3>
+                    <p className="text-slate-400 mb-6">Check your downloads folder.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input
                     type="file"
@@ -312,7 +361,20 @@ function PDFExtractText() {
     };
 
     return (
-        <ToolShell description="Extract raw text content from PDF.">
+        <ToolShell
+            description="Extract raw text content from PDF."
+            results={textResult && (
+                <div className="ui-output h-full flex flex-col">
+                    <textarea
+                        aria-label="Extracted Text Result"
+                        value={textResult}
+                        readOnly
+                        className="ui-textarea flex-1 mb-4 bg-transparent border-none p-0 resize-none text-xs font-mono text-slate-300"
+                    />
+                    <button onClick={downloadText} className="ui-btn ghost ui-w-full shrink-0">Download .txt</button>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input
                     type="file"
@@ -326,18 +388,6 @@ function PDFExtractText() {
             <button onClick={extract} disabled={!file || processing} className="ui-btn primary ui-w-full ui-mb-4">
                 {processing ? 'Extracting...' : 'Extract Text'}
             </button>
-
-            {textResult && (
-                <div className="ui-output">
-                    <textarea
-                        aria-label="Extracted Text Result"
-                        value={textResult}
-                        readOnly
-                        className="ui-textarea ui-mb-4 bg-transparent border-none p-0"
-                    />
-                    <button onClick={downloadText} className="ui-btn ghost ui-w-full">Download .txt</button>
-                </div>
-            )}
         </ToolShell>
     );
 }
@@ -348,6 +398,7 @@ function PDFProtector() {
     const [file, setFile] = useState<File | null>(null);
     const [pass, setPass] = useState('');
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const protect = async () => {
         if (!file || !pass || !window.PDFLib) return;
@@ -358,12 +409,22 @@ function PDFProtector() {
             const pdf = await PDFDocument.load(bytes);
             const pdfBytes = await pdf.save({ userPassword: pass, ownerPassword: pass });
             download(pdfBytes, `protected_${file.name}`);
+            setLastFile(`protected_${file.name}`);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
 
     return (
-        <ToolShell description="Encrypt PDF with a password.">
+        <ToolShell
+            description="Encrypt PDF with a password."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">🔒</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Encrypted Successfully!</h3>
+                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file to protect" />
             </ToolInputRow>
@@ -382,6 +443,7 @@ function PDFProtector() {
 function PDFUnlock() {
     const [file, setFile] = useState<File | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const unlock = async () => {
         if (!file || !window.PDFLib) return;
@@ -392,6 +454,7 @@ function PDFUnlock() {
             const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
             const pdfBytes = await pdf.save();
             download(pdfBytes, `unlocked_${file.name}`);
+            setLastFile(`unlocked_${file.name}`);
         } catch (e: unknown) {
             alert('Unlock failed. File may require password to open first.');
             console.error(e);
@@ -400,7 +463,16 @@ function PDFUnlock() {
     };
 
     return (
-        <ToolShell description="Remove PDF security/password (if openable).">
+        <ToolShell
+            description="Remove PDF security/password (if openable)."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">🔓</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Unlocked Successfully!</h3>
+                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file to unlock" />
             </ToolInputRow>
@@ -416,6 +488,7 @@ function PDFUnlock() {
 function ImageToPDF() {
     const [files, setFiles] = useState<FileList | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const convert = async () => {
         if (!files || !window.PDFLib) return;
@@ -438,12 +511,22 @@ function ImageToPDF() {
 
             const pdfBytes = await pdfDoc.save();
             download(pdfBytes, 'images.pdf');
+            setLastFile('images.pdf');
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
 
     return (
-        <ToolShell description="Combine images into a single PDF document.">
+        <ToolShell
+            description="Combine images into a single PDF document."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">🖼️➡️📄</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Created Successfully!</h3>
+                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Select Images">
                 <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="ui-input" aria-label="Select images to convert" />
             </ToolInputRow>
@@ -460,6 +543,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
     const [file, setFile] = useState<File | null>(null);
     const [param, setParam] = useState('');
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const run = async () => {
         if (!file || !window.PDFLib) return;
@@ -491,6 +575,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
                     const res = await newPdf.save();
                     download(res, `reordered_${file.name}`);
                     setProcessing(false);
+                    setLastFile(`reordered_${file.name}`);
                     return;
                 }
             }
@@ -513,6 +598,7 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
 
             const pdfBytes = await pdf.save();
             download(pdfBytes, `${mode}_${file.name}`);
+            setLastFile(`${mode}_${file.name}`);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
@@ -526,7 +612,16 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
     };
 
     return (
-        <ToolShell description={labels[mode]}>
+        <ToolShell
+            description={labels[mode]}
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">✨</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Operation Complete!</h3>
+                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input aria-label="Upload PDF" type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
             </ToolInputRow>
@@ -573,6 +668,7 @@ function PDFWatermark() {
     const [file, setFile] = useState<File | null>(null);
     const [text, setText] = useState('CONFIDENTIAL');
     const [processing, setProcessing] = useState(false);
+    const [lastFile, setLastFile] = useState<string | null>(null);
 
     const apply = async () => {
         if (!file || !window.PDFLib) return;
@@ -598,12 +694,22 @@ function PDFWatermark() {
 
             const pdfBytes = await pdf.save();
             download(pdfBytes, `watermarked_${file.name}`);
+            setLastFile(`watermarked_${file.name}`);
         } catch (e: unknown) { alert('Error: ' + (e as Error).message); }
         setProcessing(false);
     };
 
     return (
-        <ToolShell description="Overlay text watermark on all pages.">
+        <ToolShell
+            description="Overlay text watermark on all pages."
+            results={lastFile && (
+                <div className="ui-output text-center">
+                    <div className="text-4xl mb-4">💧</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Watermark Added!</h3>
+                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                </div>
+            )}
+        >
             <ToolInputRow label="Upload PDF">
                 <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file for watermark" />
             </ToolInputRow>

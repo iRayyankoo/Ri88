@@ -34,23 +34,24 @@ function QRGenerator() {
     }
 
     return (
-        <ToolShell description="توليد رمز استجابة سريعة (QR Code).">
-            <ToolInputRow label="النص أو الرابط">
-                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" placeholder="https://example.com" />
-            </ToolInputRow>
-            <button onClick={generate} className="ui-btn primary ui-w-full">توليد الرمز</button>
-
-            {url && (
+        <ToolShell
+            description="توليد رمز استجابة سريعة (QR Code)."
+            results={url && (
                 <div className="ui-output flex flex-col items-center">
                     <div className="bg-white p-4 rounded-2xl mb-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={url} alt="Generated QR Code" className="max-w-[200px] block" />
                     </div>
-                    <button onClick={download} className="ui-btn ghost gap-2">
+                    <button onClick={download} className="ui-btn ghost gap-2 ui-w-full">
                         <Download size={16} /> تحميل الصورة
                     </button>
                 </div>
             )}
+        >
+            <ToolInputRow label="النص أو الرابط">
+                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" placeholder="https://example.com" />
+            </ToolInputRow>
+            <button onClick={generate} className="ui-btn primary ui-w-full">توليد الرمز</button>
         </ToolShell>
     );
 }
@@ -70,7 +71,6 @@ function UnitConverter() {
     };
 
     useEffect(() => {
-        // Check if values need update to avoid infinite loop
         if (from !== types[type][0] || to !== types[type][1]) {
             setFrom(types[type][0]);
             setTo(types[type][1]);
@@ -82,7 +82,6 @@ function UnitConverter() {
         const v = parseFloat(val);
         if (isNaN(v)) return;
         let res = v;
-        // Simple logic for brevity, assumed correctly handled in original
         if (from !== to) {
             if (type === 'len') {
                 const m: Record<string, number> = { 'Meters': 1, 'Kilometers': 1000, 'Feet': 0.3048, 'Miles': 1609.34 };
@@ -99,7 +98,16 @@ function UnitConverter() {
     }
 
     return (
-        <ToolShell description="تحويل الوحدات (طول، وزن، حرارة).">
+        <ToolShell
+            description="تحويل الوحدات (طول، وزن، حرارة)."
+            results={result && (
+                <div className="ui-output text-center flex flex-col items-center justify-center h-full">
+                    <div className="text-xs text-slate-400 uppercase tracking-widest mb-2">النتيجة</div>
+                    <strong className="text-4xl text-brand-primary glow-text">{result}</strong>
+                    <div className="text-sm text-slate-500 mt-1">{to}</div>
+                </div>
+            )}
+        >
             <ToolInputRow label="القيمة">
                 <input type="number" value={val} onChange={e => setVal(e.target.value)} className="ui-input" aria-label="Value" />
             </ToolInputRow>
@@ -126,11 +134,6 @@ function UnitConverter() {
                 </div>
             </div>
             <button onClick={convert} className="ui-btn primary ui-w-full mt-4">تحويل</button>
-            {result && (
-                <div className="ui-output text-center">
-                    <strong className="text-2xl text-[var(--ui-g2)]">{result} {to}</strong>
-                </div>
-            )}
         </ToolShell>
     );
 }
@@ -154,7 +157,18 @@ function PassGen() {
     }
 
     return (
-        <ToolShell description="توليد كلمات مرور قوية وآمنة.">
+        <ToolShell
+            description="توليد كلمات مرور قوية وآمنة."
+            results={pass && (
+                <div className="ui-output text-center">
+                    <div className="text-xs text-slate-400 mb-2">كلمة المرور الجديدة</div>
+                    <div className="bg-black/20 p-4 rounded-xl font-mono text-xl text-brand-secondary break-all mb-4 select-all">
+                        {pass}
+                    </div>
+                    <button onClick={() => navigator.clipboard.writeText(pass)} className="ui-btn ghost ui-w-full">نسخ</button>
+                </div>
+            )}
+        >
             <ToolInputRow label={`الطول: ${len}`}>
                 <input type="range" min="6" max="32" value={len} aria-label="Password Length" onChange={e => setLen(parseInt(e.target.value))} className="w-full" />
             </ToolInputRow>
@@ -165,11 +179,6 @@ function PassGen() {
                 <label className="ui-checkbox"><input type="checkbox" checked={opt.sym} onChange={e => setOpt({ ...opt, sym: e.target.checked })} /> رموز</label>
             </div>
             <button onClick={generate} className="ui-btn primary ui-w-full mt-4">توليد</button>
-            {pass && (
-                <div className="ui-output text-center">
-                    <input type="text" value={pass} readOnly aria-label="Generated Password" className="ui-input text-center font-mono text-xl" />
-                </div>
-            )}
         </ToolShell>
     );
 }
@@ -198,14 +207,25 @@ function SpeedTest() {
     }
 
     return (
-        <ToolShell description="محاكاة فحص سرعة الإنترنت.">
-            <div className="flex justify-center mb-8">
-                <div className="w-[200px] h-[200px] flex items-center justify-center rounded-full border-4 border-[var(--ui-stroke)] bg-[radial-gradient(circle,var(--ui-card),transparent)]">
-                    <div className="text-center">
-                        <div className="text-[3em] font-extrabold font-mono">{speed.toFixed(1)}</div>
-                        <div className="text-[var(--ui-text-muted)]">Mbps</div>
+        <ToolShell
+            description="محاكاة فحص سرعة الإنترنت."
+            results={
+                <div className="ui-output flex flex-col items-center justify-center h-full">
+                    <div className="w-[200px] h-[200px] flex items-center justify-center rounded-full border-4 border-brand-primary/20 bg-[radial-gradient(circle,var(--brand-primary-5),transparent)] relative">
+                        {/* Simple Gauge Needle or Arc could go here */}
+                        <div className="text-center relative z-10">
+                            <div className="text-[3em] font-extrabold font-mono text-white tracking-tighter">{speed.toFixed(1)}</div>
+                            <div className="text-slate-400 text-sm">Mbps</div>
+                        </div>
+                        {status === 'running' && (
+                            <div className="absolute inset-0 rounded-full border-4 border-t-brand-primary border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+                        )}
                     </div>
                 </div>
+            }
+        >
+            <div className="py-8">
+                <p className="text-center text-slate-400 mb-8">اضغط على الزر أدناه لبدء قياس سرعة الاتصال الخاصة بك بدقة عالية.</p>
             </div>
             <button onClick={runTest} disabled={status === 'running'} className="ui-btn primary ui-w-full">
                 {status === 'running' ? 'جاري الفحص...' : 'بدء الفحص'}
@@ -249,17 +269,27 @@ function PomodoroTimer() {
     };
 
     return (
-        <ToolShell description="مؤقت التركيز (بومودورو).">
-            <div className="flex justify-center gap-4 mb-6">
-                <button onClick={() => switchMode('work')} className={`ui-btn ${mode === 'work' ? 'primary' : 'ghost'}`}>عمل (25)</button>
-                <button onClick={() => switchMode('break')} className={`ui-btn ${mode === 'break' ? 'primary' : 'ghost'}`}>راحة (5)</button>
+        <ToolShell
+            description="مؤقت التركيز (بومودورو)."
+            results={
+                <div className="ui-output flex flex-col items-center justify-center h-full">
+                    <div className={`text-6xl font-bold font-mono mb-2 ${active ? 'text-brand-primary animate-pulse' : 'text-white'}`}>
+                        {fmt(timeLeft)}
+                    </div>
+                    <div className="text-slate-400 uppercase tracking-widest text-xs">
+                        {mode === 'work' ? 'Time to Focus' : 'Take a Break'}
+                    </div>
+                </div>
+            }
+        >
+            <div className="flex justify-center gap-4 mb-8">
+                <button onClick={() => switchMode('work')} className={`ui-btn flex-1 ${mode === 'work' ? 'primary' : 'ghost'}`}>عمل (25)</button>
+                <button onClick={() => switchMode('break')} className={`ui-btn flex-1 ${mode === 'break' ? 'primary' : 'ghost'}`}>راحة (5)</button>
             </div>
-            <div className="text-center py-8">
-                <div className="text-5xl font-bold font-mono text-[var(--ui-text)]">{fmt(timeLeft)}</div>
-            </div>
+
             <div className="ui-grid-2">
-                <button onClick={toggle} className="ui-btn primary">{active ? 'إيقاف' : 'ابدأ'}</button>
-                <button onClick={reset} className="ui-btn ghost">تصفير</button>
+                <button onClick={toggle} className="ui-btn primary">{active ? 'إيقاف مؤقت' : 'ابدأ'}</button>
+                <button onClick={reset} className="ui-btn ghost">إعادة تعيين</button>
             </div>
         </ToolShell>
     );
@@ -282,21 +312,32 @@ function WheelOfLuck() {
     };
 
     return (
-        <ToolShell description="عجلة الحظ للاختيار العشوائي.">
-            <div className="text-center py-8">
-                <div className={`text-2xl font-bold ${winner ? 'text-[var(--ui-g1)]' : 'text-[var(--ui-text-muted)]'}`}>{winner || '???'}</div>
-            </div>
-            <button onClick={spin} disabled={spinning} className="ui-btn primary ui-w-full">دوّر العجلة</button>
+        <ToolShell
+            description="عجلة الحظ للاختيار العشوائي."
+            results={
+                <div className="ui-output text-center flex flex-col items-center justify-center h-full">
+                    <div className="text-sm text-slate-400 mb-4">الفائز هو</div>
+                    <div className={`text-3xl font-bold ${winner ? 'text-brand-primary glow-text scale-110' : 'text-slate-600'} transition-all duration-300`}>
+                        {winner || '???'}
+                    </div>
+                </div>
+            }
+        >
 
-            <div className="ui-output mt-4">
-                <div className="flex gap-2">
+            <button onClick={spin} disabled={spinning} className="ui-btn primary ui-w-full mb-8">
+                {spinning ? 'جاري التدوير...' : 'دوّر العجلة!'}
+            </button>
+
+            <div className="border-t border-white/10 pt-4">
+                <label className="text-sm text-slate-400 mb-2 block">الخيارات:</label>
+                <div className="flex gap-2 mb-4">
                     <input value={newItem} onChange={e => setNewItem(e.target.value)} className="ui-input" placeholder="أضف خيار..." aria-label="New Item" />
                     <button onClick={add} className="ui-btn ghost">+</button>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className="flex flex-wrap gap-2">
                     {items.map((it, i) => (
-                        <span key={i} className="ui-btn ghost text-xs px-3 py-1">
-                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="ml-2 text-red-500">×</button>
+                        <span key={i} className="ui-badge bg-white/5 text-xs px-3 py-1 rounded-full flex items-center gap-2">
+                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="text-red-400 hover:text-red-300">×</button>
                         </span>
                     ))}
                 </div>

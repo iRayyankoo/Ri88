@@ -11,7 +11,7 @@ interface ToolShellProps {
     footer?: React.ReactNode;
 }
 
-export function ToolShell({ title, description, children, className = '', footer }: ToolShellProps) {
+export function ToolShell({ title, description, children, className = '', footer, results }: ToolShellProps & { results?: React.ReactNode }) {
     return (
         <div className={`w-full ${className}`} dir="rtl">
             {/* Header Section - Full Width */}
@@ -37,24 +37,19 @@ export function ToolShell({ title, description, children, className = '', footer
 
                 {/* Output / Results Column */}
                 <div className="col-span-1 lg:col-span-5 space-y-6">
-                    {/* Placeholder for results if none are moved here automatically yet 
-                         Ideally, tools should utilize a 'SidePanel' slot, but for now we rely on the flow 
-                         or interactive portals. 
-                         
-                         For this 'Standardization', let's render a 'Quick Tips' or 'Output Area' placeholders 
-                         if the tool doesn't explicitly portal content here. 
-                     */}
-                    <GlassCard title="النتيجة" className="min-h-[200px] border-brand-secondary/20">
-                        <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm py-12">
-                            <Info className="w-8 h-8 mb-3 opacity-50" />
-                            <p>ستظهر النتائج هنا بعد الإدخال</p>
-                            {/* 
-                                Note to Dev: 
-                                Future refactor should portal the 'result' state from tools to this slot.
-                                For now, tools render results inside the left card. 
-                                To fix this, we need to refactor ToolShell to accept 'result' prop.
-                            */}
-                        </div>
+                    <GlassCard title="النتيجة" className="min-h-[200px] border-brand-secondary/20 relative overflow-hidden">
+                        {results ? (
+                            <div className="animate-fade-in relative z-10">
+                                {results}
+                            </div>
+                        ) : (
+                            <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm py-12 relative z-10">
+                                <Info className="w-8 h-8 mb-3 opacity-50" />
+                                <p>ستظهر النتائج هنا بعد الإدخال</p>
+                            </div>
+                        )}
+                        {/* Ambient Glow */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-brand-secondary/5 blur-[50px] rounded-full pointer-events-none" />
                     </GlassCard>
                 </div>
 
