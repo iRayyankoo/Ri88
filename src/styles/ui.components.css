@@ -66,20 +66,25 @@
 
 /* --- Inputs & Textareas --- */
 .ui-label {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 14px;
     font-weight: 700;
-    color: var(--ui-text-muted);
-    margin-bottom: 8px;
+    color: var(--ui-text-dim);
+    /* Lighter than muted */
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
 }
 
 .ui-input,
 .ui-select,
 .ui-textarea {
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    /* Darker glass for inputs */
-    border: 1px solid var(--ui-stroke);
+    background: rgba(255, 255, 255, 0.05);
+    /* Lighter glass */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Stronger border */
     border-radius: var(--ui-r-md);
     padding: 14px 16px;
     color: var(--ui-text);
@@ -93,8 +98,9 @@
 .ui-select:focus,
 .ui-textarea:focus {
     border-color: var(--ui-g2);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
+    /* Cyan glow */
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .ui-input::placeholder,
