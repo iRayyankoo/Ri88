@@ -50,7 +50,7 @@ const VisitorLanding = () => {
         >
 
             {/* HERO SECTION */}
-            <section className="relative min-h-[600px] flex flex-col lg:flex-row items-center justify-between gap-12 overflow-hidden rounded-[48px] stitch-glass p-12 lg:p-20">
+            <section className="relative min-h-[500px] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 overflow-hidden rounded-[40px] lg:rounded-[48px] stitch-glass p-6 md:p-12 lg:p-20">
 
                 {/* Text Content */}
                 <div className="relative z-10 flex-1 text-right space-y-8">
@@ -59,7 +59,7 @@ const VisitorLanding = () => {
                         منصة الأدوات الأولى في الشرق الأوسط
                     </motion.div>
 
-                    <motion.h1 variants={itemVariants} className="text-4xl lg:text-6xl font-black tracking-tighter leading-tight text-white">
+                    <motion.h1 variants={itemVariants} className="text-3xl md:text-4xl lg:text-6xl font-black tracking-tighter leading-tight text-white">
                         قوة الذكاء <br /> <span className="text-brand-primary">في متناول يدك</span>
                     </motion.h1>
 
@@ -70,13 +70,13 @@ const VisitorLanding = () => {
                     <motion.div variants={itemVariants} className="flex items-center justify-end gap-6 pt-4">
                         <button
                             onClick={() => setCurrentView('directory')}
-                            className="bg-white/5 hover:bg-white/10 text-white font-bold px-10 py-4 rounded-2xl transition-all border border-brand-primary/10 active:scale-95"
+                            className="bg-white/5 hover:bg-white/10 text-white font-bold px-6 py-3 lg:px-10 lg:py-4 rounded-xl lg:rounded-2xl transition-all border border-brand-primary/10 active:scale-95 text-sm lg:text-base"
                         >
                             مشاهدة العرض
                         </button>
                         <button
                             onClick={() => setCurrentView('dashboard')}
-                            className="btn-primary flex items-center gap-3 shadow-2xl shadow-brand-primary/40 active:scale-95"
+                            className="btn-primary flex items-center gap-3 shadow-2xl shadow-brand-primary/40 active:scale-95 px-6 py-3 lg:px-10 lg:py-4 rounded-xl lg:rounded-2xl text-sm lg:text-base"
                         >
                             <ArrowLeft className="w-5 h-5" />
                             ابدأ مجاناً الآن
@@ -89,7 +89,7 @@ const VisitorLanding = () => {
                     variants={itemVariants}
                     animate={{ y: [0, -20, 0] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative shrink-0 w-full max-w-[400px] lg:max-w-[500px]"
+                    className="relative shrink-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[500px]"
                 >
                     <div className="absolute inset-0 bg-brand-primary/20 blur-[100px] rounded-full" />
                     <img
@@ -137,7 +137,7 @@ const VisitorLanding = () => {
             </section>
 
             {/* REGISTER CTA WITH COUNTDOWN */}
-            <section className="relative overflow-hidden rounded-[40px] bg-brand-primary p-12 lg:p-20 text-center text-white shadow-[0_20px_50px_rgba(139,92,246,0.3)]">
+            <section className="relative overflow-hidden rounded-[32px] lg:rounded-[40px] bg-brand-primary p-8 lg:p-20 text-center text-white shadow-[0_20px_50px_rgba(139,92,246,0.3)]">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
 
                 <div className="relative z-10 space-y-8 max-w-3xl mx-auto">
@@ -232,7 +232,7 @@ const VisitorLanding = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    className="w-full bg-[#8B5CF6] rounded-[56px] p-16 lg:p-24 text-center space-y-10 relative overflow-hidden"
+                    className="w-full bg-[#8B5CF6] rounded-[40px] lg:rounded-[56px] p-8 md:p-16 lg:p-24 text-center space-y-10 relative overflow-hidden"
                 >
                     {/* Abstract Patterns */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
