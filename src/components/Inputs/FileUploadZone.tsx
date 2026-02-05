@@ -11,13 +11,15 @@ interface FileUploadZoneProps {
     onVoiceChange?: (blob: Blob | null) => void;
     accept?: Record<string, string[]>;
     maxSize?: number; // In bytes
+    title?: string;
 }
 
 export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
     onFileChange,
     onVoiceChange,
     accept = { 'application/pdf': ['.pdf'], 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] },
-    maxSize = 10 * 1024 * 1024 // 10MB Default
+    maxSize = 10 * 1024 * 1024, // 10MB Default
+    title = "اسحب وأفلت الملف هنا"
 }) => {
     const [file, setFile] = useState<File | null>(null);
     const [progress, setProgress] = useState(0);
@@ -76,7 +78,7 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
                                 <CloudUpload className={`w-8 h-8 ${isDragActive ? 'text-brand-primary animate-bounce' : 'text-slate-500 group-hover:text-brand-primary transition-colors'}`} />
                             </div>
                             <div>
-                                <p className="text-lg font-bold text-white group-hover:text-brand-primary transition-colors">اسحب وأفلت الملف هنا</p>
+                                <p className="text-lg font-bold text-white group-hover:text-brand-primary transition-colors">{title}</p>
                                 <p className="text-sm text-brand-secondary/70 mt-1">أو اضغط لاختيار ملف من جهازك</p>
                             </div>
                             <p className="text-[10px] text-slate-600 uppercase tracking-widest font-mono pt-2">Max Size: {(maxSize / 1024 / 1024).toFixed(0)}MB</p>

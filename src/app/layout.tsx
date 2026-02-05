@@ -6,11 +6,7 @@ export const metadata: Metadata = {
   description: "أدوات ذكية لاستخدامك اليومي - بوابة ريان (Rayyan Portal)",
 };
 
-import GlobalFooter from "@/components/GlobalFooter";
 import SessionWrapper from "@/components/auth/SessionWrapper";
-
-import AppShell from "@/components/Navigation/AppShell";
-import { NavigationProvider } from "@/context/NavigationContext";
 
 export default function RootLayout({
   children,
@@ -28,11 +24,7 @@ export default function RootLayout({
       </head>
       <body>
         <SessionWrapper>
-          <NavigationProvider>
-            <AppShell>
-              {children}
-            </AppShell>
-          </NavigationProvider>
+          {children}
         </SessionWrapper>
       </body>
     </html>

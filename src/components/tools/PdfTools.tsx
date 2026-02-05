@@ -78,12 +78,18 @@ function PDFMerger() {
         <ToolShell
             description="Combine multiple PDF files into one document."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">✅</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Merged Successfully!</h3>
-                    <p className="text-slate-400 mb-6">Your file has been downloaded.</p>
-                    <button onClick={merge} className="ui-btn ghost ui-w-full">
-                        Sync Again
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+                        <span className="text-5xl">✅</span>
+                    </div>
+                    <h3 className="text-3xl font-black text-white mb-2">Merged Successfully!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Your files have been combined into one document.</p>
+
+                    <button onClick={() => merge()} className="ui-btn ghost w-full border-white/10 hover:bg-white/5 mb-4">
+                        Download Again
+                    </button>
+                    <button onClick={() => { setLastFile(null); setFiles(null); }} className="ui-btn secondary w-full">
+                        Merge New Files
                     </button>
                 </div>
             )}
@@ -167,10 +173,15 @@ function PDFSplitter() {
         <ToolShell
             description="Extract specific pages from your PDF."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">✂️</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Splitting Complete!</h3>
-                    <p className="text-slate-400 mb-6">Pages extracted successfully.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-24 h-24 bg-blue-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(59,130,246,0.3)]">
+                        <span className="text-5xl">✂️</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white mb-2">Splitting Complete!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Extracted pages are ready.</p>
+                    <button onClick={() => { setLastFile(null); setFile(null); }} className="ui-btn primary w-full h-14 text-lg">
+                        Process Another File
+                    </button>
                 </div>
             )}
         >
@@ -232,10 +243,15 @@ function PDFCompressor() {
         <ToolShell
             description="Optimize PDF file size."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">🗜️</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Compression Complete!</h3>
-                    <p className="text-slate-400 mb-6">Your file is ready.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-24 h-24 bg-purple-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(168,85,247,0.3)]">
+                        <span className="text-5xl">🗜️</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white mb-2">Compression Done!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Your PDF has been optimized.</p>
+                    <button onClick={() => { setLastFile(null); setFile(null); }} className="ui-btn primary w-full h-14 text-lg">
+                        Compress Another
+                    </button>
                 </div>
             )}
         >
@@ -295,10 +311,15 @@ function PDFToImages() {
         <ToolShell
             description="Convert PDF pages to high-quality PNG images."
             results={count > 0 && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">🖼️</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Converted {count} Pages!</h3>
-                    <p className="text-slate-400 mb-6">Check your downloads folder.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-24 h-24 bg-orange-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(249,115,22,0.3)]">
+                        <span className="text-5xl">🖼️</span>
+                    </div>
+                    <h3 className="text-3xl font-black text-white mb-2">{count} Images</h3>
+                    <p className="text-slate-400 mb-8 text-center">Converted successfully. Check your downloads.</p>
+                    <button onClick={() => { setCount(0); setFile(null); }} className="ui-btn primary w-full h-14 text-lg">
+                        Convert More
+                    </button>
                 </div>
             )}
         >
@@ -364,14 +385,19 @@ function PDFExtractText() {
         <ToolShell
             description="Extract raw text content from PDF."
             results={textResult && (
-                <div className="ui-output h-full flex flex-col">
+                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <span>📝</span> Extracted Text
+                    </h3>
                     <textarea
                         aria-label="Extracted Text Result"
                         value={textResult}
                         readOnly
-                        className="ui-textarea flex-1 mb-4 bg-transparent border-none p-0 resize-none text-xs font-mono text-slate-300"
+                        className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-xs font-mono text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50"
                     />
-                    <button onClick={downloadText} className="ui-btn ghost ui-w-full shrink-0">Download .txt</button>
+                    <button onClick={downloadText} className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        Download .txt
+                    </button>
                 </div>
             )}
         >
@@ -418,10 +444,15 @@ function PDFProtector() {
         <ToolShell
             description="Encrypt PDF with a password."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">🔒</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Encrypted Successfully!</h3>
-                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-red-500/5 rounded-3xl border border-red-500/20">
+                    <div className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(239,68,68,0.3)]">
+                        <span className="text-5xl">🔒</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-red-500 mb-2">Encrypted!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Your file is now password protected.</p>
+                    <button onClick={() => { setLastFile(null); setFile(null); setPass(''); }} className="ui-btn primary w-full h-14 text-lg bg-red-600 border-red-500 hover:bg-red-500">
+                        Protect Another
+                    </button>
                 </div>
             )}
         >
@@ -466,10 +497,15 @@ function PDFUnlock() {
         <ToolShell
             description="Remove PDF security/password (if openable)."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">🔓</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Unlocked Successfully!</h3>
-                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-green-500/5 rounded-3xl border border-green-500/20">
+                    <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+                        <span className="text-5xl">🔓</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-green-500 mb-2">Unlocked!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Protection removed successfully.</p>
+                    <button onClick={() => { setLastFile(null); setFile(null); }} className="ui-btn primary w-full h-14 text-lg bg-green-600 border-green-500 hover:bg-green-500">
+                        Unlock Another
+                    </button>
                 </div>
             )}
         >
@@ -520,10 +556,15 @@ function ImageToPDF() {
         <ToolShell
             description="Combine images into a single PDF document."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">🖼️➡️📄</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Created Successfully!</h3>
-                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-24 h-24 bg-indigo-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(99,102,241,0.3)]">
+                        <span className="text-5xl">📄</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white mb-2">PDF Created!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Images successfully converted.</p>
+                    <button onClick={() => { setLastFile(null); setFiles(null); }} className="ui-btn primary w-full h-14 text-lg">
+                        Create New PDF
+                    </button>
                 </div>
             )}
         >
@@ -615,10 +656,15 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
         <ToolShell
             description={labels[mode]}
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">✨</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Operation Complete!</h3>
-                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-24 h-24 bg-brand-primary/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(139,92,246,0.3)]">
+                        <span className="text-5xl">✨</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white mb-2">Done!</h3>
+                    <p className="text-slate-400 mb-8 text-center">{labels[mode]} completed.</p>
+                    <button onClick={() => { setLastFile(null); setFile(null); setParam(''); }} className="ui-btn primary w-full h-14 text-lg">
+                        Edit Another
+                    </button>
                 </div>
             )}
         >
@@ -703,10 +749,15 @@ function PDFWatermark() {
         <ToolShell
             description="Overlay text watermark on all pages."
             results={lastFile && (
-                <div className="ui-output text-center">
-                    <div className="text-4xl mb-4">💧</div>
-                    <h3 className="text-xl font-bold text-white mb-2">Watermark Added!</h3>
-                    <p className="text-slate-400 mb-6">File downloaded.</p>
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-cyan-500/5 rounded-3xl border border-cyan-500/20">
+                    <div className="w-24 h-24 bg-cyan-500/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,211,238,0.3)]">
+                        <span className="text-5xl">💧</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-cyan-400 mb-2">Watermarked!</h3>
+                    <p className="text-slate-400 mb-8 text-center">Document secured with watermark.</p>
+                    <button onClick={() => { setLastFile(null); setFile(null); setText(''); }} className="ui-btn primary w-full h-14 text-lg bg-cyan-600 border-cyan-500 hover:bg-cyan-500">
+                        Add Another
+                    </button>
                 </div>
             )}
         >

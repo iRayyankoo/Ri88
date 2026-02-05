@@ -45,23 +45,10 @@ function ImageCompressor() {
     };
 
     return (
-        <ToolShell description="ضغط الصور لتقليل حجمها مع الحفاظ على الجودة.">
-            <ToolInputRow label={`الجودة (${quality})`}>
-                <input type="range" min="0.1" max="1.0" step="0.1" value={quality} onChange={e => setQuality(parseFloat(e.target.value))} className="ui-input p-0" aria-label="Image Quality" />
-            </ToolInputRow>
-
-            {/* NEW DRAG & DROP ZONE */}
-            <div className="mb-8">
-                <FileUploadZone
-                    onFileChange={setFile}
-                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
-                />
-            </div>
-
-            <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>ضغط الصورة</button>
-
-            {res && (
-                <div className="mt-8">
+        <ToolShell
+            description="ضغط الصور لتقليل حجمها مع الحفاظ على الجودة."
+            results={res && (
+                <div className="h-full flex flex-col justify-center">
                     <FinalResultView
                         resultData={res}
                         type="image"
@@ -73,8 +60,26 @@ function ImageCompressor() {
                             link.click();
                         }}
                     />
+                    <div className="mt-4 text-center">
+                        <span className="text-brand-secondary font-mono text-sm">{size}</span>
+                        <p className="text-xs text-white/30 mt-1">New Size</p>
+                    </div>
                 </div>
             )}
+        >
+            <ToolInputRow label={`الجودة (${Math.round(quality * 100)}%)`}>
+                <input type="range" min="0.1" max="1.0" step="0.1" value={quality} onChange={e => setQuality(parseFloat(e.target.value))} className="ui-input p-0" aria-label="Image Quality" />
+            </ToolInputRow>
+
+            {/* NEW DRAG & DROP ZONE */}
+            <div className="mb-8">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
+            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>ضغط الصورة</button>
         </ToolShell>
     );
 }
@@ -106,21 +111,34 @@ function ImageResizer() {
     };
 
     return (
-        <ToolShell description="تغيير أبعاد الصورة (بكسل).">
-            <div className="ui-grid-2">
-                <ToolInputRow label="العرض (px)"><input type="number" value={w} onChange={e => setW(e.target.value)} className="ui-input" aria-label="Width in pixels" /></ToolInputRow>
-                <ToolInputRow label="الارتفاع (px)"><input type="number" value={h} onChange={e => setH(e.target.value)} className="ui-input" aria-label="Height in pixels" /></ToolInputRow>
-            </div>
-            <div className="text-xs text-gray-400 mb-4">* اترك حقلاً فارغاً للحفاظ على الأبعاد.</div>
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>تغيير الحجم</button>
-            {res && (
-                <div className="ui-output text-center">
+        <ToolShell
+            description="تغيير أبعاد الصورة (بكسل)."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Resized result" className="max-w-full max-h-[300px] rounded-lg mx-auto" />
-                    <a href={res} download={`resized_${file?.name}`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل</a>
+                    <img src={res} alt="Resized result" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download={`resized_${file?.name}`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل الصورة</span>
+                        </a>
+                    </div>
                 </div>
             )}
+        >
+            <div className="mb-6">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
+            <div className="ui-grid-2 mb-2">
+                <ToolInputRow label="العرض (px)"><input type="number" value={w} onChange={e => setW(e.target.value)} className="ui-input text-lg font-bold h-14" aria-label="Width in pixels" placeholder="Auto" /></ToolInputRow>
+                <ToolInputRow label="الارتفاع (px)"><input type="number" value={h} onChange={e => setH(e.target.value)} className="ui-input text-lg font-bold h-14" aria-label="Height in pixels" placeholder="Auto" /></ToolInputRow>
+            </div>
+            <div className="text-xs text-brand-secondary/70 mb-8 font-medium">* اترك حقلاً فارغاً للحفاظ على الأبعاد.</div>
+
+            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>تغيير الحجم</button>
         </ToolShell>
     );
 }
@@ -145,16 +163,27 @@ function WebPConverter() {
     };
 
     return (
-        <ToolShell description="تحويل الصور إلى صيغة WebP الحديثة.">
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>تحويل إلى WebP</button>
-            {res && (
-                <div className="ui-output text-center">
+        <ToolShell
+            description="تحويل الصور إلى صيغة WebP الحديثة."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="WebP result" className="max-w-full max-h-[300px] rounded-lg mx-auto" />
-                    <a href={res} download={`${file?.name.split('.')[0]}.webp`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل WebP</a>
+                    <img src={res} alt="WebP result" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download={`${file?.name.split('.')[0]}.webp`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل WebP</span>
+                        </a>
+                    </div>
                 </div>
             )}
+        >
+            <div className="mb-8">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>تحويل إلى WebP</button>
         </ToolShell>
     );
 }
@@ -188,21 +217,34 @@ function PhotoFilters() {
     };
 
     return (
-        <ToolShell description="تطبيق فلاتر احترافية على الصور.">
-            <div className="ui-grid-3 mb-4">
-                {['grayscale', 'sepia', 'invert', 'brightness', 'contrast', 'blur'].map(f => (
-                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn ghost text-[12px] ${filter === f ? 'bg-white/10 text-white' : ''}`} aria-label={`Apply ${f} filter`}>{f}</button>
-                ))}
-            </div>
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} className="ui-btn primary ui-w-full" disabled={!file}>تطبيق الفلتر</button>
-            {res && (
-                <div className="ui-output text-center">
+        <ToolShell
+            description="تطبيق فلاتر احترافية على الصور."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Filtered result" className="max-w-full max-h-[300px] rounded-lg mx-auto" />
-                    <a href={res} download={`filtered_${file?.name}`} className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل</a>
+                    <img src={res} alt="Filtered result" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download={`filtered_${file?.name}`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل الصورة</span>
+                        </a>
+                    </div>
                 </div>
             )}
+        >
+            <div className="mb-6">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
+            <div className="ui-grid-3 mb-8 gap-3">
+                {['grayscale', 'sepia', 'invert', 'brightness', 'contrast', 'blur'].map(f => (
+                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn h-12 text-sm font-bold border border-white/10 ${filter === f ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'ghost bg-white/5'}`} aria-label={`Apply ${f} filter`}>{f}</button>
+                ))}
+            </div>
+
+            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>تطبيق الفلتر</button>
         </ToolShell>
     );
 }
@@ -235,19 +277,35 @@ function AudioRecorder() {
     };
 
     return (
-        <ToolShell description="تسجيل الصوت مباشرة من المتصفح.">
-            <div className="text-center py-8">
-                <button onClick={toggle} className={`ui-btn w-[100px] h-[100px] rounded-full flex items-center justify-center border-2 border-white/20 ${recording ? 'bg-[#e74c3c]' : 'bg-white/10'}`}>
-                    {recording ? <Square size={32} fill="white" /> : <Mic size={32} />}
-                </button>
-                <div className="mt-4 text-gray-400">{recording ? 'جاري التسجيل...' : 'اضغط للتسجيل'}</div>
-            </div>
-            {audioUrl && (
-                <div className="ui-output text-center">
-                    <audio controls src={audioUrl} className="w-full" />
-                    <a href={audioUrl} download="recording.ogg" className="ui-btn primary ui-w-full mt-4 block no-underline">تحميل التسجيل</a>
+        <ToolShell
+            description="تسجيل الصوت مباشرة من المتصفح."
+            results={audioUrl && (
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <div className="w-full bg-black/20 p-4 rounded-xl border border-white/5 mb-6">
+                        <audio controls src={audioUrl} className="w-full" />
+                    </div>
+                    <a href={audioUrl} download="recording.ogg" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <span className="font-bold">تحميل التسجيل</span>
+                    </a>
                 </div>
             )}
+        >
+            <div className="text-center py-12 flex flex-col items-center justify-center min-h-[300px]">
+                <button
+                    onClick={toggle}
+                    className={`ui-btn w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${recording
+                            ? 'bg-red-500 border-red-900 shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse'
+                            : 'bg-white/5 border-white/10 hover:bg-brand-primary hover:border-brand-primary hover:shadow-[0_0_30px_rgba(139,92,246,0.4)]'
+                        }`}
+                >
+                    {recording ? <Square size={40} fill="white" className="text-white" /> : <Mic size={40} className="text-white" />}
+                </button>
+                <div className="mt-8">
+                    <p className={`text-lg font-bold ${recording ? 'text-red-400' : 'text-slate-400'}`}>
+                        {recording ? 'جاري التسجيل... (اضغط للإيقاف)' : 'اضغط الميكروفون لبدء التسجيل'}
+                    </p>
+                </div>
+            </div>
         </ToolShell>
     );
 }
@@ -255,14 +313,33 @@ function AudioRecorder() {
 // 6. Remove BG (Links)
 function RemoveBackground() {
     return (
-        <ToolShell description="أدوات مقترحة لإزالة الخلفية.">
-            <div className="ui-output text-center">
-                <p className="mb-4">للحصول على أفضل جودة، نوصي بهذه الأدوات المجانية:</p>
-                <div className="ui-grid-3">
-                    <a href="https://www.remove.bg" target="_blank" rel="noopener noreferrer" className="ui-btn primary no-underline">remove.bg</a>
-                    <a href="https://pfpmaker.com" target="_blank" rel="noopener noreferrer" className="ui-btn primary no-underline bg-[#3498db]">PFPMaker</a>
-                    <a href="https://www.adobe.com/express/feature/image/remove-background" target="_blank" rel="noopener noreferrer" className="ui-btn primary no-underline bg-[#e74c3c]">Adobe</a>
+        <ToolShell
+            description="أدوات مقترحة لإزالة الخلفية."
+            results={
+                <div className="h-full flex flex-col justify-center">
+                    <div className="bg-white/5 rounded-2xl p-6 border border-white/5">
+                        <h3 className="text-white font-bold mb-4">أدوات إزالة الخلفية</h3>
+                        <div className="grid gap-3">
+                            <a href="https://www.remove.bg" target="_blank" rel="noopener noreferrer" className="ui-btn h-14 justify-between px-6 bg-[#3b3b42] hover:bg-[#484850] text-white no-underline rounded-xl">
+                                <span>remove.bg</span>
+                                <span className="opacity-50">↗</span>
+                            </a>
+                            <a href="https://pfpmaker.com" target="_blank" rel="noopener noreferrer" className="ui-btn h-14 justify-between px-6 bg-gradient-to-r from-blue-600 to-cyan-500 text-white no-underline rounded-xl">
+                                <span>PFPMaker</span>
+                                <span className="opacity-50">↗</span>
+                            </a>
+                            <a href="https://www.adobe.com/express/feature/image/remove-background" target="_blank" rel="noopener noreferrer" className="ui-btn h-14 justify-between px-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white no-underline rounded-xl">
+                                <span>Adobe Express</span>
+                                <span className="opacity-50">↗</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
+            }
+        >
+            <div className="flex flex-col items-center justify-center h-full text-center py-12 opacity-50">
+                <p>قم باختيار أداة من القائمة الجانبية لفتحها في نافذة جديدة.</p>
+                <p className="text-sm mt-2">ملاحظة: هذه أدوات خارجية موثوقة.</p>
             </div>
         </ToolShell>
     );
@@ -298,18 +375,30 @@ function HeicConverter() {
     }
 
     return (
-        <ToolShell description="تحويل صور iPhone (HEIC) إلى JPG.">
-            <input aria-label="Upload HEIC Image" type="file" accept=".heic, .heif" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={convert} disabled={!file || converting} className="ui-btn primary ui-w-full">
-                {converting ? 'جاري التحويل...' : 'Convert to JPG'}
-            </button>
-            {res && (
-                <div className="ui-output text-center">
+        <ToolShell
+            description="تحويل صور iPhone (HEIC) إلى JPG."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Converted HEIC" className="max-w-full rounded-lg mx-auto" />
-                    <a href={res} download={`converted_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
+                    <img src={res} alt="Converted HEIC" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download={`converted_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل الصورة (JPG)</span>
+                        </a>
+                    </div>
                 </div>
             )}
+        >
+            <div className="mb-8">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ '.heic': [], '.heif': [] }}
+                    title="اسحب صورة HEIC هنا"
+                />
+            </div>
+            <button onClick={convert} disabled={!file || converting} className="ui-btn primary ui-w-full h-14 text-lg">
+                {converting ? 'جاري التحويل...' : 'Convert to JPG'}
+            </button>
         </ToolShell>
     );
 }
@@ -331,14 +420,29 @@ function RemoveMetadata() {
         img.src = dataUrl;
     };
     return (
-        <ToolShell description="حذف بيانات الميتا (الموقع، الجهاز) من الصورة.">
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Clean Image</button>
-            {res && (
-                <div className="ui-output text-center">
-                    <a href={res} download={`clean_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary ui-w-full block no-underline">Download Clean Image</a>
+        <ToolShell
+            description="حذف بيانات الميتا (الموقع، الجهاز) من الصورة."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-green-500/5 rounded-3xl border border-green-500/20">
+                    <div className="bg-green-500/20 w-20 h-20 rounded-full flex items-center justify-center mb-6">
+                        <span className="text-3xl">🛡️</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-green-400 mb-2">تم تنظيف الصورة</h3>
+                    <p className="text-white/50 mb-8 text-center text-sm">تمت إزالة بيانات الموقع ونوع الكاميرا وتاريخ الالتقاط.</p>
+
+                    <a href={res} download={`clean_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(34,197,94,0.3)] bg-green-600 border-green-500">
+                        <span className="font-bold text-white">تحميل الصورة الآمنة</span>
+                    </a>
                 </div>
             )}
+        >
+            <div className="mb-8">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Clean Image</button>
         </ToolShell>
     );
 }
@@ -370,21 +474,37 @@ function AddFrame() {
     };
 
     return (
-        <ToolShell description="إضافة إطار وظل للصورة.">
-            <div className="ui-grid-2">
-                <ToolInputRow label="Margin"><input type="number" value={padding} onChange={e => setPadding(parseInt(e.target.value))} className="ui-input" aria-label="Margin width" /></ToolInputRow>
-                <ToolInputRow label="Color"><input type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input h-12 p-0" aria-label="Frame color" /></ToolInputRow>
-            </div>
-            <label className="ui-checkbox mb-4 block"><input type="checkbox" checked={shadow} onChange={e => setShadow(e.target.checked)} /> Add Shadow</label>
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Generate</button>
-            {res && (
-                <div className="ui-output text-center">
+        <ToolShell
+            description="إضافة إطار وظل للصورة."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Framed result" className="max-w-full max-h-[300px] mx-auto" />
-                    <a href={res} download="framed.png" className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
+                    <img src={res} alt="Framed result" className="max-w-full max-h-[400px] rounded shadow-sm border border-white/5" style={{ background: 'url(/checker.png)' }} />
+                    <div className="mt-6 w-full">
+                        <a href={res} download="framed.png" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل</span>
+                        </a>
+                    </div>
                 </div>
             )}
+        >
+            <div className="mb-6">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
+            <div className="ui-grid-2 mb-4">
+                <ToolInputRow label="Margin"><input type="number" value={padding} onChange={e => setPadding(parseInt(e.target.value))} className="ui-input text-lg font-bold h-14" aria-label="Margin width" /></ToolInputRow>
+                <ToolInputRow label="Color"><input type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input h-14 w-full p-1 cursor-pointer" aria-label="Frame color" /></ToolInputRow>
+            </div>
+            <label className="ui-checkbox mb-8 flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer">
+                <input type="checkbox" checked={shadow} onChange={e => setShadow(e.target.checked)} className="w-5 h-5 accent-brand-primary" />
+                <span className="font-bold text-white">Add Shadow</span>
+            </label>
+
+            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Generate</button>
         </ToolShell>
     );
 }
@@ -426,10 +546,30 @@ function SocialPostPrep() {
     };
 
     return (
-        <ToolShell description="تجهيز الصور للنشر في وسائل التواصل الاجتماعي.">
-            <div className="ui-grid-2">
+        <ToolShell
+            description="تجهيز الصور للنشر في وسائل التواصل الاجتماعي."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Social post result" className="max-w-full max-h-[400px] rounded-2xl shadow-xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download="social_post.jpg" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل الصورة</span>
+                        </a>
+                    </div>
+                </div>
+            )}
+        >
+            <div className="mb-6">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
+            <div className="ui-grid-2 mb-8">
                 <ToolInputRow label="Ratio">
-                    <select aria-label="Select Ratio" value={ratio} onChange={e => setRatio(e.target.value)} className="ui-input ui-select">
+                    <select aria-label="Select Ratio" value={ratio} onChange={e => setRatio(e.target.value)} className="ui-input ui-select h-14 font-bold text-brand-secondary bg-white/5">
                         <option value="1:1">Square (1:1)</option>
                         <option value="4:5">Portrait (4:5)</option>
                         <option value="9:16">Story (9:16)</option>
@@ -437,22 +577,15 @@ function SocialPostPrep() {
                     </select>
                 </ToolInputRow>
                 <ToolInputRow label="Background">
-                    <select aria-label="Select Background" value={bgMode} onChange={e => setBgMode(e.target.value as 'blur' | 'white' | 'black')} className="ui-input ui-select">
+                    <select aria-label="Select Background" value={bgMode} onChange={e => setBgMode(e.target.value as 'blur' | 'white' | 'black')} className="ui-input ui-select h-14 font-bold text-brand-secondary bg-white/5">
                         <option value="blur">Blur</option>
                         <option value="white">White</option>
                         <option value="black">Black</option>
                     </select>
                 </ToolInputRow>
             </div>
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Fit Image</button>
-            {res && (
-                <div className="ui-output text-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Social post result" className="max-w-full max-h-[300px] mx-auto" />
-                    <a href={res} download="social_post.jpg" className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
-                </div>
-            )}
+
+            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Fit Image</button>
         </ToolShell>
     );
 }
@@ -476,16 +609,27 @@ function ImageCropper() {
         img.src = dataUrl;
     };
     return (
-        <ToolShell description="قص الصور (مربع تلقائي).">
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input mb-4" />
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full">Crop Square</button>
-            {res && (
-                <div className="ui-output text-center">
+        <ToolShell
+            description="قص الصور (مربع تلقائي)."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Cropped result" className="max-w-full max-h-[300px] mx-auto" />
-                    <a href={res} download="cropped.jpg" className="ui-btn primary ui-w-full mt-4 block no-underline">Download</a>
+                    <img src={res} alt="Cropped result" className="max-w-full max-h-[400px] rounded-2xl shadow-xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download="cropped.jpg" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                            <span className="font-bold">تحميل الصورة</span>
+                        </a>
+                    </div>
                 </div>
             )}
+        >
+            <div className="mb-8">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Crop Square</button>
         </ToolShell>
     );
 }
