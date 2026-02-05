@@ -103,10 +103,29 @@ function HomeContent() {
   };
 
   // MAINTENANCE MODE LOGIC
-  const bypassKey = searchParams.get('access');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check for query param (First priority)
+    const bypassKey = searchParams.get('access');
+    if (bypassKey === 'admin-secret-pass') {
+      localStorage.setItem('ri88_admin_access', 'true');
+      setIsAdmin(true);
+    } else {
+      // Check for stored session (Second priority)
+      const storedAccess = localStorage.getItem('ri88_admin_access');
+      if (storedAccess === 'true') {
+        setIsAdmin(true);
+      }
+    }
+  }, [searchParams]);
+
   const isMaintenanceMode = true; // Force enabled for public
 
-  if (isMaintenanceMode && bypassKey !== 'admin-secret-pass') {
+  if (isMaintenanceMode && !isAdmin) {
+    // Return overlay, but pass a way to confirm if we are still checking? 
+    // Actually, on first render isAdmin is false. 
+    // This implies a flash of "Coming Soon" before unlock. That is acceptable for a secret backdoor.
     return <ComingSoonOverlay />;
   }
 
