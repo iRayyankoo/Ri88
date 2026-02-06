@@ -6,12 +6,9 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const router = useRouter();
 
-  const handleUnlock = () => {
-    // Redirect to the PRO app
-    router.push('/pro');
-  };
+  React.useEffect(() => {
+    router.replace('/pro');
+  }, [router]);
 
-  return (
-    <ComingSoonOverlay onUnlock={handleUnlock} />
-  );
+  return null;
 }

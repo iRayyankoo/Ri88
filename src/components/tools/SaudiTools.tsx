@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
 
 interface ToolProps {
     toolId: string;
@@ -33,31 +34,31 @@ function EOSCalculator() {
     };
 
     return (
-        <ToolShell description="حساب مكافأة نهاية الخدمة حسب نظام العمل السعودي.">
-            <ToolInputRow label="الراتب الإجمالي">
-                <input type="number" value={salary} onChange={e => setSalary(e.target.value)} className="ui-input" placeholder="e.g. 5000" />
-            </ToolInputRow>
-            <div className="ui-grid-2">
-                <ToolInputRow label="سنوات الخدمة">
-                    <input type="number" value={years} onChange={e => setYears(e.target.value)} className="ui-input" placeholder="e.g. 6.5" />
-                </ToolInputRow>
-                <div className="ui-field">
-                    <label className="ui-label">سبب الإنهاء</label>
-                    <select value={reason} onChange={e => setReason(e.target.value)} aria-label="Termination Reason" className="ui-input ui-select">
-                        <option value="term">إنهاء (كامل)</option>
-                        <option value="resign">استقالة</option>
-                    </select>
-                </div>
-            </div>
-            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب المكافأة</button>
-
-            {result && (
-                <div className="ui-output text-center">
-                    <span className="ui-output-label">المكافأة التقديرية</span>
-                    <div className="text-[2em] text-[var(--ui-g1)] font-bold my-2">{result}</div>
-                    <div className="text-xs text-gray-400">* تقدير مبني على نظام العمل السعودي.</div>
+        <ToolShell
+            description="حساب مكافأة نهاية الخدمة حسب نظام العمل السعودي."
+            results={result && (
+                <div className="h-full flex flex-col justify-center items-center p-8 bg-white/5 rounded-3xl border border-white/5 text-center">
+                    <span className="text-sm font-bold text-gray-400 mb-2">المكافأة التقديرية</span>
+                    <div className="text-4xl font-extrabold text-brand-secondary my-4">{result}</div>
+                    <div className="text-xs text-brand-secondary/50 font-medium">* تقدير مبني على نظام العمل السعودي.</div>
                 </div>
             )}
+        >
+            <ToolInputRow label="الراتب الإجمالي">
+                <ToolInput type="number" value={salary} onChange={e => setSalary(e.target.value)} placeholder="e.g. 5000" />
+            </ToolInputRow>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <ToolInputRow label="سنوات الخدمة">
+                    <ToolInput type="number" value={years} onChange={e => setYears(e.target.value)} placeholder="e.g. 6.5" />
+                </ToolInputRow>
+                <ToolInputRow label="سبب الإنهاء" id="eos-reason">
+                    <ToolSelect id="eos-reason" value={reason} onChange={e => setReason(e.target.value)} aria-label="Termination Reason" title="سبب انتهاء الخدمة (Termination Reason)">
+                        <option value="term">إنهاء (كامل)</option>
+                        <option value="resign">استقالة</option>
+                    </ToolSelect>
+                </ToolInputRow>
+            </div>
+            <ToolButton onClick={calculate} className="w-full text-lg">احسب المكافأة</ToolButton>
         </ToolShell>
     );
 }
@@ -82,35 +83,36 @@ function VacationCalculator() {
     };
 
     return (
-        <ToolShell description="حساب راتب الإجازة المقدم وتاريخ العودة.">
-            <ToolInputRow label="الراتب الإجمالي">
-                <input type="number" value={salary} onChange={e => setSalary(e.target.value)} className="ui-input" aria-label="Total Salary" />
-            </ToolInputRow>
-            <div className="ui-grid-2">
-                <ToolInputRow label="مدة الإجازة (أيام)">
-                    <input type="number" value={days} onChange={e => setDays(e.target.value)} className="ui-input" aria-label="Vacation Days" />
-                </ToolInputRow>
-                <ToolInputRow label="تاريخ البداية">
-                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="ui-input" aria-label="Start Date" />
-                </ToolInputRow>
-            </div>
-
-            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
-
-            {result && (
-                <div className="ui-output ui-grid-2 text-center">
+        <ToolShell
+            description="حساب راتب الإجازة المقدم وتاريخ العودة."
+            results={result && (
+                <div className="h-full flex flex-col justify-center gap-6 p-8 bg-white/5 rounded-3xl border border-white/5 text-center">
                     <div>
-                        <span className="ui-output-label">الراتب المقدم</span>
-                        <div className="text-2xl font-bold text-[var(--ui-g1)]">{result} ريال</div>
+                        <span className="block text-sm font-bold text-gray-400 mb-1">الراتب المقدم</span>
+                        <div className="text-3xl font-extrabold text-brand-primary">{result} ريال</div>
                     </div>
                     {returnDate && (
                         <div>
-                            <span className="ui-output-label">تاريخ العودة</span>
-                            <div className="text-2xl font-bold text-[var(--ui-g2)]">{returnDate}</div>
+                            <span className="block text-sm font-bold text-gray-400 mb-1">تاريخ العودة</span>
+                            <div className="text-3xl font-extrabold text-brand-secondary">{returnDate}</div>
                         </div>
                     )}
                 </div>
             )}
+        >
+            <ToolInputRow label="الراتب الإجمالي">
+                <ToolInput type="number" value={salary} onChange={e => setSalary(e.target.value)} aria-label="Total Salary" />
+            </ToolInputRow>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <ToolInputRow label="مدة الإجازة (أيام)">
+                    <ToolInput type="number" value={days} onChange={e => setDays(e.target.value)} aria-label="Vacation Days" />
+                </ToolInputRow>
+                <ToolInputRow label="تاريخ البداية">
+                    <ToolInput type="date" value={startDate} onChange={e => setStartDate(e.target.value)} aria-label="Start Date" className="text-right" />
+                </ToolInputRow>
+            </div>
+
+            <ToolButton onClick={calculate} className="w-full text-lg">احسب</ToolButton>
         </ToolShell>
     );
 }
@@ -129,11 +131,11 @@ function IbanValidator() {
     return (
         <ToolShell description="التحقق من صحة رقم الآيبان (IBAN) السعودي.">
             <ToolInputRow label="رقم الآيبان">
-                <input value={iban} onChange={e => setIban(e.target.value)} aria-label="IBAN" className="ui-input" placeholder="SA..." />
+                <ToolInput value={iban} onChange={e => setIban(e.target.value)} aria-label="IBAN" placeholder="SA..." dir="ltr" className="text-center font-mono text-lg" />
             </ToolInputRow>
-            <button onClick={validate} className="ui-btn primary ui-w-full">تحقق</button>
+            <ToolButton onClick={validate} className="w-full text-lg mb-6">تحقق</ToolButton>
             {valid !== null && (
-                <div className={`ui-output mt-4 text-center font-bold ${valid ? 'text-green-400' : 'text-red-400'}`}>
+                <div className={`text-center font-bold text-xl py-4 rounded-xl border ${valid ? 'text-green-400 bg-green-500/10 border-green-500/30' : 'text-red-400 bg-red-500/10 border-red-500/30'}`}>
                     {valid ? '✓ IBAN صحيح (شكلياً)' : '✕ IBAN غير صالح'}
                 </div>
             )}
@@ -150,9 +152,6 @@ function TafqeetTool() {
         const n = parseInt(num);
         if (isNaN(n)) return;
         // Simplified Logic
-        setText(`${n} ريال (تفقيط مبسط)`);
-        // Note: Full logic omitted for brevity in batch update, preserving existing functionality logic if possible is key but here placeholders were used in original too.
-        // Actually the original had logic, I should have copied it. 
         // Re-implementing simplified version:
         const units = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
         const tens = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
@@ -167,11 +166,11 @@ function TafqeetTool() {
     return (
         <ToolShell description="تحويل الأرقام إلى نص عربي (تفقيط).">
             <ToolInputRow label="المبلغ">
-                <input type="number" value={num} onChange={e => setNum(e.target.value)} aria-label="Amount" className="ui-input" placeholder="مثال: 150" />
+                <ToolInput type="number" value={num} onChange={e => setNum(e.target.value)} aria-label="Amount" placeholder="مثال: 150" />
             </ToolInputRow>
-            <button onClick={convert} className="ui-btn primary ui-w-full">تحويل</button>
+            <ToolButton onClick={convert} className="w-full text-lg mb-6">تحويل</ToolButton>
             {text && (
-                <div className="ui-output mt-4 text-center font-bold text-lg text-accent-pink">
+                <div className="text-center font-bold text-2xl text-brand-secondary bg-white/5 p-6 rounded-2xl border border-white/5">
                     {text}
                 </div>
             )}
@@ -184,8 +183,8 @@ function HijriDate() {
     const [today] = useState(() => new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date()));
     return (
         <ToolShell description="عرض التاريخ الهجري لليوم.">
-            <div className="ui-output text-center py-8">
-                <div className="text-[2em] font-bold text-[var(--ui-g2)]">{today}</div>
+            <div className="flex items-center justify-center p-8 min-h-[200px] bg-white/5 rounded-3xl border border-white/5">
+                <div className="text-3xl font-bold text-brand-secondary">{today}</div>
             </div>
         </ToolShell>
     );
@@ -195,16 +194,16 @@ function HijriDate() {
 function SaudiEvents() {
     return (
         <ToolShell description="أهم الأحداث والمناسبات السعودية.">
-            <div className="ui-grid-2">
-                <div className="ui-output text-center">
-                    <div className="text-[2em]">🎉</div>
-                    <b>يوم التأسيس</b>
-                    <div className="text-gray-400">22 فبراير</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white/5 p-8 rounded-2xl border border-white/5 text-center hover:bg-white/10 transition-colors">
+                    <div className="text-6xl mb-4">🎉</div>
+                    <b className="block text-xl text-white mb-2">يوم التأسيس</b>
+                    <div className="text-gray-400 font-bold">22 فبراير</div>
                 </div>
-                <div className="ui-output text-center">
-                    <div className="text-[2em]">🇸🇦</div>
-                    <b>اليوم الوطني</b>
-                    <div className="text-gray-400">23 سبتمبر</div>
+                <div className="bg-white/5 p-8 rounded-2xl border border-white/5 text-center hover:bg-white/10 transition-colors">
+                    <div className="text-6xl mb-4">🇸🇦</div>
+                    <b className="block text-xl text-white mb-2">اليوم الوطني</b>
+                    <div className="text-gray-400 font-bold">23 سبتمبر</div>
                 </div>
             </div>
         </ToolShell>

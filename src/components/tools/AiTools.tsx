@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Sparkles, RotateCcw } from 'lucide-react';
 import { ToolShell, ToolInputRow, ToolOutput } from './ToolShell';
+import { ToolTextarea, ToolButton } from './ToolUi';
 
 export default function AiTools() {
     const [input, setInput] = useState('');
@@ -35,37 +36,40 @@ export default function AiTools() {
         <ToolShell
             description="اختر الأداة المناسبة واكتب النص للمعالجة الفورية."
             footer={
-                <>
-                    <div className="tool-footer-info">{input.length} / 5000</div>
-                    <div className="ui-btn-group">
-                        <button
-                            className="ui-btn ghost"
-                            type="button"
+                <div className="flex items-center justify-between">
+                    <div className="text-xs text-slate-400">{input.length} / 5000</div>
+                    <div className="flex gap-2">
+                        <ToolButton
+                            variant="ghost"
                             onClick={() => setInput('')}
                             disabled={!input || loading}
+                            size="sm"
+                            className="text-slate-400 hover:text-white"
                         >
                             مسح
-                        </button>
-                        <button
-                            className="ui-btn primary"
-                            type="button"
+                        </ToolButton>
+                        <ToolButton
                             onClick={handleAction}
                             disabled={!input.trim() || loading}
+                            className="bg-purple-600 hover:bg-purple-500 text-white min-w-[140px]"
                         >
                             {loading ? <RotateCcw className="animate-spin" size={16} /> : <Sparkles size={16} />}
                             {loading ? 'جاري المعالجة...' : 'بدء المعالجة'}
-                        </button>
+                        </ToolButton>
                     </div>
-                </>
+                </div>
             }
         >
-            {/* Tabs (Custom implementation for now as it's specific to AI tools, or could be generalized later) */}
-            <div className="ui-mb-4 flex gap-2 bg-white/5 p-1.5 rounded-xl w-fit">
+            {/* Tabs */}
+            <div className="mb-6 flex gap-2 bg-black/20 p-1.5 rounded-xl w-fit border border-white/5">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`ui-btn ghost h-9 border-none transition-all ${activeTab === tab.id ? 'active text-white shadow-[0_4px_12px_rgba(140,64,255,0.3)] bg-[var(--ui-grad-primary)]' : 'bg-transparent text-[var(--ui-text-muted)]'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
+                                ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20'
+                                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                            }`}
                     >
                         {tab.label}
                     </button>
@@ -73,8 +77,8 @@ export default function AiTools() {
             </div>
 
             <ToolInputRow label="النص المدخل">
-                <textarea
-                    className="ui-textarea min-h-[220px]"
+                <ToolTextarea
+                    className="min-h-[220px]"
                     placeholder="اكتب النص هنا..."
                     value={input}
                     onChange={e => setInput(e.target.value)}

@@ -4,7 +4,6 @@ import { useNavigation } from '@/context/NavigationContext';
 import VisitorLanding from '@/components/Pages/VisitorLanding';
 import UserDashboard from '@/components/Pages/UserDashboard';
 import ToolsDirectory from '@/components/Pages/ToolsDirectory';
-import ToolWorkspace from '@/components/Pages/ToolWorkspace';
 import AdminSuite from '@/components/Pages/AdminSuite';
 import DeveloperPortal from '@/components/Pages/DeveloperPortal';
 import ToolChainer from '@/components/Pages/ToolChainer';
@@ -28,6 +27,7 @@ import UserManagement from '@/components/Pages/UserManagement';
 import ServerMonitoring from '@/components/Pages/ServerMonitoring';
 import SystemChangelog from '@/components/Pages/SystemChangelog';
 import Notifications from '@/components/Pages/Notifications';
+import ToolPopup from '@/components/ToolPopup';
 
 function HomeContent() {
     const { currentView, isLoggedIn, setIsLoggedIn, setCurrentView } = useNavigation();
@@ -93,8 +93,6 @@ function HomeContent() {
 
             case 'directory':
                 return <ToolsDirectory />;
-            case 'workspace':
-                return <ToolWorkspace />;
             case 'dev':
                 return <DeveloperPortal />;
             case 'chainer':
@@ -112,6 +110,9 @@ function HomeContent() {
             </AnimatePresence>
 
             {renderContent()}
+
+            {/* Tool Popup Overlay */}
+            <ToolPopup />
 
         </div>
     );

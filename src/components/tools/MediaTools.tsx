@@ -4,6 +4,13 @@ import { Mic, Square } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { FileUploadZone } from '../Inputs/FileUploadZone';
 import { FinalResultView } from '../Outputs/FinalResultView';
+import { ToolInput, ToolButton, ToolSelect, ToolCheckbox, toolButtonVariants, toolButtonSizes } from './ToolUi';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 interface ToolProps {
     toolId: string;
@@ -68,10 +75,18 @@ function ImageCompressor() {
             )}
         >
             <ToolInputRow label={`الجودة (${Math.round(quality * 100)}%)`}>
-                <input type="range" min="0.1" max="1.0" step="0.1" value={quality} onChange={e => setQuality(parseFloat(e.target.value))} className="ui-input p-0" aria-label="Image Quality" />
+                <input
+                    type="range"
+                    min="0.1"
+                    max="1.0"
+                    step="0.1"
+                    value={quality}
+                    onChange={e => setQuality(parseFloat(e.target.value))}
+                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-primary"
+                    aria-label="Image Quality"
+                />
             </ToolInputRow>
 
-            {/* NEW DRAG & DROP ZONE */}
             <div className="mb-8">
                 <FileUploadZone
                     onFileChange={setFile}
@@ -79,12 +94,15 @@ function ImageCompressor() {
                 />
             </div>
 
-            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>ضغط الصورة</button>
+            <ToolButton onClick={process} className="w-full text-lg" disabled={!file}>ضغط الصورة</ToolButton>
         </ToolShell>
     );
 }
 
-// 2. Image Resizer
+// Helper for button classes on links
+const btnClassResult = "flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none " + toolButtonVariants.primary + " " + toolButtonSizes.md;
+
+// 2. Image Resizer (Fix Download Link)
 function ImageResizer() {
     const [file, setFile] = useState<File | null>(null);
     const [w, setW] = useState<string>('');
@@ -118,7 +136,7 @@ function ImageResizer() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={res} alt="Resized result" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
                     <div className="mt-6 w-full">
-                        <a href={res} download={`resized_${file?.name}`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download={`resized_${file?.name}`} className={btnClassResult}>
                             <span className="font-bold">تحميل الصورة</span>
                         </a>
                     </div>
@@ -132,18 +150,22 @@ function ImageResizer() {
                 />
             </div>
 
-            <div className="ui-grid-2 mb-2">
-                <ToolInputRow label="العرض (px)"><input type="number" value={w} onChange={e => setW(e.target.value)} className="ui-input text-lg font-bold h-14" aria-label="Width in pixels" placeholder="Auto" /></ToolInputRow>
-                <ToolInputRow label="الارتفاع (px)"><input type="number" value={h} onChange={e => setH(e.target.value)} className="ui-input text-lg font-bold h-14" aria-label="Height in pixels" placeholder="Auto" /></ToolInputRow>
+            <div className="grid grid-cols-2 gap-4 mb-2">
+                <ToolInputRow label="العرض (px)">
+                    <ToolInput type="number" value={w} onChange={e => setW(e.target.value)} className="font-bold text-center" aria-label="Width in pixels" placeholder="Auto" />
+                </ToolInputRow>
+                <ToolInputRow label="الارتفاع (px)">
+                    <ToolInput type="number" value={h} onChange={e => setH(e.target.value)} className="font-bold text-center" aria-label="Height in pixels" placeholder="Auto" />
+                </ToolInputRow>
             </div>
             <div className="text-xs text-brand-secondary/70 mb-8 font-medium">* اترك حقلاً فارغاً للحفاظ على الأبعاد.</div>
 
-            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>تغيير الحجم</button>
+            <ToolButton onClick={process} className="w-full text-lg" disabled={!file}>تغيير الحجم</ToolButton>
         </ToolShell>
     );
 }
 
-// 3. WebP Converter
+// 3. WebP Converter (Fix Download Link)
 function WebPConverter() {
     const [file, setFile] = useState<File | null>(null);
     const [res, setRes] = useState<string | null>(null);
@@ -170,7 +192,7 @@ function WebPConverter() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={res} alt="WebP result" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
                     <div className="mt-6 w-full">
-                        <a href={res} download={`${file?.name.split('.')[0]}.webp`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download={`${file?.name.split('.')[0]}.webp`} className={btnClassResult}>
                             <span className="font-bold">تحميل WebP</span>
                         </a>
                     </div>
@@ -183,12 +205,12 @@ function WebPConverter() {
                     accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
                 />
             </div>
-            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>تحويل إلى WebP</button>
+            <ToolButton onClick={process} className="w-full text-lg" disabled={!file}>تحويل إلى WebP</ToolButton>
         </ToolShell>
     );
 }
 
-// 4. Photo Filters
+// 4. Photo Filters (Fix Download Link)
 function PhotoFilters() {
     const [file, setFile] = useState<File | null>(null);
     const [filter, setFilter] = useState('grayscale');
@@ -224,7 +246,7 @@ function PhotoFilters() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={res} alt="Filtered result" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
                     <div className="mt-6 w-full">
-                        <a href={res} download={`filtered_${file?.name}`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download={`filtered_${file?.name}`} className={btnClassResult}>
                             <span className="font-bold">تحميل الصورة</span>
                         </a>
                     </div>
@@ -238,13 +260,20 @@ function PhotoFilters() {
                 />
             </div>
 
-            <div className="ui-grid-3 mb-8 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                 {['grayscale', 'sepia', 'invert', 'brightness', 'contrast', 'blur'].map(f => (
-                    <button key={f} onClick={() => setFilter(f)} className={`ui-btn h-12 text-sm font-bold border border-white/10 ${filter === f ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'ghost bg-white/5'}`} aria-label={`Apply ${f} filter`}>{f}</button>
+                    <ToolButton
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        variant={filter === f ? 'primary' : 'ghost'}
+                        className={`text-sm font-bold ${filter !== f ? 'border border-white/10 bg-white/5' : ''}`}
+                    >
+                        {f}
+                    </ToolButton>
                 ))}
             </div>
 
-            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg" disabled={!file}>تطبيق الفلتر</button>
+            <ToolButton onClick={process} className="w-full text-lg" disabled={!file}>تطبيق الفلتر</ToolButton>
         </ToolShell>
     );
 }
@@ -284,7 +313,7 @@ function AudioRecorder() {
                     <div className="w-full bg-black/20 p-4 rounded-xl border border-white/5 mb-6">
                         <audio controls src={audioUrl} className="w-full" />
                     </div>
-                    <a href={audioUrl} download="recording.ogg" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                    <a href={audioUrl} download="recording.ogg" className={btnClassResult}>
                         <span className="font-bold">تحميل التسجيل</span>
                     </a>
                 </div>
@@ -293,9 +322,9 @@ function AudioRecorder() {
             <div className="text-center py-12 flex flex-col items-center justify-center min-h-[300px]">
                 <button
                     onClick={toggle}
-                    className={`ui-btn w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${recording
-                            ? 'bg-red-500 border-red-900 shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse'
-                            : 'bg-white/5 border-white/10 hover:bg-brand-primary hover:border-brand-primary hover:shadow-[0_0_30px_rgba(139,92,246,0.4)]'
+                    className={`w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${recording
+                        ? 'bg-red-500 border-red-900 shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse'
+                        : 'bg-white/5 border-white/10 hover:bg-brand-primary hover:border-brand-primary hover:shadow-[0_0_30px_rgba(139,92,246,0.4)]'
                         }`}
                 >
                     {recording ? <Square size={40} fill="white" className="text-white" /> : <Mic size={40} className="text-white" />}
@@ -320,15 +349,15 @@ function RemoveBackground() {
                     <div className="bg-white/5 rounded-2xl p-6 border border-white/5">
                         <h3 className="text-white font-bold mb-4">أدوات إزالة الخلفية</h3>
                         <div className="grid gap-3">
-                            <a href="https://www.remove.bg" target="_blank" rel="noopener noreferrer" className="ui-btn h-14 justify-between px-6 bg-[#3b3b42] hover:bg-[#484850] text-white no-underline rounded-xl">
+                            <a href="https://www.remove.bg" target="_blank" rel="noopener noreferrer" className={cn(toolButtonVariants.secondary, toolButtonSizes.md, "justify-between bg-[#3b3b42] hover:bg-[#484850] text-white")}>
                                 <span>remove.bg</span>
                                 <span className="opacity-50">↗</span>
                             </a>
-                            <a href="https://pfpmaker.com" target="_blank" rel="noopener noreferrer" className="ui-btn h-14 justify-between px-6 bg-gradient-to-r from-blue-600 to-cyan-500 text-white no-underline rounded-xl">
+                            <a href="https://pfpmaker.com" target="_blank" rel="noopener noreferrer" className={cn(toolButtonVariants.secondary, toolButtonSizes.md, "justify-between bg-gradient-to-r from-blue-600 to-cyan-500 text-white")}>
                                 <span>PFPMaker</span>
                                 <span className="opacity-50">↗</span>
                             </a>
-                            <a href="https://www.adobe.com/express/feature/image/remove-background" target="_blank" rel="noopener noreferrer" className="ui-btn h-14 justify-between px-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white no-underline rounded-xl">
+                            <a href="https://www.adobe.com/express/feature/image/remove-background" target="_blank" rel="noopener noreferrer" className={cn(toolButtonVariants.secondary, toolButtonSizes.md, "justify-between bg-gradient-to-r from-purple-600 to-pink-600 text-white")}>
                                 <span>Adobe Express</span>
                                 <span className="opacity-50">↗</span>
                             </a>
@@ -382,7 +411,7 @@ function HeicConverter() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={res} alt="Converted HEIC" className="max-w-full max-h-[400px] rounded-2xl shadow-2xl border border-white/10" />
                     <div className="mt-6 w-full">
-                        <a href={res} download={`converted_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download={`converted_${file?.name.split('.')[0]}.jpg`} className={btnClassResult}>
                             <span className="font-bold">تحميل الصورة (JPG)</span>
                         </a>
                     </div>
@@ -396,9 +425,9 @@ function HeicConverter() {
                     title="اسحب صورة HEIC هنا"
                 />
             </div>
-            <button onClick={convert} disabled={!file || converting} className="ui-btn primary ui-w-full h-14 text-lg">
+            <ToolButton onClick={convert} disabled={!file || converting} className="w-full text-lg">
                 {converting ? 'جاري التحويل...' : 'Convert to JPG'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -430,7 +459,7 @@ function RemoveMetadata() {
                     <h3 className="text-xl font-bold text-green-400 mb-2">تم تنظيف الصورة</h3>
                     <p className="text-white/50 mb-8 text-center text-sm">تمت إزالة بيانات الموقع ونوع الكاميرا وتاريخ الالتقاط.</p>
 
-                    <a href={res} download={`clean_${file?.name.split('.')[0]}.jpg`} className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(34,197,94,0.3)] bg-green-600 border-green-500">
+                    <a href={res} download={`clean_${file?.name.split('.')[0]}.jpg`} className={cn(toolButtonVariants.primary, toolButtonSizes.md, "shadow-[0_0_20px_rgba(34,197,94,0.3)] bg-green-600 border-green-500 hover:bg-green-500 w-full justify-center text-lg no-underline")}>
                         <span className="font-bold text-white">تحميل الصورة الآمنة</span>
                     </a>
                 </div>
@@ -442,7 +471,7 @@ function RemoveMetadata() {
                     accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
                 />
             </div>
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Clean Image</button>
+            <ToolButton onClick={process} disabled={!file} className="w-full text-lg">Clean Image</ToolButton>
         </ToolShell>
     );
 }
@@ -479,9 +508,9 @@ function AddFrame() {
             results={res && (
                 <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={res} alt="Framed result" className="max-w-full max-h-[400px] rounded shadow-sm border border-white/5" style={{ background: 'url(/checker.png)' }} />
+                    <img src={res} alt="Framed result" className="max-w-full max-h-[400px] rounded shadow-sm border border-white/5 checkerboard" />
                     <div className="mt-6 w-full">
-                        <a href={res} download="framed.png" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download="framed.png" className={btnClassResult}>
                             <span className="font-bold">تحميل</span>
                         </a>
                     </div>
@@ -495,16 +524,24 @@ function AddFrame() {
                 />
             </div>
 
-            <div className="ui-grid-2 mb-4">
-                <ToolInputRow label="Margin"><input type="number" value={padding} onChange={e => setPadding(parseInt(e.target.value))} className="ui-input text-lg font-bold h-14" aria-label="Margin width" /></ToolInputRow>
-                <ToolInputRow label="Color"><input type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input h-14 w-full p-1 cursor-pointer" aria-label="Frame color" /></ToolInputRow>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+                <ToolInputRow label="Margin">
+                    <ToolInput type="number" value={padding} onChange={e => setPadding(parseInt(e.target.value))} className="text-lg font-bold h-14" aria-label="Margin width" />
+                </ToolInputRow>
+                <ToolInputRow label="Color">
+                    <ToolInput type="color" value={color} onChange={e => setColor(e.target.value)} className="h-14 w-full p-1 cursor-pointer" aria-label="Frame color" />
+                </ToolInputRow>
             </div>
-            <label className="ui-checkbox mb-8 flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer">
-                <input type="checkbox" checked={shadow} onChange={e => setShadow(e.target.checked)} className="w-5 h-5 accent-brand-primary" />
-                <span className="font-bold text-white">Add Shadow</span>
-            </label>
 
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Generate</button>
+            <div className="mb-8">
+                <ToolCheckbox
+                    label="Add Shadow"
+                    checked={shadow}
+                    onChange={setShadow}
+                />
+            </div>
+
+            <ToolButton onClick={process} disabled={!file} className="w-full text-lg">Generate</ToolButton>
         </ToolShell>
     );
 }
@@ -553,7 +590,7 @@ function SocialPostPrep() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={res} alt="Social post result" className="max-w-full max-h-[400px] rounded-2xl shadow-xl border border-white/10" />
                     <div className="mt-6 w-full">
-                        <a href={res} download="social_post.jpg" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download="social_post.jpg" className={btnClassResult}>
                             <span className="font-bold">تحميل الصورة</span>
                         </a>
                     </div>
@@ -567,25 +604,25 @@ function SocialPostPrep() {
                 />
             </div>
 
-            <div className="ui-grid-2 mb-8">
-                <ToolInputRow label="Ratio">
-                    <select aria-label="Select Ratio" value={ratio} onChange={e => setRatio(e.target.value)} className="ui-input ui-select h-14 font-bold text-brand-secondary bg-white/5">
+            <div className="grid grid-cols-2 gap-4 mb-8">
+                <ToolInputRow label="Ratio" id="social-ratio">
+                    <ToolSelect id="social-ratio" aria-label="Select Ratio" title="نسبة العرض (Aspect Ratio)" value={ratio} onChange={e => setRatio(e.target.value)} className="h-14 font-bold text-brand-secondary bg-white/5">
                         <option value="1:1">Square (1:1)</option>
                         <option value="4:5">Portrait (4:5)</option>
                         <option value="9:16">Story (9:16)</option>
                         <option value="16:9">Landscape</option>
-                    </select>
+                    </ToolSelect>
                 </ToolInputRow>
-                <ToolInputRow label="Background">
-                    <select aria-label="Select Background" value={bgMode} onChange={e => setBgMode(e.target.value as 'blur' | 'white' | 'black')} className="ui-input ui-select h-14 font-bold text-brand-secondary bg-white/5">
+                <ToolInputRow label="Background" id="social-bg">
+                    <ToolSelect id="social-bg" aria-label="Select Background" title="الخلفية (Background)" value={bgMode} onChange={e => setBgMode(e.target.value as 'blur' | 'white' | 'black')} className="h-14 font-bold text-brand-secondary bg-white/5">
                         <option value="blur">Blur</option>
                         <option value="white">White</option>
                         <option value="black">Black</option>
-                    </select>
+                    </ToolSelect>
                 </ToolInputRow>
             </div>
 
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Fit Image</button>
+            <ToolButton onClick={process} disabled={!file} className="w-full text-lg">Fit Image</ToolButton>
         </ToolShell>
     );
 }
@@ -616,7 +653,7 @@ function ImageCropper() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={res} alt="Cropped result" className="max-w-full max-h-[400px] rounded-2xl shadow-xl border border-white/10" />
                     <div className="mt-6 w-full">
-                        <a href={res} download="cropped.jpg" className="ui-btn primary w-full h-14 justify-center text-lg no-underline shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                        <a href={res} download="cropped.jpg" className={btnClassResult}>
                             <span className="font-bold">تحميل الصورة</span>
                         </a>
                     </div>
@@ -629,7 +666,7 @@ function ImageCropper() {
                     accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
                 />
             </div>
-            <button onClick={process} disabled={!file} className="ui-btn primary ui-w-full h-14 text-lg">Crop Square</button>
+            <ToolButton onClick={process} disabled={!file} className="w-full text-lg">Crop Square</ToolButton>
         </ToolShell>
     );
 }

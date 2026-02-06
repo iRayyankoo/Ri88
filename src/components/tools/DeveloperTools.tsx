@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolInput, ToolTextarea, ToolButton, ToolSelect } from './ToolUi';
 
 interface ToolProps {
     toolId: string;
@@ -32,30 +33,30 @@ function JsonFormatter() {
 
     return (
         <ToolShell description="تنسيق وتشذيب والتحقق من أكواد JSON.">
-            <textarea
+            <ToolTextarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                className="ui-input ui-textarea font-mono"
-                rows={10}
+                className="font-mono min-h-[300px]"
                 placeholder="Paste JSON here..."
                 aria-label="JSON Input"
-            ></textarea>
+            />
 
-            <div className="ui-grid-3 mt-4">
-                <button onClick={() => process('fmt')} className="ui-btn primary">Format</button>
-                <button onClick={() => process('min')} className="ui-btn ghost">Minify</button>
-                <button onClick={() => process('val')} className="ui-btn ghost">Validate</button>
+            <div className="flex gap-2 mt-4">
+                <ToolButton onClick={() => process('fmt')}>Format</ToolButton>
+                <ToolButton onClick={() => process('min')} variant="secondary">Minify</ToolButton>
+                <ToolButton onClick={() => process('val')} variant="ghost">Validate</ToolButton>
             </div>
 
             {msg && (
-                <div className={`p-3 mt-4 rounded-xl text-center font-bold ${msg.type === 'error' ? 'bg-red-500/20 text-[#ff7675]' : 'bg-green-500/20 text-[#2ecc71]'}`}>
+                <div className={`p-4 mt-4 rounded-xl text-center font-bold border ${msg.type === 'error' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20'}`}>
                     {msg.text}
                 </div>
             )}
 
             {output && (
-                <div className="ui-output mt-4">
-                    <textarea value={output} readOnly aria-label="JSON Output" className="ui-input ui-textarea font-mono" rows={10} />
+                <div className="mt-6">
+                    <h3 className="text-sm font-bold text-slate-400 mb-2">Output</h3>
+                    <ToolTextarea value={output} readOnly aria-label="JSON Output" className="font-mono min-h-[300px]" />
                 </div>
             )}
         </ToolShell>
@@ -71,10 +72,16 @@ function Base64Converter() {
 
     return (
         <ToolShell description="تشفير وفك تشفير النصوص بصيغة Base64.">
-            <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="Base64 Input" className="ui-input ui-textarea h-32" placeholder="Text to encode/decode..."></textarea>
-            <div className="ui-grid-2 mt-4">
-                <button onClick={encode} className="ui-btn primary">Encode</button>
-                <button onClick={decode} className="ui-btn ghost">Decode</button>
+            <ToolTextarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                aria-label="Base64 Input"
+                className="min-h-[200px]"
+                placeholder="Text to encode/decode..."
+            />
+            <div className="grid grid-cols-2 gap-4 mt-4">
+                <ToolButton onClick={encode}>Encode</ToolButton>
+                <ToolButton onClick={decode} variant="secondary">Decode</ToolButton>
             </div>
         </ToolShell>
     );
@@ -99,16 +106,16 @@ function RegexTester() {
     return (
         <ToolShell description="اختبار التعابير المنطقية (Regex).">
             <ToolInputRow label="Pattern (Regex)">
-                <input value={pattern} onChange={e => setPattern(e.target.value)} className="ui-input font-mono" placeholder="e.g. ^[a-z]+$" />
+                <ToolInput value={pattern} onChange={e => setPattern(e.target.value)} className="font-mono ltr" placeholder="e.g. ^[a-z]+$" style={{ direction: 'ltr' }} />
             </ToolInputRow>
             <ToolInputRow label="Test String">
-                <textarea value={text} onChange={e => setText(e.target.value)} className="ui-input ui-textarea h-24" placeholder="Test text..." />
+                <ToolTextarea value={text} onChange={e => setText(e.target.value)} className="min-h-[150px]" placeholder="Test text..." />
             </ToolInputRow>
-            <button onClick={test} className="ui-btn primary ui-w-full">Test Regex</button>
+            <ToolButton onClick={test} className="w-full mt-4">Test Regex</ToolButton>
 
             {result && (
-                <div className="ui-output text-center mt-4">
-                    <strong className={`text-[1.2em] ${result.match ? 'text-[#2ecc71]' : 'text-[#ff7675]'}`}>
+                <div className="mt-6 text-center">
+                    <strong className={`text-xl font-bold ${result.match ? 'text-green-400' : 'text-red-400'}`}>
                         {result.msg}
                     </strong>
                 </div>
@@ -136,14 +143,17 @@ function MetaGenerator() {
     return (
         <ToolShell description="توليد وسوم الميتا لمحركات البحث (SEO).">
             <ToolInputRow label="Page Title">
-                <input value={title} onChange={e => setTitle(e.target.value)} className="ui-input" aria-label="Page Title" />
+                <ToolInput value={title} onChange={e => setTitle(e.target.value)} aria-label="Page Title" />
             </ToolInputRow>
             <ToolInputRow label="Description">
-                <textarea value={desc} onChange={e => setDesc(e.target.value)} className="ui-input ui-textarea" aria-label="Page Description" />
+                <ToolTextarea value={desc} onChange={e => setDesc(e.target.value)} aria-label="Page Description" />
             </ToolInputRow>
-            <button onClick={gen} className="ui-btn primary ui-w-full">Generate Tags</button>
-            <button onClick={gen} className="ui-btn primary ui-w-full">Generate Tags</button>
-            {out && <div className="ui-output mt-4"><textarea value={out} readOnly aria-label="Generated Meta Tags" className="ui-input ui-textarea font-mono h-40" /></div>}
+            <ToolButton onClick={gen} className="w-full mt-4">Generate Tags</ToolButton>
+            {out && (
+                <div className="mt-6">
+                    <ToolTextarea value={out} readOnly aria-label="Generated Meta Tags" className="font-mono min-h-[200px] text-xs" />
+                </div>
+            )}
         </ToolShell>
     );
 }
@@ -157,10 +167,10 @@ function UrlEncoder() {
 
     return (
         <ToolShell description="تشفير الروابط (URL Encode/Decode).">
-            <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="URL Input" className="ui-input ui-textarea h-32" placeholder="Enter URL..."></textarea>
-            <div className="ui-grid-2 mt-4">
-                <button onClick={encode} className="ui-btn primary">Encode</button>
-                <button onClick={decode} className="ui-btn ghost">Decode</button>
+            <ToolTextarea value={input} onChange={e => setInput(e.target.value)} aria-label="URL Input" className="min-h-[200px]" placeholder="Enter URL..." />
+            <div className="grid grid-cols-2 gap-4 mt-4">
+                <ToolButton onClick={encode}>Encode</ToolButton>
+                <ToolButton onClick={decode} variant="secondary">Decode</ToolButton>
             </div>
         </ToolShell>
     );
@@ -182,20 +192,20 @@ function HashGenerator() {
     return (
         <ToolShell description="توليد الهاش (Hash) للنصوص.">
             <ToolInputRow label="Text">
-                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" placeholder="Text to hash" />
+                <ToolInput value={text} onChange={e => setText(e.target.value)} placeholder="Text to hash" />
             </ToolInputRow>
-            <ToolInputRow label="Algorithm">
-                <select value={algo} onChange={e => setAlgo(e.target.value)} aria-label="Hash Algorithm" className="ui-input ui-select">
+            <ToolInputRow label="Algorithm" id="hash-algo">
+                <ToolSelect id="hash-algo" value={algo} onChange={e => setAlgo(e.target.value)} aria-label="Hash Algorithm" title="خوارزمية الهاش (Hash Algorithm)">
                     <option value="SHA-256">SHA-256 (Recommended)</option>
                     <option value="SHA-1">SHA-1</option>
                     <option value="SHA-384">SHA-384</option>
                     <option value="SHA-512">SHA-512</option>
-                </select>
+                </ToolSelect>
             </ToolInputRow>
-            <button onClick={generate} className="ui-btn primary ui-w-full">Generate Hash</button>
+            <ToolButton onClick={generate} className="w-full mt-4">Generate Hash</ToolButton>
             {hash && (
-                <div className="ui-output mt-4 break-all font-mono text-xs">
-                    {hash}
+                <div className="mt-6">
+                    <ToolTextarea value={hash} readOnly className="font-mono text-xs break-all" />
                 </div>
             )}
         </ToolShell>
@@ -223,17 +233,17 @@ function JwtDebugger() {
 
     return (
         <ToolShell description="فحص وفك رموز توكن JWT.">
-            <textarea value={token} onChange={e => setToken(e.target.value)} className="ui-input ui-textarea h-24 mb-4 font-mono text-xs" placeholder="Paste JWT Token (ey...)" />
-            <button onClick={decode} className="ui-btn primary ui-w-full mb-4">Decode</button>
+            <ToolTextarea value={token} onChange={e => setToken(e.target.value)} className="min-h-[100px] mb-4 font-mono text-xs" placeholder="Paste JWT Token (ey...)" />
+            <ToolButton onClick={decode} className="w-full mb-6">Decode</ToolButton>
 
-            <div className="ui-grid-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="ui-label">Header</label>
-                    <textarea value={header} readOnly aria-label="Header Output" className="ui-input ui-textarea font-mono h-40 text-xs" />
+                    <label className="text-sm font-bold text-slate-400 mb-2 block">Header</label>
+                    <ToolTextarea value={header} readOnly aria-label="Header Output" className="font-mono min-h-[200px] text-xs" />
                 </div>
                 <div>
-                    <label className="ui-label">Payload</label>
-                    <textarea value={payload} readOnly aria-label="Payload Output" className="ui-input ui-textarea font-mono h-40 text-xs" />
+                    <label className="text-sm font-bold text-slate-400 mb-2 block">Payload</label>
+                    <ToolTextarea value={payload} readOnly aria-label="Payload Output" className="font-mono min-h-[200px] text-xs" />
                 </div>
             </div>
         </ToolShell>
@@ -258,12 +268,12 @@ function TextDiff() {
 
     return (
         <ToolShell description="مقارنة بين نصين لمعرفة الاختلافات.">
-            <div className="ui-grid-2 mb-4">
-                <textarea value={t1} onChange={e => setT1(e.target.value)} aria-label="Original Text" className="ui-input ui-textarea h-40" placeholder="Original Text" />
-                <textarea value={t2} onChange={e => setT2(e.target.value)} aria-label="Modified Text" className="ui-input ui-textarea h-40" placeholder="Modified Text" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <ToolTextarea value={t1} onChange={e => setT1(e.target.value)} aria-label="Original Text" className="min-h-[200px]" placeholder="Original Text" />
+                <ToolTextarea value={t2} onChange={e => setT2(e.target.value)} aria-label="Modified Text" className="min-h-[200px]" placeholder="Modified Text" />
             </div>
-            <button onClick={compare} className="ui-btn primary ui-w-full">Compare</button>
-            {res && <div className="ui-output text-center font-bold mt-4">{res}</div>}
+            <ToolButton onClick={compare} className="w-full">Compare</ToolButton>
+            {res && <div className="mt-4 p-4 text-center font-bold text-white bg-white/5 rounded-xl border border-white/10">{res}</div>}
         </ToolShell>
     );
 }
@@ -291,24 +301,25 @@ function ScreenInfo() {
 
     return (
         <ToolShell description="معلومات الشاشة والجهاز الحالية.">
-            <div className="text-center py-8">
-                <div className="text-4xl font-bold text-gray-500">
+            <div className="text-center py-12">
+                <div className="text-6xl font-black text-brand-primary glow-text tracking-widest">
                     {info.width} x {info.height}
                 </div>
+                <div className="text-sm text-slate-400 mt-2">Resolution</div>
             </div>
 
-            <div className="ui-grid-2">
-                <div className="ui-output text-center">
-                    <span className="ui-output-label">Available Space</span>
-                    <strong className="block mt-2 font-mono">{info.availWidth} x {info.availHeight}</strong>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-black/20 p-6 rounded-xl border border-white/5 text-center">
+                    <span className="text-xs text-slate-500 uppercase tracking-widest font-bold">Available Space</span>
+                    <strong className="block mt-2 font-mono text-xl text-white">{info.availWidth} x {info.availHeight}</strong>
                 </div>
-                <div className="ui-output text-center">
-                    <span className="ui-output-label">Pixel Ratio</span>
-                    <strong className="block mt-2 font-mono">{info.dpr}x</strong>
+                <div className="bg-black/20 p-6 rounded-xl border border-white/5 text-center">
+                    <span className="text-xs text-slate-500 uppercase tracking-widest font-bold">Pixel Ratio</span>
+                    <strong className="block mt-2 font-mono text-xl text-white">{info.dpr}x</strong>
                 </div>
             </div>
 
-            <div className="ui-output mt-4 text-xs text-gray-400 break-all">
+            <div className="mt-4 p-4 bg-black/40 rounded-xl border border-white/5 text-xs text-slate-400 break-all font-mono">
                 {info.userAgent}
             </div>
         </ToolShell>

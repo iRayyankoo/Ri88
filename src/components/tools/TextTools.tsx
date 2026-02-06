@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolInput, ToolTextarea, ToolButton, ToolCheckbox } from './ToolUi';
 
 interface ToolProps {
     toolId: string;
@@ -21,35 +22,34 @@ function AdobeFixer() {
         <ToolShell
             description="إصلاح النص العربي المتقطع لبرامج أدوبي (فوتوشوب، بريمير)."
             results={output && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>✨</span> النتيجة
-                    </h3>
-                    <textarea
+                <div className="h-full flex flex-col">
+                    <ToolTextarea
                         readOnly
+                        title="النتيجة"
                         value={output}
-                        className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-right font-sans text-brand-primary"
+                        className="flex-1 mb-4 min-h-[200px] text-right font-sans text-brand-primary bg-black/40 border-brand-secondary/20 focus:border-brand-secondary/50"
                     />
-                    <button
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(output)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ النص
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="النص العربي (المتقطع)">
-                <textarea
+                <ToolTextarea
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    className="ui-input ui-textarea text-right"
+                    className="text-right"
                     rows={8}
                     placeholder="اكتب النص العربي هنا..."
-                    aria-label="Input Text"
-                ></textarea>
+                    title="النص العربي"
+                />
             </ToolInputRow>
-            <button onClick={process} className="ui-btn primary ui-w-full h-14 text-lg">إصلاح النص</button>
+            <ToolButton onClick={process} className="w-full">إصلاح النص</ToolButton>
         </ToolShell>
     );
 }
@@ -77,44 +77,59 @@ function TextCleaner() {
         <ToolShell
             description="تنظيف النصوص من المسافات الزائدة والإيموجي والتنسيقات."
             results={output && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>🧹</span> النص المنظف
-                    </h3>
-                    <textarea readOnly value={output} className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-slate-300" />
-                    <button
-                        onClick={() => navigator.clipboard.writeText(output)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-                    >
-                        نسخ النص
-                    </button>
+                <div className="h-full flex flex-col items-center justify-center text-center">
+                    <div className="w-full h-full flex flex-col">
+                        <ToolTextarea
+                            readOnly
+                            value={output}
+                            title="النتيجة المنظفة"
+                            className="flex-1 mb-4 min-h-[200px] text-slate-300 bg-black/40 border-brand-secondary/20 focus:border-brand-secondary/50"
+                        />
+                        <ToolButton
+                            onClick={() => navigator.clipboard.writeText(output)}
+                            variant="secondary"
+                            className="w-full"
+                        >
+                            نسخ النص
+                        </ToolButton>
+                    </div>
                 </div>
             )}
         >
             <ToolInputRow label="النص الأصلي">
-                <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="Text to Clean" className="ui-input ui-textarea" rows={8} placeholder="الصق النص هنا..."></textarea>
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={8}
+                    placeholder="الصق النص هنا..."
+                    title="النص الأصلي"
+                />
             </ToolInputRow>
 
-            <div className="ui-grid-2 gap-4 mb-8">
-                <label className="ui-checkbox flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors">
-                    <input type="checkbox" checked={opts.spaces} onChange={e => setOpts({ ...opts, spaces: e.target.checked })} className="accent-brand-primary w-5 h-5" />
-                    <span className="font-bold text-sm">حذف المسافات</span>
-                </label>
-                <label className="ui-checkbox flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors">
-                    <input type="checkbox" checked={opts.lines} onChange={e => setOpts({ ...opts, lines: e.target.checked })} className="accent-brand-primary w-5 h-5" />
-                    <span className="font-bold text-sm">حذف الأسطر</span>
-                </label>
-                <label className="ui-checkbox flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors">
-                    <input type="checkbox" checked={opts.emoji} onChange={e => setOpts({ ...opts, emoji: e.target.checked })} className="accent-brand-primary w-5 h-5" />
-                    <span className="font-bold text-sm">حذف الإيموجي</span>
-                </label>
-                <label className="ui-checkbox flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-pointer hover:bg-white/10 transition-colors">
-                    <input type="checkbox" checked={opts.html} onChange={e => setOpts({ ...opts, html: e.target.checked })} className="accent-brand-primary w-5 h-5" />
-                    <span className="font-bold text-sm">حذف كود HTML</span>
-                </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <ToolCheckbox
+                    label="حذف المسافات"
+                    checked={opts.spaces}
+                    onChange={c => setOpts({ ...opts, spaces: c })}
+                />
+                <ToolCheckbox
+                    label="حذف الأسطر"
+                    checked={opts.lines}
+                    onChange={c => setOpts({ ...opts, lines: c })}
+                />
+                <ToolCheckbox
+                    label="حذف الإيموجي"
+                    checked={opts.emoji}
+                    onChange={c => setOpts({ ...opts, emoji: c })}
+                />
+                <ToolCheckbox
+                    label="حذف كود HTML"
+                    checked={opts.html}
+                    onChange={c => setOpts({ ...opts, html: c })}
+                />
             </div>
 
-            <button onClick={clean} className="ui-btn primary ui-w-full h-14 text-lg">تنظيف النص</button>
+            <ToolButton onClick={clean} className="w-full">تنظيف النص</ToolButton>
         </ToolShell >
     );
 }
@@ -135,37 +150,35 @@ function CaseConverter() {
         <ToolShell
             description="تحويل حالة الأحرف الإنجليزية (Capital/Small)."
             results={input && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>🔠</span> النتيجة
-                    </h3>
-                    <div className="flex-1 bg-black/20 border border-white/10 rounded-xl p-6 text-xl text-slate-300 overflow-auto font-mono">
+                <div className="h-full flex flex-col">
+                    <div className="flex-1 bg-black/40 border border-white/10 rounded-xl p-6 text-xl text-slate-300 overflow-auto font-mono mb-4">
                         {input}
                     </div>
-                    <button
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(input)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)] mt-4"
+                        variant="secondary"
+                        className="w-full"
                     >
                         Copy
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Text to Convert">
-                <textarea
+                <ToolTextarea
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    aria-label="English Text Input"
-                    className="ui-input ui-textarea"
                     rows={8}
                     placeholder="Type text here..."
+                    title="English Text"
+                    dir="ltr"
                 />
             </ToolInputRow>
 
             <div className="grid grid-cols-1 gap-3 mt-4">
-                <button onClick={() => convert('upper')} className="ui-btn h-14 bg-white/5 hover:bg-white/10 border border-white/10 font-bold text-lg">UPPERCASE</button>
-                <button onClick={() => convert('lower')} className="ui-btn h-14 bg-white/5 hover:bg-white/10 border border-white/10 font-bold text-lg lowercase">lowercase</button>
-                <button onClick={() => convert('title')} className="ui-btn h-14 bg-white/5 hover:bg-white/10 border border-white/10 font-bold text-lg capitalize">Title Case</button>
+                <ToolButton onClick={() => convert('upper')} variant="outline" className="text-lg">UPPERCASE</ToolButton>
+                <ToolButton onClick={() => convert('lower')} variant="outline" className="text-lg lowercase">lowercase</ToolButton>
+                <ToolButton onClick={() => convert('title')} variant="outline" className="text-lg capitalize">Title Case</ToolButton>
             </div>
         </ToolShell>
     );
@@ -189,31 +202,33 @@ function HashtagGen() {
         <ToolShell
             description="توليد هاشتاقات من النص."
             results={output && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>🏷️</span> الهاشتاقات
-                    </h3>
-                    <textarea readOnly value={output} className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-brand-secondary font-mono leading-relaxed" />
-                    <button
+                <div className="h-full flex flex-col">
+                    <ToolTextarea
+                        readOnly
+                        value={output}
+                        title="الهاشتاقات المولدة"
+                        className="flex-1 mb-4 min-h-[200px] text-brand-secondary font-mono leading-relaxed bg-black/40 border-brand-secondary/20 focus:border-brand-secondary/50"
+                    />
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(output)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ الكل
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="النص">
-                <textarea
+                <ToolTextarea
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    aria-label="Text Input"
-                    className="ui-input ui-textarea"
                     rows={6}
                     placeholder="كلمات مفتاحية أو جملة..."
+                    title="النص"
                 />
             </ToolInputRow>
-            <button onClick={gen} className="ui-btn primary ui-w-full h-14 text-lg mt-4">توليد الهاشتاقات</button>
+            <ToolButton onClick={gen} className="mt-4 w-full">توليد الهاشتاقات</ToolButton>
         </ToolShell>
     );
 }
@@ -243,35 +258,35 @@ function UTMBuilder() {
         <ToolShell
             description="بناء روابط تتبع الحملات (UTM)."
             results={result && (
-                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-6">الرابط النهائي</h3>
-                    <div className="w-full bg-black/30 p-4 rounded-xl border border-white/10 break-all font-mono text-sm text-brand-primary mb-6">
+                <div className="h-full flex flex-col justify-center items-center">
+                    <div className="w-full bg-black/40 p-4 rounded-xl border border-white/10 break-all font-mono text-sm text-brand-primary mb-6">
                         {result}
                     </div>
-                    <button
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(result)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ الرابط
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="رابط الموقع">
-                <input value={url} onChange={e => setUrl(e.target.value)} className="ui-input" placeholder="google.com" />
+                <ToolInput value={url} onChange={e => setUrl(e.target.value)} placeholder="google.com" dir="ltr" />
             </ToolInputRow>
             <div className="h-4"></div>
             <ToolInputRow label="المصدر (Source)">
-                <input value={source} onChange={e => setSource(e.target.value)} className="ui-input" placeholder="twitter" />
+                <ToolInput value={source} onChange={e => setSource(e.target.value)} placeholder="twitter" dir="ltr" />
             </ToolInputRow>
             <ToolInputRow label="الوسيلة (Medium)">
-                <input value={medium} onChange={e => setMedium(e.target.value)} className="ui-input" placeholder="social" />
+                <ToolInput value={medium} onChange={e => setMedium(e.target.value)} placeholder="social" dir="ltr" />
             </ToolInputRow>
             <ToolInputRow label="الحملة (Campaign)">
-                <input value={camp} onChange={e => setCamp(e.target.value)} className="ui-input" placeholder="sale" />
+                <ToolInput value={camp} onChange={e => setCamp(e.target.value)} placeholder="sale" dir="ltr" />
             </ToolInputRow>
 
-            <button onClick={build} className="ui-btn primary ui-w-full h-14 text-lg mt-6">بناء الرابط</button>
+            <ToolButton onClick={build} className="mt-6 w-full">بناء الرابط</ToolButton>
         </ToolShell>
     );
 }
@@ -292,25 +307,39 @@ function LoremIpsum() {
         <ToolShell
             description="توليد نص عربي عشوائي (لوريم إيبسوم)."
             results={output && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4">النص المولد ({count} فقرات)</h3>
-                    <textarea readOnly value={output} className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-right font-serif text-slate-300 leading-relaxed" />
-                    <button
+                <div className="h-full flex flex-col">
+                    <h3 className="text-sm font-bold text-slate-400 mb-4 text-center">النص المولد ({count} فقرات)</h3>
+                    <ToolTextarea
+                        readOnly
+                        value={output}
+                        title="النص المولد"
+                        className="flex-1 mb-4 min-h-[200px] text-right font-serif text-slate-300 leading-relaxed bg-black/40 border-slate-700/50"
+                    />
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(output)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ النص
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="عدد الفقرات">
-                <div className="flex items-center gap-4">
-                    <input type="range" min="1" max="10" value={count} onChange={e => setCount(parseInt(e.target.value))} className="flex-1 ui-input p-0" />
-                    <span className="text-2xl font-bold w-12 text-center text-brand-primary">{count}</span>
+                <div className="flex items-center gap-4 bg-black/20 p-4 rounded-xl border border-white/10">
+                    <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        value={count}
+                        onChange={e => setCount(parseInt(e.target.value))}
+                        aria-label="Number of paragraphs"
+                        className="flex-1 accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <span className="text-2xl font-black w-12 text-center text-brand-primary bg-brand-primary/10 rounded-lg py-1">{count}</span>
                 </div>
             </ToolInputRow>
-            <button onClick={gen} className="ui-btn primary ui-w-full h-14 text-lg mt-8">توليد النص</button>
+            <ToolButton onClick={gen} className="mt-8 w-full">توليد النص</ToolButton>
         </ToolShell>
     );
 }
@@ -333,13 +362,13 @@ function MarkdownViewer() {
         <ToolShell
             description="معاينة نصوص Markdown بسيطة."
             results={
-                <div className="h-full flex flex-col bg-white/5 rounded-3xl border border-white/5 overflow-hidden">
-                    <div className="bg-black/20 p-4 border-b border-white/5 flex justify-between items-center">
-                        <span className="font-bold text-white text-sm">Preview</span>
+                <div className="h-full flex flex-col bg-black/40 rounded-xl border border-white/10 overflow-hidden min-h-[400px]">
+                    <div className="bg-white/5 p-4 border-b border-white/5 flex justify-between items-center">
+                        <span className="font-bold text-white text-xs uppercase tracking-wider">Preview</span>
                         <div className="flex gap-2">
-                            <span className="w-3 h-3 rounded-full bg-red-400"></span>
-                            <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
-                            <span className="w-3 h-3 rounded-full bg-green-400"></span>
+                            <span className="w-3 h-3 rounded-full bg-red-400/80"></span>
+                            <span className="w-3 h-3 rounded-full bg-yellow-400/80"></span>
+                            <span className="w-3 h-3 rounded-full bg-green-400/80"></span>
                         </div>
                     </div>
                     <div
@@ -350,13 +379,13 @@ function MarkdownViewer() {
             }
         >
             <ToolInputRow label="Markdown Editor">
-                <textarea
+                <ToolTextarea
                     value={input}
                     onChange={e => { setInput(e.target.value); setTimeout(render, 100); }}
-                    aria-label="Markdown Input"
-                    className="ui-input ui-textarea font-mono text-sm leading-relaxed"
+                    className="font-mono text-sm leading-relaxed min-h-[400px]"
                     rows={15}
                     placeholder="# Title..."
+                    title="Markdown Editor"
                 />
             </ToolInputRow>
             <div className="text-xs text-slate-500 mt-2 text-center">Live Preview Enabled</div>
@@ -379,31 +408,38 @@ function LinkExtractor() {
         <ToolShell
             description="استخراج جميع الروابط من النص."
             results={urls.length > 0 && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center justify-between">
+                <div className="h-full flex flex-col">
+                    <h3 className="text-sm font-bold text-slate-400 mb-4 flex items-center justify-between">
                         <span>🔗 الروابط ({urls.length})</span>
                     </h3>
-                    <div className="flex-1 overflow-auto space-y-2 mb-4 pr-2">
+                    <div className="flex-1 overflow-auto space-y-2 mb-4 pr-1 scrollbar-thin">
                         {urls.map((u, i) => (
-                            <div key={i} className="flex items-center gap-3 p-3 bg-black/20 rounded-xl border border-white/5 group hover:border-brand-primary/30 transition-colors">
+                            <div key={i} className="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5 group hover:border-brand-primary/30 transition-colors">
                                 <span className="text-xs font-mono text-slate-500 w-6">{i + 1}</span>
                                 <a href={u} target="_blank" rel="noreferrer" className="flex-1 truncate text-brand-secondary text-sm hover:underline">{u}</a>
                             </div>
                         ))}
                     </div>
-                    <button
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(urls.join('\n'))}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ القائمة
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="النص">
-                <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="Text Input" className="ui-input ui-textarea" rows={10} placeholder="ألصق النص هنا لاستخراج الروابط..." />
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={10}
+                    placeholder="ألصق النص هنا لاستخراج الروابط..."
+                    title="النص"
+                />
             </ToolInputRow>
-            <button onClick={extract} className="ui-btn primary ui-w-full h-14 text-lg mt-4">استخراج الروابط</button>
+            <ToolButton onClick={extract} className="mt-4 w-full">استخراج الروابط</ToolButton>
         </ToolShell>
     );
 }
@@ -422,22 +458,34 @@ function RemoveTashkeel() {
         <ToolShell
             description="إزالة الحركات والتشكيل من النص العربي."
             results={output && (
-                <div className="h-full flex flex-col p-6 bg-white/5 rounded-3xl border border-white/5">
-                    <h3 className="text-lg font-bold text-white mb-4">النص الصافي</h3>
-                    <textarea readOnly value={output} className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-right font-sans text-slate-200" />
-                    <button
+                <div className="h-full flex flex-col">
+                    <h3 className="text-sm font-bold text-slate-400 mb-4 text-center">النص الصافي</h3>
+                    <ToolTextarea
+                        readOnly
+                        value={output}
+                        title="النص الصافي"
+                        className="flex-1 mb-4 min-h-[200px] text-right font-sans text-slate-200 bg-black/40 border-white/10 focus:border-white/20"
+                    />
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(output)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ النص
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="النص المشكول">
-                <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="Tashkeel Input" className="ui-input ui-textarea" rows={8} placeholder="ضع النص هنا..." />
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={8}
+                    placeholder="ضع النص هنا..."
+                    title="النص المشكول"
+                />
             </ToolInputRow>
-            <button onClick={remove} className="ui-btn primary ui-w-full h-14 text-lg mt-4">إزالة التشكيل</button>
+            <ToolButton onClick={remove} className="mt-4 w-full">إزالة التشكيل</ToolButton>
         </ToolShell>
     );
 }
@@ -454,25 +502,32 @@ function NumConverter() {
         <ToolShell
             description="تحويل الأرقام بين العربية والإنجليزية."
             results={res && (
-                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
+                <div className="h-full flex flex-col justify-center items-center">
                     <div className="text-6xl font-black text-brand-primary mb-8 glow-text tracking-widest">
                         {res}
                     </div>
-                    <button
+                    <ToolButton
                         onClick={() => navigator.clipboard.writeText(res)}
-                        className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+                        variant="secondary"
+                        className="w-full"
                     >
                         نسخ
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="الأرقام (123 أو ١٢٣)">
-                <textarea value={input} onChange={e => setInput(e.target.value)} aria-label="Numbers Input" className="ui-input ui-textarea" rows={4} placeholder="123 or ١٢٣..." />
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={4}
+                    placeholder="123 or ١٢٣..."
+                    title="الأرقام"
+                />
             </ToolInputRow>
-            <div className="ui-grid-2 h-20 gap-4 mt-4">
-                <button onClick={() => setRes(toArabic(input))} className="ui-btn primary text-xl">١٢٣</button>
-                <button onClick={() => setRes(toEnglish(input))} className="ui-btn secondary text-xl">123</button>
+            <div className="grid grid-cols-2 gap-4 mt-6">
+                <ToolButton onClick={() => setRes(toArabic(input))} className="text-xl">١٢٣</ToolButton>
+                <ToolButton onClick={() => setRes(toEnglish(input))} variant="secondary" className="text-xl font-sans">123</ToolButton>
             </div>
             <p className="text-xs text-slate-500 mt-4 text-center">اختر نوع التحويل المطلوب</p>
         </ToolShell>

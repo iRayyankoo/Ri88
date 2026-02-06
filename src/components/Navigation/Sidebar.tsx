@@ -1,22 +1,19 @@
 "use client";
 import React from 'react';
-import Link from 'next/link';
 import Logo from '../Brand/Logo';
 import {
     Home,
     LayoutGrid,
     Zap,
-    Terminal,
     Workflow,
     ShieldCheck,
     Cpu,
-    Search,
     User,
     Settings,
     LogOut
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useNavigation } from '@/context/NavigationContext';
+import { useNavigation, ViewType } from '@/context/NavigationContext';
 
 const Sidebar = () => {
     const { currentView, setCurrentView, isLoggedIn, setIsLoggedIn, isSidebarOpen } = useNavigation();
@@ -25,8 +22,8 @@ const Sidebar = () => {
         { name: 'الرئيسية', icon: Home, id: 'landing' },
         { name: 'لوحة التحكم', icon: LayoutGrid, id: 'dashboard' },
         { name: 'دليل الأدوات', icon: Zap, id: 'directory' },
-        { name: 'مساحة العمل', icon: Terminal, id: 'workspace' },
         { name: 'أتمتة المهام (Chain)', icon: Workflow, id: 'chainer' },
+        { name: 'الإعدادات', icon: Settings, id: 'settings' },
     ];
 
     const adminItems = [
@@ -56,7 +53,7 @@ const Sidebar = () => {
                     return (
                         <button
                             key={item.id}
-                            onClick={() => setCurrentView(item.id as any)}
+                            onClick={() => setCurrentView(item.id as ViewType)}
                             className="w-full block"
                         >
                             <motion.div
@@ -86,7 +83,7 @@ const Sidebar = () => {
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => setCurrentView(item.id as any)}
+                                onClick={() => setCurrentView(item.id as ViewType)}
                                 className="w-full block"
                             >
                                 <motion.div
@@ -112,7 +109,7 @@ const Sidebar = () => {
                         whileHover={{ scale: 1.02 }}
                         className="flex items-center gap-3 p-3 rounded-2xl bg-[#13131A] hover:bg-white/5 transition-all cursor-pointer border border-white/5 group"
                     >
-                        <button onClick={() => setIsLoggedIn(false)} className="p-2 hover:bg-red-500/10 rounded-lg text-slate-500 hover:text-red-500 transition-colors">
+                        <button onClick={() => setIsLoggedIn(false)} title="تسجيل الخروج" className="p-2 hover:bg-red-500/10 rounded-lg text-slate-500 hover:text-red-500 transition-colors">
                             <LogOut className="w-4 h-4" />
                         </button>
                         <div className="flex-1 text-right">
@@ -132,7 +129,7 @@ const Sidebar = () => {
                     </button>
                 )}
             </div>
-        </aside>
+        </aside >
     );
 };
 

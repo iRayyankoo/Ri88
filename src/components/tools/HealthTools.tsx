@@ -2,12 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Flame, Scale, Droplets, Moon, Wind } from 'lucide-react';
 import { ToolInputRow } from './ToolShell';
+import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
+import GlassCard from '../ui/GlassCard';
 
-// We will use a modified ToolShell or just the CSS classes since this is a Dashboard view.
-// However, to keep it consistent, we can wrap the whole dashboard in a generic shell or just use the layout classes.
-// The user wants "Standard Tool Template".
-// Since this file ignores toolId and renders a grid, we'll keep the grid but style the cards as "Tool Cards".
-
+// 11. Widget Card
 interface HealthWidgetProps {
     title: string;
     icon: React.ElementType;
@@ -15,24 +13,28 @@ interface HealthWidgetProps {
     children: React.ReactNode;
 }
 
-// Reusable Widget Card -> Maps to .tool-card
 const WidgetCard = ({ title, icon: Icon, color, children }: HealthWidgetProps) => (
-    <div className="tool-card h-full flex flex-col">
-        <div className="tool-header p-4 border-b border-[var(--ui-stroke)] flex items-center gap-2.5">
-            <div className="icon-wrapper">
+    <GlassCard className="h-full flex flex-col p-0 overflow-hidden relative group hover:border-brand-primary/20 transition-all duration-300">
+        <style jsx>{`
+            .icon-wrapper {
+                color: ${color};
+            }
+            .glow-bg {
+                background-color: ${color};
+            }
+        `}</style>
+        <div className="p-5 border-b border-white/5 flex items-center gap-3 bg-white/5 relative z-10">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-black/20 text-white icon-wrapper">
                 <Icon size={20} />
             </div>
-            <style jsx>{`
-                .icon-wrapper {
-                    color: ${color};
-                }
-            `}</style>
-            <h3 className="text-[1.1em] font-bold">{title}</h3>
+            <h3 className="text-lg font-bold text-white">{title}</h3>
         </div>
-        <div className="tool-body flex-1 flex flex-col gap-4">
+        <div className="p-5 flex-1 flex flex-col gap-4 relative z-10">
             {children}
         </div>
-    </div>
+        {/* Glow effect based on color */}
+        <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[60px] opacity-10 pointer-events-none transition-opacity group-hover:opacity-20 glow-bg" />
+    </GlassCard>
 );
 
 // 1. BMI
@@ -56,18 +58,22 @@ function BMICalculator() {
 
     return (
         <WidgetCard title="حاسبة الكتلة (BMI)" icon={Scale} color="#3498db">
-            <input aria-label="Weight in kg" type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن (كجم)" />
-            <input aria-label="Height in cm" type="number" value={height} onChange={e => setHeight(e.target.value)} className="ui-input" placeholder="الطول (سم)" />
-            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
+            <ToolInput aria-label="Weight in kg" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن (كجم)" />
+            <ToolInput aria-label="Height in cm" type="number" value={height} onChange={e => setHeight(e.target.value)} placeholder="الطول (سم)" />
+            <ToolButton onClick={calculate} className="w-full">احسب</ToolButton>
             {result && (
-                <div className="ui-output text-center">
-                    <div className="text-[2em] font-bold bmi-result">{result.bmi}</div>
+                <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
                     <style jsx>{`
-                        .bmi-result {
+                        .bmi-val, .bmi-cat {
                             color: ${result.color};
                         }
                     `}</style>
-                    <div className="text-sm text-gray-400">{result.cat}</div>
+                    <div className="text-[2.5em] font-black bmi-result drop-shadow-lg bmi-val">
+                        {result.bmi}
+                    </div>
+                    <div className="text-sm font-bold mt-1 bmi-cat">
+                        {result.cat}
+                    </div>
                 </div>
             )}
         </WidgetCard>
@@ -96,34 +102,34 @@ function BMRCalculator() {
 
     return (
         <WidgetCard title="السعرات (BMR)" icon={Flame} color="#e74c3c">
-            <div className="ui-grid-2">
-                <select aria-label="Gender" value={gender} onChange={e => setGender(e.target.value)} className="ui-input ui-select">
+            <div className="grid grid-cols-2 gap-3">
+                <ToolSelect id="gender-select" aria-label="Gender" title="الجنس (Gender)" value={gender} onChange={e => setGender(e.target.value)}>
                     <option value="m">ذكر</option>
                     <option value="f">أنثى</option>
-                </select>
-                <input aria-label="Age" type="number" value={age} onChange={e => setAge(e.target.value)} className="ui-input" placeholder="العمر" />
+                </ToolSelect>
+                <ToolInput aria-label="Age" title="العمر (Age)" type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="العمر" />
             </div>
-            <div className="ui-grid-2">
-                <input aria-label="Weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن" />
-                <input aria-label="Height" type="number" value={height} onChange={e => setHeight(e.target.value)} className="ui-input" placeholder="الطول" />
+            <div className="grid grid-cols-2 gap-3">
+                <ToolInput aria-label="Weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن" />
+                <ToolInput aria-label="Height" type="number" value={height} onChange={e => setHeight(e.target.value)} placeholder="الطول" />
             </div>
-            <select aria-label="Activity Level" value={activity} onChange={e => setActivity(e.target.value)} className="ui-input ui-select">
+            <ToolSelect id="activity-select" aria-label="Activity Level" title="مستوى النشاط (Activity Level)" value={activity} onChange={e => setActivity(e.target.value)}>
                 <option value="1.2">خامل</option>
                 <option value="1.375">خفيف</option>
                 <option value="1.55">متوسط</option>
                 <option value="1.725">عالي</option>
-            </select>
-            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
+            </ToolSelect>
+            <ToolButton onClick={calculate} className="w-full">احسب</ToolButton>
             {result && (
-                <div className="ui-output text-center">
-                    <div className="ui-grid-2 text-sm">
-                        <div>
-                            <span>الأساسي</span>
-                            <strong className="block text-lg">{result.bmr}</strong>
+                <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="text-slate-300">
+                            <span className="block mb-1 text-xs opacity-70">الأساسي</span>
+                            <strong className="block text-xl text-white">{result.bmr}</strong>
                         </div>
                         <div className="text-[#2ecc71]">
-                            <span>اليومي</span>
-                            <strong className="block text-lg">{result.tdee} 🔥</strong>
+                            <span className="block mb-1 text-xs opacity-70">اليومي</span>
+                            <strong className="block text-xl">{result.tdee} 🔥</strong>
                         </div>
                     </div>
                 </div>
@@ -146,12 +152,12 @@ function WaterCalculator() {
 
     return (
         <WidgetCard title="احتياج الماء" icon={Droplets} color="#3498db">
-            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="ui-input" placeholder="الوزن (كجم)" />
-            <button onClick={calculate} className="ui-btn primary ui-w-full">احسب</button>
+            <ToolInput aria-label="الوزن بالكيلوجرام" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن (كجم)" />
+            <ToolButton onClick={calculate} className="w-full">احسب</ToolButton>
             {result && (
-                <div className="ui-output text-center">
-                    <div className="text-[2.5em] font-bold text-[#3498db] leading-none">{result.l}L</div>
-                    <div className="text-sm text-gray-400 mt-2">{result.cups} أكواب تقريباً 💧</div>
+                <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
+                    <div className="text-[2.5em] font-black text-[#3498db] leading-none drop-shadow-lg">{result.l}L</div>
+                    <div className="text-sm text-slate-400 mt-2">{result.cups} أكواب تقريباً 💧</div>
                 </div>
             )}
         </WidgetCard>
@@ -181,14 +187,14 @@ function SleepCalculator() {
     return (
         <WidgetCard title="حاسبة النوم" icon={Moon} color="#8e44ad">
             <ToolInputRow label="وقت الاستيقاظ">
-                <input type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} className="ui-input" aria-label="Wake Up Time" />
+                <ToolInput type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} aria-label="وقت الاستيقاظ" />
             </ToolInputRow>
-            <button onClick={calculate} className="ui-btn primary ui-w-full">أفضل وقت للنوم</button>
+            <ToolButton onClick={calculate} className="w-full">أفضل وقت للنوم</ToolButton>
             {times.length > 0 && (
-                <div className="ui-output text-center">
+                <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
                     <div className="flex gap-2 justify-center flex-wrap">
                         {times.map((t, i) => (
-                            <span key={i} className={`px-3 py-1.5 rounded-lg border ${i === 1 ? 'bg-[#8e44ad]/30 border-[#8e44ad]' : 'bg-white/5 border-white/10'}`}>{t}</span>
+                            <span key={i} className={`px-3 py-1.5 rounded-lg border text-sm font-bold ${i === 1 ? 'bg-[#8e44ad]/30 border-[#8e44ad] text-white shadow-[0_0_10px_rgba(142,68,173,0.3)]' : 'bg-white/5 border-white/10 text-slate-300'}`}>{t}</span>
                         ))}
                     </div>
                 </div>
@@ -219,38 +225,32 @@ function BreathingExercise() {
 
     return (
         <WidgetCard title="تمرين التنفس" icon={Wind} color="#00d2d3">
-            <div className="flex justify-center py-5">
-                <div className={`breathing-circle ${phase} w-[100px] h-[100px] rounded-full border-[3px] flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${phase === 'inhale' || phase === 'hold' ? 'scale-150' : 'scale-100'}`}>
+            <div className="flex justify-center py-8">
+                <div className={`breathing-circle ${phase} w-[100px] h-[100px] rounded-full border-[3px] flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${phase === 'inhale' || phase === 'hold' ? 'scale-150 shadow-[0_0_30px_rgba(0,210,211,0.4)]' : 'scale-100 shadow-none'}`}>
                     <style jsx>{`
                         .breathing-circle {
                             border-color: ${phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'};
                         }
                     `}</style>
-                    <span className="text-sm font-bold">{active ? text : 'ابدأ'}</span>
+                    <span className="text-xl font-bold text-white transition-all">{active ? text : 'ابدأ'}</span>
                 </div>
             </div>
-            <button onClick={() => setActive(!active)} className={`ui-btn ${active ? 'ghost' : 'primary'} ui-w-full`}>
+            <ToolButton onClick={() => setActive(!active)} variant={active ? 'ghost' : 'primary'} className="w-full">
                 {active ? 'إيقاف' : 'بدء التمرين 4-4-4-4'}
-            </button>
+            </ToolButton>
         </WidgetCard>
     );
 }
 
 // MAIN LAYOUT
 // 6. Tool Props
-interface ToolProps {
-    toolId: string;
-}
+
 
 // MAIN LAYOUT
-export default function HealthTools({ toolId: _toolId }: ToolProps) {
-    // If specific tool is requested, we could route to it, but for now we render the Dashboard grid
-    // as per previous implementation logic which showed all widgets.
-    // However, if the design intent is single tool view, we should switch.
-    // Based on the file structure, it seems meant to be a dashboard style grid regardless of ID for "health".
-    // But to fix the build error, we just need to accept the prop.
+export default function HealthTools({ toolId }: { toolId?: string }) {
+    if (toolId === 'breathing') return <div className="max-w-md mx-auto"><BreathingExercise /></div>;
     return (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 w-full">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 w-full">
             <BMICalculator />
             <BMRCalculator />
             <WaterCalculator />

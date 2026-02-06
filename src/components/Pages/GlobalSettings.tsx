@@ -11,7 +11,7 @@ import GlassCard from '../ui/GlassCard';
 */
 
 const GlobalSettings = () => {
-    const { setIsLoggedIn, setCurrentView } = useNavigation();
+    const { setIsLoggedIn, setCurrentView, openToolsInModal, setOpenToolsInModal } = useNavigation();
     const [language, setLanguage] = useState('ar');
     const [theme, setTheme] = useState('dark');
     const [notifications, setNotifications] = useState(true);
@@ -67,6 +67,26 @@ const GlobalSettings = () => {
                                 <div
                                     className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-brand-primary rounded-lg transition-all duration-300 ${language === 'ar' ? 'right-1' : 'right-[calc(50%+4px)]'}`}
                                 />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-sm font-bold text-slate-300 block">طريقة عرض الأدوات</label>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => setOpenToolsInModal(false)}
+                                    className={`flex-1 p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${!openToolsInModal ? 'border-brand-primary bg-brand-primary/10' : 'border-white/5 bg-white/5 opacity-50 hover:opacity-100'}`}
+                                >
+                                    <Monitor className="w-5 h-5 text-white" />
+                                    <span className="text-xs font-bold text-white">صفحة كاملة</span>
+                                </button>
+                                <button
+                                    onClick={() => setOpenToolsInModal(true)}
+                                    className={`flex-1 p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${openToolsInModal ? 'border-brand-primary bg-brand-primary/10' : 'border-white/5 bg-white/5 opacity-50 hover:opacity-100'}`}
+                                >
+                                    <Globe className="w-5 h-5 text-white" />
+                                    <span className="text-xs font-bold text-white">نافذة منبثقة</span>
+                                </button>
                             </div>
                         </div>
 

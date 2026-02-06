@@ -12,6 +12,10 @@ interface NavigationContextType {
     launchTool: (toolId: string) => void;
     isSidebarOpen: boolean;
     setIsSidebarOpen: (isOpen: boolean) => void;
+    openToolsInModal: boolean;
+    setOpenToolsInModal: (enabled: boolean) => void;
+    showToolPopup: boolean;
+    setShowToolPopup: (show: boolean) => void;
 }
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
@@ -21,10 +25,13 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeToolId, setActiveToolId] = useState<string | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [openToolsInModal, setOpenToolsInModal] = useState(false);
+    const [showToolPopup, setShowToolPopup] = useState(false);
 
     const launchTool = (toolId: string) => {
         setActiveToolId(toolId);
-        setCurrentView('workspace');
+        // Default to popup since Workspace section is removed
+        setShowToolPopup(true);
     };
 
     return (
@@ -36,7 +43,11 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
             activeToolId,
             launchTool,
             isSidebarOpen,
-            setIsSidebarOpen
+            setIsSidebarOpen,
+            openToolsInModal,
+            setOpenToolsInModal,
+            showToolPopup,
+            setShowToolPopup
         }}>
             {children}
         </NavigationContext.Provider>

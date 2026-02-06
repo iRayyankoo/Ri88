@@ -1,6 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolShell, ToolInputRow, ToolOutput } from './ToolShell'; // Added ToolOutput
+import { ToolInput, ToolButton } from './ToolUi';
+import { FileUploadZone } from '../Inputs/FileUploadZone';
+import Image from 'next/image';
 
 interface ToolProps {
     toolId: string;
@@ -17,28 +20,47 @@ function ShadowGenerator() {
     const shadow = `${x}px ${y}px ${blur}px ${spread}px rgba(${parseInt(color.slice(1, 3), 16)}, ${parseInt(color.slice(3, 5), 16)}, ${parseInt(color.slice(5, 7), 16)}, ${opacity})`;
 
     return (
-        <ToolShell description="توليد كود CSS للظلال (Drop Shadow).">
-            <div className="ui-grid-2">
-                <div>
-                    <ToolInputRow label={`X-Offset: ${x}px`}><input aria-label="X Offset" type="range" min="-50" max="50" value={x} onChange={e => setX(parseInt(e.target.value))} className="w-full" /></ToolInputRow>
-                    <ToolInputRow label={`Y-Offset: ${y}px`}><input aria-label="Y Offset" type="range" min="-50" max="50" value={y} onChange={e => setY(parseInt(e.target.value))} className="w-full" /></ToolInputRow>
-                    <ToolInputRow label={`Blur: ${blur}px`}><input aria-label="Blur Radius" type="range" min="0" max="100" value={blur} onChange={e => setBlur(parseInt(e.target.value))} className="w-full" /></ToolInputRow>
-                    <ToolInputRow label={`Spread: ${spread}px`}><input aria-label="Spread Radius" type="range" min="-50" max="50" value={spread} onChange={e => setSpread(parseInt(e.target.value))} className="w-full" /></ToolInputRow>
-                    <ToolInputRow label="Color"><input aria-label="Shadow Color" type="color" value={color} onChange={e => setColor(e.target.value)} className="ui-input p-0 h-10" /></ToolInputRow>
-                    <ToolInputRow label={`Opacity: ${opacity}`}><input aria-label="Shadow Opacity" type="range" min="0" max="1" step="0.01" value={opacity} onChange={e => setOpacity(parseFloat(e.target.value))} className="w-full" /></ToolInputRow>
+        <ToolShell
+            description="توليد كود CSS للظلال (Drop Shadow)."
+            results={
+                <div className="flex flex-col h-full justify-between">
+                    <style jsx>{`
+                        .preview-box {
+                            box-shadow: ${shadow};
+                        }
+                    `}</style>
+                    <div className="h-32 w-full rounded-xl flex items-center justify-center transition-all bg-white mb-6 border border-white/10 preview-box">
+                        <p className="text-gray-500 font-bold">Element</p>
+                    </div>
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="text-xs text-white/50 font-mono">CSS Output</span>
+                            <ToolButton variant="ghost" size="sm" onClick={() => navigator.clipboard.writeText(`box-shadow: ${shadow};`)}>Copy</ToolButton>
+                        </div>
+                        <ToolOutput content={`box-shadow: ${shadow};`} />
+                    </div>
                 </div>
-                <div className="h-32 w-full rounded-xl flex items-center justify-center transition-all bg-white preview-box">
-                    <p className="text-gray-500 font-bold">Element</p>
-                </div>
-            </div>
-            <style jsx>{`
-                .preview-box {
-                    box-shadow: ${shadow};
-                }
-            `}</style>
-            <div className="ui-output mt-4 flex justify-between items-center">
-                <code className="text-xs">{`box-shadow: ${shadow};`}</code>
-                <button onClick={() => navigator.clipboard.writeText(`box-shadow: ${shadow};`)} className="ui-btn ghost text-xs">Copy</button>
+            }
+        >
+            <div className="grid grid-cols-1 gap-4">
+                <ToolInputRow label={`X-Offset: ${x}px`}>
+                    <input type="range" min="-50" max="50" value={x} onChange={e => setX(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" aria-label="X Offset" />
+                </ToolInputRow>
+                <ToolInputRow label={`Y-Offset: ${y}px`}>
+                    <input type="range" min="-50" max="50" value={y} onChange={e => setY(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" aria-label="Y Offset" />
+                </ToolInputRow>
+                <ToolInputRow label={`Blur: ${blur}px`}>
+                    <input type="range" min="0" max="100" value={blur} onChange={e => setBlur(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" aria-label="Blur Radius" />
+                </ToolInputRow>
+                <ToolInputRow label={`Spread: ${spread}px`}>
+                    <input type="range" min="-50" max="50" value={spread} onChange={e => setSpread(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" aria-label="Spread Radius" />
+                </ToolInputRow>
+                <ToolInputRow label="Color">
+                    <ToolInput type="color" value={color} onChange={e => setColor(e.target.value)} className="h-10 p-1 w-full cursor-pointer" aria-label="Shadow Color" />
+                </ToolInputRow>
+                <ToolInputRow label={`Opacity: ${opacity}`}>
+                    <input type="range" min="0" max="1" step="0.01" value={opacity} onChange={e => setOpacity(parseFloat(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" aria-label="Shadow Opacity" />
+                </ToolInputRow>
             </div>
         </ToolShell>
     );
@@ -52,21 +74,36 @@ function GradientGenerator() {
     const grad = `linear-gradient(${deg}deg, ${c1}, ${c2})`;
 
     return (
-        <ToolShell description="توليد تدرجات لونية (Gradients).">
-            <div className="ui-grid-3">
-                <input aria-label="Gradient Color 1" type="color" value={c1} onChange={e => setC1(e.target.value)} className="ui-input p-0 h-12" />
-                <input aria-label="Gradient Color 2" type="color" value={c2} onChange={e => setC2(e.target.value)} className="ui-input p-0 h-12" />
-                <div className="flex items-center"><input aria-label="Gradient Angle" type="number" value={deg} onChange={e => setDeg(parseInt(e.target.value))} className="ui-input" /><span className="ml-2">deg</span></div>
-            </div>
-            <div className="h-32 w-full rounded-xl mb-6 transition-all gradient-box" />
-            <style jsx>{`
-                .gradient-box {
-                    background: ${grad};
-                }
-            `}</style>
-            <div className="ui-output flex justify-between items-center">
-                <code className="text-xs">{`background: ${grad};`}</code>
-                <button onClick={() => navigator.clipboard.writeText(`background: ${grad};`)} className="ui-btn ghost text-xs">Copy</button>
+        <ToolShell
+            description="توليد تدرجات لونية (Gradients)."
+            results={
+                <div className="flex flex-col h-full justify-between">
+                    <style jsx>{`
+                        .gradient-box {
+                            background: ${grad};
+                        }
+                    `}</style>
+                    <div className="h-32 w-full rounded-xl mb-6 transition-all border border-white/10 gradient-box" />
+                    <div>
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="text-xs text-white/50 font-mono">CSS Output</span>
+                            <ToolButton variant="ghost" size="sm" onClick={() => navigator.clipboard.writeText(`background: ${grad};`)}>Copy</ToolButton>
+                        </div>
+                        <ToolOutput content={`background: ${grad};`} />
+                    </div>
+                </div>
+            }
+        >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <ToolInputRow label="Color 1">
+                    <ToolInput type="color" value={c1} onChange={e => setC1(e.target.value)} className="h-12 w-full p-1 cursor-pointer" aria-label="Gradient Color 1" />
+                </ToolInputRow>
+                <ToolInputRow label="Color 2">
+                    <ToolInput type="color" value={c2} onChange={e => setC2(e.target.value)} className="h-12 w-full p-1 cursor-pointer" aria-label="Gradient Color 2" />
+                </ToolInputRow>
+                <ToolInputRow label="Angle (deg)">
+                    <ToolInput type="number" value={deg} onChange={e => setDeg(parseInt(e.target.value))} className="h-12 font-bold text-center" aria-label="Gradient Angle" />
+                </ToolInputRow>
             </div>
         </ToolShell>
     );
@@ -78,8 +115,7 @@ function ColorExtractor() {
     const [colors, setColors] = useState<string[]>([]);
     const [isExtracting, setIsExtracting] = useState(false);
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+    const handleImageUpload = (file: File | null) => {
         if (file) {
             const url = URL.createObjectURL(file);
             setImg(url);
@@ -90,7 +126,7 @@ function ColorExtractor() {
     const extractColors = async (imageUrl: string) => {
         setIsExtracting(true);
         try {
-            const image = new Image();
+            const image = new window.Image();
             image.crossOrigin = "Anonymous";
             image.src = imageUrl;
             await new Promise((resolve, reject) => {
@@ -148,31 +184,54 @@ function ColorExtractor() {
     };
 
     return (
-        <ToolShell description="استخراج الألوان الأساسية من الصور.">
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={handleImageUpload} className="ui-input mb-4" />
-
-            {img && <img src={img} alt="Preview" className="w-full h-64 object-contain rounded-lg mb-6 border border-white/10 bg-black/40" />}
-
-            {isExtracting ? (
-                <div className="text-center text-sm text-gray-400 py-4">Extracting colors...</div>
-            ) : (
-                <div className="flex flex-wrap gap-4 justify-center">
-                    {colors.map(c => (
-                        <div key={c} className="group relative" onClick={() => navigator.clipboard.writeText(c)}>
-                            <div className="w-16 h-16 rounded-2xl cursor-pointer border border-white/10 shadow-lg transition-transform hover:scale-110 color-swatch flex items-center justify-center">
-                                <span className="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-[10px] px-1 rounded backdrop-blur-sm">Copy</span>
-                            </div>
-                            <div className="text-center text-xs mt-2 font-mono text-gray-400">{c}</div>
-                            <style jsx>{`
-                                .color-swatch {
-                                    background: ${c};
-                                }
-                            `}</style>
+        <ToolShell
+            description="استخراج الألوان الأساسية من الصور."
+            results={
+                <div className="flex flex-col h-full">
+                    {img && (
+                        <div className="relative w-full h-48 mb-6 rounded-xl border border-white/10 overflow-hidden bg-black/40">
+                            <Image
+                                src={img}
+                                alt="Preview"
+                                fill
+                                className="object-contain"
+                                unoptimized
+                            />
                         </div>
-                    ))}
-                    {img && colors.length === 0 && <div className="text-gray-500 text-sm">No distinct colors found</div>}
+                    )}
+
+                    {isExtracting ? (
+                        <div className="text-center text-sm text-gray-400 py-4">Extracting colors...</div>
+                    ) : (
+                        <div className="flex flex-wrap gap-4 justify-center">
+                            {colors.map(c => (
+                                <div key={c} className="group relative" onClick={() => navigator.clipboard.writeText(c)}>
+                                    <style jsx>{`
+                                        .swatch-${c.replace('#', '')} {
+                                            background: ${c};
+                                        }
+                                    `}</style>
+                                    <div
+                                        className={`w-16 h-16 rounded-2xl cursor-pointer border border-white/10 shadow-lg transition-transform hover:scale-110 flex items-center justify-center transform active:scale-95 swatch-${c.replace('#', '')}`}
+                                    >
+                                        <span className="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-[10px] px-1 rounded backdrop-blur-sm">Copy</span>
+                                    </div>
+                                    <div className="text-center text-xs mt-2 font-mono text-gray-400">{c}</div>
+                                </div>
+                            ))}
+                            {img && colors.length === 0 && <div className="text-gray-500 text-sm">No distinct colors found</div>}
+                        </div>
+                    )}
                 </div>
-            )}
+            }
+        >
+            <div className="mb-4">
+                <FileUploadZone
+                    onFileChange={handleImageUpload}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                    title="Upload Image"
+                />
+            </div>
         </ToolShell>
     );
 }
@@ -198,35 +257,39 @@ function ContrastChecker() {
     }, [bg, fg]);
 
     return (
-        <ToolShell description="التحقق من تباين الألوان (Accessibility).">
-            <div className="ui-grid-2 mb-4">
-                <ToolInputRow label="Background"><input aria-label="Background Color" type="color" value={bg} onChange={e => setBg(e.target.value)} className="ui-input p-0 h-10" /></ToolInputRow>
-                <ToolInputRow label="Text"><input aria-label="Text Color" type="color" value={fg} onChange={e => setFg(e.target.value)} className="ui-input p-0 h-10" /></ToolInputRow>
+        <ToolShell
+            description="التحقق من تباين الألوان (Accessibility)."
+            results={
+                <div className="flex flex-col gap-6">
+                    <div className="grid grid-cols-2 gap-4">
+                        <style jsx>{`
+                            .c-bg { background-color: ${bg}; color: ${fg}; }
+                            .c-fg { background-color: ${fg}; color: ${bg}; }
+                        `}</style>
+                        <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors shadow-lg border border-white/5 c-bg">
+                            Text Preview
+                        </div>
+                        <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors shadow-lg border border-white/5 c-fg">
+                            Inverted
+                        </div>
+                    </div>
+                    {ratio && (
+                        <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <div className="text-3xl font-bold mb-2">{ratio.toFixed(2)}</div>
+                            <div className={ratio >= 4.5 ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>{ratio >= 4.5 ? '✓ Good (AA)' : '✕ Poor Contrast'}</div>
+                        </div>
+                    )}
+                </div>
+            }
+        >
+            <div className="grid grid-cols-1 gap-4 mb-4">
+                <ToolInputRow label="Background Color">
+                    <ToolInput type="color" value={bg} onChange={e => setBg(e.target.value)} className="h-12 w-full p-1 cursor-pointer" aria-label="Background Color" />
+                </ToolInputRow>
+                <ToolInputRow label="Text Color">
+                    <ToolInput type="color" value={fg} onChange={e => setFg(e.target.value)} className="h-12 w-full p-1 cursor-pointer" aria-label="Text Color" />
+                </ToolInputRow>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors contrast-preview">
-                    Text Preview
-                </div>
-                <div className="p-6 rounded-xl flex items-center justify-center text-lg font-bold transition-colors contrast-preview-inv">
-                    Inverted
-                </div>
-            </div>
-            <style jsx>{`
-                .contrast-preview {
-                    background-color: ${bg};
-                    color: ${fg};
-                }
-                .contrast-preview-inv {
-                    background-color: ${fg};
-                    color: ${bg};
-                }
-            `}</style>
-            {ratio && (
-                <div className="ui-output text-center mt-4">
-                    <div className="text-3xl font-bold mb-2">{ratio.toFixed(2)}</div>
-                    <div className={ratio >= 4.5 ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>{ratio >= 4.5 ? '✓ Good (AA)' : '✕ Poor Contrast'}</div>
-                </div>
-            )}
         </ToolShell>
     );
 }

@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolInput, ToolButton, ToolSelect, ToolCheckbox } from './ToolUi';
+// 1. QR Generator
 
 interface ToolProps {
     toolId: string;
@@ -37,21 +39,21 @@ function QRGenerator() {
         <ToolShell
             description="توليد رمز استجابة سريعة (QR Code)."
             results={url && (
-                <div className="ui-output flex flex-col items-center">
+                <div className="flex flex-col items-center">
                     <div className="bg-white p-4 rounded-2xl mb-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={url} alt="Generated QR Code" className="max-w-[200px] block" />
                     </div>
-                    <button onClick={download} className="ui-btn ghost gap-2 ui-w-full">
+                    <ToolButton variant="ghost" onClick={download} className="gap-2 w-full">
                         <Download size={16} /> تحميل الصورة
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="النص أو الرابط">
-                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" placeholder="https://example.com" />
+                <ToolInput value={text} onChange={e => setText(e.target.value)} placeholder="https://example.com" />
             </ToolInputRow>
-            <button onClick={generate} className="ui-btn primary ui-w-full">توليد الرمز</button>
+            <ToolButton onClick={generate} className="w-full mt-4">توليد الرمز</ToolButton>
         </ToolShell>
     );
 }
@@ -101,39 +103,39 @@ function UnitConverter() {
         <ToolShell
             description="تحويل الوحدات (طول، وزن، حرارة)."
             results={result && (
-                <div className="ui-output text-center flex flex-col items-center justify-center h-full">
+                <div className="text-center flex flex-col items-center justify-center h-full">
                     <div className="text-xs text-slate-400 uppercase tracking-widest mb-2">النتيجة</div>
-                    <strong className="text-4xl text-brand-primary glow-text">{result}</strong>
+                    <strong className="text-4xl text-brand-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">{result}</strong>
                     <div className="text-sm text-slate-500 mt-1">{to}</div>
                 </div>
             )}
         >
             <ToolInputRow label="القيمة">
-                <input type="number" value={val} onChange={e => setVal(e.target.value)} className="ui-input" aria-label="Value" />
+                <ToolInput type="number" value={val} onChange={e => setVal(e.target.value)} aria-label="Value" />
             </ToolInputRow>
-            <div className="ui-grid-3">
-                <div className="ui-field">
-                    <label className="ui-label">النوع</label>
-                    <select value={type} onChange={e => setType(e.target.value)} aria-label="Unit Type" className="ui-input ui-select">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300" htmlFor="unit-type">النوع</label>
+                    <ToolSelect id="unit-type" value={type} onChange={e => setType(e.target.value)} aria-label="Unit Type" title="نوع الوحدة (Unit Type)">
                         <option value="len">طول</option>
                         <option value="wgt">وزن</option>
                         <option value="tmp">حرارة</option>
-                    </select>
+                    </ToolSelect>
                 </div>
-                <div className="ui-field">
-                    <label className="ui-label">من</label>
-                    <select value={from} onChange={e => setFrom(e.target.value)} aria-label="From Unit" className="ui-input ui-select">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300" htmlFor="unit-from">من</label>
+                    <ToolSelect id="unit-from" value={from} onChange={e => setFrom(e.target.value)} aria-label="From Unit" title="من (From Unit)">
                         {types[type].map((o: string) => <option key={o} value={o}>{o}</option>)}
-                    </select>
+                    </ToolSelect>
                 </div>
-                <div className="ui-field">
-                    <label className="ui-label">إلى</label>
-                    <select value={to} onChange={e => setTo(e.target.value)} aria-label="To Unit" className="ui-input ui-select">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300" htmlFor="unit-to">إلى</label>
+                    <ToolSelect id="unit-to" value={to} onChange={e => setTo(e.target.value)} aria-label="To Unit" title="إلى (To Unit)">
                         {types[type].map((o: string) => <option key={o} value={o}>{o}</option>)}
-                    </select>
+                    </ToolSelect>
                 </div>
             </div>
-            <button onClick={convert} className="ui-btn primary ui-w-full mt-4">تحويل</button>
+            <ToolButton onClick={convert} className="w-full mt-4">تحويل</ToolButton>
         </ToolShell>
     );
 }
@@ -160,25 +162,25 @@ function PassGen() {
         <ToolShell
             description="توليد كلمات مرور قوية وآمنة."
             results={pass && (
-                <div className="ui-output text-center">
+                <div className="text-center">
                     <div className="text-xs text-slate-400 mb-2">كلمة المرور الجديدة</div>
                     <div className="bg-black/20 p-4 rounded-xl font-mono text-xl text-brand-secondary break-all mb-4 select-all">
                         {pass}
                     </div>
-                    <button onClick={() => navigator.clipboard.writeText(pass)} className="ui-btn ghost ui-w-full">نسخ</button>
+                    <ToolButton variant="ghost" onClick={() => navigator.clipboard.writeText(pass)} className="w-full">نسخ</ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label={`الطول: ${len}`}>
-                <input type="range" min="6" max="32" value={len} aria-label="Password Length" onChange={e => setLen(parseInt(e.target.value))} className="w-full" />
+                <input type="range" min="6" max="32" value={len} aria-label="Password Length" onChange={e => setLen(parseInt(e.target.value))} className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" />
             </ToolInputRow>
-            <div className="ui-grid-2">
-                <label className="ui-checkbox"><input type="checkbox" checked={opt.upper} onChange={e => setOpt({ ...opt, upper: e.target.checked })} /> أحرف كبيرة</label>
-                <label className="ui-checkbox"><input type="checkbox" checked={opt.lower} onChange={e => setOpt({ ...opt, lower: e.target.checked })} /> أحرف صغيرة</label>
-                <label className="ui-checkbox"><input type="checkbox" checked={opt.num} onChange={e => setOpt({ ...opt, num: e.target.checked })} /> أرقام</label>
-                <label className="ui-checkbox"><input type="checkbox" checked={opt.sym} onChange={e => setOpt({ ...opt, sym: e.target.checked })} /> رموز</label>
+            <div className="grid grid-cols-2 gap-4">
+                <ToolCheckbox checked={opt.upper} onChange={c => setOpt({ ...opt, upper: c })} label="أحرف كبيرة" />
+                <ToolCheckbox checked={opt.lower} onChange={c => setOpt({ ...opt, lower: c })} label="أحرف صغيرة" />
+                <ToolCheckbox checked={opt.num} onChange={c => setOpt({ ...opt, num: c })} label="أرقام" />
+                <ToolCheckbox checked={opt.sym} onChange={c => setOpt({ ...opt, sym: c })} label="رموز" />
             </div>
-            <button onClick={generate} className="ui-btn primary ui-w-full mt-4">توليد</button>
+            <ToolButton onClick={generate} className="w-full mt-4">توليد</ToolButton>
         </ToolShell>
     );
 }
@@ -210,7 +212,7 @@ function SpeedTest() {
         <ToolShell
             description="محاكاة فحص سرعة الإنترنت."
             results={
-                <div className="ui-output flex flex-col items-center justify-center h-full">
+                <div className="flex flex-col items-center justify-center h-full">
                     <div className="w-[200px] h-[200px] flex items-center justify-center rounded-full border-4 border-brand-primary/20 bg-[radial-gradient(circle,var(--brand-primary-5),transparent)] relative">
                         {/* Simple Gauge Needle or Arc could go here */}
                         <div className="text-center relative z-10">
@@ -227,9 +229,9 @@ function SpeedTest() {
             <div className="py-8">
                 <p className="text-center text-slate-400 mb-8">اضغط على الزر أدناه لبدء قياس سرعة الاتصال الخاصة بك بدقة عالية.</p>
             </div>
-            <button onClick={runTest} disabled={status === 'running'} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={runTest} disabled={status === 'running'} className="w-full">
                 {status === 'running' ? 'جاري الفحص...' : 'بدء الفحص'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -272,7 +274,7 @@ function PomodoroTimer() {
         <ToolShell
             description="مؤقت التركيز (بومودورو)."
             results={
-                <div className="ui-output flex flex-col items-center justify-center h-full">
+                <div className="flex flex-col items-center justify-center h-full">
                     <div className={`text-6xl font-bold font-mono mb-2 ${active ? 'text-brand-primary animate-pulse' : 'text-white'}`}>
                         {fmt(timeLeft)}
                     </div>
@@ -283,13 +285,13 @@ function PomodoroTimer() {
             }
         >
             <div className="flex justify-center gap-4 mb-8">
-                <button onClick={() => switchMode('work')} className={`ui-btn flex-1 ${mode === 'work' ? 'primary' : 'ghost'}`}>عمل (25)</button>
-                <button onClick={() => switchMode('break')} className={`ui-btn flex-1 ${mode === 'break' ? 'primary' : 'ghost'}`}>راحة (5)</button>
+                <ToolButton onClick={() => switchMode('work')} variant={mode === 'work' ? 'primary' : 'ghost'} className="flex-1">عمل (25)</ToolButton>
+                <ToolButton onClick={() => switchMode('break')} variant={mode === 'break' ? 'primary' : 'ghost'} className="flex-1">راحة (5)</ToolButton>
             </div>
 
-            <div className="ui-grid-2">
-                <button onClick={toggle} className="ui-btn primary">{active ? 'إيقاف مؤقت' : 'ابدأ'}</button>
-                <button onClick={reset} className="ui-btn ghost">إعادة تعيين</button>
+            <div className="grid grid-cols-2 gap-4">
+                <ToolButton onClick={toggle} className="w-full">{active ? 'إيقاف مؤقت' : 'ابدأ'}</ToolButton>
+                <ToolButton onClick={reset} variant="ghost" className="w-full">إعادة تعيين</ToolButton>
             </div>
         </ToolShell>
     );
@@ -315,29 +317,29 @@ function WheelOfLuck() {
         <ToolShell
             description="عجلة الحظ للاختيار العشوائي."
             results={
-                <div className="ui-output text-center flex flex-col items-center justify-center h-full">
+                <div className="text-center flex flex-col items-center justify-center h-full">
                     <div className="text-sm text-slate-400 mb-4">الفائز هو</div>
-                    <div className={`text-3xl font-bold ${winner ? 'text-brand-primary glow-text scale-110' : 'text-slate-600'} transition-all duration-300`}>
+                    <div className={`text-3xl font-bold ${winner ? 'text-brand-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.3)] scale-110' : 'text-slate-600'} transition-all duration-300`}>
                         {winner || '???'}
                     </div>
                 </div>
             }
         >
 
-            <button onClick={spin} disabled={spinning} className="ui-btn primary ui-w-full mb-8">
+            <ToolButton onClick={spin} disabled={spinning} className="w-full mb-8">
                 {spinning ? 'جاري التدوير...' : 'دوّر العجلة!'}
-            </button>
+            </ToolButton>
 
             <div className="border-t border-white/10 pt-4">
                 <label className="text-sm text-slate-400 mb-2 block">الخيارات:</label>
                 <div className="flex gap-2 mb-4">
-                    <input value={newItem} onChange={e => setNewItem(e.target.value)} className="ui-input" placeholder="أضف خيار..." aria-label="New Item" />
-                    <button onClick={add} className="ui-btn ghost">+</button>
+                    <ToolInput value={newItem} onChange={e => setNewItem(e.target.value)} placeholder="أضف خيار..." aria-label="New Item" />
+                    <ToolButton variant="ghost" onClick={add}>+</ToolButton>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {items.map((it, i) => (
-                        <span key={i} className="ui-badge bg-white/5 text-xs px-3 py-1 rounded-full flex items-center gap-2">
-                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="text-red-400 hover:text-red-300">×</button>
+                        <span key={i} className="bg-white/5 text-slate-200 text-xs px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
+                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="text-red-400 hover:text-red-300 ml-1">×</button>
                         </span>
                     ))}
                 </div>

@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { tools, categories } from '@/data/tools';
 import { useNavigation } from '@/context/NavigationContext';
+import { SectionBanner } from './SectionBanner';
+import { HeroBanner } from './HeroBanner';
 
 const ToolsDirectory = () => {
     const { launchTool, setCurrentView } = useNavigation();
@@ -81,118 +83,12 @@ const ToolsDirectory = () => {
         'Current': 'النتائج'
     };
 
-    // Featured Tool (Neural Architect Pro style)
-    const featuredTool = tools.find(t => t.id === 'ai-text') || tools[0];
 
     return (
         <div className="w-full max-w-7xl mx-auto pb-32 space-y-8 lg:space-y-12 animate-in fade-in duration-700 overflow-x-hidden">
             {/* 1. CINEMATIC FEATURED SECTION */}
-            <section className="px-2 lg:px-0">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="relative w-full rounded-[32px] overflow-hidden border border-white/10 bg-[#13131A] shadow-[0_20px_50px_rgba(0,0,0,0.5)] group"
-                >
-                    {/* Background Glows */}
-                    <div className="absolute top-0 right-0 w-1/2 h-full bg-brand-primary/5 blur-[120px] pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 w-1/2 h-full bg-cyan-500/5 blur-[120px] pointer-events-none" />
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
-
-                    <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12 p-5 lg:p-14 relative z-10">
-                        {/* 3D-ish Icon Content */}
-                        <div className="w-full lg:w-1/2 aspect-video lg:aspect-[16/9] rounded-2xl lg:rounded-3xl overflow-hidden relative shadow-2xl border border-white/10 bg-black/20 order-1 lg:order-2 group-hover:border-brand-primary/30 transition-colors">
-                            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-blue-600/10 z-10" />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <motion.div
-                                    animate={{
-                                        y: [0, -12, 0],
-                                        rotateZ: [0, 5, 0],
-                                        scale: [1, 1.05, 1]
-                                    }}
-                                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                                    className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-tr from-brand-primary to-cyan-400 rounded-[16px] lg:rounded-[20px] shadow-[0_0_40px_rgba(139,92,246,0.3)] flex items-center justify-center border border-white/20 relative"
-                                >
-                                    <div className="absolute inset-0 bg-white/10 blur-xl rounded-full scale-150 opacity-30" />
-                                    {React.createElement(getIcon(featuredTool.icon), { className: "w-10 h-10 lg:w-12 lg:h-12 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] z-10" })}
-                                </motion.div>
-                            </div>
-                            {/* Trending Ribbon */}
-                            <div className="absolute top-0 right-0 bg-brand-primary text-white text-[10px] font-black px-6 py-1 rotate-45 translate-x-[25px] translate-y-[10px] shadow-lg z-20">
-                                TRENDING
-                            </div>
-
-                            {/* Glass Badge */}
-                            <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10 shadow-xl z-20">
-                                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_12px_rgba(34,211,238,0.6)]" />
-                                <span className="text-[11px] font-black text-white/90 tracking-widest uppercase font-inter">Live Processing</span>
-                            </div>
-
-                            {/* Decorative Processing Waveform (Visual only) */}
-                            <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-1 z-20 opacity-30">
-                                {[1, 2, 3, 4, 5, 6].map(i => (
-                                    <motion.div
-                                        key={i}
-                                        animate={{ height: [4, 12, 4] }}
-                                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.1 }}
-                                        className="w-1 bg-white rounded-full"
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Text Content */}
-                        <div className="w-full lg:w-1/2 space-y-4 text-right order-2 lg:order-1">
-                            <div className="flex items-center justify-end gap-2 mb-1 lg:mb-2">
-                                <span className="px-1.5 py-0.5 bg-brand-primary/10 border border-brand-primary/20 rounded text-[8px] font-black text-brand-primary uppercase tracking-tighter">AI Model v4.2</span>
-                                <h2 className="text-2xl lg:text-4xl font-black text-white leading-tight font-cairo">
-                                    مساعد <span className="text-brand-primary">الذكاء الاصطناعي</span> المتطور
-                                </h2>
-                            </div>
-                            <p className="text-slate-400 text-xs lg:text-lg leading-relaxed max-w-xl ml-auto">
-                                معالجة متقدمة للبنية التحتية للنصوص باستخدام شبكات الذكاء الاصطناعي التوليدي الخاصة بمنصة RI88، مصمم للإنتاجية العالية.
-                            </p>
-
-                            {/* Feature Chips */}
-                            <div className="flex flex-wrap justify-end gap-2 pt-2">
-                                {['تحليل ذكي', 'ترميز تلقائي', 'دعم لغوي مكثف', 'أمن البيانات'].map((feature, idx) => (
-                                    <span key={idx} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-bold text-slate-300 font-cairo">
-                                        {feature}
-                                    </span>
-                                ))}
-                            </div>
-                            <div className="flex items-center justify-end gap-8 pt-4">
-                                <div className="flex gap-8 border-r border-white/10 pr-8 mr-2">
-                                    <div className="text-right">
-                                        <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] font-inter mb-1">Users</p>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-lg font-black text-white font-inter">14.2K</span>
-                                            <span className="text-brand-secondary font-bold text-[10px] font-inter">Active</span>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] font-inter mb-1">Efficiency</p>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-lg font-black text-white font-inter">99.4%</span>
-                                            <span className="text-cyan-400 font-bold text-[10px] font-inter">Score</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => launchTool(featuredTool.id)}
-                                    className="px-6 lg:px-10 py-3 lg:py-5 bg-gradient-to-r from-brand-primary to-violet-600 hover:from-brand-primary/90 hover:to-violet-600/90 text-white rounded-[12px] lg:rounded-[16px] font-black text-xs lg:text-sm transition-all shadow-2xl shadow-brand-primary/30 hover:scale-105 active:scale-95 flex items-center gap-2 lg:gap-3 font-cairo"
-                                >
-                                    جربه الآن
-                                    <ArrowRight className="w-4 h-4 lg:w-5 lg:h-5" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Background Gradients */}
-                    <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-brand-primary/10 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-brand-primary/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
-                </motion.div>
-            </section>
+            {/* 1. CINEMATIC FEATURED SECTION (Dynamic) */}
+            <HeroBanner />
 
             {/* 2. INNOVATION LABS CAROUSEL */}
             <section className="space-y-8">
@@ -312,11 +208,9 @@ const ToolsDirectory = () => {
 
                     return (
                         <div key={key} className="space-y-8 px-2">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-black tracking-widest text-slate-500 uppercase flex items-center gap-3 font-inter">
-                                    <span className="w-1.5 h-6 bg-brand-primary rounded-full shadow-[0_0_15px_rgba(139,92,246,0.6)]"></span>
-                                    {groupTitle}
-                                </h3>
+                            {/* Replaced standard header with Premium Banner */}
+                            <div className="mb-2">
+                                <SectionBanner categoryKey={key} title={groupTitle} tools={group} />
                             </div>
 
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
@@ -356,21 +250,23 @@ const ToolsDirectory = () => {
             </div>
 
             {/* Empty State */}
-            {filteredTools.length === 0 && (
-                <div className="text-center py-40 px-4 space-y-6">
-                    <div className="w-24 h-24 bg-white/5 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-slate-800 backdrop-blur-xl border border-white/5">
-                        <Search className="w-12 h-12" />
+            {
+                filteredTools.length === 0 && (
+                    <div className="text-center py-40 px-4 space-y-6">
+                        <div className="w-24 h-24 bg-white/5 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-slate-800 backdrop-blur-xl border border-white/5">
+                            <Search className="w-12 h-12" />
+                        </div>
+                        <h3 className="text-2xl font-black text-white font-cairo">لم نجد ما تبحث عنه</h3>
+                        <p className="text-slate-500 text-base font-medium font-cairo">جرب البحث بكلمات أخرى أو تصفح الأقسام</p>
+                        <button
+                            onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
+                            className="text-brand-primary font-black text-base hover:underline pt-6 font-cairo"
+                        >
+                            استعراض كل الأدوات
+                        </button>
                     </div>
-                    <h3 className="text-2xl font-black text-white font-cairo">لم نجد ما تبحث عنه</h3>
-                    <p className="text-slate-500 text-base font-medium font-cairo">جرب البحث بكلمات أخرى أو تصفح الأقسام</p>
-                    <button
-                        onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
-                        className="text-brand-primary font-black text-base hover:underline pt-6 font-cairo"
-                    >
-                        استعراض كل الأدوات
-                    </button>
-                </div>
-            )}
+                )
+            }
         </div>
     );
 };

@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 import Script from 'next/script';
-import { Loader2, Info } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
+import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
 
 // Declare globals for CDN loaded libraries
 declare global {
@@ -85,40 +86,40 @@ function PDFMerger() {
                     <h3 className="text-3xl font-black text-white mb-2">Merged Successfully!</h3>
                     <p className="text-slate-400 mb-8 text-center">Your files have been combined into one document.</p>
 
-                    <button onClick={() => merge()} className="ui-btn ghost w-full border-white/10 hover:bg-white/5 mb-4">
+                    <ToolButton variant="ghost" onClick={() => merge()} className="w-full mb-4">
                         Download Again
-                    </button>
-                    <button onClick={() => { setLastFile(null); setFiles(null); }} className="ui-btn secondary w-full">
+                    </ToolButton>
+                    <ToolButton variant="secondary" onClick={() => { setLastFile(null); setFiles(null); }} className="w-full">
                         Merge New Files
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Choose Files">
-                <input
+                <ToolInput
                     type="file"
                     multiple
                     accept=".pdf"
                     onChange={e => setFiles(e.target.files)}
-                    className="ui-input"
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
                     aria-label="Select PDF files to merge"
                 />
             </ToolInputRow>
 
             {files && (
-                <div className="ui-mb-4 text-sm text-gray-400">
+                <div className="mb-4 text-sm text-gray-400 font-medium px-1">
                     Selected {files.length} files
                 </div>
             )}
 
-            <button
+            <ToolButton
                 onClick={merge}
                 disabled={!files || processing}
-                className="ui-btn primary ui-w-full"
+                className="w-full text-lg mt-4"
             >
-                {processing ? <Loader2 className="animate-spin" size={16} /> : null}
+                {processing ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
                 {processing ? 'Merging...' : 'Merge PDFs'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -179,37 +180,36 @@ function PDFSplitter() {
                     </div>
                     <h3 className="text-2xl font-black text-white mb-2">Splitting Complete!</h3>
                     <p className="text-slate-400 mb-8 text-center">Extracted pages are ready.</p>
-                    <button onClick={() => { setLastFile(null); setFile(null); }} className="ui-btn primary w-full h-14 text-lg">
+                    <ToolButton onClick={() => { setLastFile(null); setFile(null); }} className="w-full text-lg">
                         Process Another File
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input
+                <ToolInput
                     type="file"
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
-                    className="ui-input"
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
                     aria-label="Select PDF file to split"
                 />
             </ToolInputRow>
 
             <ToolInputRow label="Page Ranges (Optional)">
-                <input
+                <ToolInput
                     value={range}
                     onChange={e => setRange(e.target.value)}
-                    className="ui-input"
                     placeholder="e.g. 1-3, 5"
                     aria-label="Page ranges"
                 />
-                <p className="tool-desc text-xs mt-1.5">Leave empty to extract all pages.</p>
+                <p className="text-xs text-brand-secondary/70 mt-2 font-medium">Leave empty to extract all pages.</p>
             </ToolInputRow>
 
-            <button onClick={split} disabled={!file || processing} className="ui-btn primary ui-w-full">
-                {processing ? <Loader2 className="animate-spin" size={16} /> : null}
+            <ToolButton onClick={split} disabled={!file || processing} className="w-full text-lg mt-6">
+                {processing ? <Loader2 className="animate-spin mr-2" size={20} /> : null}
                 {processing ? 'Processing...' : 'Extract Pages'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -249,25 +249,25 @@ function PDFCompressor() {
                     </div>
                     <h3 className="text-2xl font-black text-white mb-2">Compression Done!</h3>
                     <p className="text-slate-400 mb-8 text-center">Your PDF has been optimized.</p>
-                    <button onClick={() => { setLastFile(null); setFile(null); }} className="ui-btn primary w-full h-14 text-lg">
+                    <ToolButton onClick={() => { setLastFile(null); setFile(null); }} className="w-full text-lg">
                         Compress Another
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input
+                <ToolInput
                     type="file"
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
-                    className="ui-input"
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
                     aria-label="Select PDF file to compress"
                 />
             </ToolInputRow>
-            <p className="tool-desc ui-mb-4 text-xs">Note: Optimizes internal structure. Scanned documents may not shrink significantly.</p>
-            <button onClick={compress} disabled={!file || processing} className="ui-btn primary ui-w-full">
+            <p className="text-xs text-brand-secondary/70 mb-6 font-medium">Note: Optimizes internal structure. Scanned documents may not shrink significantly.</p>
+            <ToolButton onClick={compress} disabled={!file || processing} className="w-full text-lg">
                 {processing ? 'Compressing...' : 'Compress PDF'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -317,24 +317,24 @@ function PDFToImages() {
                     </div>
                     <h3 className="text-3xl font-black text-white mb-2">{count} Images</h3>
                     <p className="text-slate-400 mb-8 text-center">Converted successfully. Check your downloads.</p>
-                    <button onClick={() => { setCount(0); setFile(null); }} className="ui-btn primary w-full h-14 text-lg">
+                    <ToolButton onClick={() => { setCount(0); setFile(null); }} className="w-full text-lg">
                         Convert More
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input
+                <ToolInput
                     type="file"
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
-                    className="ui-input"
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
                     aria-label="Select PDF file to convert to images"
                 />
             </ToolInputRow>
-            <button onClick={convert} disabled={!file || processing} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={convert} disabled={!file || processing} className="w-full text-lg mt-6">
                 {processing ? 'Converting...' : 'Convert to Images'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -393,27 +393,27 @@ function PDFExtractText() {
                         aria-label="Extracted Text Result"
                         value={textResult}
                         readOnly
-                        className="ui-textarea flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-xs font-mono text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50"
+                        className="w-full flex-1 mb-4 bg-black/20 border border-white/10 rounded-xl p-4 resize-none text-xs font-mono text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-wrap min-h-[300px]"
                     />
-                    <button onClick={downloadText} className="ui-btn primary w-full h-14 text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                    <ToolButton onClick={downloadText} className="w-full text-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]">
                         Download .txt
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input
+                <ToolInput
                     type="file"
                     accept=".pdf"
                     onChange={e => setFile(e.target.files?.[0] || null)}
-                    className="ui-input"
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
                     aria-label="Select PDF file to extract text from"
                 />
             </ToolInputRow>
 
-            <button onClick={extract} disabled={!file || processing} className="ui-btn primary ui-w-full ui-mb-4">
+            <ToolButton onClick={extract} disabled={!file || processing} className="w-full text-lg mt-6">
                 {processing ? 'Extracting...' : 'Extract Text'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -450,21 +450,33 @@ function PDFProtector() {
                     </div>
                     <h3 className="text-2xl font-black text-red-500 mb-2">Encrypted!</h3>
                     <p className="text-slate-400 mb-8 text-center">Your file is now password protected.</p>
-                    <button onClick={() => { setLastFile(null); setFile(null); setPass(''); }} className="ui-btn primary w-full h-14 text-lg bg-red-600 border-red-500 hover:bg-red-500">
+                    <ToolButton onClick={() => { setLastFile(null); setFile(null); setPass(''); }} className="w-full text-lg bg-red-600 border-red-500 hover:bg-red-500">
                         Protect Another
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file to protect" />
+                <ToolInput
+                    type="file"
+                    accept=".pdf"
+                    onChange={e => setFile(e.target.files?.[0] || null)}
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
+                    aria-label="Select PDF file to protect"
+                />
             </ToolInputRow>
             <ToolInputRow label="Set Password">
-                <input type="password" value={pass} onChange={e => setPass(e.target.value)} className="ui-input" placeholder="Enter secure password" aria-label="Password for PDF" />
+                <ToolInput
+                    type="password"
+                    value={pass}
+                    onChange={e => setPass(e.target.value)}
+                    placeholder="Enter secure password"
+                    aria-label="Password for PDF"
+                />
             </ToolInputRow>
-            <button onClick={protect} disabled={!file || !pass || processing} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={protect} disabled={!file || !pass || processing} className="w-full text-lg mt-6 bg-red-600 border-red-500 hover:bg-red-500 text-white">
                 Encrypt PDF
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -503,18 +515,24 @@ function PDFUnlock() {
                     </div>
                     <h3 className="text-2xl font-black text-green-500 mb-2">Unlocked!</h3>
                     <p className="text-slate-400 mb-8 text-center">Protection removed successfully.</p>
-                    <button onClick={() => { setLastFile(null); setFile(null); }} className="ui-btn primary w-full h-14 text-lg bg-green-600 border-green-500 hover:bg-green-500">
+                    <ToolButton onClick={() => { setLastFile(null); setFile(null); }} className="w-full text-lg bg-green-600 border-green-500 hover:bg-green-500">
                         Unlock Another
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file to unlock" />
+                <ToolInput
+                    type="file"
+                    accept=".pdf"
+                    onChange={e => setFile(e.target.files?.[0] || null)}
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
+                    aria-label="Select PDF file to unlock"
+                />
             </ToolInputRow>
-            <button onClick={unlock} disabled={!file || processing} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={unlock} disabled={!file || processing} className="w-full text-lg mt-6 bg-green-600 border-green-500 hover:bg-green-500 text-white">
                 Remove Security
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -562,18 +580,25 @@ function ImageToPDF() {
                     </div>
                     <h3 className="text-2xl font-black text-white mb-2">PDF Created!</h3>
                     <p className="text-slate-400 mb-8 text-center">Images successfully converted.</p>
-                    <button onClick={() => { setLastFile(null); setFiles(null); }} className="ui-btn primary w-full h-14 text-lg">
+                    <ToolButton onClick={() => { setLastFile(null); setFiles(null); }} className="w-full text-lg">
                         Create New PDF
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Select Images">
-                <input type="file" multiple accept="image/png, image/jpeg" onChange={e => setFiles(e.target.files)} className="ui-input" aria-label="Select images to convert" />
+                <ToolInput
+                    type="file"
+                    multiple
+                    accept="image/png, image/jpeg"
+                    onChange={e => setFiles(e.target.files)}
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
+                    aria-label="Select images to convert"
+                />
             </ToolInputRow>
-            <button onClick={convert} disabled={!files || processing} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={convert} disabled={!files || processing} className="w-full text-lg mt-6">
                 Convert to PDF
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -662,48 +687,54 @@ function PDFPageOps({ mode }: { mode: 'rotate' | 'remove' | 'reorder' | 'crop' |
                     </div>
                     <h3 className="text-2xl font-black text-white mb-2">Done!</h3>
                     <p className="text-slate-400 mb-8 text-center">{labels[mode]} completed.</p>
-                    <button onClick={() => { setLastFile(null); setFile(null); setParam(''); }} className="ui-btn primary w-full h-14 text-lg">
+                    <ToolButton onClick={() => { setLastFile(null); setFile(null); setParam(''); }} className="w-full text-lg">
                         Edit Another
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input aria-label="Upload PDF" type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" />
+                <ToolInput
+                    type="file"
+                    accept=".pdf"
+                    onChange={e => setFile(e.target.files?.[0] || null)}
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
+                    aria-label="Upload PDF"
+                />
             </ToolInputRow>
 
             {mode === 'rotate' && (
-                <ToolInputRow label="Rotation">
-                    <select value={param} onChange={e => setParam(e.target.value)} className="ui-select" aria-label="Rotation angle">
+                <ToolInputRow label="Rotation" id="rotate-select">
+                    <ToolSelect id="rotate-select" value={param} onChange={e => setParam(e.target.value)} aria-label="Rotation angle" title="زاوية الدوران (Rotation Angle)">
                         <option value="" disabled>Select Rotation</option>
                         <option value="90">90° Clockwise</option>
                         <option value="180">180°</option>
                         <option value="-90">90° Counter-Clockwise</option>
-                    </select>
+                    </ToolSelect>
                 </ToolInputRow>
             )}
 
             {mode === 'remove' && (
                 <ToolInputRow label="Pages to Remove">
-                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 1, 3, 5" aria-label="Pages to remove" />
+                    <ToolInput value={param} onChange={e => setParam(e.target.value)} placeholder="e.g. 1, 3, 5" aria-label="Pages to remove" />
                 </ToolInputRow>
             )}
 
             {mode === 'reorder' && (
                 <ToolInputRow label="New Order">
-                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 3, 1, 2" aria-label="New page order" />
+                    <ToolInput value={param} onChange={e => setParam(e.target.value)} placeholder="e.g. 3, 1, 2" aria-label="New page order" />
                 </ToolInputRow>
             )}
 
             {mode === 'crop' && (
                 <ToolInputRow label="Crop Margin">
-                    <input value={param} onChange={e => setParam(e.target.value)} className="ui-input" placeholder="e.g. 50" aria-label="Crop margin" />
+                    <ToolInput value={param} onChange={e => setParam(e.target.value)} placeholder="e.g. 50" aria-label="Crop margin" />
                 </ToolInputRow>
             )}
 
-            <button onClick={run} disabled={!file || (processing)} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={run} disabled={!file || (processing)} className="w-full text-lg mt-6">
                 {processing ? 'Processing...' : 'Apply'}
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -755,21 +786,27 @@ function PDFWatermark() {
                     </div>
                     <h3 className="text-2xl font-black text-cyan-400 mb-2">Watermarked!</h3>
                     <p className="text-slate-400 mb-8 text-center">Document secured with watermark.</p>
-                    <button onClick={() => { setLastFile(null); setFile(null); setText(''); }} className="ui-btn primary w-full h-14 text-lg bg-cyan-600 border-cyan-500 hover:bg-cyan-500">
+                    <ToolButton onClick={() => { setLastFile(null); setFile(null); setText(''); }} className="w-full text-lg bg-cyan-600 border-cyan-500 hover:bg-cyan-500 text-white">
                         Add Another
-                    </button>
+                    </ToolButton>
                 </div>
             )}
         >
             <ToolInputRow label="Upload PDF">
-                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)} className="ui-input" aria-label="Select PDF file for watermark" />
+                <ToolInput
+                    type="file"
+                    accept=".pdf"
+                    onChange={e => setFile(e.target.files?.[0] || null)}
+                    className="h-auto py-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary/80"
+                    aria-label="Select PDF file for watermark"
+                />
             </ToolInputRow>
             <ToolInputRow label="Watermark Text">
-                <input value={text} onChange={e => setText(e.target.value)} className="ui-input" aria-label="Watermark text" />
+                <ToolInput value={text} onChange={e => setText(e.target.value)} aria-label="Watermark text" />
             </ToolInputRow>
-            <button onClick={apply} disabled={!file || !text || processing} className="ui-btn primary ui-w-full">
+            <ToolButton onClick={apply} disabled={!file || !text || processing} className="w-full text-lg mt-6">
                 Apply Watermark
-            </button>
+            </ToolButton>
         </ToolShell>
     );
 }
@@ -798,49 +835,24 @@ export default function PdfTools({ toolId }: ToolProps) {
 
     return (
         <>
-            <Script
-                src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"
-                onLoad={() => setLibLoaded(true)}
-            />
-            <Script
-                src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
-                onLoad={() => {
-                    setPdfJsLoaded(true);
-                    if (window.pdfjsLib) window.pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
-                }}
-            />
+            <Script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" strategy="lazyOnload" />
+            <Script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" strategy="lazyOnload" />
+            <Script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js" strategy="lazyOnload" />
 
-            {!libLoaded ? (
-                <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                    <Loader2 className="w-8 h-8 animate-spin mb-4 text-blue-500" />
-                    <p>Loading PDF Libraries...</p>
-                </div>
-            ) : (
-                <div className="animate-fade-in">
-                    {toolId === 'pdf-merge' && <PDFMerger />}
-                    {toolId === 'pdf-split' && <PDFSplitter />}
-                    {toolId === 'pdf-protect' && <PDFProtector />}
-                    {toolId === 'pdf-unlock' && <PDFUnlock />}
-                    {toolId === 'pdf-compress' && <PDFCompressor />}
-                    {toolId === 'pdf-to-img' && (pdfJsLoaded ? <PDFToImages /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
-                    {toolId === 'img-to-pdf' && <ImageToPDF />}
-                    {toolId === 'pdf-rotate' && <PDFPageOps mode="rotate" />}
-                    {toolId === 'pdf-rem' && <PDFPageOps mode="remove" />}
-                    {toolId === 'pdf-ord' && <PDFPageOps mode="reorder" />}
-                    {toolId === 'pdf-crop' && <PDFPageOps mode="crop" />}
-                    {toolId === 'pdf-page-num' && <PDFPageOps mode="number" />}
-                    {toolId === 'pdf-watermark' && <PDFWatermark />}
-                    {toolId === 'pdf-extract-text' && (pdfJsLoaded ? <PDFExtractText /> : <div className="text-center text-gray-400">Loading Text Engine...</div>)}
-
-                    {!['pdf-merge', 'pdf-split', 'pdf-protect', 'pdf-unlock', 'pdf-compress', 'pdf-to-img', 'img-to-pdf', 'pdf-rotate', 'pdf-rem', 'pdf-ord', 'pdf-crop', 'pdf-page-num', 'pdf-watermark', 'pdf-extract-text'].includes(toolId) && (
-                        <div className="text-center py-12 text-gray-400">
-                            <Info className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                            <h3 className="text-lg font-semibold mb-2">Tool Not Found</h3>
-                            <p>We are working on {toolId}...</p>
-                        </div>
-                    )}
-                </div>
-            )}
+            {toolId === 'pdf-merge' && <PDFMerger />}
+            {toolId === 'pdf-split' && <PDFSplitter />}
+            {toolId === 'pdf-compress' && <PDFCompressor />}
+            {toolId === 'pdf-to-img' && <PDFToImages />}
+            {toolId === 'pdf-text' && <PDFExtractText />}
+            {toolId === 'pdf-protect' && <PDFProtector />}
+            {toolId === 'pdf-unlock' && <PDFUnlock />}
+            {toolId === 'img-to-pdf' && <ImageToPDF />}
+            {toolId === 'pdf-rotate' && <PDFPageOps mode="rotate" />}
+            {toolId === 'pdf-remove' && <PDFPageOps mode="remove" />}
+            {toolId === 'pdf-reorder' && <PDFPageOps mode="reorder" />}
+            {toolId === 'pdf-number' && <PDFPageOps mode="number" />}
+            {toolId === 'pdf-crop' && <PDFPageOps mode="crop" />}
+            {toolId === 'pdf-watermark' && <PDFWatermark />}
         </>
     );
 }

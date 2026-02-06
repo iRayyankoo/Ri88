@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Mail, Sparkles } from 'lucide-react';
 import Logo from '../Brand/Logo';
 
 interface ComingSoonOverlayProps {
@@ -22,6 +22,28 @@ const CountdownItem = ({ value, label }: { value: number; label: string }) => (
     </div>
 );
 
+const Particle = ({ delay }: { delay: number }) => {
+    const [randomValues] = useState(() => ({
+        x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : 0,
+        y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : 0,
+        duration: Math.random() * 5 + 5,
+        delay: Math.random() * 5
+    }));
+
+    return (
+        <motion.div
+            initial={{
+                x: randomValues.x,
+                y: randomValues.y,
+                opacity: 0
+            }}
+            animate={{ y: [null, -100], opacity: [0, 0.5, 0] }}
+            transition={{ duration: randomValues.duration, repeat: Infinity, delay: randomValues.delay + delay }}
+            className="absolute w-1 h-1 bg-white rounded-full blur-[1px]"
+        />
+    );
+};
+
 const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
     // Countdown Logic (Target: 14 Days from now)
     const [timeLeft, setTimeLeft] = useState({ days: 14, hours: 0, minutes: 0, seconds: 0 });
@@ -34,9 +56,6 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
     useEffect(() => {
         const timer = setInterval(() => {
             // Mock countdown logic for visual effect
-            const now = new Date();
-            const target = new Date(now.getTime() + 1209600000); // 14 Days
-
             // Just tick down seconds for demo
             setTimeLeft(prev => {
                 if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
@@ -87,6 +106,7 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
                 setMessage(data.error || 'Something went wrong.');
             }
         } catch (error) {
+            console.error('Waitlist error:', error);
             setStatus('error');
             setMessage('Failed to connect to server.');
         }
@@ -109,23 +129,12 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
                     className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-brand-secondary/10 blur-[150px] rounded-full mix-blend-screen"
                 />
 
-                {/* Floating Particles */}
                 {[...Array(20)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{
-                            x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : 0,
-                            y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : 0,
-                            opacity: 0
-                        }}
-                        animate={{ y: [null, -100], opacity: [0, 0.5, 0] }}
-                        transition={{ duration: Math.random() * 5 + 5, repeat: Infinity, delay: Math.random() * 5 }}
-                        className="absolute w-1 h-1 bg-white rounded-full blur-[1px]"
-                    />
+                    <Particle key={i} delay={i} />
                 ))}
 
                 {/* Film Noise Overlay */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E")` }} />
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none noise-overlay" />
             </div>
 
             {/* 2. MAIN CONTENT */}
@@ -235,7 +244,7 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
             {/* 4. FOOTER / ADMIN UNLOCK */}
             <div className="absolute bottom-10 left-10 lg:left-12 opacity-30 hover:opacity-100 transition-opacity flex items-center gap-4 z-50">
                 <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">© 2026 RI88 PRO ARCHITECTURE.</p>
-                <button onClick={handleAdminUnlock} className="p-2 hover:bg-white/10 rounded-full transition-colors group">
+                <button onClick={handleAdminUnlock} title="فتح لوحة المسؤول" className="p-2 hover:bg-white/10 rounded-full transition-colors group">
                     <ShieldCheck className="w-4 h-4 text-slate-700 group-hover:text-brand-primary" />
                 </button>
             </div>

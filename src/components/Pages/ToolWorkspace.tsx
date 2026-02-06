@@ -1,10 +1,7 @@
 "use client";
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-    ArrowRight, Settings2, Sparkles, Share2, Copy, History,
-    RotateCcw, Trash2, ArrowLeft, Zap, CheckCircle2
-} from 'lucide-react';
+import React from 'react';
+
+import { ArrowRight } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 import { tools } from '@/data/tools';
 import ToolRouter from '../tools/ToolRouter';
@@ -15,12 +12,13 @@ const ToolWorkspace = () => {
     const tool = tools.find(t => t.id === activeToolId) || tools[0];
 
     return (
-        <div className="min-h-screen pb-20">
+        <div className="pb-20 min-h-screen">
             {/* 1. HEADER (Navigation Only) */}
             <header className="flex items-center justify-between py-6 mb-4">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => setCurrentView('directory')}
+                        title="العودة للدليل"
                         className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors border border-white/5"
                     >
                         <ArrowRight className="w-5 h-5 rtl:rotate-180" />

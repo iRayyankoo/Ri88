@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Copy, Check, Info } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
 
 interface ToolShellProps {
@@ -9,48 +9,68 @@ interface ToolShellProps {
     children: React.ReactNode;
     className?: string;
     footer?: React.ReactNode;
+    results?: React.ReactNode; // Correctly typed in interface
 }
 
-export function ToolShell({ title, description, children, className = '', footer, results }: ToolShellProps & { results?: React.ReactNode }) {
+export function ToolShell({ title, description, children, className = '', footer, results }: ToolShellProps) {
     return (
         <div className={`w-full ${className}`} dir="rtl">
-            {/* Header Section - Full Width */}
-            <div className="mb-8 p-6 rounded-3xl stitch-glass bg-brand-primary/5 border-brand-primary/10">
-                {title && <h2 className="text-3xl font-black text-white mb-2">{title}</h2>}
-                {description && <p className="text-slate-400 font-medium leading-relaxed">{description}</p>}
-            </div>
+            {/* Header Section */}
+            {(title || description) && (
+                <div className="mb-8 p-8 rounded-[32px] bg-gradient-to-br from-white/5 to-transparent border border-white/5 relative overflow-hidden">
+                    <div className="relative z-10">
+                        {title && (
+                            <h2 className="text-3xl font-black text-white mb-3 tracking-tight flex items-center gap-3">
+                                <span className="p-2 rounded-xl bg-brand-primary/20 text-brand-primary">
+                                    <Sparkles className="w-6 h-6" />
+                                </span>
+                                {title}
+                            </h2>
+                        )}
+                        {description && <p className="text-slate-400 font-medium leading-relaxed max-w-3xl text-lg">{description}</p>}
+                    </div>
+                    {/* Ambient Glow */}
+                    <div className="absolute -top-24 -left-24 w-64 h-64 bg-brand-primary/10 blur-[80px] rounded-full pointer-events-none" />
+                </div>
+            )}
 
-            {/* Main Workspace - 2 Columns */}
+            {/* Main Workspace */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-                {/* Inputs / Controls Column */}
+                {/* Left Column: Inputs */}
                 <div className="col-span-1 lg:col-span-7 space-y-6">
-                    <GlassCard className="min-h-[400px]">
-                        {children}
+                    <GlassCard className="p-8 min-h-[400px]">
+                        <div className="space-y-8">
+                            {children}
+                        </div>
                         {footer && (
-                            <div className="mt-8 pt-6 border-t border-white/5">
+                            <div className="mt-8 pt-8 border-t border-white/5">
                                 {footer}
                             </div>
                         )}
                     </GlassCard>
                 </div>
 
-                {/* Output / Results Column */}
+                {/* Right Column: Results */}
                 <div className="col-span-1 lg:col-span-5 space-y-6">
-                    <GlassCard title="النتيجة" className="min-h-[200px] border-brand-secondary/20 relative overflow-hidden">
-                        {results ? (
-                            <div className="animate-fade-in relative z-10">
-                                {results}
-                            </div>
-                        ) : (
-                            <div className="h-full flex flex-col items-center justify-center text-slate-500 text-sm py-12 relative z-10">
-                                <Info className="w-8 h-8 mb-3 opacity-50" />
-                                <p>ستظهر النتائج هنا بعد الإدخال</p>
-                            </div>
-                        )}
-                        {/* Ambient Glow */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-brand-secondary/5 blur-[50px] rounded-full pointer-events-none" />
-                    </GlassCard>
+                    <div className="sticky top-6">
+                        <GlassCard title="النتيجة" className="min-h-[300px] border-brand-secondary/20 relative overflow-hidden bg-[#13131A]/80">
+                            {results ? (
+                                <div className="animate-fade-in relative z-10">
+                                    {results}
+                                </div>
+                            ) : (
+                                <div className="h-full min-h-[250px] flex flex-col items-center justify-center text-slate-500 text-sm py-12 relative z-10">
+                                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/5">
+                                        <Sparkles className="w-6 h-6 opacity-30" />
+                                    </div>
+                                    <p className="font-medium text-slate-600">النتيجة ستظهر هنا...</p>
+                                </div>
+                            )}
+                            {/* Ambient Glow */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-secondary/5 blur-[60px] rounded-full pointer-events-none" />
+                        </GlassCard>
+                    </div>
                 </div>
 
             </div>
@@ -60,44 +80,23 @@ export function ToolShell({ title, description, children, className = '', footer
 
 // --- Helper Subcomponents ---
 
-export function ToolInputRow({ label, children }: { label: string, children: React.ReactNode }) {
+export function ToolInputRow({ label, children, id }: { label: string, children: React.ReactNode, id?: string }) {
     return (
-        <div className="mb-6">
-            <label className="block w-full">
-                <span className="block mb-2 text-sm font-bold text-slate-300">{label}</span>
+        <div className="group">
+            <label htmlFor={id} className="block w-full">
+                <span className="block mb-3 text-sm font-bold text-slate-300 group-focus-within:text-brand-primary transition-colors">
+                    {label}
+                </span>
                 {children}
             </label>
         </div>
     );
 }
 
-export function ToolOutput({ content, label = "النتيجة" }: { content: string, label?: string }) {
-    // This component can be used to override the default placeholder in the right column if we use portals
-    const [copied, setCopied] = React.useState(false);
-
-    const handleCopy = () => {
-        navigator.clipboard.writeText(content);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    if (!content) return null;
-
+export function ToolOutput({ content }: { content: React.ReactNode }) {
     return (
-        <div className="bg-brand-bg/50 rounded-xl p-4 border border-white/10 mt-4">
-            <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{label}</span>
-                <button
-                    onClick={handleCopy}
-                    className="flex items-center gap-1 text-[10px] bg-white/5 hover:bg-white/10 px-2 py-1 rounded-lg transition-colors text-slate-300"
-                >
-                    {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
-                    {copied ? 'تم النسخ' : 'نسخ'}
-                </button>
-            </div>
-            <div className="text-lg font-bold text-brand-secondary break-all" dir="ltr">
-                {content}
-            </div>
+        <div className="bg-black/40 p-6 rounded-xl border border-white/5 text-slate-300 font-medium leading-relaxed whitespace-pre-wrap font-mono text-sm">
+            {content}
         </div>
     );
 }
