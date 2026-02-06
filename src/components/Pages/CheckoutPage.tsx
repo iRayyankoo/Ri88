@@ -116,7 +116,7 @@ export default function CheckoutPage() {
             {/* R: Order Summary */}
             <div className="space-y-6 lg:sticky lg:top-24">
                 <div className="bg-[#16161a] border border-brand-primary/20 p-8 rounded-[40px] relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-brand-primary to-purple-600" />
+                    <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-brand-primary to-emerald-600" />
 
                     <h3 className="text-lg font-black text-white mb-6">ملخص الطلب</h3>
 

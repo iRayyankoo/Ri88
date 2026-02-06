@@ -7,7 +7,8 @@ import {
     Zap,
     Heart,
     Settings,
-    Plus
+    Plus,
+    User
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -15,11 +16,11 @@ const BottomNav = () => {
     const { currentView, setCurrentView } = useNavigation();
 
     const navItems = [
-        { name: 'الرئيسية', icon: Home, id: 'landing' },
-        { name: 'الفئات', icon: LayoutGrid, id: 'directory' },
-        { name: 'أدوات', icon: Zap, id: 'workspace' },
+        { name: 'الرئيسية', icon: Home, id: 'dashboard' }, // Home -> Dashboard
+        { name: 'الفئات', icon: LayoutGrid, id: 'categories' },
+        { name: 'الأدوات', icon: Zap, id: 'directory' },
         { name: 'المفضلة', icon: Heart, id: 'favorites' },
-        { name: 'الإعدادات', icon: Settings, id: 'settings' },
+        { name: 'الملف', icon: User, id: 'settings' }, // Settings icon used for Profile for now, or User
     ];
 
     return (
@@ -41,15 +42,12 @@ const BottomNav = () => {
                             className={`flex flex-col items-center gap-1.5 transition-all ${isActive ? 'text-brand-primary' : 'text-slate-500'
                                 }`}
                         >
-                            <div className={`
-                ${isCenter ? 'bg-brand-primary text-white p-3 rounded-2xl -mt-8 shadow-2xl shadow-brand-primary/40' : ''}
-                ${isActive && !isCenter ? 'relative' : ''}
-              `}>
-                                <item.icon className={`w-6 h-6 ${isActive && !isCenter ? 'fill-brand-primary/20' : ''}`} />
-                                {isActive && !isCenter && (
+                            <div className={`p-2 rounded-xl transition-all ${isActive ? 'bg-brand-primary/10' : ''}`}>
+                                <item.icon className={`w-6 h-6 ${isActive ? 'fill-brand-primary text-brand-primary' : ''}`} />
+                                {isActive && (
                                     <motion.span
                                         layoutId="active-dot-mobile"
-                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand-primary shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                                        className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand-primary shadow-[0_0_8px_rgba(16,185,129,0.8)]"
                                     />
                                 )}
                             </div>

@@ -6,7 +6,8 @@
   /* Core Colors */
   --color-brand-bg: #0D0D0F;
   /* Deep Charcoal */
-  --color-brand-primary: #8B5CF6;
+  --color-brand-primary: #059669;
+  /* Emerald-600 */
   /* Purple */
   --color-brand-secondary: #22D3EE;
   /* Cyan Accent */
@@ -78,7 +79,7 @@
   }
 
   .btn-primary:hover {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
     transform: translateY(-2px);
   }
 
@@ -104,5 +105,28 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Mobile Bottom Nav Glass */
+  .bottom-nav-glass {
+    @apply fixed bottom-0 left-0 right-0 h-20 bg-[#0D0D0F]/80 backdrop-blur-xl border-t border-white/5 z-50 pb-2;
+  }
+
+  /* Gradient Mask */
+  .mask-gradient-x {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  }
+
+  /* Utility to hide scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }

@@ -19,7 +19,7 @@ import { motion } from 'framer-motion';
 import { useNavigation } from '@/context/NavigationContext';
 
 const Sidebar = () => {
-    const { currentView, setCurrentView, isLoggedIn, setIsLoggedIn } = useNavigation();
+    const { currentView, setCurrentView, isLoggedIn, setIsLoggedIn, isSidebarOpen } = useNavigation();
 
     const navItems = [
         { name: 'الرئيسية', icon: Home, id: 'landing' },
@@ -35,25 +35,22 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className="hidden lg:flex w-72 h-screen bg-[#0D0D0F]/95 backdrop-blur-2xl border-l border-white/5 flex-col p-6 shrink-0 z-50 sticky top-0">
+        <aside className={`
+            fixed inset-y-0 right-0 z-50 w-72 bg-[#0D0D0F]/95 backdrop-blur-xl border-l border-white/5 px-6 py-8 flex flex-col transition-transform duration-300
+            ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+            lg:relative lg:translate-x-0 lg:flex lg:border-l lg:border-white/5
+            hidden
+        `}>
             {/* Logo Section */}
             <div className="mb-10 px-2">
                 <Logo size="md" />
             </div>
 
-            {/* Global Search Trigger */}
-            <div className="mb-8 relative group cursor-pointer" onClick={() => setCurrentView('directory')}>
-                <div className="absolute inset-y-0 right-4 flex items-center text-slate-500 group-hover:text-brand-primary transition-colors">
-                    <Search className="w-4 h-4" />
-                </div>
-                <div className="bg-white/5 border border-white/5 rounded-2xl py-3.5 pr-11 pl-4 text-xs text-slate-400 font-medium group-hover:border-brand-primary/30 group-hover:bg-brand-primary/5 transition-all text-right shadow-inner">
-                    بحث سريع (Ctrl + K)
-                </div>
-            </div>
+            {/* Search Removed (Duplicate) */}
 
             {/* Primary Navigation */}
             <nav className="flex-1 space-y-2 text-right overflow-y-auto no-scrollbar pb-6">
-                <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-4 select-none">القائمة الرئيسية</p>
+                {/* Label Removed */}
                 {navItems.map((item) => {
                     const isActive = currentView === item.id;
                     return (
@@ -64,7 +61,7 @@ const Sidebar = () => {
                         >
                             <motion.div
                                 whileHover={{ x: -4 }}
-                                className={`w-full flex items-center justify-end gap-3 px-4 py-3 rounded-xl transition-all group relative overflow-hidden ${isActive
+                                className={`w-full flex items-center justify-start gap-4 px-4 py-3 rounded-xl transition-all group relative overflow-hidden ${isActive
                                     ? 'text-white shadow-[0_0_25px_rgba(139,92,246,0.3)]'
                                     : 'text-slate-500 hover:text-white hover:bg-white/5'
                                     }`}
@@ -75,8 +72,8 @@ const Sidebar = () => {
                                         className="absolute inset-0 bg-brand-primary rounded-xl -z-10"
                                     />
                                 )}
-                                <span className={`font-bold text-sm relative z-10 ${isActive ? 'text-white' : ''}`}>{item.name}</span>
                                 <item.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-brand-primary'}`} />
+                                <span className={`font-bold text-sm relative z-10 ${isActive ? 'text-white' : ''}`}>{item.name}</span>
                             </motion.div>
                         </button>
                     );
@@ -94,13 +91,13 @@ const Sidebar = () => {
                             >
                                 <motion.div
                                     whileHover={{ x: -4 }}
-                                    className={`w-full flex items-center justify-end gap-3 px-4 py-3 rounded-xl transition-all group border ${isActive
+                                    className={`w-full flex items-center justify-start gap-4 px-4 py-3 rounded-xl transition-all group border ${isActive
                                         ? 'bg-brand-secondary/10 border-brand-secondary/20 text-brand-secondary'
                                         : 'border-transparent text-slate-500 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
-                                    <span className="font-bold text-sm">{item.name}</span>
                                     <item.icon className={`w-5 h-5 ${isActive ? 'text-brand-secondary' : 'text-slate-500 group-hover:text-brand-secondary'}`} />
+                                    <span className="font-bold text-sm">{item.name}</span>
                                 </motion.div>
                             </button>
                         );

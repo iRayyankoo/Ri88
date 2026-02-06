@@ -72,25 +72,107 @@ function GradientGenerator() {
     );
 }
 
-// 3. Color Extractor (Mock)
+// 3. Color Extractor (Real)
 function ColorExtractor() {
     const [img, setImg] = useState<string | null>(null);
-    const [colors] = useState(['#ff0000', '#00ff00', '#0000ff', '#f1c40f', '#9b59b6']);
+    const [colors, setColors] = useState<string[]>([]);
+    const [isExtracting, setIsExtracting] = useState(false);
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setImg(url);
+            extractColors(url);
+        }
+    };
+
+    const extractColors = async (imageUrl: string) => {
+        setIsExtracting(true);
+        try {
+            const image = new Image();
+            image.crossOrigin = "Anonymous";
+            image.src = imageUrl;
+            await new Promise((resolve, reject) => {
+                image.onload = resolve;
+                image.onerror = reject;
+            });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Resize for performance
+            const MAX_SIZE = 100;
+            const scale = Math.min(MAX_SIZE / image.width, MAX_SIZE / image.height, 1);
+            canvas.width = image.width * scale;
+            canvas.height = image.height * scale;
+
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+            // Simple Color Quantization (Binning)
+            const colorCounts: { [key: string]: number } = {};
+
+            for (let i = 0; i < imageData.length; i += 4) {
+                const r = imageData[i];
+                const g = imageData[i + 1];
+                const b = imageData[i + 2];
+                // Ignore transparent or very dark/light pixels
+                if (imageData[i + 3] < 128) continue;
+
+                // Quantize to reduced palette (round to nearest 32)
+                const qr = Math.round(r / 32) * 32;
+                const qg = Math.round(g / 32) * 32;
+                const qb = Math.round(b / 32) * 32;
+
+                const key = `${qr},${qg},${qb}`;
+                colorCounts[key] = (colorCounts[key] || 0) + 1;
+            }
+
+            // Sort by frequency
+            const sortedColors = Object.entries(colorCounts)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 5) // Top 5
+                .map(([key]) => {
+                    const [r, g, b] = key.split(',').map(Number);
+                    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+                });
+
+            setColors(sortedColors);
+        } catch (error) {
+            console.error("Extraction failed", error);
+        } finally {
+            setIsExtracting(false);
+        }
+    };
+
     return (
-        <ToolShell description="استخراج الألوان من الصور (تجريبي).">
-            <input aria-label="Upload Image" type="file" accept="image/*" onChange={e => { const f = e.target.files?.[0]; if (f) setImg(URL.createObjectURL(f)); }} className="ui-input mb-4" />
-            {img && <img src={img} alt="Preview" className="w-full h-48 object-cover rounded-lg mb-4 border border-white/10" />}
-            <div className="flex gap-2 justify-center">
-                {colors.map(c => (
-                    <div key={c} className="w-10 h-10 rounded-full cursor-pointer border-2 border-white/20 color-swatch" onClick={() => navigator.clipboard.writeText(c)}>
-                        <style jsx>{`
-                            .color-swatch {
-                                background: ${c};
-                            }
-                        `}</style>
-                    </div>
-                ))}
-            </div>
+        <ToolShell description="استخراج الألوان الأساسية من الصور.">
+            <input aria-label="Upload Image" type="file" accept="image/*" onChange={handleImageUpload} className="ui-input mb-4" />
+
+            {img && <img src={img} alt="Preview" className="w-full h-64 object-contain rounded-lg mb-6 border border-white/10 bg-black/40" />}
+
+            {isExtracting ? (
+                <div className="text-center text-sm text-gray-400 py-4">Extracting colors...</div>
+            ) : (
+                <div className="flex flex-wrap gap-4 justify-center">
+                    {colors.map(c => (
+                        <div key={c} className="group relative" onClick={() => navigator.clipboard.writeText(c)}>
+                            <div className="w-16 h-16 rounded-2xl cursor-pointer border border-white/10 shadow-lg transition-transform hover:scale-110 color-swatch flex items-center justify-center">
+                                <span className="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-[10px] px-1 rounded backdrop-blur-sm">Copy</span>
+                            </div>
+                            <div className="text-center text-xs mt-2 font-mono text-gray-400">{c}</div>
+                            <style jsx>{`
+                                .color-swatch {
+                                    background: ${c};
+                                }
+                            `}</style>
+                        </div>
+                    ))}
+                    {img && colors.length === 0 && <div className="text-gray-500 text-sm">No distinct colors found</div>}
+                </div>
+            )}
         </ToolShell>
     );
 }

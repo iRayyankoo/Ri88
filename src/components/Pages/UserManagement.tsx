@@ -86,9 +86,9 @@ const UserManagement = () => {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className={`px-2 py-1 rounded text-xs font-bold border ${user.role === 'admin' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
-                                            user.role === 'developer' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                                                'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                    <span className={`px-2 py-1 rounded text-xs font-bold border ${user.role === 'admin' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                        user.role === 'developer' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                                            'bg-slate-500/10 text-slate-400 border-slate-500/20'
                                         }`}>
                                         {user.role}
                                     </span>
@@ -98,7 +98,7 @@ const UserManagement = () => {
                                         {user.status === 'active' && <CheckCircle className="w-4 h-4 text-green-500" />}
                                         {user.status === 'banned' && <Ban className="w-4 h-4 text-red-500" />}
                                         <span className={`text-sm font-medium ${user.status === 'active' ? 'text-green-400' :
-                                                user.status === 'banned' ? 'text-red-400' : 'text-slate-400'
+                                            user.status === 'banned' ? 'text-red-400' : 'text-slate-400'
                                             }`}>
                                             {user.status === 'active' ? 'نشط' : user.status === 'banned' ? 'محظور' : 'انتظار'}
                                         </span>

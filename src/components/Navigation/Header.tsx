@@ -13,7 +13,7 @@ const Header = () => {
     } = useNavigation();
 
     return (
-        <header className="h-20 lg:h-24 px-6 lg:px-10 flex items-center justify-between sticky top-0 z-40 bg-[#0D0D0F]/80 backdrop-blur-md border-b border-white/5">
+        <header className="hidden lg:flex h-20 lg:h-24 px-6 lg:px-10 items-center justify-between sticky top-0 z-40 bg-[#0D0D0F]/80 backdrop-blur-md border-b border-white/5">
 
             {/* SEARCH BAR */}
             <div className="flex-1 max-w-xl hidden lg:block relative group">
@@ -52,7 +52,10 @@ const Header = () => {
                 </button>
 
                 {/* 2. NOTIFICATION BELL (Isolated) */}
-                <button className="relative w-11 h-11 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/5">
+                <button
+                    onClick={() => setCurrentView('notifications')}
+                    className="relative w-11 h-11 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/5"
+                >
                     <Bell className="w-5 h-5" />
                     <span className="absolute top-3 right-3.5 w-2 h-2 bg-red-500 rounded-full border border-[#0D0D0F] shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                 </button>

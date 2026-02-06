@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export type ViewType = 'landing' | 'dashboard' | 'directory' | 'workspace' | 'admin' | 'dev' | 'chainer' | 'visitor-preview' | 'plans' | 'store' | 'extensions' | 'wallet' | 'favorites' | 'settings' | 'categories' | 'submit-tool' | 'api-docs' | 'error-logs' | 'auth' | 'admin-users' | 'admin-server' | 'admin-changelog' | 'checkout';
+export type ViewType = 'landing' | 'dashboard' | 'directory' | 'workspace' | 'admin' | 'dev' | 'chainer' | 'visitor-preview' | 'plans' | 'store' | 'extensions' | 'wallet' | 'favorites' | 'settings' | 'categories' | 'submit-tool' | 'api-docs' | 'error-logs' | 'auth' | 'admin-users' | 'admin-server' | 'admin-changelog' | 'checkout' | 'notifications';
 
 interface NavigationContextType {
     currentView: ViewType;

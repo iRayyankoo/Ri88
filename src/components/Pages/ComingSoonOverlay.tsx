@@ -14,7 +14,7 @@ const CountdownItem = ({ value, label }: { value: number; label: string }) => (
             key={value}
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-4xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-brand-primary to-purple-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)] font-mono"
+            className="text-4xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-brand-primary to-emerald-400 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] font-mono"
         >
             {value.toString().padStart(2, '0')}
         </motion.div>
@@ -25,6 +25,11 @@ const CountdownItem = ({ value, label }: { value: number; label: string }) => (
 const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
     // Countdown Logic (Target: 14 Days from now)
     const [timeLeft, setTimeLeft] = useState({ days: 14, hours: 0, minutes: 0, seconds: 0 });
+
+    // Waitlist State
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -50,6 +55,40 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
             onUnlock?.();
         } else if (pass) {
             alert("Access Denied");
+        }
+    };
+
+    // Waitlist Handler
+    const handleJoinWaitlist = async () => {
+        if (!email || !email.includes('@')) {
+            setStatus('error');
+            setMessage('Please enter a valid email address.');
+            return;
+        }
+
+        setStatus('loading');
+        setMessage('');
+
+        try {
+            const res = await fetch('/api/waitlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setStatus('success');
+                setMessage(data.message || 'Thanks for joining!');
+                setEmail('');
+            } else {
+                setStatus('error');
+                setMessage(data.error || 'Something went wrong.');
+            }
+        } catch (error) {
+            setStatus('error');
+            setMessage('Failed to connect to server.');
         }
     };
 
@@ -118,7 +157,7 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.5, duration: 0.8 }}
-                    className="relative w-full max-w-2xl bg-white/[0.02] backdrop-blur-[40px] border border-white/[0.08] rounded-[32px] p-8 lg:p-12 shadow-[0_0_50px_-10px_rgba(139,92,246,0.15)] overflow-hidden group"
+                    className="relative w-full max-w-2xl bg-white/[0.02] backdrop-blur-[40px] border border-white/[0.08] rounded-[32px] p-8 lg:p-12 shadow-[0_0_50px_-10px_rgba(16,185,129,0.15)] overflow-hidden group"
                 >
                     {/* Inner Glow */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-50 blur-[2px]" />
@@ -136,18 +175,57 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
 
                     {/* Waitlist Form */}
                     <div className="relative max-w-md mx-auto">
-                        <div className="relative group/input">
+                        <div className="relative group/input mb-4">
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/input:text-brand-primary transition-colors" size={20} />
                             <input
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email for early access..."
-                                className="w-full h-16 bg-black/30 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/50 focus:bg-black/50 transition-all text-lg"
+                                disabled={status === 'loading' || status === 'success'}
+                                className="w-full h-16 bg-black/30 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/50 focus:bg-black/50 transition-all text-lg disabled:opacity-50"
                             />
                         </div>
-                        <button className="mt-4 w-full h-16 bg-gradient-to-r from-brand-primary to-blue-600 rounded-2xl font-bold text-white text-lg tracking-wide shadow-[0_0_30px_rgba(139,92,246,0.4)] hover:shadow-[0_0_50px_rgba(139,92,246,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group/btn">
-                            <Sparkles className="w-5 h-5 group-hover/btn:animate-spin" />
-                            JOIN THE WAITLIST
-                        </button>
+
+                        {status === 'success' ? (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="w-full h-16 bg-green-500/20 border border-green-500/30 rounded-2xl flex items-center justify-center gap-2 text-green-400 font-bold"
+                            >
+                                <Sparkles className="w-5 h-5" />
+                                {message}
+                            </motion.div>
+                        ) : (
+                            <button
+                                onClick={handleJoinWaitlist}
+                                disabled={status === 'loading'}
+                                className="w-full h-16 bg-gradient-to-r from-brand-primary to-emerald-600 rounded-2xl font-bold text-white text-lg tracking-wide shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:shadow-[0_0_50px_rgba(16,185,129,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group/btn disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {status === 'loading' ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        JOINING...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="w-5 h-5 group-hover/btn:animate-spin" />
+                                        JOIN THE WAITLIST
+                                    </>
+                                )}
+                            </button>
+                        )}
+
+                        {/* Error Message */}
+                        {status === 'error' && (
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="text-red-400 text-sm mt-3 text-center"
+                            >
+                                {message}
+                            </motion.p>
+                        )}
                     </div>
 
                 </motion.div>

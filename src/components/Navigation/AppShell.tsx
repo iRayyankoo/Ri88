@@ -2,6 +2,7 @@
 import React, { Suspense } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import MobileHeader from './MobileHeader';
 import BottomNav from './BottomNav';
 import FloatingAssistant from '../AIAssistant/FloatingAssistant';
 
@@ -11,7 +12,7 @@ interface AppShellProps {
 
 const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
     return (
-        <div className="min-h-screen flex overflow-hidden lg:flex-row-reverse relative" dir="rtl">
+        <div className="min-h-screen flex overflow-hidden relative" dir="rtl">
 
             {/* BACKGROUND EFFECTS */}
             <div className="fixed inset-0 z-0 pointer-events-none">
@@ -19,19 +20,23 @@ const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
                 <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-brand-secondary/5 blur-[100px] rounded-full mix-blend-screen" />
             </div>
 
-            {/* Desktop Sidebar (Right side for RTL) */}
+            {/* Desktop Sidebar (Right side for RTL) - Hidden on Mobile */}
             <Sidebar />
 
-            {/* Main Container - Glass Dashboard Frame */}
-            <div className="flex-1 flex flex-col h-screen relative z-10">
+            {/* Main Container */}
+            <div className="flex-1 flex flex-col h-screen relative z-10 overflow-hidden">
+                {/* Mobile Header (Visible < lg) */}
+                <MobileHeader />
 
-                {/* Global Header */}
+                {/* Desktop Header (Visible >= lg) */}
                 <Header />
 
-                {/* Dynamic Content Area - 2 Columns by default in pages */}
-                <main className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth relative p-6 lg:p-10 pb-32">
-                    <div className="max-w-[1920px] mx-auto h-full">
+                {/* Content Area */}
+                <main className="flex-1 overflow-y-auto lg:custom-scrollbar no-scrollbar scroll-smooth relative p-4 lg:p-10 pb-40">
+                    <div className="w-full mx-auto min-h-full flex flex-col">
                         {children}
+                        {/* Force Scroll Spacer for Mobile */}
+                        <div className="lg:hidden h-24 w-full shrink-0" aria-hidden="true" />
                     </div>
                 </main>
 

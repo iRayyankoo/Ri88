@@ -73,7 +73,7 @@ const FloatingAssistant = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-8 right-8 w-16 h-16 bg-brand-primary rounded-full shadow-[0_0_20px_rgba(139,92,246,0.5)] flex items-center justify-center text-white z-[9999] border border-white/20"
+                className="fixed bottom-24 lg:bottom-8 left-6 lg:left-8 w-14 h-14 lg:w-16 lg:h-16 bg-brand-primary rounded-full shadow-[0_0_20px_rgba(139,92,246,0.5)] flex items-center justify-center text-white z-[9999] border border-white/20"
             >
                 <Cpu className="w-8 h-8 animate-pulse text-white" />
             </motion.button>

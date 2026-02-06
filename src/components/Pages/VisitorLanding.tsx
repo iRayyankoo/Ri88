@@ -50,7 +50,7 @@ const VisitorLanding = () => {
         >
 
             {/* HERO SECTION */}
-            <section className="relative min-h-[500px] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 overflow-hidden rounded-[40px] lg:rounded-[48px] stitch-glass p-6 md:p-12 lg:p-20">
+            <section className="relative min-h-auto lg:min-h-[500px] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 overflow-hidden rounded-[40px] lg:rounded-[48px] stitch-glass p-6 md:p-12 lg:p-20">
 
                 {/* Text Content */}
                 <div className="relative z-10 flex-1 text-right space-y-8">
@@ -84,20 +84,7 @@ const VisitorLanding = () => {
                     </motion.div>
                 </div>
 
-                {/* Mascot */}
-                <motion.div
-                    variants={itemVariants}
-                    animate={{ y: [0, -20, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative shrink-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[500px]"
-                >
-                    <div className="absolute inset-0 bg-brand-primary/20 blur-[100px] rounded-full" />
-                    <img
-                        src="/ri88_mascot_silhouette_1770236907665.png"
-                        alt="RI88 Mascot"
-                        className="relative z-10 w-full h-auto drop-shadow-[0_0_50px_rgba(139,92,246,0.3)]"
-                    />
-                </motion.div>
+                {/* Mascot Removed */}
 
                 {/* Background Mesh */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand-primary/20 via-brand-bg to-brand-bg opacity-40 pointer-events-none" />
@@ -137,8 +124,8 @@ const VisitorLanding = () => {
             </section>
 
             {/* REGISTER CTA WITH COUNTDOWN */}
-            <section className="relative overflow-hidden rounded-[32px] lg:rounded-[40px] bg-brand-primary p-8 lg:p-20 text-center text-white shadow-[0_20px_50px_rgba(139,92,246,0.3)]">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+            <section className="relative overflow-hidden rounded-[32px] lg:rounded-[40px] bg-brand-primary p-8 lg:p-20 text-center text-white shadow-[0_20px_50px_rgba(5,150,105,0.3)]">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay" />
 
                 <div className="relative z-10 space-y-8 max-w-3xl mx-auto">
                     <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/20 backdrop-blur-xl border border-white/20">
@@ -195,7 +182,7 @@ const VisitorLanding = () => {
                             icon: Zap,
                             title: "Lightning Speed",
                             desc: "معالجة فورية للبيانات محلياً على جهازك بدون أي تأخير.",
-                            color: "bg-purple-500/20 text-purple-400"
+                            color: "bg-emerald-500/20 text-emerald-400"
                         },
                         {
                             icon: Shield,
@@ -232,7 +219,7 @@ const VisitorLanding = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    className="w-full bg-[#8B5CF6] rounded-[40px] lg:rounded-[56px] p-8 md:p-16 lg:p-24 text-center space-y-10 relative overflow-hidden"
+                    className="w-full bg-[#059669] rounded-[40px] lg:rounded-[56px] p-8 md:p-16 lg:p-24 text-center space-y-10 relative overflow-hidden"
                 >
                     {/* Abstract Patterns */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
@@ -240,7 +227,7 @@ const VisitorLanding = () => {
 
                     <div className="relative z-10 space-y-8">
                         <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight">Ready to optimize?</h2>
-                        <p className="text-purple-100/90 text-xl font-medium max-w-2xl mx-auto leading-relaxed">أنشئ حسابك المجاني الآن واحفظ إعداداتك، مساحات العمل الخاصة بك، واستمتع بتجربة RI88 الكاملة.</p>
+                        <p className="text-emerald-100/90 text-xl font-medium max-w-2xl mx-auto leading-relaxed">أنشئ حسابك المجاني الآن واحفظ إعداداتك، مساحات العمل الخاصة بك، واستمتع بتجربة RI88 الكاملة.</p>
 
                         <button
                             onClick={() => setCurrentView('auth')}

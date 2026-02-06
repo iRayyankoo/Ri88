@@ -27,6 +27,7 @@ import { AnimatePresence } from 'framer-motion';
 import UserManagement from '@/components/Pages/UserManagement';
 import ServerMonitoring from '@/components/Pages/ServerMonitoring';
 import SystemChangelog from '@/components/Pages/SystemChangelog';
+import Notifications from '@/components/Pages/Notifications';
 
 function HomeContent() {
     const { currentView, isLoggedIn, setIsLoggedIn, setCurrentView } = useNavigation();
@@ -75,6 +76,8 @@ function HomeContent() {
                 return <AuthPages />;
             case 'settings':
                 return <GlobalSettings />;
+            case 'notifications':
+                return <Notifications />;
             case 'dashboard':
                 return <UserDashboard />;
 
@@ -110,15 +113,6 @@ function HomeContent() {
 
             {renderContent()}
 
-            {/* DEV FLOATING CONTROLS (Demo only) */}
-            <div className="fixed bottom-24 right-8 z-[100] flex flex-col gap-2">
-                <button
-                    onClick={() => setIsLoggedIn(!isLoggedIn)}
-                    className="bg-brand-primary/20 hover:bg-brand-primary/40 text-[9px] text-brand-primary font-black uppercase tracking-widest px-4 py-2 rounded-full border border-brand-primary/20 transition-all backdrop-blur-xl"
-                >
-                    {isLoggedIn ? 'تسجيل خروج (Mock)' : 'تسجيل دخول (Mock)'}
-                </button>
-            </div>
         </div>
     );
 }
