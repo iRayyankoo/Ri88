@@ -70,7 +70,7 @@ const ComingSoonOverlay: React.FC<ComingSoonOverlayProps> = ({ onUnlock }) => {
     // Unlock Handler
     const handleAdminUnlock = () => {
         const pass = prompt("Admin Access Key:");
-        if (pass === "admin-secret-pass" || pass === "78d7") {
+        if (pass === "admin-ri88-pro" || pass === "78d7") {
             onUnlock?.();
         } else if (pass) {
             alert("Access Denied");
