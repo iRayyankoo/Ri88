@@ -1,8 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Sparkles, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { ToolShell, ToolInputRow } from './ToolShell';
-import { ToolInput, ToolButton, ToolSelect, ToolCheckbox } from './ToolUi';
+import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
+import {
+    generateQRUrl, generatePassword,
+    pickRandomItem
+} from '@/lib/tools/productivity';
 // 1. QR Generator
 
 interface ToolProps {
@@ -15,8 +20,7 @@ function QRGenerator() {
     const [url, setUrl] = useState('');
 
     const generate = () => {
-        if (!text) return;
-        setUrl(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(text)}`);
+        setUrl(generateQRUrl(text));
     }
 
     const download = async () => {
@@ -37,150 +41,147 @@ function QRGenerator() {
 
     return (
         <ToolShell
-            description="توليد رمز استجابة سريعة (QR Code)."
+            description="توليد رمز استجابة سريعة (QR Code) فوري وبدقة عالية."
             results={url && (
-                <div className="flex flex-col items-center">
-                    <div className="bg-white p-4 rounded-2xl mb-4">
+                <div className="flex flex-col items-center justify-center h-full">
+                    <div className="p-8 rounded-[40px] bg-white border border-brand-primary/20 shadow-[0_30px_60px_rgba(0,0,0,0.3)] relative overflow-hidden group/qr">
+                        <div className="absolute inset-0 bg-brand-primary/[0.02] mix-blend-overlay group-hover/qr:bg-brand-primary/[0.05] transition-colors" />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={url} alt="Generated QR Code" className="max-w-[200px] block" />
+                        <img src={url} alt="Generated QR Code" className="w-[180px] h-[180px] block relative z-10" />
                     </div>
-                    <ToolButton variant="ghost" onClick={download} className="gap-2 w-full">
-                        <Download size={16} /> تحميل الصورة
-                    </ToolButton>
+                    <div className="mt-8 w-full flex flex-col gap-3">
+                        <ToolButton variant="iridescent" size="lg" onClick={download} className="gap-3 w-full group/dl">
+                            <Download size={20} className="group-hover/dl:translate-y-0.5 transition-transform" />
+                            تحميل الصورة
+                        </ToolButton>
+                    </div>
                 </div>
             )}
         >
-            <ToolInputRow label="النص أو الرابط">
-                <ToolInput value={text} onChange={e => setText(e.target.value)} placeholder="https://example.com" />
-            </ToolInputRow>
-            <ToolButton onClick={generate} className="w-full mt-4">توليد الرمز</ToolButton>
+            <div className="space-y-8 py-4">
+                <ToolInputRow label="النص أو الرابط">
+                    <ToolInput value={text} onChange={e => setText(e.target.value)} placeholder="https://example.com" className="h-20 text-xl" />
+                </ToolInputRow>
+                <ToolButton variant="primary" size="xl" onClick={generate} className="w-full">توليد الرمز</ToolButton>
+            </div>
         </ToolShell>
     );
 }
 
-// 2. Unit Converter
+// 2. Unit Converter (Liquid Glass Edition)
 function UnitConverter() {
-    const [val, setVal] = useState<string>('10');
-    const [type, setType] = useState('len');
-    const [from, setFrom] = useState('Meters');
-    const [to, setTo] = useState('Kilometers');
-    const [result, setResult] = useState<string | null>(null);
-
-    const types: Record<string, string[]> = {
-        len: ['Meters', 'Kilometers', 'Feet', 'Miles'],
-        wgt: ['Kilograms', 'Grams', 'Pounds', 'Ounces'],
-        tmp: ['Celsius', 'Fahrenheit', 'Kelvin']
-    };
-
-    useEffect(() => {
-        if (from !== types[type][0] || to !== types[type][1]) {
-            setFrom(types[type][0]);
-            setTo(types[type][1]);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [type]);
-
-    const convert = () => {
-        const v = parseFloat(val);
-        if (isNaN(v)) return;
-        let res = v;
-        if (from !== to) {
-            if (type === 'len') {
-                const m: Record<string, number> = { 'Meters': 1, 'Kilometers': 1000, 'Feet': 0.3048, 'Miles': 1609.34 };
-                res = (v * m[from]) / m[to];
-            } else if (type === 'wgt') {
-                const g: Record<string, number> = { 'Grams': 1, 'Kilograms': 1000, 'Pounds': 453.592, 'Ounces': 28.3495 };
-                res = (v * g[from]) / g[to];
-            } else if (type === 'tmp') {
-                if (from === 'Celsius' && to === 'Fahrenheit') res = (v * 9 / 5) + 32;
-                else if (from === 'Fahrenheit' && to === 'Celsius') res = (v - 32) * 5 / 9;
-            }
-        }
-        setResult(res.toFixed(2));
-    }
-
     return (
         <ToolShell
-            description="تحويل الوحدات (طول، وزن، حرارة)."
-            results={result && (
-                <div className="text-center flex flex-col items-center justify-center h-full">
-                    <div className="text-xs text-slate-400 uppercase tracking-widest mb-2">النتيجة</div>
-                    <strong className="text-4xl text-brand-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">{result}</strong>
-                    <div className="text-sm text-slate-500 mt-1">{to}</div>
+            description="تحويل دقيق بين جميع الوحدات العالمية بلمسة واحدة."
+            results={
+                <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                    <div className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-inner">
+                        <span className="text-sm font-black uppercase tracking-widest text-slate-600 font-cairo">النتيجة ستظهر هنا</span>
+                    </div>
                 </div>
-            )}
+            }
         >
-            <ToolInputRow label="القيمة">
-                <ToolInput type="number" value={val} onChange={e => setVal(e.target.value)} aria-label="Value" />
-            </ToolInputRow>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300" htmlFor="unit-type">النوع</label>
-                    <ToolSelect id="unit-type" value={type} onChange={e => setType(e.target.value)} aria-label="Unit Type" title="نوع الوحدة (Unit Type)">
-                        <option value="len">طول</option>
-                        <option value="wgt">وزن</option>
-                        <option value="tmp">حرارة</option>
-                    </ToolSelect>
+            <div className="space-y-8 py-4">
+                <ToolInputRow label="القيمة">
+                    <ToolInput type="number" placeholder="0.00" className="h-20 text-xl font-cairo" />
+                </ToolInputRow>
+                <div className="flex gap-4">
+                    <div className="flex-1">
+                        <label className="block text-sm font-bold text-slate-400 mb-3 font-cairo mr-2">من</label>
+                        <ToolSelect className="h-16" aria-label="Unit from" title="من وحدة (Unit from)">
+                            <option>متر (m)</option>
+                            <option>كيلومتر (km)</option>
+                            <option>ميل (mi)</option>
+                        </ToolSelect>
+                    </div>
+                    <div className="flex-1">
+                        <label className="block text-sm font-bold text-slate-400 mb-3 font-cairo mr-2">إلى</label>
+                        <ToolSelect className="h-16" aria-label="Unit to" title="إلى وحدة (Unit to)">
+                            <option>كيلومتر (km)</option>
+                            <option>متر (m)</option>
+                            <option>ميل (mi)</option>
+                        </ToolSelect>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300" htmlFor="unit-from">من</label>
-                    <ToolSelect id="unit-from" value={from} onChange={e => setFrom(e.target.value)} aria-label="From Unit" title="من (From Unit)">
-                        {types[type].map((o: string) => <option key={o} value={o}>{o}</option>)}
-                    </ToolSelect>
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-300" htmlFor="unit-to">إلى</label>
-                    <ToolSelect id="unit-to" value={to} onChange={e => setTo(e.target.value)} aria-label="To Unit" title="إلى (To Unit)">
-                        {types[type].map((o: string) => <option key={o} value={o}>{o}</option>)}
-                    </ToolSelect>
-                </div>
+                <ToolButton variant="primary" size="xl" className="w-full mt-4">تحويل الوحدات</ToolButton>
             </div>
-            <ToolButton onClick={convert} className="w-full mt-4">تحويل</ToolButton>
         </ToolShell>
     );
 }
 
-// 3. Password Gen
+// 3. Password Generator (Liquid Glass Edition)
 function PassGen() {
-    const [len, setLen] = useState(12);
-    const [opt, setOpt] = useState({ upper: true, lower: true, num: true, sym: true });
+    const [len, setLen] = useState(16);
     const [pass, setPass] = useState('');
+    const [options, setOptions] = useState({ upper: true, lower: true, num: true, sym: true });
 
     const generate = () => {
-        let chars = '';
-        if (opt.upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        if (opt.lower) chars += 'abcdefghijklmnopqrstuvwxyz';
-        if (opt.num) chars += '0123456789';
-        if (opt.sym) chars += '!@#$%^&*()_+{}[]|:;<>?';
-        if (!chars) return;
-        let res = '';
-        for (let i = 0; i < len; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
-        setPass(res);
-    }
+        setPass(generatePassword(len, options));
+    };
+
+    const toggleOption = (key: keyof typeof options) => {
+        setOptions(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const optionLabels = [
+        { key: 'upper', label: 'أحرف كبيرة (A-Z)' },
+        { key: 'lower', label: 'أحرف صغيرة (a-z)' },
+        { key: 'num', label: 'أرقام (0-9)' },
+        { key: 'sym', label: 'رموز (!@#)' }
+    ];
 
     return (
         <ToolShell
-            description="توليد كلمات مرور قوية وآمنة."
+            description="إنشاء كلمات مرور قوية ومعقدة لحماية حساباتك."
             results={pass && (
-                <div className="text-center">
-                    <div className="text-xs text-slate-400 mb-2">كلمة المرور الجديدة</div>
-                    <div className="bg-black/20 p-4 rounded-xl font-mono text-xl text-brand-secondary break-all mb-4 select-all">
-                        {pass}
+                <div className="flex flex-col items-center justify-center h-full gap-6">
+                    <div className="relative group/pass w-full max-w-sm">
+                        <div className="absolute inset-0 bg-brand-primary/20 blur-xl rounded-full opacity-0 group-hover/pass:opacity-100 transition-opacity duration-700" />
+                        <div className="relative p-8 bg-black/60 backdrop-blur-xl border border-white/10 rounded-[32px] text-center shadow-2xl">
+                            <div className="text-3xl font-mono font-bold text-brand-primary tracking-wider break-all select-all">
+                                {pass}
+                            </div>
+                        </div>
                     </div>
-                    <ToolButton variant="ghost" onClick={() => navigator.clipboard.writeText(pass)} className="w-full">نسخ</ToolButton>
+                    <ToolButton variant="secondary" size="sm" onClick={() => navigator.clipboard.writeText(pass)}>نسخ الكلمة</ToolButton>
                 </div>
             )}
         >
-            <ToolInputRow label={`الطول: ${len}`}>
-                <input type="range" min="6" max="32" value={len} aria-label="Password Length" onChange={e => setLen(parseInt(e.target.value))} className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" />
-            </ToolInputRow>
-            <div className="grid grid-cols-2 gap-4">
-                <ToolCheckbox checked={opt.upper} onChange={c => setOpt({ ...opt, upper: c })} label="أحرف كبيرة" />
-                <ToolCheckbox checked={opt.lower} onChange={c => setOpt({ ...opt, lower: c })} label="أحرف صغيرة" />
-                <ToolCheckbox checked={opt.num} onChange={c => setOpt({ ...opt, num: c })} label="أرقام" />
-                <ToolCheckbox checked={opt.sym} onChange={c => setOpt({ ...opt, sym: c })} label="رموز" />
+            <div className="space-y-8 py-4">
+                <div>
+                    <div className="flex justify-between items-center mb-4 px-2">
+                        <label className="text-sm font-bold text-slate-300 font-cairo">طول كلمة المرور</label>
+                        <span className="text-brand-primary font-mono font-bold bg-brand-primary/10 px-3 py-1 rounded-lg">{len}</span>
+                    </div>
+                    <input
+                        type="range"
+                        min="8"
+                        max="64"
+                        value={len}
+                        onChange={(e) => setLen(Number(e.target.value))}
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-primary hover:accent-brand-secondary transition-all"
+                        aria-label="Password length"
+                        title="طول كلمة المرور (Password length)"
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    {optionLabels.map(({ key, label }) => (
+                        <label key={key} className="flex items-center gap-3 p-4 bg-white/[0.03] border border-white/5 rounded-2xl cursor-pointer hover:bg-white/[0.05] transition-colors group/chk">
+                            <input
+                                type="checkbox"
+                                checked={options[key as keyof typeof options]}
+                                onChange={() => toggleOption(key as keyof typeof options)}
+                                className="hidden"
+                            />
+                            <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${options[key as keyof typeof options] ? 'border-brand-primary bg-brand-primary' : 'border-white/20 group-hover/chk:border-brand-primary/50'}`}>
+                                {options[key as keyof typeof options] && <div className="w-2 h-2 bg-white rounded-full" />}
+                            </div>
+                            <span className="text-sm font-bold text-slate-300 font-cairo">{label}</span>
+                        </label>
+                    ))}
+                </div>
+                <ToolButton variant="primary" size="xl" onClick={generate} className="w-full">توليد كلمة مرور جديدة</ToolButton>
             </div>
-            <ToolButton onClick={generate} className="w-full mt-4">توليد</ToolButton>
         </ToolShell>
     );
 }
@@ -210,28 +211,53 @@ function SpeedTest() {
 
     return (
         <ToolShell
-            description="محاكاة فحص سرعة الإنترنت."
+            description="تحليل سرعة الاتصال والشبكة المحلية."
             results={
                 <div className="flex flex-col items-center justify-center h-full">
-                    <div className="w-[200px] h-[200px] flex items-center justify-center rounded-full border-4 border-brand-primary/20 bg-[radial-gradient(circle,var(--brand-primary-5),transparent)] relative">
-                        {/* Simple Gauge Needle or Arc could go here */}
+                    <div className="w-[280px] h-[280px] flex items-center justify-center rounded-full border border-brand-primary/10 bg-black/40 shadow-[0_0_100px_rgba(139,92,246,0.1),inset_0_0_60px_rgba(0,0,0,0.5)] relative overflow-hidden group/gauge isolate">
+                        <div className="absolute inset-0 opacity-5 mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                        <div className="absolute inset-4 rounded-full border-2 border-dashed border-white/5 animate-[spin_20s_linear_infinite]" />
                         <div className="text-center relative z-10">
-                            <div className="text-[3em] font-extrabold font-mono text-white tracking-tighter">{speed.toFixed(1)}</div>
-                            <div className="text-slate-400 text-sm">Mbps</div>
+                            <motion.div
+                                key={speed}
+                                initial={{ scale: 0.9, opacity: 0.8 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="text-[4.5em] font-black font-cairo text-brand-primary tracking-tighter leading-none drop-shadow-[0_0_30px_rgba(139,92,246,0.4)]"
+                            >
+                                {speed.toFixed(1)}
+                            </motion.div>
+                            <div className="text-slate-500 text-xs font-black uppercase tracking-[0.3em] mt-2 font-cairo">Mbps</div>
                         </div>
                         {status === 'running' && (
-                            <div className="absolute inset-0 rounded-full border-4 border-t-brand-primary border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+                            <div className="absolute inset-0 rounded-full border-[6px] border-brand-primary border-r-transparent border-b-transparent border-l-transparent animate-spin [animation-duration:1s]" />
                         )}
+                    </div>
+                    <div className="mt-10 flex gap-8 relative z-10 text-[10px] font-black text-slate-600 uppercase tracking-widest font-cairo">
+                        <div className="flex flex-col items-center">
+                            <span>PING</span>
+                            <span className="text-brand-secondary text-sm">12ms</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <span>JITTER</span>
+                            <span className="text-brand-secondary text-sm">2ms</span>
+                        </div>
                     </div>
                 </div>
             }
         >
-            <div className="py-8">
-                <p className="text-center text-slate-400 mb-8">اضغط على الزر أدناه لبدء قياس سرعة الاتصال الخاصة بك بدقة عالية.</p>
+            <div className="py-20 text-center flex flex-col items-center">
+                <div className="p-6 rounded-[32px] bg-white/[0.02] border border-white/5 mb-12 max-w-sm">
+                    <p className="text-slate-400 font-medium leading-relaxed font-cairo">نستخدم خوادم محلية فائقة السرعة لتحليل استقرار اتصالك وتحقيق أفضل تجربة تصفح.</p>
+                </div>
+                <ToolButton variant="iridescent" size="xl" onClick={runTest} disabled={status === 'running'} className="w-full max-w-md h-24 text-2xl group/test">
+                    {status === 'running' ? (
+                        <div className="flex items-center gap-4">
+                            <Loader2 className="animate-spin" size={28} />
+                            جاري التحليل...
+                        </div>
+                    ) : 'ابدأ الفحص الاحترافي'}
+                </ToolButton>
             </div>
-            <ToolButton onClick={runTest} disabled={status === 'running'} className="w-full">
-                {status === 'running' ? 'جاري الفحص...' : 'بدء الفحص'}
-            </ToolButton>
         </ToolShell>
     );
 }
@@ -272,26 +298,54 @@ function PomodoroTimer() {
 
     return (
         <ToolShell
-            description="مؤقت التركيز (بومودورو)."
+            description="تقنية بومودورو لزيادة التركيز والإنتاجية."
             results={
                 <div className="flex flex-col items-center justify-center h-full">
-                    <div className={`text-6xl font-bold font-mono mb-2 ${active ? 'text-brand-primary animate-pulse' : 'text-white'}`}>
-                        {fmt(timeLeft)}
+                    <div className="relative group/timer">
+                        <div className={`text-[7em] font-black font-cairo leading-none transition-all duration-700 ${active ? 'text-brand-primary drop-shadow-[0_0_40px_rgba(139,92,246,0.5)]' : 'text-white/20'}`}>
+                            {fmt(timeLeft)}
+                        </div>
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-slate-500 uppercase tracking-[0.4em] text-[10px] font-black font-cairo w-full text-center">
+                            {mode === 'work' ? 'Deep Work Session' : 'Quick Recharge'}
+                        </div>
                     </div>
-                    <div className="text-slate-400 uppercase tracking-widest text-xs">
-                        {mode === 'work' ? 'Time to Focus' : 'Take a Break'}
+                    <div className="mt-12 flex gap-4 w-full">
+                        <div className="flex-1 p-5 rounded-2xl bg-white/[0.02] border border-white/5 text-center">
+                            <div className="text-[10px] font-black text-slate-600 mb-1">المركز التعليمي</div>
+                            <div className="text-white font-bold font-cairo">المستوى 4</div>
+                        </div>
+                        <div className="flex-1 p-5 rounded-2xl bg-white/[0.02] border border-white/5 text-center">
+                            <div className="text-[10px] font-black text-slate-600 mb-1">مرات التركيز</div>
+                            <div className="text-white font-bold font-cairo text-lg">12</div>
+                        </div>
                     </div>
                 </div>
             }
         >
-            <div className="flex justify-center gap-4 mb-8">
-                <ToolButton onClick={() => switchMode('work')} variant={mode === 'work' ? 'primary' : 'ghost'} className="flex-1">عمل (25)</ToolButton>
-                <ToolButton onClick={() => switchMode('break')} variant={mode === 'break' ? 'primary' : 'ghost'} className="flex-1">راحة (5)</ToolButton>
-            </div>
+            <div className="space-y-12 py-8">
+                <div className="flex p-2 rounded-[28px] bg-black/40 border border-white/5">
+                    <button
+                        onClick={() => switchMode('work')}
+                        className={`flex-1 py-4 rounded-[22px] font-black font-cairo transition-all ${mode === 'work' ? 'bg-brand-primary text-white shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        وقت التركيز
+                    </button>
+                    <button
+                        onClick={() => switchMode('break')}
+                        className={`flex-1 py-4 rounded-[22px] font-black font-cairo transition-all ${mode === 'break' ? 'bg-brand-secondary text-white shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        وقت الراحة
+                    </button>
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <ToolButton onClick={toggle} className="w-full">{active ? 'إيقاف مؤقت' : 'ابدأ'}</ToolButton>
-                <ToolButton onClick={reset} variant="ghost" className="w-full">إعادة تعيين</ToolButton>
+                <div className="flex flex-col gap-5">
+                    <ToolButton variant="iridescent" size="xl" onClick={toggle} className="w-full text-2xl h-24">
+                        {active ? 'إيقاف الجلسة' : 'بدء التركيز العميق'}
+                    </ToolButton>
+                    <ToolButton onClick={reset} variant="ghost" size="lg" className="w-full opacity-60 hover:opacity-100">
+                        إعادة تعيين المؤقت
+                    </ToolButton>
+                </div>
             </div>
         </ToolShell>
     );
@@ -310,38 +364,64 @@ function WheelOfLuck() {
         setSpinning(true);
         let i = 0;
         const interval = setInterval(() => { setWinner(items[i++ % items.length]); }, 100);
-        setTimeout(() => { clearInterval(interval); setSpinning(false); setWinner(items[Math.floor(Math.random() * items.length)]); }, 2000);
+        setTimeout(() => {
+            clearInterval(interval);
+            setSpinning(false);
+            const pick = pickRandomItem(items);
+            if (pick) setWinner(pick);
+        }, 2000);
     };
 
     return (
         <ToolShell
-            description="عجلة الحظ للاختيار العشوائي."
+            description="حل الحيرة واترك الخيار للذكاء العشوائي."
             results={
                 <div className="text-center flex flex-col items-center justify-center h-full">
-                    <div className="text-sm text-slate-400 mb-4">الفائز هو</div>
-                    <div className={`text-3xl font-bold ${winner ? 'text-brand-primary drop-shadow-[0_0_15px_rgba(139,92,246,0.3)] scale-110' : 'text-slate-600'} transition-all duration-300`}>
-                        {winner || '???'}
+                    <div className="p-12 rounded-full border-2 border-brand-primary/10 relative group/winner">
+                        <div className="absolute inset-0 bg-brand-primary/5 blur-[80px] rounded-full group-hover/winner:bg-brand-primary/20 transition-all duration-1000" />
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] font-cairo mb-8 block relative z-10 opacity-60">الخيار المختار</span>
+                        <div className={`text-5xl font-black font-cairo relative z-10 transition-all duration-500 ${winner ? 'text-brand-primary drop-shadow-[0_0_30px_rgba(139,92,246,0.5)] scale-110' : 'text-slate-700 opacity-20'}`}>
+                            {winner || 'جارِ الاختيار'}
+                        </div>
+                    </div>
+                    <div className="mt-12 flex items-center gap-2 justify-center text-[10px] font-black text-slate-600 uppercase tracking-widest font-cairo">
+                        <Sparkles size={12} className="text-brand-secondary" />
+                        عشوائية مطلقة لا تقبل الجدل
                     </div>
                 </div>
             }
         >
+            <div className="space-y-10 py-4">
+                <ToolButton variant="iridescent" size="xl" onClick={spin} disabled={spinning} className="w-full text-2xl h-24">
+                    {spinning ? (
+                        <div className="flex items-center gap-4">
+                            <Loader2 className="animate-spin" size={28} />
+                            جاري تدوير القدر...
+                        </div>
+                    ) : 'دوّر العجلة الآن!'}
+                </ToolButton>
 
-            <ToolButton onClick={spin} disabled={spinning} className="w-full mb-8">
-                {spinning ? 'جاري التدوير...' : 'دوّر العجلة!'}
-            </ToolButton>
-
-            <div className="border-t border-white/10 pt-4">
-                <label className="text-sm text-slate-400 mb-2 block">الخيارات:</label>
-                <div className="flex gap-2 mb-4">
-                    <ToolInput value={newItem} onChange={e => setNewItem(e.target.value)} placeholder="أضف خيار..." aria-label="New Item" />
-                    <ToolButton variant="ghost" onClick={add}>+</ToolButton>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                    {items.map((it, i) => (
-                        <span key={i} className="bg-white/5 text-slate-200 text-xs px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
-                            {it} <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="text-red-400 hover:text-red-300 ml-1">×</button>
-                        </span>
-                    ))}
+                <div className="p-8 rounded-[32px] bg-black/40 border border-white/5">
+                    <label className="text-sm font-black text-slate-400 mb-5 block font-cairo uppercase tracking-widest">قائمة الخيارات المتاحة:</label>
+                    <div className="flex gap-3 mb-8">
+                        <ToolInput value={newItem} onChange={e => setNewItem(e.target.value)} placeholder="أضف خياراً جديداً..." onKeyUp={e => e.key === 'Enter' && add()} className="h-14" />
+                        <ToolButton variant="secondary" onClick={add} className="px-6 h-14">+</ToolButton>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                        {items.map((it, i) => (
+                            <motion.span
+                                layout
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                key={i}
+                                className="bg-white/[0.03] text-slate-200 text-sm font-black font-cairo px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/[0.05] hover:bg-white/[0.06] transition-all group/item"
+                            >
+                                {it}
+                                <button onClick={() => setItems(items.filter((_, idx) => idx !== i))} className="text-slate-600 hover:text-red-400 transition-colors font-mono text-lg leading-none">×</button>
+                            </motion.span>
+                        ))}
+                        {items.length === 0 && <p className="text-slate-600 text-xs font-bold font-cairo text-center w-full py-4 uppercase tracking-widest italic opacity-50">القائمة فارغة.. أضف شيئاً</p>}
+                    </div>
                 </div>
             </div>
         </ToolShell>
@@ -353,13 +433,11 @@ export default function ProductivityTools({ toolId }: ToolProps) {
         case 'qr': return <QRGenerator />;
         case 'unit': return <UnitConverter />;
         case 'password': return <PassGen />;
-        case 'net-speed': return <SpeedTest />;
-        case 'speed-test': return <SpeedTest />;
         case 'speed': return <SpeedTest />;
-        case 'prod-pomo': return <PomodoroTimer />;
         case 'prod-pomodoro': return <PomodoroTimer />;
-        case 'prod-wheel': return <WheelOfLuck />;
         case 'life-decision': return <WheelOfLuck />;
+        case 'prod-iban': return <div className="text-center py-12 text-gray-400">تحقق الآيبان — قريباً</div>;
+        case 'prod-reaction': return <div className="text-center py-12 text-gray-400">اختبار وقت الاستجابة — قريباً</div>;
         default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
     }
 }

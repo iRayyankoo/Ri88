@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
+import { calculateEOS, calculateVacation, validateSAIBAN, tafqeet, getSaudiHijriDate } from '@/lib/tools/saudi';
 
 interface ToolProps {
     toolId: string;
@@ -11,7 +12,7 @@ interface ToolProps {
 function EOSCalculator() {
     const [salary, setSalary] = useState('');
     const [years, setYears] = useState('');
-    const [reason, setReason] = useState('term');
+    const [reason, setReason] = useState<'term' | 'resign'>('term');
     const [result, setResult] = useState<string | null>(null);
 
     const calculate = () => {
@@ -19,17 +20,7 @@ function EOSCalculator() {
         const y = parseFloat(years);
         if (!s || !y) return;
 
-        let baseReward = 0;
-        if (y <= 5) baseReward = (s / 2) * y;
-        else baseReward = ((s / 2) * 5) + (s * (y - 5));
-
-        let reward = baseReward;
-        if (reason === 'resign') {
-            if (y < 2) reward = 0;
-            else if (y < 5) reward = baseReward / 3;
-            else if (y < 10) reward = (baseReward * 2) / 3;
-        }
-
+        const reward = calculateEOS(s, y, reason);
         setResult(reward.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' ريال');
     };
 
@@ -52,7 +43,7 @@ function EOSCalculator() {
                     <ToolInput type="number" value={years} onChange={e => setYears(e.target.value)} placeholder="e.g. 6.5" />
                 </ToolInputRow>
                 <ToolInputRow label="سبب الإنهاء" id="eos-reason">
-                    <ToolSelect id="eos-reason" value={reason} onChange={e => setReason(e.target.value)} aria-label="Termination Reason" title="سبب انتهاء الخدمة (Termination Reason)">
+                    <ToolSelect id="eos-reason" value={reason} onChange={e => setReason(e.target.value as any)} aria-label="Termination Reason" title="سبب انتهاء الخدمة (Termination Reason)">
                         <option value="term">إنهاء (كامل)</option>
                         <option value="resign">استقالة</option>
                     </ToolSelect>
@@ -74,12 +65,11 @@ function VacationCalculator() {
     const calculate = () => {
         const s = parseFloat(salary);
         const d = parseFloat(days);
-        if (s && d) setResult(((s / 30) * d).toFixed(2));
-        if (startDate && d) {
-            const date = new Date(startDate);
-            date.setDate(date.getDate() + d);
-            setReturnDate(date.toLocaleDateString('ar-SA'));
-        }
+        if (!s || !d) return;
+
+        const res = calculateVacation(s, d, startDate || undefined);
+        setResult(res.amount.toFixed(2));
+        setReturnDate(res.returnDate);
     };
 
     return (
@@ -123,9 +113,7 @@ function IbanValidator() {
     const [valid, setValid] = useState<boolean | null>(null);
 
     const validate = () => {
-        const clean = iban.replace(/\s/g, '').toUpperCase();
-        if (clean.startsWith('SA') && clean.length === 24) setValid(true);
-        else setValid(false);
+        setValid(validateSAIBAN(iban));
     };
 
     return (
@@ -151,16 +139,7 @@ function TafqeetTool() {
     const convert = () => {
         const n = parseInt(num);
         if (isNaN(n)) return;
-        // Simplified Logic
-        // Re-implementing simplified version:
-        const units = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
-        const tens = ['', '', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
-        let res = '';
-        if (n < 10) res = units[n];
-        else if (n < 100) res = units[n % 10] + ' و ' + tens[Math.floor(n / 10)];
-        else res = n + " (راجع المكتبة الكاملة)";
-
-        setText(res + ' ريال فقط لا غير');
+        setText(tafqeet(n));
     };
 
     return (
@@ -180,7 +159,7 @@ function TafqeetTool() {
 
 // 3. Hijri
 function HijriDate() {
-    const [today] = useState(() => new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date()));
+    const [today] = useState(() => getSaudiHijriDate());
     return (
         <ToolShell description="عرض التاريخ الهجري لليوم.">
             <div className="flex items-center justify-center p-8 min-h-[200px] bg-white/5 rounded-3xl border border-white/5">
@@ -213,11 +192,14 @@ function SaudiEvents() {
 export default function SaudiTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'saudi-eos': return <EOSCalculator />;
+        case 'saudi-leave': return <VacationCalculator />;
         case 'saudi-vacation': return <VacationCalculator />;
         case 'saudi-hijri': return <HijriDate />;
         case 'saudi-events': return <SaudiEvents />;
+        case 'prod-iban':
         case 'saudi-iban': return <IbanValidator />;
         case 'saudi-tafqeet': return <TafqeetTool />;
+        case 'saudi-holiday': return <div className="text-center py-12 text-gray-400">الإجازات الرسمية السعودية — قريباً</div>;
         default: return <div className="text-center py-12">Tool coming soon: {toolId}</div>
     }
 }

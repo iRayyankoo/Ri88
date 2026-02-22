@@ -2,6 +2,10 @@
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolTextarea, ToolButton, ToolSelect } from './ToolUi';
+import {
+    formatJSON, convertBase64, testRegex, generateMetaTags,
+    encodeUrl, parseJWT, diffText
+} from '@/lib/tools/developer';
 
 interface ToolProps {
     toolId: string;
@@ -13,21 +17,17 @@ function JsonFormatter() {
     const [output, setOutput] = useState('');
     const [msg, setMsg] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
+
+
     const process = (action: 'fmt' | 'min' | 'val') => {
         try {
-            const obj = JSON.parse(input);
-            if (action === 'val') {
-                setOutput('');
-                setMsg({ text: 'Valid JSON', type: 'success' });
-            } else if (action === 'fmt') {
-                setOutput(JSON.stringify(obj, null, 2));
-                setMsg({ text: 'Formatted successfully', type: 'success' });
-            } else {
-                setOutput(JSON.stringify(obj));
-                setMsg({ text: 'Minified successfully', type: 'success' });
+            const res = formatJSON(input, action);
+            if (res.valid) {
+                if (action !== 'val') setOutput(res.output);
+                setMsg({ text: action === 'val' ? 'Valid JSON' : (action === 'fmt' ? 'Formatted' : 'Minified'), type: 'success' });
             }
         } catch (e: unknown) {
-            setMsg({ text: 'Invalid JSON: ' + (e instanceof Error ? e.message : 'Unknown error'), type: 'error' });
+            setMsg({ text: e instanceof Error ? e.message : 'Invalid JSON', type: 'error' });
         }
     };
 
@@ -67,8 +67,10 @@ function JsonFormatter() {
 function Base64Converter() {
     const [input, setInput] = useState('');
 
-    const encode = () => { try { setInput(btoa(input)); } catch { alert('Invalid input'); } }
-    const decode = () => { try { setInput(atob(input)); } catch { alert('Invalid Base64'); } }
+
+
+    const encode = () => { try { setInput(convertBase64(input, 'encode')); } catch { alert('Invalid input'); } }
+    const decode = () => { try { setInput(convertBase64(input, 'decode')); } catch { alert('Invalid Base64'); } }
 
     return (
         <ToolShell description="تشفير وفك تشفير النصوص بصيغة Base64.">
@@ -93,14 +95,11 @@ function RegexTester() {
     const [text, setText] = useState('');
     const [result, setResult] = useState<{ match: boolean, msg: string } | null>(null);
 
+
+
     const test = () => {
-        try {
-            const regex = new RegExp(pattern);
-            const match = regex.test(text);
-            setResult({ match, msg: match ? 'Match Found!' : 'No Match' });
-        } catch (e: unknown) {
-            setResult({ match: false, msg: 'Invalid Regex: ' + (e instanceof Error ? e.message : 'Unknown error') });
-        }
+        const res = testRegex(pattern, text);
+        setResult({ match: res.match, msg: res.error ? 'Invalid Regex' : (res.match ? 'Match Found!' : 'No Match') });
     };
 
     return (
@@ -130,14 +129,10 @@ function MetaGenerator() {
     const [desc, setDesc] = useState('');
     const [out, setOut] = useState('');
 
+
+
     const gen = () => {
-        const h = `
-<!-- Primary Meta Tags -->
-<title>${title}</title>
-<meta name="title" content="${title}">
-<meta name="description" content="${desc}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">`.trim();
-        setOut(h);
+        setOut(generateMetaTags(title, desc));
     };
 
     return (
@@ -162,8 +157,10 @@ function MetaGenerator() {
 function UrlEncoder() {
     const [input, setInput] = useState('');
 
-    const encode = () => setInput(encodeURIComponent(input));
-    const decode = () => setInput(decodeURIComponent(input));
+
+
+    const encode = () => setInput(encodeUrl(input, 'encode'));
+    const decode = () => setInput(encodeUrl(input, 'decode'));
 
     return (
         <ToolShell description="تشفير الروابط (URL Encode/Decode).">
@@ -218,13 +215,13 @@ function JwtDebugger() {
     const [header, setHeader] = useState('');
     const [payload, setPayload] = useState('');
 
+
+
     const decode = () => {
         try {
-            const parts = token.split('.');
-            if (parts.length !== 3) throw new Error('Invalid Token Format');
-            const dec = (str: string) => JSON.stringify(JSON.parse(atob(str.replace(/-/g, '+').replace(/_/g, '/'))), null, 2);
-            setHeader(dec(parts[0]));
-            setPayload(dec(parts[1]));
+            const { header, payload } = parseJWT(token);
+            setHeader(header);
+            setPayload(payload);
         } catch {
             setHeader('Error decoding header');
             setPayload('Error decoding payload');
@@ -256,14 +253,12 @@ function TextDiff() {
     const [t2, setT2] = useState('');
     const [res, setRes] = useState<string | null>(null);
 
+
+
     const compare = () => {
-        if (t1 === t2) { setRes('Identical'); return; }
-        const l1 = t1.split('\n');
-        const l2 = t2.split('\n');
-        let diffs = 0;
-        l1.forEach((line, i) => { if (line !== l2[i]) diffs++; });
-        diffs += Math.abs(l1.length - l2.length);
-        setRes(`${diffs} lines difference found.`);
+        const res = diffText(t1, t2);
+        if (res.identical) setRes('Identical');
+        else setRes(`${res.diffLines} lines difference found.`);
     };
 
     return (

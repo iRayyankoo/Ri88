@@ -1,16 +1,70 @@
 "use client";
 import React, { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import MobileHeader from './MobileHeader';
 import BottomNav from './BottomNav';
-import FloatingAssistant from '../AIAssistant/FloatingAssistant';
+import ToolPopup from '../ToolPopup';
+// import FloatingAssistant from '../AIAssistant/FloatingAssistant'; // مُعطَّل مؤقتاً
+import { useNavigation } from '@/context/NavigationContext';
 
 interface AppShellProps {
     children: React.ReactNode;
 }
 
-const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
+// Role-Based Page Imports (Lazy Loaded)
+const VisitorLanding = dynamic(() => import('../Pages/VisitorLanding'), {
+    loading: () => <div className="h-screen w-full flex items-center justify-center text-slate-500">جاري تحميل الزائر...</div>
+});
+// Main Dashboard is replaced by children in User mode, but we can have specific dashboard wrappers if needed.
+// For now, we assume 'children' is the User Dashboard content when in 'user' mode.
+
+const AdminSuite = dynamic(() => import('../Pages/AdminSuite'), {
+    loading: () => <div className="h-screen w-full flex items-center justify-center text-slate-500">جاري تحميل لوحة الإدارة...</div>
+});
+
+import RoleSwitcher from '../ui/RoleSwitcher';
+
+const AppShell: React.FC<AppShellProps> = ({ children }) => {
+    const { userRole } = useNavigation();
+
+    // 1. VISITOR PERSPECTIVE
+    if (userRole === 'visitor') {
+        return (
+            <div className="min-h-screen bg-black overflow-x-hidden" dir="rtl">
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
+                    <Suspense fallback={null}>
+                        <VisitorLanding />
+                    </Suspense>
+                </div>
+                {/* Minimal Header/Footer for Visitor can be added here inside VisitorLanding or wrap it */}
+                <ToolPopup /> {/* Visitors might still trigger tools via preview */}
+                <RoleSwitcher />
+            </div>
+        );
+    }
+
+    // 2. ADMIN PERSPECTIVE
+    if (userRole === 'admin') {
+        return (
+            <div className="min-h-screen flex overflow-hidden relative" dir="rtl">
+                {/* Admin-specific Sidebar could go here, or reuse Sidebar with admin props */}
+                <Sidebar />
+                <div className="flex-1 flex flex-col h-screen relative z-10 overflow-hidden">
+                    <Header />
+                    <main className="flex-1 overflow-y-auto lg:custom-scrollbar no-scrollbar scroll-smooth relative p-4 lg:p-10 pb-40">
+                        <Suspense fallback={null}>
+                            <AdminSuite />
+                        </Suspense>
+                    </main>
+                </div>
+                <RoleSwitcher />
+            </div>
+        );
+    }
+
+    // 3. USER PERSPECTIVE (Default)
     return (
         <div className="min-h-screen flex overflow-hidden relative" dir="rtl">
 
@@ -33,29 +87,28 @@ const AppShellContent: React.FC<AppShellProps> = ({ children }) => {
 
                 {/* Content Area */}
                 <main className="flex-1 overflow-y-auto lg:custom-scrollbar no-scrollbar scroll-smooth relative p-4 lg:p-10 pb-40">
-                    <div className="w-full mx-auto min-h-full flex flex-col">
-                        {children}
+                    <div className="w-full max-w-[1600px] mx-auto min-h-full flex flex-col">
+                        <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-slate-500 animate-pulse">جاري التحميل...</div>}>
+                            {children}
+                        </Suspense>
                         {/* Force Scroll Spacer for Mobile */}
                         <div className="lg:hidden h-24 w-full shrink-0" aria-hidden="true" />
                     </div>
                 </main>
 
-                {/* AI Assistant Floating Panel */}
-                <FloatingAssistant />
+                {/* Tool Launcher Modal */}
+                <ToolPopup />
+
+                {/* AI Assistant — مُعطَّل مؤقتاً */}
+                {/* <FloatingAssistant /> */}
 
                 {/* Mobile Bottom Navigation */}
                 <BottomNav />
+
+                <RoleSwitcher />
             </div>
 
         </div>
-    );
-};
-
-const AppShell: React.FC<AppShellProps> = (props) => {
-    return (
-        <Suspense fallback={<div className="min-h-screen bg-brand-bg flex items-center justify-center text-brand-primary">Loading RI88 PRO...</div>}>
-            <AppShellContent {...props} />
-        </Suspense>
     );
 };
 

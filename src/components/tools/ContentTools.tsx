@@ -1,153 +1,211 @@
 "use client";
 import React, { useState } from 'react';
-import { Copy, Instagram, Twitter, Video, Linkedin } from 'lucide-react';
+import { Copy, Check, RefreshCw, Wand2 } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
-import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
+import { ToolInput, ToolButton, ToolSelect, ToolTextarea } from './ToolUi';
+import { SOCIAL_PLATFORMS, generateCaption, generateContentIdeas, proofreadText } from '@/lib/tools/content';
 
 interface ToolProps {
     toolId: string;
 }
 
-// 1. Social Sizes
+// ----------------------------------------------------------------------
+// 1. SOCIAL SIZES CHEATSHEET
 function SocialSizes() {
-    const [filter, setFilter] = useState('All');
-    const platforms = [
-        { name: 'Instagram', icon: <Instagram size={20} />, data: [{ type: 'Post (Square)', size: '1080 x 1080 px' }, { type: 'Post (Portrait)', size: '1080 x 1350 px' }, { type: 'Story / Reel', size: '1080 x 1920 px' }] },
-        { name: 'Twitter (X)', icon: <Twitter size={20} />, data: [{ type: 'Post Image', size: '1600 x 900 px' }, { type: 'Header', size: '1500 x 500 px' }] },
-        { name: 'TikTok', icon: <Video size={20} />, data: [{ type: 'Video', size: '1080 x 1920 px' }] },
-        { name: 'YouTube', icon: <Video size={20} />, data: [{ type: 'Thumbnail', size: '1280 x 720 px' }, { type: 'Channel Art', size: '2560 x 1440 px' }] },
-        { name: 'LinkedIn', icon: <Linkedin size={20} />, data: [{ type: 'Post', size: '1200 x 627 px' }, { type: 'Cover', size: '1128 x 191 px' }] },
-    ];
+    const [platform, setPlatform] = useState(SOCIAL_PLATFORMS[0].name);
+    const data = SOCIAL_PLATFORMS.find(p => p.name === platform)?.data || [];
 
     return (
-        <ToolShell description="دليل مقاسات الصور والفيديو لمنصات التواصل الاجتماعي.">
-            <div className="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar">
-                <ToolButton onClick={() => setFilter('All')} variant={filter === 'All' ? 'primary' : 'ghost'} className="whitespace-nowrap">الكل</ToolButton>
-                {platforms.map(p => (
-                    <ToolButton key={p.name} onClick={() => setFilter(p.name)} variant={filter === p.name ? 'primary' : 'ghost'} className="whitespace-nowrap">{p.name}</ToolButton>
-                ))}
-            </div>
-
-            <div className="flex flex-col gap-4">
-                {platforms.filter(p => filter === 'All' || p.name === filter).map(p => (
-                    <div key={p.name} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-                        <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
-                            <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-                                {p.icon}
+        <ToolShell
+            description="Reference guide for optimal social media image sizes."
+            results={
+                <div className="h-full flex flex-col justify-center p-6 bg-white/5 rounded-3xl border border-white/5">
+                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="text-brand-primary">{platform}</span> Sizes
+                    </h3>
+                    <div className="space-y-4 w-full">
+                        {data.map((item, idx) => (
+                            <div key={idx} className="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/5 hover:border-brand-primary/50 transition-colors">
+                                <span className="text-slate-300 font-medium">{item.type}</span>
+                                <span className="text-brand-secondary font-mono font-bold bg-black/30 px-3 py-1 rounded-lg text-sm">{item.size}</span>
                             </div>
-                            <h3 className="font-bold text-lg text-white">{p.name}</h3>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {p.data.map((d, i) => (
-                                <div key={i} className="bg-black/20 rounded-xl p-4 text-center border border-white/5 hover:border-brand-primary/30 transition-colors group">
-                                    <div className="text-xs text-slate-400 mb-2 group-hover:text-slate-300 transition-colors">{d.type}</div>
-                                    <div className="font-bold text-brand-secondary group-hover:text-brand-primary transition-colors">{d.size}</div>
-                                </div>
-                            ))}
-                        </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-        </ToolShell>
-    );
-}
-
-// 2. Caption Templates
-function CaptionTemplates() {
-    const [topic, setTopic] = useState('');
-    const [tone, setTone] = useState('Professional');
-    const [captions, setCaptions] = useState<string[]>([]);
-    const templates: Record<string, string[]> = {
-        'Professional': ["We are thrilled to announce {topic}.", "Excited to share our latest work on {topic}.", "Efficiency meets innovation with {topic}."],
-        'Casual': ["Guess what? {topic} is finally here! 🎉", "You asked, we delivered: {topic} 😎", "Weekend vibes with {topic}."],
-        'Arabic': ["سعداء لإعلان {topic}. خطوة جديدة! 🚀", "أخيراً! {topic} أصبح متاحاً. شاركونا رأيكم 👇", "تميز مع {topic}."]
-    };
-    const generate = () => { if (topic) setCaptions((templates[tone] || templates['Professional']).map((t: string) => t.replace('{topic}', topic))); };
-
-    return (
-        <ToolShell description="توليد عبارات تسويقية جاهزة للمنشورات.">
-            <ToolInputRow label="الموضوع">
-                <ToolInput value={topic} onChange={e => setTopic(e.target.value)} placeholder="إطلاق منتج جديد" className="w-full" />
-            </ToolInputRow>
-            <ToolInputRow label="النبرة" id="tone-select">
-                <ToolSelect id="tone-select" value={tone} onChange={e => setTone(e.target.value)} aria-label="Caption Tone" title="نبرة العبارة (Caption Tone)">
-                    <option value="Arabic">عربي (عام)</option>
-                    <option value="Professional">رسمي (English)</option>
-                    <option value="Casual">ودي (English)</option>
+                </div>
+            }
+        >
+            <ToolInputRow label="Select Platform" id="platform-select">
+                <ToolSelect
+                    id="platform-select"
+                    value={platform}
+                    onChange={e => setPlatform(e.target.value)}
+                    className="text-lg font-bold"
+                    aria-label="Platform"
+                    title="المنصة (Platform)"
+                >
+                    {SOCIAL_PLATFORMS.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
                 </ToolSelect>
             </ToolInputRow>
-            <ToolButton onClick={generate} className="w-full mt-4">توليد</ToolButton>
-            <div className="mt-8 flex flex-col gap-3">
-                {captions.map((c, i) => (
-                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 flex justify-between items-center group hover:bg-white/10 transition-colors">
-                        <p className="m-0 text-sm text-slate-200">{c}</p>
-                        <ToolButton variant="ghost" onClick={() => navigator.clipboard.writeText(c)} className="p-2 h-auto" title="Copy to clipboard" aria-label="Copy to clipboard">
-                            <Copy size={16} className="text-slate-400 group-hover:text-brand-primary transition-colors" />
-                        </ToolButton>
-                    </div>
-                ))}
-            </div>
         </ToolShell>
     );
 }
 
-// 3. Content Ideas
+// ----------------------------------------------------------------------
+// 2. CAPTION GENERATOR (Template Based)
+function CaptionGenerator() {
+    const [topic, setTopic] = useState('');
+    const [tone, setTone] = useState('Professional');
+    const [results, setResults] = useState<string[]>([]);
+    const [copied, setCopied] = useState<number | null>(null);
+
+    const generate = () => {
+        if (!topic.trim()) return;
+        setResults(generateCaption(topic, tone));
+    };
+
+    const copy = (text: string, idx: number) => {
+        navigator.clipboard.writeText(text);
+        setCopied(idx);
+        setTimeout(() => setCopied(null), 2000);
+    };
+
+    return (
+        <ToolShell
+            description="Generate engaging captions for your posts."
+            results={results.length > 0 && (
+                <div className="h-full overflow-y-auto pr-2 custom-scrollbar">
+                    <h3 className="text-white font-bold mb-4 sticky top-0 bg-[#1e1e24] py-2 z-10">Generated Captions</h3>
+                    <div className="space-y-4">
+                        {results.map((res, idx) => (
+                            <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/5 group hover:border-brand-primary/30 transition-all">
+                                <p className="text-slate-300 text-sm leading-relaxed mb-3">{res}</p>
+                                <button
+                                    onClick={() => copy(res, idx)}
+                                    className="flex items-center gap-2 text-xs font-bold text-brand-secondary hover:text-white transition-colors"
+                                >
+                                    {copied === idx ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                                    {copied === idx ? 'Copied!' : 'Copy Text'}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        >
+            <ToolInputRow label="Post Topic">
+                <ToolInput
+                    value={topic}
+                    onChange={e => setTopic(e.target.value)}
+                    placeholder="e.g., New Product Launch"
+                    title="موضوع المنشور"
+                    aria-label="موضوع المنشور"
+                />
+            </ToolInputRow>
+            <ToolInputRow label="Tone" id="tone-select">
+                <ToolSelect
+                    id="tone-select"
+                    value={tone}
+                    onChange={e => setTone(e.target.value)}
+                    aria-label="Tone"
+                    title="نبرة الصوت (Tone)"
+                >
+                    <option value="Professional">Professional</option>
+                    <option value="Casual">Casual / Fun</option>
+                    <option value="Arabic">Arabic (Formal)</option>
+                </ToolSelect>
+            </ToolInputRow>
+            <ToolButton onClick={generate} disabled={!topic} className="w-full text-lg mt-6">
+                <Wand2 size={20} className="mr-2" /> Generate Captions
+            </ToolButton>
+        </ToolShell>
+    );
+}
+
+// ----------------------------------------------------------------------
+// 3. CONTENT IDEAS GENERATOR
 function ContentIdeas() {
     const [niche, setNiche] = useState('');
     const [ideas, setIdeas] = useState<string[]>([]);
-    const patterns = ["How to get started with {niche}", "Top 5 mistakes in {niche}", "The future of {niche}", "A beginner's guide to {niche}"];
-    const generate = () => { if (niche) setIdeas(patterns.map(p => p.replace('{niche}', niche))); };
+
+    const generate = () => {
+        if (!niche.trim()) return;
+        setIdeas(generateContentIdeas(niche));
+    };
 
     return (
-        <ToolShell description="توليد أفكار للمحتوى بناءً على المجال.">
-            <ToolInputRow label="المجال">
-                <ToolInput aria-label="Content Niche" value={niche} onChange={e => setNiche(e.target.value)} placeholder="التسويق, البرمجة..." />
-            </ToolInputRow>
-            <ToolButton onClick={generate} className="w-full mt-4">اقتراح أفكار</ToolButton>
-            {ideas.length > 0 && (
-                <div className="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6">
-                    <ul className="space-y-3">
-                        {ideas.map((idea, i) => (
-                            <li key={i} className="flex items-start gap-3 text-slate-300">
-                                <span className="w-1.5 h-1.5 rounded-full bg-brand-primary mt-2 shrink-0"></span>
-                                <span>{idea}</span>
-                            </li>
+        <ToolShell
+            description="Get creative content ideas for your niche."
+            results={ideas.length > 0 && (
+                <div className="h-full overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-3">
+                        {ideas.map((idea, idx) => (
+                            <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/5 flex items-start gap-3">
+                                <span className="text-brand-primary font-black text-xl leading-none mt-1">{idx + 1}</span>
+                                <p className="text-slate-300 font-medium">{idea}</p>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             )}
+        >
+            <ToolInputRow label="Your Niche/Industry">
+                <ToolInput
+                    value={niche}
+                    onChange={e => setNiche(e.target.value)}
+                    placeholder="e.g., Digital Marketing, Fitness"
+                    title="المجال أو التخصص"
+                    aria-label="المجال أو التخصص"
+                />
+            </ToolInputRow>
+            <ToolButton onClick={generate} disabled={!niche} className="w-full text-lg mt-6">Get Ideas</ToolButton>
         </ToolShell>
     );
 }
 
-// 4. Proofreading
-function Proofreading() {
+// ----------------------------------------------------------------------
+// 4. PROOFREADER (Simple)
+function TextProofreader() {
     const [text, setText] = useState('');
-    const [result, setResult] = useState('');
+    const [corrected, setCorrected] = useState('');
+
     const check = () => {
-        let p = text.replace(/\s+([،.!:?])/g, '$1').replace(/([،.!:?])(?=[^\s])/g, '$1 ').replace(/\s+/g, ' ');
-        // Mocks
-        p = p.replace(/انشاء/g, 'إنشاء').replace(/هاذا/g, 'هذا');
-        setResult(p);
+        if (!text.trim()) return;
+        setCorrected(proofreadText(text));
     };
 
     return (
-        <ToolShell description="تدقيق النصوص العربية وتصحيح الأخطاء الشائعة (تجريبي).">
-            <textarea
-                aria-label="Text to proofread"
-                title="النص المراد تدقيقه (Text to proofread)"
-                value={text}
-                onChange={e => setText(e.target.value)}
-                placeholder="اكتب النص هنا..."
-                className="w-full h-40 mb-4 bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all resize-none"
-            />
-            <ToolButton onClick={check} className="w-full">تدقيق</ToolButton>
-            {result && (
-                <div className="mt-8 bg-black/20 border border-brand-primary/20 rounded-2xl p-6 relative group">
-                    <p className="mb-4 text-slate-200 leading-relaxed">{result}</p>
-                    <ToolButton variant="ghost" onClick={() => navigator.clipboard.writeText(result)} className="absolute top-4 left-4 text-xs h-8 px-3 bg-white/5 border border-white/10 hover:bg-brand-primary/20 hover:text-brand-primary hover:border-brand-primary/30">نسخ</ToolButton>
+        <ToolShell
+            description="Simple tool to fix common spacing and punctuation errors."
+            results={corrected && (
+                <div className="h-full flex flex-col">
+                    <h3 className="text-white font-bold mb-4">Corrected Text</h3>
+                    <div className="flex-1 bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-slate-200 leading-relaxed whitespace-pre-wrap overflow-y-auto custom-scrollbar">
+                        {corrected}
+                    </div>
+                    <button
+                        onClick={() => navigator.clipboard.writeText(corrected)}
+                        className="mt-4 w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2"
+                    >
+                        <Copy size={18} /> Copy Corrected
+                    </button>
                 </div>
             )}
+        >
+            <div className="h-full flex flex-col">
+                <ToolInputRow label="Input Text" className="flex-1">
+                    <ToolTextarea
+                        value={text}
+                        onChange={e => setText(e.target.value)}
+                        placeholder="Paste your text here..."
+                        title="النص المدخل"
+                        aria-label="النص المدخل"
+                        className="h-full min-h-[200px] resize-none"
+                    />
+                </ToolInputRow>
+                <ToolButton onClick={check} disabled={!text} className="w-full text-lg mt-6">
+                    <RefreshCw size={20} className="mr-2" /> Proofread
+                </ToolButton>
+            </div>
         </ToolShell>
     );
 }
@@ -155,9 +213,9 @@ function Proofreading() {
 export default function ContentTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'social-sizes': return <SocialSizes />;
-        case 'caption': return <CaptionTemplates />;
-        case 'ideas': return <ContentIdeas />;
-        case 'proof': return <Proofreading />;
+        case 'caption-gen': return <CaptionGenerator />;
+        case 'content-ideas': return <ContentIdeas />;
+        case 'proof-read': return <TextProofreader />;
         default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
     }
 }

@@ -1,21 +1,34 @@
 "use client";
 import React from 'react';
-import FinanceTools from './FinanceTools';
-import TextTools from './TextTools';
-import ProductivityTools from './ProductivityTools';
-import TimeTools from './TimeTools';
-import MediaTools from './MediaTools';
-import PdfTools from './PdfTools';
-import ContentTools from './ContentTools';
-import HealthTools from './HealthTools';
-import SaudiTools from './SaudiTools';
-import DeveloperTools from './DeveloperTools';
-import EducationTools from './EducationTools';
-import DesignTools from './DesignTools';
-import LanguagesTools from './LanguagesTools';
-import AiTools from './AiTools';
-import SportsDashboard from '../sports/SportsDashboard';
+import dynamic from 'next/dynamic';
 import { Tool } from '@/data/tools';
+import { Loader2 } from 'lucide-react';
+
+// Loading Fallback
+const ToolLoader = () => (
+    <div className="flex flex-col items-center justify-center py-20 h-full w-full">
+        <Loader2 className="w-10 h-10 text-brand-primary animate-spin mb-4" />
+        <p className="text-slate-400 font-cairo animate-pulse">جاري تحميل الأداة...</p>
+    </div>
+);
+
+// Dynamic Imports for Code Splitting
+const FinanceTools = dynamic(() => import('./FinanceTools'), { loading: () => <ToolLoader /> });
+const TextTools = dynamic(() => import('./TextTools'), { loading: () => <ToolLoader /> });
+const ProductivityTools = dynamic(() => import('./ProductivityTools'), { loading: () => <ToolLoader /> });
+const TimeTools = dynamic(() => import('./TimeTools'), { loading: () => <ToolLoader /> });
+const MediaTools = dynamic(() => import('./MediaTools'), { loading: () => <ToolLoader /> });
+const PdfTools = dynamic(() => import('./PdfTools'), { loading: () => <ToolLoader /> });
+const ContentTools = dynamic(() => import('./ContentTools'), { loading: () => <ToolLoader /> });
+const HealthTools = dynamic(() => import('./HealthTools'), { loading: () => <ToolLoader /> });
+const SaudiTools = dynamic(() => import('./SaudiTools'), { loading: () => <ToolLoader /> });
+const DeveloperTools = dynamic(() => import('./DeveloperTools'), { loading: () => <ToolLoader /> });
+const EducationTools = dynamic(() => import('./EducationTools'), { loading: () => <ToolLoader /> });
+const DesignTools = dynamic(() => import('./DesignTools'), { loading: () => <ToolLoader /> });
+const LanguagesTools = dynamic(() => import('./LanguagesTools'), { loading: () => <ToolLoader /> });
+const AiTools = dynamic(() => import('./AiTools'), { loading: () => <ToolLoader /> });
+const VideoTools = dynamic(() => import('./VideoTools'), { loading: () => <ToolLoader /> });
+const SportsDashboard = dynamic(() => import('../sports/SportsDashboard'), { loading: () => <ToolLoader /> });
 
 interface ToolRouterProps {
     tool: Tool;
@@ -40,10 +53,13 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
             return <ProductivityTools toolId={id} />;
 
         case 'image':
-        case 'media':
             return <MediaTools toolId={id} />;
 
+        case 'media':
+            return <VideoTools toolId={id} />;
+
         case 'content':
+            if (id === 'media-rec') return <MediaTools toolId={id} />;
             return <ContentTools toolId={id} />;
 
         case 'pdf':
@@ -68,7 +84,7 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
             return <LanguagesTools toolId={id} />;
 
         case 'ai-tools':
-            return <AiTools />;
+            return <AiTools toolId={id} />;
 
         case 'sports':
             // All sport tools route to the main dashboard for now, 

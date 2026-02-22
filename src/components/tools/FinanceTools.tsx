@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
 import { FinalResultView } from '../Outputs/FinalResultView';
+import { calculateLoan, calculateVAT, calculateSalary, calculateZakat, calculateSavings, calculateDiscount, calculateBillSplit, convertCurrency, convertCrypto, calculateInvoice, EXCHANGE_RATES, CRYPTO_PRICES } from '@/lib/tools/finance';
+import { saveToHistory } from '@/lib/actions/history';
+import { toast } from 'sonner';
 
 interface ToolProps {
     toolId: string;
@@ -18,26 +21,39 @@ function LoanCalculator() {
 
     const calculate = () => {
         const P = parseFloat(amount);
-        const r = parseFloat(rate) / 100 / 12;
-        const n = parseFloat(term) * 12;
+        const r = parseFloat(rate);
+        const termYears = parseFloat(term);
 
-        if (!P || !n) return;
+        if (!P || !termYears) return;
 
-        let monthly = 0;
-        if (r === 0) {
-            monthly = P / n;
-        } else {
-            monthly = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        try {
+            const res = calculateLoan({ amount: P, rate: r, term: termYears });
+            setResult({
+                monthly: res.monthly,
+                interest: res.interest,
+                total: res.total
+            });
+        } catch (e) {
+            console.error(e);
         }
+    };
 
-        const totalPay = monthly * n;
-        const totalInt = totalPay - P;
+    const [isSaving, setIsSaving] = useState(false);
 
-        setResult({
-            monthly: monthly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            interest: totalInt.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            total: totalPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-        });
+    const handleSave = async () => {
+        if (!result) return;
+        setIsSaving(true);
+        try {
+            const res = await saveToHistory({
+                title: `حساب قرض: ${amount} ريال`,
+                type: 'finance-loan',
+                data: { ...result, inputAmount: amount, rate, term }
+            });
+            if (res.success) toast.success("تم الحفظ في السجل!");
+            else toast.error(res.error || "فشل الحفظ");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const clear = () => {
@@ -49,7 +65,10 @@ function LoanCalculator() {
 
     return (
         <ToolShell
+            title="حاسبة القروض"
             description="حساب الدفعات الشهرية وتفاصيل الفوائد للقروض الشخصية والعقارية."
+            onSave={result ? handleSave : undefined}
+            isSaving={isSaving}
             results={result ? (
                 <div className="h-full flex flex-col justify-center">
                     <div className="bg-white/5 border border-brand-primary/20 rounded-2xl p-8 text-center relative overflow-hidden group">
@@ -102,33 +121,43 @@ function VATCalculator() {
 
     const calculate = (mode: 'add' | 'remove') => {
         const amt = parseFloat(amount);
-        const r = parseFloat(rate) / 100;
+        const r = parseFloat(rate);
         if (isNaN(amt)) return;
 
-        let original, tax, final, label;
-        if (mode === 'add') {
-            original = amt;
-            tax = amt * r;
-            final = amt + tax;
-            label = "المبلغ شامل الضريبة";
-        } else {
-            final = amt;
-            original = amt / (1 + r);
-            tax = final - original;
-            label = "المبلغ قبل الضريبة";
-        }
+        const res = calculateVAT({ amount: amt, rate: r, mode });
 
         setResult({
-            orig: original.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            tax: tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            final: final.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            label
+            orig: res.original,
+            tax: res.tax,
+            final: res.final,
+            label: res.label
         });
+    };
+
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSave = async () => {
+        if (!result) return;
+        setIsSaving(true);
+        try {
+            const res = await saveToHistory({
+                title: `${result.label}: ${result.final} ريال`,
+                type: 'finance-vat',
+                data: { ...result, inputAmount: amount, rate }
+            });
+            if (res.success) toast.success("تم الحفظ في السجل!");
+            else toast.error(res.error || "فشل الحفظ");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
         <ToolShell
+            title="حاسبة الضريبة (VAT)"
             description="حساب ضريبة القيمة المضافة بدقة عالية (إضافة أو خصم)."
+            onSave={result ? handleSave : undefined}
+            isSaving={isSaving}
             results={result ? (
                 <div className="h-full flex flex-col justify-center">
                     {/* Main Result Card - High Contrast */}
@@ -205,20 +234,19 @@ function SalaryCalculator() {
     const [result, setResult] = useState<null | { gosi: string; net: string }>(null);
 
     const calculate = () => {
-        const b = parseFloat(basic) || 0;
-        const h = parseFloat(housing) || 0;
-        let g = parseFloat(gross);
+        const b = parseFloat(basic);
+        const h = parseFloat(housing);
+        const g = parseFloat(gross);
 
-        if (!g && (b || h)) g = b + h;
-        if (!g) return;
-
-        const gosi = g * 0.0975;
-        const net = g - gosi;
-
-        setResult({
-            gosi: gosi.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            net: net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-        });
+        try {
+            const res = calculateSalary({ gross: g, basic: b, housing: h });
+            setResult({
+                gosi: res.gosi,
+                net: res.net
+            });
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -239,19 +267,19 @@ function SalaryCalculator() {
                 </div>
             ) : null}
         >
-            <div className="space-y-6">
+            <div className="space-y-8">
                 <ToolInputRow label="إجمالي الراتب (مع البدلات)">
-                    <input type="number" value={gross} onChange={e => setGross(e.target.value)} placeholder="مثال: 8000" className="ui-input text-lg font-bold h-14" />
+                    <ToolInput type="number" value={gross} onChange={e => setGross(e.target.value)} placeholder="مثال: 8000" className="text-xl h-16" />
                 </ToolInputRow>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-6">
                     <ToolInputRow label="الراتب الأساسي (اختياري)">
-                        <input type="number" value={basic} onChange={e => setBasic(e.target.value)} placeholder="6000" className="ui-input h-12" />
+                        <ToolInput type="number" value={basic} onChange={e => setBasic(e.target.value)} placeholder="6000" className="h-14" />
                     </ToolInputRow>
                     <ToolInputRow label="بدل السكن (اختياري)">
-                        <input type="number" value={housing} onChange={e => setHousing(e.target.value)} placeholder="2000" className="ui-input h-12" />
+                        <ToolInput type="number" value={housing} onChange={e => setHousing(e.target.value)} placeholder="2000" className="h-14" />
                     </ToolInputRow>
                 </div>
-                <button onClick={calculate} className="ui-btn primary w-full h-14 text-lg mt-4 shadow-[0_0_30px_rgba(139,92,246,0.2)]">احسب الصافي</button>
+                <ToolButton variant="iridescent" size="xl" onClick={calculate} className="w-full mt-4">احسب الصافي</ToolButton>
             </div>
         </ToolShell>
     );
@@ -266,7 +294,13 @@ function ZakatCalculator() {
     const calculate = () => {
         const val = parseFloat(assets);
         if (!val) return;
-        setResult((val * 0.025).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        try {
+            const res = calculateZakat({ assets: val });
+            setResult(res.zakat);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -284,11 +318,11 @@ function ZakatCalculator() {
                 </div>
             ) : null}
         >
-            <div className="space-y-6">
+            <div className="space-y-10">
                 <ToolInputRow label="إجمالي الأصول (النقد، الذهب، عروض التجارة)">
-                    <input type="number" value={assets} onChange={e => setAssets(e.target.value)} placeholder="مثال: 100000" className="ui-input text-lg font-bold h-14" />
+                    <ToolInput type="number" value={assets} onChange={e => setAssets(e.target.value)} placeholder="مثال: 100000" className="text-xl h-20" />
                 </ToolInputRow>
-                <button onClick={calculate} className="ui-btn primary w-full h-14 text-lg mt-4 shadow-[0_0_30px_rgba(139,92,246,0.2)]">احسب الزكاة</button>
+                <ToolButton variant="iridescent" size="xl" onClick={calculate} className="w-full">احسب الزكاة</ToolButton>
             </div>
         </ToolShell>
     );
@@ -303,21 +337,19 @@ function SavingsCalculator() {
     const [result, setResult] = useState<null | { time: string, total: string }>(null);
 
     const calculate = () => {
-        const g = parseFloat(goal) || 0;
-        const c = parseFloat(current) || 0;
+        const g = parseFloat(goal);
+        const c = parseFloat(current);
         const m = parseFloat(monthly);
-        if (!g || !m) return;
 
-        const remaining = g - c;
-        if (remaining <= 0) {
-            setResult({ time: "مبروك! حققت الهدف", total: "0" });
-            return;
+        try {
+            const res = calculateSavings({ goal: g, current: c, monthly: m });
+            setResult({
+                time: res.time,
+                total: res.total
+            });
+        } catch (error) {
+            console.error(error);
         }
-        const months = Math.ceil(remaining / m);
-        setResult({
-            time: `${months} شهر`,
-            total: (months * m).toLocaleString() + ' ريال'
-        });
     };
 
     return (
@@ -338,19 +370,19 @@ function SavingsCalculator() {
                 </div>
             ) : null}
         >
-            <div className="space-y-6">
+            <div className="space-y-8">
                 <ToolInputRow label="هدفك المالي (ريال)">
-                    <input type="number" value={goal} onChange={e => setGoal(e.target.value)} className="ui-input text-lg font-bold h-14" placeholder="1000000" />
+                    <ToolInput type="number" value={goal} onChange={e => setGoal(e.target.value)} className="h-16 text-xl" placeholder="1000000" />
                 </ToolInputRow>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-6">
                     <ToolInputRow label="رصيدك الحالي">
-                        <input type="number" value={current} onChange={e => setCurrent(e.target.value)} className="ui-input h-12" placeholder="0" />
+                        <ToolInput type="number" value={current} onChange={e => setCurrent(e.target.value)} className="h-14" placeholder="0" />
                     </ToolInputRow>
                     <ToolInputRow label="الادخار الشهري">
-                        <input type="number" value={monthly} onChange={e => setMonthly(e.target.value)} className="ui-input h-12" placeholder="5000" />
+                        <ToolInput type="number" value={monthly} onChange={e => setMonthly(e.target.value)} className="h-14" placeholder="5000" />
                     </ToolInputRow>
                 </div>
-                <button onClick={calculate} className="ui-btn primary w-full h-14 text-lg mt-4 shadow-[0_0_30px_rgba(139,92,246,0.2)]">احسب المدة</button>
+                <ToolButton variant="iridescent" size="xl" onClick={calculate} className="w-full mt-4">احسب المدة</ToolButton>
             </div>
         </ToolShell>
     );
@@ -364,14 +396,19 @@ function CurrencyConverter() {
     const [to, setTo] = useState('SAR');
     const [res, setRes] = useState<string | null>(null);
 
-    // Mock Rates
-    const rates: Record<string, number> = { 'USD': 1, 'SAR': 3.75, 'EUR': 0.92, 'GBP': 0.79, 'AED': 3.67, 'KWD': 0.31, 'EGP': 47.5 };
+    // Use centralized rates
+    const rates = EXCHANGE_RATES;
 
     const convert = () => {
         const val = parseFloat(amount);
         if (!val) return;
-        const rate = rates[to] / rates[from];
-        setRes((val * rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        try {
+            const res = convertCurrency({ amount: val, from, to });
+            setRes(res.converted);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -393,21 +430,21 @@ function CurrencyConverter() {
         >
             <div className="space-y-6">
                 <ToolInputRow label="المبلغ">
-                    <ToolInput type="number" value={amount} onChange={e => setAmount(e.target.value)} className="text-lg font-bold h-14" />
+                    <ToolInput type="number" value={amount} onChange={e => setAmount(e.target.value)} className="h-16 text-xl" />
                 </ToolInputRow>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-6">
                     <ToolInputRow label="من" id="curr-from">
-                        <ToolSelect id="curr-from" value={from} onChange={e => setFrom(e.target.value)} className="h-12" aria-label="From Currency" title="من عملة (From Currency)">
+                        <ToolSelect id="curr-from" value={from} onChange={e => setFrom(e.target.value)} className="h-14" aria-label="From Currency" title="من عملة (From Currency)">
                             {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
                         </ToolSelect>
                     </ToolInputRow>
                     <ToolInputRow label="إلى" id="curr-to">
-                        <ToolSelect id="curr-to" value={to} onChange={e => setTo(e.target.value)} className="h-12" aria-label="To Currency" title="إلى عملة (To Currency)">
+                        <ToolSelect id="curr-to" value={to} onChange={e => setTo(e.target.value)} className="h-14" aria-label="To Currency" title="إلى عملة (To Currency)">
                             {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
                         </ToolSelect>
                     </ToolInputRow>
                 </div>
-                <ToolButton onClick={convert} className="w-full h-14 text-lg mt-4 shadow-[0_0_30px_rgba(139,92,246,0.2)]">تحويل العملة</ToolButton>
+                <ToolButton variant="iridescent" size="xl" onClick={convert} className="w-full mt-6">تحويل العملة</ToolButton>
             </div>
         </ToolShell>
     );
@@ -421,15 +458,20 @@ function CryptoConverter() {
     const [currency, setCurrency] = useState('USD');
     const [res, setRes] = useState<string | null>(null);
 
-    const prices: Record<string, number> = { 'BTC': 65000, 'ETH': 3500, 'SOL': 140, 'BNB': 600, 'XRP': 0.60 };
-    const rates: Record<string, number> = { 'USD': 1, 'SAR': 3.75, 'EUR': 0.92 };
+    // Use centralized prices/rates
+    const prices = CRYPTO_PRICES;
+    const rates = EXCHANGE_RATES;
 
     const convert = () => {
         const val = parseFloat(amount);
         if (!val) return;
-        const priceInUSD = prices[coin];
-        const finalRate = rates[currency];
-        setRes((val * priceInUSD * finalRate).toLocaleString(undefined, { maximumFractionDigits: 2 }));
+
+        try {
+            const res = convertCrypto({ amount: val, coin, currency });
+            setRes(res.value);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -449,23 +491,23 @@ function CryptoConverter() {
                 </div>
             ) : null}
         >
-            <div className="space-y-6">
+            <div className="space-y-8">
                 <ToolInputRow label="الكمية">
-                    <ToolInput type="number" value={amount} onChange={e => setAmount(e.target.value)} className="text-lg font-bold h-14" />
+                    <ToolInput type="number" value={amount} onChange={e => setAmount(e.target.value)} className="h-16 text-xl" />
                 </ToolInputRow>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-6">
                     <ToolInputRow label="العملة الرقمية" id="crypto-coin">
-                        <ToolSelect id="crypto-coin" value={coin} onChange={e => setCoin(e.target.value)} className="h-12" aria-label="Crypto Coin" title="العملة الرقمية (Crypto Coin)">
+                        <ToolSelect id="crypto-coin" value={coin} onChange={e => setCoin(e.target.value)} className="h-14" aria-label="Crypto Coin" title="العملة الرقمية (Crypto Coin)">
                             {Object.keys(prices).map(c => <option key={c} value={c}>{c}</option>)}
                         </ToolSelect>
                     </ToolInputRow>
                     <ToolInputRow label="مقابل" id="crypto-target">
-                        <ToolSelect id="crypto-target" value={currency} onChange={e => setCurrency(e.target.value)} className="h-12" aria-label="Target Currency" title="العملة الهدف (Target Currency)">
+                        <ToolSelect id="crypto-target" value={currency} onChange={e => setCurrency(e.target.value)} className="h-14" aria-label="Target Currency" title="العملة الهدف (Target Currency)">
                             {Object.keys(rates).map(c => <option key={c} value={c}>{c}</option>)}
                         </ToolSelect>
                     </ToolInputRow>
                 </div>
-                <ToolButton onClick={convert} className="w-full h-14 text-lg mt-4 shadow-[0_0_30px_rgba(139,92,246,0.2)]">احسب القيمة</ToolButton>
+                <ToolButton variant="iridescent" size="xl" onClick={convert} className="w-full mt-6">احسب القيمة</ToolButton>
             </div>
         </ToolShell>
     );
@@ -479,6 +521,8 @@ function InvoiceGenerator() {
     const [desc, setDesc] = useState('');
     const [price, setPrice] = useState('');
 
+
+
     const addItem = () => {
         if (!desc || !price) return;
         setItems([...items, { desc, price: parseFloat(price) }]);
@@ -486,7 +530,8 @@ function InvoiceGenerator() {
         setPrice('');
     };
 
-    const total = items.reduce((acc, curr) => acc + curr.price, 0);
+    const calculation = calculateInvoice({ items });
+    const total = calculation.total;
 
     return (
         <ToolShell description="إنشاء فواتير احترافية جاهزة للطباعة."
@@ -554,53 +599,77 @@ function BillSplitter() {
     const [tip, setTip] = useState('0');
 
     // Derived
-    const bill = parseFloat(total) || 0;
-    const count = parseFloat(people) || 1;
-    const tipPer = parseFloat(tip);
-    const tipAmount = bill * (tipPer / 100);
-    const totalPay = bill + tipAmount;
-    const perPerson = totalPay / count;
+    const t = parseFloat(total);
+    const p = parseFloat(people);
+    const tp = parseFloat(tip);
+
+    const { perPerson, totalPay: totalBill, tipAmount } = calculateBillSplit({ total: t, people: p, tip: tp });
 
     return (
-        <ToolShell description="تقسيم الفاتورة مع الإكرامية.">
-            <div className="grid grid-cols-2 gap-4">
-                <ToolInputRow label="الفاتورة">
-                    <ToolInput type="number" value={total} onChange={e => setTotal(e.target.value)} aria-label="Total Bill Amount" />
-                </ToolInputRow>
-                <ToolInputRow label="الأشخاص">
-                    <ToolInput type="number" value={people} onChange={e => setPeople(e.target.value)} aria-label="Number of People" />
+        <ToolShell description="تقسيم الفاتورة مع الإكرامية."
+            results={
+                <div className="mt-4 bg-white/5 border border-white/10 rounded-3xl p-8 text-center relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-brand-primary/5 blur-2xl group-hover:bg-brand-primary/10 transition-colors duration-500" />
+                    <span className="text-sm text-slate-400 uppercase tracking-widest font-black font-cairo relative z-10">نصيب كل شخص</span>
+                    <div className="text-6xl font-black text-brand-primary my-6 drop-shadow-[0_0_20px_rgba(139,92,246,0.3)] relative z-10">{perPerson}</div>
+                    <div className="grid grid-cols-3 text-xs pt-6 border-t border-white/10 gap-6 mt-6 relative z-10 font-cairo">
+                        <div className='flex flex-col'>
+                            <span className='text-slate-500 mb-1 opacity-60 uppercase'>الإجمالي</span>
+                            <span className='font-black text-white text-lg'>{totalBill}</span>
+                        </div>
+                        <div className='flex flex-col'>
+                            <span className='text-slate-500 mb-1 opacity-60 uppercase'>الفاتورة</span>
+                            <span className='font-black text-white text-lg'>{t || 0}</span>
+                        </div>
+                        <div className='flex flex-col'>
+                            <span className='text-slate-500 mb-1 opacity-60 uppercase'>الإكرامية</span>
+                            <span className='font-black text-brand-secondary text-lg'>{tipAmount}</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        >
+            <div className="space-y-8">
+                <div className="grid grid-cols-2 gap-6">
+                    <ToolInputRow label="إجمالي الفاتورة">
+                        <ToolInput type="number" value={total} onChange={e => setTotal(e.target.value)} className="h-16 text-xl" placeholder="500" />
+                    </ToolInputRow>
+                    <ToolInputRow label="عدد الأشخاص">
+                        <ToolInput type="number" value={people} onChange={e => setPeople(e.target.value)} className="h-16 text-xl" placeholder="2" />
+                    </ToolInputRow>
+                </div>
+                <ToolInputRow label={`نسبة الإكرامية (${tip}%)`}>
+                    <div className="grid grid-cols-4 gap-3">
+                        {[0, 10, 15, 20].map(t => (
+                            <ToolButton
+                                key={t}
+                                variant={tip === t.toString() ? 'iridescent' : 'secondary'}
+                                size="sm"
+                                onClick={() => setTip(t.toString())}
+                                className="h-12"
+                            >
+                                {t}%
+                            </ToolButton>
+                        ))}
+                    </div>
                 </ToolInputRow>
             </div>
-            <ToolInputRow label={`الإكرامية (${tip}%)`}>
-                <div className="flex gap-2">
-                    {[0, 10, 15, 20].map(t => (
-                        <ToolButton
-                            key={t}
-                            variant={tip === t.toString() ? 'primary' : 'ghost'}
-                            onClick={() => setTip(t.toString())}
-                            className="flex-1"
-                        >
-                            {t}%
-                        </ToolButton>
-                    ))}
-                </div>
-            </ToolInputRow>
 
             <div className="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
                 <span className="text-sm text-slate-400 uppercase tracking-widest font-bold">لكل شخص</span>
-                <div className="text-5xl font-black text-brand-primary my-4 drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">{perPerson.toFixed(2)}</div>
+                <div className="text-5xl font-black text-brand-primary my-4 drop-shadow-[0_0_15px_rgba(139,92,246,0.3)]">{perPerson}</div>
                 <div className="grid grid-cols-3 text-sm pt-4 border-t border-white/10 gap-4 mt-4">
                     <div className='flex flex-col'>
                         <span className='text-slate-500 mb-1'>الإجمالي</span>
-                        <span className='font-bold text-white'>{totalPay.toFixed(2)}</span>
+                        <span className='font-bold text-white'>{totalBill}</span>
                     </div>
                     <div className='flex flex-col'>
                         <span className='text-slate-500 mb-1'>الفاتورة</span>
-                        <span className='font-bold text-white'>{bill}</span>
+                        <span className='font-bold text-white'>{t || 0}</span>
                     </div>
                     <div className='flex flex-col'>
                         <span className='text-slate-500 mb-1'>الإكرامية</span>
-                        <span className='font-bold text-brand-secondary'>{tipAmount.toFixed(2)}</span>
+                        <span className='font-bold text-brand-secondary'>{tipAmount}</span>
                     </div>
                 </div>
             </div>
@@ -616,40 +685,47 @@ function SimpleDiscountCalc() {
     const calc = () => {
         const p = parseFloat(price);
         const o = parseFloat(off);
-        if (!p || !o) return;
-        const save = p * (o / 100);
-        setResult({
-            final: (p - save).toFixed(2),
-            save: save.toFixed(2)
-        });
+
+        try {
+            const res = calculateDiscount({ price: p, off: o });
+            setResult({
+                final: res.final,
+                save: res.save
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
-        <ToolShell description="حساب السعر بعد الخصم.">
-            <div className="space-y-4">
-                <ToolInputRow label="السعر الأصلي">
-                    <ToolInput type="number" value={price} onChange={e => setPrice(e.target.value)} aria-label="Original Price" />
-                </ToolInputRow>
-                <ToolInputRow label="الخصم (%)">
-                    <ToolInput type="number" value={off} onChange={e => setOff(e.target.value)} aria-label="Discount Percentage" />
-                </ToolInputRow>
-                <ToolButton onClick={calc} className="w-full">احسب</ToolButton>
-            </div>
-
-            {result && (
-                <div className="mt-6 bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                        <div className='flex flex-col'>
-                            <span className="text-xs text-slate-500 mb-1">بعد الخصم</span>
-                            <strong className="text-2xl text-brand-primary">{result.final}</strong>
-                        </div>
-                        <div className='flex flex-col'>
-                            <span className="text-xs text-slate-500 mb-1">التوفير</span>
-                            <strong className="text-2xl text-green-400">{result.save}</strong>
+        <ToolShell description="حساب السعر بعد الخصم السريع."
+            results={result ? (
+                <div className="h-full flex flex-col justify-center">
+                    <div className="bg-white/5 border border-white/10 rounded-3xl p-10 text-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-brand-primary/5 blur-2xl group-hover:bg-brand-primary/10 transition-colors duration-500" />
+                        <div className="grid grid-cols-1 gap-8 relative z-10">
+                            <div>
+                                <span className="text-sm font-black text-slate-500 uppercase tracking-[0.2em] font-cairo mb-4 block">السعر النهائي</span>
+                                <strong className="text-6xl font-black text-brand-primary drop-shadow-[0_0_20px_rgba(139,92,246,0.3)] font-cairo">{result.final}</strong>
+                            </div>
+                            <div className="pt-8 border-t border-white/5">
+                                <span className="text-xs font-black text-slate-500 uppercase tracking-widest font-cairo mb-2 block">وفرت اليوم</span>
+                                <strong className="text-3xl font-black text-green-400 font-cairo">{result.save}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
-            )}
+            ) : null}
+        >
+            <div className="space-y-8">
+                <ToolInputRow label="السعر الأصلي">
+                    <ToolInput type="number" value={price} onChange={e => setPrice(e.target.value)} className="h-16 text-xl" placeholder="1000" />
+                </ToolInputRow>
+                <ToolInputRow label="نسبة الخصم (%)">
+                    <ToolInput type="number" value={off} onChange={e => setOff(e.target.value)} className="h-14" placeholder="15" />
+                </ToolInputRow>
+                <ToolButton variant="iridescent" size="xl" onClick={calc} className="w-full mt-6">تطبيق الخصم</ToolButton>
+            </div>
         </ToolShell>
     );
 }
@@ -662,11 +738,11 @@ export default function FinanceTools({ toolId }: ToolProps) {
         case 'zakat': return <ZakatCalculator />;
         case 'savings': return <SavingsCalculator />;
         case 'fin-discount': return <SimpleDiscountCalc />;
-        case 'fin-currency': return <CurrencyConverter />;
+        case 'currency': return <CurrencyConverter />;
         case 'fin-crypto': return <CryptoConverter />;
-        case 'finance-invoice': return <InvoiceGenerator />;
-        case 'fin-split': return <BillSplitter />;
-        case 'fin-tip': return <BillSplitter />;
+        case 'prod-inv': return <InvoiceGenerator />;
+        case 'life-bill': return <BillSplitter />;
+        case 'life-tip': return <BillSplitter />;
         default: return <div className="text-center py-12 text-gray-400">Tool not implemented yet: {toolId}</div>
     }
 }

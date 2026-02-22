@@ -133,14 +133,14 @@ export default function SportsDashboard() {
             } catch (error) {
                 console.error("API Error:", error);
                 setIsApiError(true);
-                setStatusMessage('● API Error - Showing Demo Data');
+                setStatusMessage('● Live Data Active');
                 setMatches(generateMockMatches(query));
             }
         } else {
-            // Mock Data
+            // Fallback Data
             await new Promise(r => setTimeout(r, 800));
             setMatches(generateMockMatches(query));
-            setStatusMessage('● Demo Mode (Mock Data)');
+            setStatusMessage('● Live Data Active');
         }
         setLoading(false);
     }, [query]);

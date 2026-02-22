@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -10,126 +11,150 @@ function cn(...inputs: ClassValue[]) {
 // 1. Tool Input (Text / Number)
 type ToolInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
-export const ToolInput = React.forwardRef<HTMLInputElement, ToolInputProps>(
+export const ToolInput = React.memo(React.forwardRef<HTMLInputElement, ToolInputProps>(
     ({ className, ...props }, ref) => {
         return (
-            <input
-                ref={ref}
-                className={cn(
-                    "w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all font-medium",
-                    className
-                )}
-                {...props}
-            />
+            <div className="relative group/input">
+                <input
+                    ref={ref}
+                    className={cn(
+                        "w-full bg-[#050507]/40 border border-white/10 rounded-[20px] px-5 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:ring-4 focus:ring-brand-primary/5 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
+                        className
+                    )}
+                    {...props}
+                />
+                <div className="absolute inset-0 rounded-[20px] pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/20 transition-all duration-500" />
+            </div>
         );
     }
-);
+));
 ToolInput.displayName = "ToolInput";
 
 // 2. Tool Textarea
 type ToolTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export const ToolTextarea = React.forwardRef<HTMLTextAreaElement, ToolTextareaProps>(
+export const ToolTextarea = React.memo(React.forwardRef<HTMLTextAreaElement, ToolTextareaProps>(
     ({ className, ...props }, ref) => {
         return (
-            <textarea
-                ref={ref}
-                className={cn(
-                    "w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all font-medium resize-none leading-relaxed",
-                    className
-                )}
-                {...props}
-            />
+            <div className="relative group/input">
+                <textarea
+                    ref={ref}
+                    className={cn(
+                        "w-full bg-[#050507]/40 border border-white/10 rounded-[20px] px-5 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:ring-4 focus:ring-brand-primary/5 transition-all font-cairo font-bold text-lg backdrop-blur-xl resize-none min-h-[120px]",
+                        className
+                    )}
+                    {...props}
+                />
+                <div className="absolute inset-0 rounded-[20px] pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/20 transition-all duration-500" />
+            </div>
         );
     }
-);
+));
 ToolTextarea.displayName = "ToolTextarea";
 
 // 3. Tool Button
 interface ToolButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'iridescent';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export const toolButtonVariants = {
-    primary: "bg-brand-primary text-white hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/20 border border-brand-primary/50",
-    secondary: "bg-brand-secondary/10 text-brand-secondary hover:bg-brand-secondary/20 border border-brand-secondary/20",
-    outline: "bg-transparent border border-white/10 text-slate-300 hover:bg-white/5 hover:text-white",
-    ghost: "bg-transparent text-slate-400 hover:text-white hover:bg-white/5"
+    primary: "bg-brand-primary text-white hover:bg-brand-primary/90 shadow-[0_20px_50px_rgba(139,92,246,0.2)] border border-brand-primary/50",
+    iridescent: "bg-gradient-to-br from-brand-primary via-violet-500 to-indigo-600 text-white shadow-[0_20px_60px_rgba(139,92,246,0.3)] border-t border-white/20 hover:scale-[1.02] hover:brightness-110",
+    secondary: "bg-white/[0.03] text-slate-200 hover:bg-white/[0.08] border border-white/[0.05] backdrop-blur-md",
+    outline: "bg-transparent border border-white/10 text-slate-300 hover:border-white/30 hover:text-white backdrop-blur-sm",
+    ghost: "bg-transparent text-slate-400 hover:text-brand-primary hover:bg-brand-primary/5"
 };
 
 export const toolButtonSizes = {
-    sm: "px-3 py-1.5 text-xs font-bold rounded-lg",
-    md: "px-6 py-3 text-sm font-bold rounded-xl",
-    lg: "px-8 py-4 text-base font-bold rounded-2xl"
+    sm: "px-4 py-2 text-xs font-black rounded-xl",
+    md: "px-8 py-3.5 text-sm font-black rounded-2xl",
+    lg: "px-10 py-5 text-base font-black rounded-[24px]",
+    xl: "px-12 py-6 text-xl font-black rounded-[28px] tracking-tight"
 };
 
-export const ToolButton = React.forwardRef<HTMLButtonElement, ToolButtonProps>(
+export const ToolButton = React.memo(React.forwardRef<HTMLButtonElement, ToolButtonProps>(
     ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
         return (
-            <button
+            <motion.button
                 ref={ref}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 className={cn(
-                    "flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none",
+                    "flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none font-cairo uppercase tracking-tight",
                     toolButtonVariants[variant],
                     toolButtonSizes[size],
                     className
                 )}
-                {...props}
+                {...props as HTMLMotionProps<"button">}
             />
         );
     }
-);
+));
 ToolButton.displayName = "ToolButton";
 
 // 5. Tool Select
 type ToolSelectProps = React.SelectHTMLAttributes<HTMLSelectElement>;
 
-export const ToolSelect = React.forwardRef<HTMLSelectElement, ToolSelectProps>(
+export const ToolSelect = React.memo(React.forwardRef<HTMLSelectElement, ToolSelectProps>(
     (props, ref) => {
         const { className, children, title, "aria-label": ariaLabel, id, ...rest } = props;
+
+        // Ensure we always have an accessible name
+        const finalTitle = title || "قائمة خيارات الاختيار";
+        const finalAriaLabel = ariaLabel || (typeof title === 'string' ? title : finalTitle);
+
         return (
-            <div className="relative">
+            <div className="relative group/input">
                 <select
                     {...rest}
                     id={id}
                     ref={ref}
-                    title={title}
-                    aria-label={ariaLabel || (typeof title === 'string' ? title : undefined)}
+                    title={finalTitle}
+                    aria-label={finalAriaLabel}
                     className={cn(
-                        "w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none cursor-pointer focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all font-medium",
+                        "w-full bg-[#050507]/40 border border-white/10 rounded-[20px] px-5 py-4 text-white appearance-none cursor-pointer focus:outline-none focus:border-brand-primary/40 focus:ring-4 focus:ring-brand-primary/5 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
                         className
                     )}
                 >
                     {children}
                 </select>
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within/input:text-brand-primary transition-colors">
+                    <svg width="14" height="14" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </div>
+                <div className="absolute inset-0 rounded-[20px] pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/20 transition-all duration-500" />
             </div>
         );
     }
-);
+));
 ToolSelect.displayName = "ToolSelect";
 
 // 4. Tool Checkbox (Label Wrapper)
-export const ToolCheckbox = ({ label, checked, onChange }: { label: string, checked: boolean, onChange: (checked: boolean) => void }) => {
+export const ToolCheckbox = React.memo(({ label, checked, onChange }: { label: string, checked: boolean, onChange: (checked: boolean) => void }) => {
     return (
         <label className={cn(
-            "flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer select-none",
+            "flex items-center gap-4 p-5 rounded-[22px] border transition-all cursor-pointer select-none backdrop-blur-xl",
             checked
-                ? "bg-brand-primary/10 border-brand-primary/30 text-white"
-                : "bg-white/5 border-transparent text-slate-400 hover:bg-white/10"
+                ? "bg-brand-primary/10 border-brand-primary/30 text-white shadow-[0_10px_30px_rgba(139,92,246,0.1)]"
+                : "bg-white/[0.02] border-white/5 text-slate-400 hover:bg-white/[0.05] hover:border-white/10"
         )}>
             <div className={cn(
-                "w-5 h-5 rounded-lg border flex items-center justify-center transition-colors",
+                "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-500",
                 checked
-                    ? "bg-brand-primary border-brand-primary text-white"
-                    : "bg-black/20 border-white/20"
+                    ? "bg-brand-primary border-brand-primary text-white scale-110 shadow-lg shadow-brand-primary/30"
+                    : "bg-black/40 border-white/20"
             )}>
-                {checked && <span className="text-xs">✓</span>}
+                {checked && (
+                    <motion.span
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="text-xs font-black"
+                    >
+                        ✓
+                    </motion.span>
+                )}
             </div>
             <input
                 type="checkbox"
@@ -137,7 +162,8 @@ export const ToolCheckbox = ({ label, checked, onChange }: { label: string, chec
                 onChange={(e) => onChange(e.target.checked)}
                 className="hidden"
             />
-            <span className="text-sm font-bold">{label}</span>
+            <span className="text-base font-black font-cairo">{label}</span>
         </label>
     );
-};
+});
+ToolCheckbox.displayName = "ToolCheckbox";

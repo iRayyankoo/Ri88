@@ -4,6 +4,9 @@ import { Flame, Scale, Droplets, Moon, Wind } from 'lucide-react';
 import { ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
 import GlassCard from '../ui/GlassCard';
+import {
+    calculateBMI, calculateBMR, calculateWaterNeed, calculateSleepCycles
+} from '@/lib/tools/health';
 
 // 11. Widget Card
 interface HealthWidgetProps {
@@ -44,22 +47,17 @@ function BMICalculator() {
     const [result, setResult] = useState<{ bmi: string, cat: string, color: string } | null>(null);
 
     const calculate = () => {
-        const w = parseFloat(weight);
-        const h = parseFloat(height) / 100;
-        if (!w || !h) return;
-        const bmi = (w / (h * h)).toFixed(1);
-        let cat = '', color = '';
-        if (parseFloat(bmi) < 18.5) { cat = 'نحافة'; color = '#3498db'; }
-        else if (parseFloat(bmi) < 25) { cat = 'وزن طبيعي'; color = '#2ecc71'; }
-        else if (parseFloat(bmi) < 30) { cat = 'وزن زائد'; color = '#f1c40f'; }
-        else { cat = 'سمنة'; color = '#e74c3c'; }
-        setResult({ bmi, cat, color });
+        try {
+            setResult(calculateBMI(parseFloat(weight), parseFloat(height)));
+        } catch {
+            return;
+        }
     };
 
     return (
         <WidgetCard title="حاسبة الكتلة (BMI)" icon={Scale} color="#3498db">
-            <ToolInput aria-label="Weight in kg" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن (كجم)" />
-            <ToolInput aria-label="Height in cm" type="number" value={height} onChange={e => setHeight(e.target.value)} placeholder="الطول (سم)" />
+            <ToolInput aria-label="الوزن بالكيلوجرام" title="الوزن بالكيلوجرام" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن (كجم)" />
+            <ToolInput aria-label="الطول بالسنتيمتر" title="الطول بالسنتيمتر" type="number" value={height} onChange={e => setHeight(e.target.value)} placeholder="الطول (سم)" />
             <ToolButton onClick={calculate} className="w-full">احسب</ToolButton>
             {result && (
                 <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
@@ -90,14 +88,17 @@ function BMRCalculator() {
     const [result, setResult] = useState<{ bmr: number, tdee: number } | null>(null);
 
     const calculate = () => {
-        const w = parseFloat(weight);
-        const h = parseFloat(height);
-        const a = parseFloat(age);
-        const act = parseFloat(activity);
-        if (!w || !h || !a) return;
-        let bmr = (10 * w) + (6.25 * h) - (5 * a);
-        if (gender === 'm') bmr += 5; else bmr -= 161;
-        setResult({ bmr: Math.round(bmr), tdee: Math.round(bmr * act) });
+        try {
+            setResult(calculateBMR({
+                gender: gender as 'm' | 'f',
+                age: parseFloat(age),
+                weight: parseFloat(weight),
+                height: parseFloat(height),
+                activity: parseFloat(activity)
+            }));
+        } catch {
+            return;
+        }
     };
 
     return (
@@ -110,8 +111,8 @@ function BMRCalculator() {
                 <ToolInput aria-label="Age" title="العمر (Age)" type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="العمر" />
             </div>
             <div className="grid grid-cols-2 gap-3">
-                <ToolInput aria-label="Weight" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن" />
-                <ToolInput aria-label="Height" type="number" value={height} onChange={e => setHeight(e.target.value)} placeholder="الطول" />
+                <ToolInput aria-label="الوزن" title="الوزن بالكيلوجرام" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن" />
+                <ToolInput aria-label="الطول" title="الطول بالسنتيمتر" type="number" value={height} onChange={e => setHeight(e.target.value)} placeholder="الطول" />
             </div>
             <ToolSelect id="activity-select" aria-label="Activity Level" title="مستوى النشاط (Activity Level)" value={activity} onChange={e => setActivity(e.target.value)}>
                 <option value="1.2">خامل</option>
@@ -144,15 +145,16 @@ function WaterCalculator() {
     const [result, setResult] = useState<{ l: string, cups: number } | null>(null);
 
     const calculate = () => {
-        const w = parseFloat(weight);
-        if (!w) return;
-        const ml = w * 35;
-        setResult({ l: (ml / 1000).toFixed(1), cups: Math.round(ml / 250) });
+        try {
+            setResult(calculateWaterNeed(parseFloat(weight)));
+        } catch {
+            return;
+        }
     };
 
     return (
         <WidgetCard title="احتياج الماء" icon={Droplets} color="#3498db">
-            <ToolInput aria-label="الوزن بالكيلوجرام" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن (كجم)" />
+            <ToolInput aria-label="الوزن بالكيلوجرام" title="الوزن كجم" type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="الوزن (كجم)" />
             <ToolButton onClick={calculate} className="w-full">احسب</ToolButton>
             {result && (
                 <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
@@ -170,24 +172,17 @@ function SleepCalculator() {
     const [times, setTimes] = useState<string[]>([]);
 
     const calculate = () => {
-        if (!wakeTime) return;
-        const [h, m] = wakeTime.split(':').map(Number);
-        const wakeDate = new Date();
-        wakeDate.setHours(h, m, 0, 0);
-        const cycles = [6, 5, 4];
-        const resTimes: string[] = [];
-        cycles.forEach(c => {
-            const d = new Date(wakeDate);
-            d.setMinutes(d.getMinutes() - (c * 90) - 15);
-            resTimes.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-        });
-        setTimes(resTimes);
+        try {
+            setTimes(calculateSleepCycles(wakeTime));
+        } catch {
+            return;
+        }
     };
 
     return (
         <WidgetCard title="حاسبة النوم" icon={Moon} color="#8e44ad">
             <ToolInputRow label="وقت الاستيقاظ">
-                <ToolInput type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} aria-label="وقت الاستيقاظ" />
+                <ToolInput type="time" value={wakeTime} onChange={e => setWakeTime(e.target.value)} aria-label="وقت الاستيقاظ" title="وقت الاستيقاظ" />
             </ToolInputRow>
             <ToolButton onClick={calculate} className="w-full">أفضل وقت للنوم</ToolButton>
             {times.length > 0 && (
@@ -248,7 +243,16 @@ function BreathingExercise() {
 
 // MAIN LAYOUT
 export default function HealthTools({ toolId }: { toolId?: string }) {
-    if (toolId === 'breathing') return <div className="max-w-md mx-auto"><BreathingExercise /></div>;
+    if (toolId === 'health-breath') return <div className="max-w-md mx-auto"><BreathingExercise /></div>;
+
+    switch (toolId) {
+        case 'health-bmi': return <div className="max-w-md mx-auto"><BMICalculator /></div>;
+        case 'health-bmr': return <div className="max-w-md mx-auto"><BMRCalculator /></div>;
+        case 'health-water': return <div className="max-w-md mx-auto"><WaterCalculator /></div>;
+        case 'health-sleep': return <div className="max-w-md mx-auto"><SleepCalculator /></div>;
+        case 'health-breath': return <div className="max-w-md mx-auto"><BreathingExercise /></div>;
+    }
+
     return (
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6 w-full">
             <BMICalculator />
