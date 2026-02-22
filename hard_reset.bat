@@ -1,0 +1,9 @@
+@echo off
+echo 🛑 Force stopping any stuck Node.js processes...
+taskkill /F /IM node.exe /T 2>nul
+
+echo 🧹 Cleaning Next.js cache (.next folder)...
+if exist .next rmdir /s /q .next
+
+echo 🚀 Starting fresh server...
+npm run dev

@@ -77,14 +77,13 @@ export const HeroBanner = () => {
                 initial={{ opacity: 0.8, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className={`relative w-full rounded-[32px] overflow-hidden bg-gradient-to-br ${theme.gradient} shadow-[0_20px_50px_rgba(0,0,0,0.3)] group h-[400px] lg:h-[350px] transition-colors duration-1000`}
-            >
+                className={`relative w-full rounded-[24px] lg:rounded-[32px] overflow-hidden bg-gradient-to-br ${theme.gradient} shadow-[0_20px_50px_rgba(0,0,0,0.3)] group h-[280px] lg:h-[350px] transition-colors duration-1000`}            >
                 {/* Background Pattern & Glows */}
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.1] mix-blend-overlay pointer-events-none" />
                 <div className={`absolute top-0 right-0 w-2/3 h-full ${theme.patternColor} blur-[150px] opacity-20 pointer-events-none`} />
                 <div className="absolute bottom-0 left-0 w-2/3 h-full bg-black/20 blur-[100px] pointer-events-none" />
 
-                <div className="relative z-10 w-full h-full flex items-center justify-between p-8 lg:p-12">
+                <div className="relative z-10 w-full h-full flex items-center justify-between p-6 lg:p-12">
 
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -93,7 +92,7 @@ export const HeroBanner = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.4 }}
-                            className="flex flex-col items-start w-full lg:w-2/3 space-y-6 text-right"
+                            className="flex flex-col items-start w-full lg:w-2/3 space-y-3 lg:space-y-6 text-right"
                         >
                             {/* Animated Badge */}
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md">
@@ -102,11 +101,11 @@ export const HeroBanner = () => {
                             </div>
 
                             {/* Title & Desc */}
-                            <div className="space-y-3">
-                                <h1 className="text-4xl lg:text-5xl font-black text-white font-cairo leading-tight drop-shadow-lg">
+                            <div className="space-y-1 lg:space-y-3">
+                                <h1 className="text-2xl lg:text-5xl font-black text-white font-cairo leading-tight drop-shadow-lg">
                                     {currentTool.titleAr}
                                 </h1>
-                                <p className="text-lg text-white/90 max-w-xl font-cairo leading-relaxed font-medium drop-shadow-md">
+                                <p className="text-sm lg:text-lg text-white/90 max-w-xl font-cairo leading-relaxed font-medium drop-shadow-md line-clamp-2 lg:line-clamp-none">
                                     {currentTool.descAr}
                                 </p>
                             </div>
@@ -119,15 +118,15 @@ export const HeroBanner = () => {
                             </div>
 
                             {/* Action Button */}
-                            <div className="pt-4">
+                            <div className="pt-2 lg:pt-4">
                                 <button
                                     onClick={() => launchTool(currentTool.id)}
-                                    className="relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-white bg-white/10 border border-white/20 transition-all hover:bg-white/20 hover:scale-105 active:scale-95 shadow-xl backdrop-blur-md"
+                                    className="relative group overflow-hidden px-6 py-3 lg:px-8 lg:py-4 rounded-xl font-bold text-white bg-white/10 border border-white/20 transition-all hover:bg-white/20 hover:scale-105 active:scale-95 shadow-xl backdrop-blur-md"
                                 >
                                     <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
-                                    <div className="relative flex items-center gap-3">
-                                        <span className="font-cairo font-black">جربه الآن</span>
-                                        <ArrowRight className="w-5 h-5 rtl:rotate-180" />
+                                    <div className="relative flex items-center gap-2 lg:gap-3">
+                                        <span className="text-sm lg:text-base font-cairo font-black">جربه الآن</span>
+                                        <ArrowRight className="w-4 h-4 lg:w-5 lg:h-5 rtl:rotate-180" />
                                     </div>
                                 </button>
                             </div>

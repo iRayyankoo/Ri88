@@ -1,12 +1,27 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CinematicToaster } from "@/components/ui/CinematicToaster";
 
 export const metadata: Metadata = {
-  title: "Ri88 | بوابة الأدوات الرقمية",
-  description: "أدوات ذكية لاستخدامك اليومي - بوابة ريان (Rayyan Portal)",
+  title: "Ri88 | بوابة المبدع العربي الرقمية",
+  description: "أدوات ذكية، محولات أكواد، ومعالجة ملفات متقدمة - مصممة للمبدع العربي الحديث.",
+  keywords: ["أدوات", "تطوير", "إنتاجية", "محول أكواد", "ذكاء اصطناعي", "ريان", "Ri88"],
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "Ri88 | بوابة المبدع العربي الرقمية",
+    description: "أدوات ذكية ومعالجة ملفات متقدمة.",
+    url: "https://ri88.pro",
+    siteName: "Ri88",
+    locale: "ar_SA",
+    type: "website",
+  },
 };
 
 import SessionWrapper from "@/components/auth/SessionWrapper";
+
+import { NavigationProvider } from "@/context/NavigationContext";
 
 export default function RootLayout({
   children,
@@ -24,7 +39,10 @@ export default function RootLayout({
       </head>
       <body>
         <SessionWrapper>
-          {children}
+          <NavigationProvider>
+            {children}
+            <CinematicToaster />
+          </NavigationProvider>
         </SessionWrapper>
       </body>
     </html>

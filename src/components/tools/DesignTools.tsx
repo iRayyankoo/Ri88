@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from 'react';
-import { ToolShell, ToolInputRow, ToolOutput } from './ToolShell'; // Added ToolOutput
+import { ToolShell, ToolInputRow, ToolOutput } from './ToolShell';
 import { ToolInput, ToolButton } from './ToolUi';
 import { FileUploadZone } from '../Inputs/FileUploadZone';
 import Image from 'next/image';
+import { generateShadowCSS, generateGradientCSS, calculateContrastRatio, quantizeColors } from '@/lib/tools/design';
 
 interface ToolProps {
     toolId: string;
@@ -17,7 +18,8 @@ function ShadowGenerator() {
     const [spread, setSpread] = useState(0);
     const [color, setColor] = useState('#000000');
     const [opacity, setOpacity] = useState(0.5);
-    const shadow = `${x}px ${y}px ${blur}px ${spread}px rgba(${parseInt(color.slice(1, 3), 16)}, ${parseInt(color.slice(3, 5), 16)}, ${parseInt(color.slice(5, 7), 16)}, ${opacity})`;
+
+    const shadow = generateShadowCSS(x, y, blur, spread, color, opacity);
 
     return (
         <ToolShell
@@ -71,7 +73,7 @@ function GradientGenerator() {
     const [c1, setC1] = useState('#8e44ad');
     const [c2, setC2] = useState('#3498db');
     const [deg, setDeg] = useState(45);
-    const grad = `linear-gradient(${deg}deg, ${c1}, ${c2})`;
+    const grad = generateGradientCSS(deg, c1, c2);
 
     return (
         <ToolShell
@@ -147,35 +149,9 @@ function ColorExtractor() {
             ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
-            // Simple Color Quantization (Binning)
-            const colorCounts: { [key: string]: number } = {};
-
-            for (let i = 0; i < imageData.length; i += 4) {
-                const r = imageData[i];
-                const g = imageData[i + 1];
-                const b = imageData[i + 2];
-                // Ignore transparent or very dark/light pixels
-                if (imageData[i + 3] < 128) continue;
-
-                // Quantize to reduced palette (round to nearest 32)
-                const qr = Math.round(r / 32) * 32;
-                const qg = Math.round(g / 32) * 32;
-                const qb = Math.round(b / 32) * 32;
-
-                const key = `${qr},${qg},${qb}`;
-                colorCounts[key] = (colorCounts[key] || 0) + 1;
-            }
-
-            // Sort by frequency
-            const sortedColors = Object.entries(colorCounts)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, 5) // Top 5
-                .map(([key]) => {
-                    const [r, g, b] = key.split(',').map(Number);
-                    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-                });
-
-            setColors(sortedColors);
+            // Use pure logic function for quantization
+            const topColors = quantizeColors(imageData, 5);
+            setColors(topColors);
         } catch (error) {
             console.error("Extraction failed", error);
         } finally {
@@ -241,20 +217,7 @@ function ContrastChecker() {
     const [bg, setBg] = useState('#ffffff');
     const [fg, setFg] = useState('#000000');
 
-    // Helper to calculate luminance
-    const getLum = (hex: string) => {
-        const r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
-        const a = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
-        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-    };
-
-    const ratio = React.useMemo(() => {
-        if (bg.length === 7 && fg.length === 7) {
-            const l1 = getLum(bg), l2 = getLum(fg);
-            return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-        }
-        return null;
-    }, [bg, fg]);
+    const result = calculateContrastRatio(bg, fg);
 
     return (
         <ToolShell
@@ -273,10 +236,12 @@ function ContrastChecker() {
                             Inverted
                         </div>
                     </div>
-                    {ratio && (
+                    {result && (
                         <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/10">
-                            <div className="text-3xl font-bold mb-2">{ratio.toFixed(2)}</div>
-                            <div className={ratio >= 4.5 ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>{ratio >= 4.5 ? '✓ Good (AA)' : '✕ Poor Contrast'}</div>
+                            <div className="text-3xl font-bold mb-2">{result.ratio}</div>
+                            <div className={result.ratio >= 4.5 ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>
+                                {result.rating === 'Good (AA)' ? '✓ Good (AA)' : '✕ Poor Contrast'}
+                            </div>
                         </div>
                     )}
                 </div>

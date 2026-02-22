@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolTextarea, ToolButton, ToolCheckbox } from './ToolUi';
+import {
+    fixArabicAdobe, cleanText, convertCase, generateHashtags,
+    buildUTM, generateLoremIpsum, extractLinks, removeTashkeel,
+    convertNumerals
+} from '@/lib/tools/text';
 
 interface ToolProps {
     toolId: string;
@@ -12,10 +17,11 @@ function AdobeFixer() {
     const [input, setInput] = useState('');
     const [output, setOutput] = useState('');
 
+
+
     const process = () => {
         if (!input) return;
-        const reversed = input.split('').reverse().join('');
-        setOutput(reversed);
+        setOutput(fixArabicAdobe(input));
     }
 
     return (
@@ -60,17 +66,10 @@ function TextCleaner() {
     const [output, setOutput] = useState('');
     const [opts, setOpts] = useState({ spaces: true, lines: true, emoji: false, html: false });
 
+
+
     const clean = () => {
-        let text = input;
-        if (opts.spaces) text = text.replace(/[ \t]+/g, ' ').trim();
-        if (opts.lines) text = text.replace(/^\s*[\r\n]/gm, '');
-        if (opts.emoji) text = text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
-        if (opts.html) {
-            const div = document.createElement('div');
-            div.innerHTML = text;
-            text = div.textContent || div.innerText || '';
-        }
-        setOutput(text);
+        setOutput(cleanText(input, opts));
     }
 
     return (
@@ -138,12 +137,10 @@ function TextCleaner() {
 function CaseConverter() {
     const [input, setInput] = useState('');
 
-    const convert = (mode: string) => {
-        let text = input;
-        if (mode === 'upper') text = text.toUpperCase();
-        else if (mode === 'lower') text = text.toLowerCase();
-        else if (mode === 'title') text = text.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        setInput(text);
+
+
+    const convert = (mode: 'upper' | 'lower' | 'title') => {
+        setInput(convertCase(input, mode));
     }
 
     return (
@@ -189,13 +186,10 @@ function HashtagGen() {
     const [input, setInput] = useState('');
     const [output, setOutput] = useState('');
 
+
+
     const gen = () => {
-        const tags = input.replace(/[^\w\s\u0600-\u06FF]/g, '')
-            .split(/\s+/)
-            .filter(w => w.length > 2)
-            .map(w => '#' + w)
-            .join(' ');
-        setOutput(tags);
+        setOutput(generateHashtags(input));
     }
 
     return (
@@ -241,17 +235,11 @@ function UTMBuilder() {
     const [camp, setCamp] = useState('');
     const [result, setResult] = useState('');
 
+
+
     const build = () => {
-        let u = url.trim();
-        if (!u) return;
-        if (!u.startsWith('http')) u = 'https://' + u;
-
-        const p = new URLSearchParams();
-        if (source) p.append('utm_source', source);
-        if (medium) p.append('utm_medium', medium);
-        if (camp) p.append('utm_campaign', camp);
-
-        setResult(u + (p.toString() ? '?' + p.toString() : ''));
+        const res = buildUTM({ url, source, medium, campaign: camp });
+        setResult(res);
     }
 
     return (
@@ -296,11 +284,10 @@ function LoremIpsum() {
     const [count, setCount] = useState(1);
     const [output, setOutput] = useState('');
 
+
+
     const gen = () => {
-        const text = "هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.\n\nإذا كنت تحتاج إلى عدد أكبر من الفقرات يتيح لك مولد النص العربى زيادة عدد الفقرات كما تريد.";
-        let out = "";
-        for (let i = 0; i < count; i++) out += text + "\n\n";
-        setOutput(out.trim());
+        setOutput(generateLoremIpsum(count));
     }
 
     return (
@@ -398,10 +385,10 @@ function LinkExtractor() {
     const [input, setInput] = useState('');
     const [urls, setUrls] = useState<string[]>([]);
 
+
+
     const extract = () => {
-        const regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
-        const matches = input.match(regex);
-        setUrls(matches || []);
+        setUrls(extractLinks(input));
     }
 
     return (
@@ -449,9 +436,10 @@ function RemoveTashkeel() {
     const [input, setInput] = useState('');
     const [output, setOutput] = useState('');
 
+
+
     const remove = () => {
-        const tashkeel = /[\u064B-\u065F\u0670]/g;
-        setOutput(input.replace(tashkeel, ''));
+        setOutput(removeTashkeel(input));
     }
 
     return (
@@ -495,8 +483,10 @@ function NumConverter() {
     const [input, setInput] = useState('');
     const [res, setRes] = useState('');
 
-    const toArabic = (txt: string) => txt.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[parseInt(d)]);
-    const toEnglish = (txt: string) => txt.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d).toString());
+
+
+    const toArabic = (txt: string) => convertNumerals(txt, 'arabic');
+    const toEnglish = (txt: string) => convertNumerals(txt, 'english');
 
     return (
         <ToolShell

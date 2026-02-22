@@ -90,17 +90,16 @@ const ToolsDirectory = () => {
             {/* 1. CINEMATIC FEATURED SECTION (Dynamic) */}
             <HeroBanner />
 
-            {/* 2. INNOVATION LABS CAROUSEL */}
-            <section className="space-y-8">
+            <section className="space-y-6 lg:space-y-8">
                 <div className="flex items-center justify-between px-4 lg:px-2">
-                    <h3 className="text-xl font-black text-white font-cairo">innovation labs</h3>
+                    <h3 className="text-lg lg:text-xl font-black text-white font-cairo">innovation labs</h3>
                     <button onClick={() => setActiveCategory('all')} className="flex items-center gap-2 text-cyan-400 font-black text-[10px] uppercase tracking-widest hover:text-white transition-colors">
                         Browse
                         <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                 </div>
 
-                <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar -mx-4 px-4 snap-x relative">
+                <div className="flex gap-4 lg:gap-6 overflow-x-auto pb-6 no-scrollbar -mx-4 px-4 snap-x relative">
                     {tools.slice(0, 8).map((tool, i) => {
                         const Icon = getIcon(tool.icon);
                         return (
@@ -109,7 +108,7 @@ const ToolsDirectory = () => {
                                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                                 whileInView={{
                                     opacity: 1,
-                                    scale: [0.9, 1.05, 1], // Smooth scale-up effect when coming into view
+                                    scale: [0.9, 1.05, 1],
                                     y: 0
                                 }}
                                 viewport={{ once: false, amount: 0.5 }}
@@ -118,47 +117,26 @@ const ToolsDirectory = () => {
                                     scale: 1.02,
                                     transition: { duration: 0.2 }
                                 }}
-                                className="min-w-[260px] lg:min-w-[400px] rounded-[24px] overflow-hidden border border-white/[0.08] bg-white/[0.03] backdrop-blur-[24px] p-5 lg:p-6 snap-center group cursor-pointer transition-shadow hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]"
+                                className="min-w-[200px] lg:min-w-[400px] rounded-[20px] lg:rounded-[24px] overflow-hidden border border-white/[0.08] bg-white/[0.03] backdrop-blur-[24px] p-4 lg:p-6 snap-center group cursor-pointer transition-shadow hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]"
                                 onClick={() => launchTool(tool.id)}
                             >
-                                {/* Media Placeholder (Voice Synth Style) */}
-                                <div className="w-full aspect-video rounded-3xl bg-gradient-to-br from-[#2a1b4d] to-[#0f0f16] mb-6 relative overflow-hidden">
+                                {/* Media Placeholder */}
+                                <div className="w-full aspect-video rounded-2xl lg:rounded-3xl bg-gradient-to-br from-[#2a1b4d] to-[#0f0f16] mb-4 lg:mb-6 relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity">
                                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_#8B5CF620,_transparent_70%)]" />
                                     </div>
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <Icon className="w-12 h-12 text-slate-500 group-hover:text-brand-primary transition-colors" />
-                                    </div>
-                                    {/* Glass Overlay on icon */}
-                                    <div className="absolute top-4 right-4 w-12 h-12 rounded-2xl bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10">
-                                        <Icon className="w-5 h-5 text-cyan-400" />
+                                        <Icon className="w-8 h-8 lg:w-12 lg:h-12 text-slate-500 group-hover:text-brand-primary transition-colors" />
                                     </div>
                                 </div>
 
                                 {/* Tool Info */}
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-2">
-                                        <h4 className="text-xl font-black text-white font-cairo">{tool.titleAr}</h4>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                                    </div>
-                                    <p className="text-slate-500 text-sm font-medium leading-relaxed font-cairo line-clamp-2">
+                                <div className="space-y-3 lg:space-y-4">
+                                    <h4 className="text-lg font-black text-white font-cairo truncate">{tool.titleAr}</h4>
+                                    <p className="text-slate-500 text-xs font-medium leading-relaxed font-cairo line-clamp-2">
                                         {tool.descAr}
                                     </p>
-
-                                    <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                                        <div className="flex -space-x-2">
-                                            {[1, 2, 3].map(j => (
-                                                <div key={j} className="w-6 h-6 rounded-full border border-brand-bg bg-brand-primary/20 flex items-center justify-center text-[8px] font-bold text-white shadow-lg">
-                                                    {j}
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <span className="text-[10px] font-black text-slate-400 tracking-wider font-inter">14.2K ACTIVE</span>
-                                    </div>
                                 </div>
-
-                                {/* Neon Glow Hover */}
-                                <div className="absolute inset-0 rounded-[32px] border border-brand-primary/0 group-hover:border-brand-primary/50 transition-all pointer-events-none shadow-[0_0_30px_rgba(139,92,246,0)] group-hover:shadow-[0_0_30px_rgba(139,92,246,0.2)]" />
                             </motion.div>
                         );
                     })}
@@ -190,7 +168,7 @@ const ToolsDirectory = () => {
                                 <button
                                     key={cat.id}
                                     onClick={() => setActiveCategory(cat.id)}
-                                    className={`flex items-center gap-3 px-8 py-4 rounded-[24px] text-xs font-black whitespace-nowrap transition-all border snap-start font-cairo ${isActive
+                                    className={`flex items-center gap-2 lg:gap-3 px-5 lg:px-8 py-2.5 lg:py-4 rounded-[20px] lg:rounded-[24px] text-[11px] lg:text-xs font-black whitespace-nowrap transition-all border snap-start font-cairo ${isActive
                                         ? 'bg-brand-primary border-brand-primary text-white shadow-xl shadow-brand-primary/30'
                                         : 'bg-white/[0.03] backdrop-blur-[24px] border-white/5 text-slate-400 hover:border-white/20 hover:text-white'
                                         }`}
@@ -221,25 +199,25 @@ const ToolsDirectory = () => {
                                             key={tool.id}
                                             whileHover={{ y: -8, scale: 1.01 }}
                                             onClick={() => launchTool(tool.id)}
-                                            className="bg-white/[0.03] backdrop-blur-[24px] border border-white/[0.08] p-6 lg:p-7 rounded-[28px] cursor-pointer transition-all group relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-brand-primary/40 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]"
+                                            className="bg-white/[0.03] backdrop-blur-[24px] border border-white/[0.08] p-4 lg:p-7 rounded-[24px] lg:rounded-[28px] cursor-pointer transition-all group relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-brand-primary/40 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]"
                                         >
                                             {/* Decorative Corner Glow */}
-                                            <div className="absolute -top-10 -right-10 w-20 h-20 bg-brand-primary/10 blur-3xl group-hover:bg-brand-primary/20 transition-colors" />
+                                            <div className="absolute -top-10 -right-10 w-16 h-16 bg-brand-primary/10 blur-3xl group-hover:bg-brand-primary/20 transition-colors" />
 
-                                            <div className="flex flex-col gap-6 text-right items-start">
-                                                <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner border border-white/5 group-hover:border-brand-primary/50 relative overflow-hidden">
+                                            <div className="flex flex-col gap-3 lg:gap-6 text-right items-start">
+                                                <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner border border-white/5 group-hover:border-brand-primary/50 relative overflow-hidden">
                                                     <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                    {React.createElement(getIcon(tool.icon), { className: "w-7 h-7 relative z-10" })}
+                                                    {React.createElement(getIcon(tool.icon), { className: "w-5 h-5 lg:w-7 lg:h-7 relative z-10" })}
                                                 </div>
 
                                                 <div className="w-full">
-                                                    <h4 className="text-white font-black text-base lg:text-lg mb-2 group-hover:text-brand-primary transition-colors font-cairo">{tool.titleAr}</h4>
-                                                    <p className="text-slate-500 text-[11px] lg:text-[13px] font-medium leading-relaxed font-cairo line-clamp-2">
+                                                    <h4 className="text-white font-black text-sm lg:text-lg mb-1 lg:mb-2 group-hover:text-brand-primary transition-colors font-cairo">{tool.titleAr}</h4>
+                                                    <p className="text-slate-500 text-[10px] lg:text-[13px] font-medium leading-relaxed font-cairo line-clamp-2">
                                                         {tool.descAr}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-brand-primary/5 blur-3xl rounded-full group-hover:bg-brand-primary/20 transition-all" />
+                                            <div className="absolute -bottom-10 -right-10 w-20 h-20 bg-brand-primary/5 blur-3xl rounded-full group-hover:bg-brand-primary/20 transition-all" />
                                         </motion.div>
                                     );
                                 })}

@@ -1,27 +1,53 @@
 "use client";
-
 import React from 'react';
+import { motion } from 'framer-motion';
+import { LucideIcon } from 'lucide-react';
 
 interface GlassCardProps {
     children: React.ReactNode;
     className?: string;
+    onClick?: () => void;
+    hoverEffect?: boolean;
     title?: string;
-    icon?: React.ElementType;
+    icon?: LucideIcon;
 }
 
-const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", title, icon: Icon }) => {
+export const GlassCard = ({ children, className = '', onClick, hoverEffect = true, title, icon: Icon }: GlassCardProps) => {
     return (
-        <div className={`stitch-glass overflow-hidden relative ${className}`}>
-            {title && (
-                <div className="px-8 pt-8 pb-4 flex items-center gap-3">
-                    {Icon && <Icon className="w-5 h-5 text-brand-primary" />}
-                    <h3 className="text-white font-bold text-lg tracking-wide">{title}</h3>
+        <motion.div
+            onClick={onClick}
+            whileHover={hoverEffect && onClick ? { y: -8, scale: 1.01 } : {}}
+            className={`
+                relative overflow-hidden
+                bg-white/[0.03] backdrop-blur-xl
+                border border-white/10
+                rounded-[32px]
+                shadow-[0_8px_32px_rgba(0,0,0,0.12)]
+                group transition-all duration-500
+                ${onClick ? 'cursor-pointer hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:border-white/20' : ''}
+                ${className}
+            `}
+        >
+            {/* Header if title exists */}
+            {(title || Icon) && (
+                <div className="flex items-center gap-3 px-8 pt-8 pb-4 border-b border-white/5">
+                    {Icon && (
+                        <div className="p-2 rounded-xl bg-brand-primary/10 text-brand-primary">
+                            <Icon className="w-5 h-5" />
+                        </div>
+                    )}
+                    {title && <h3 className="text-xl font-bold text-white font-cairo">{title}</h3>}
                 </div>
             )}
-            <div className={`p-8 ${title ? 'pt-0' : ''}`}>
+
+            {/* Content */}
+            <div className={`relative z-10 ${title ? 'p-6' : ''}`}>
                 {children}
             </div>
-        </div>
+
+            {/* Ambient background glow on hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        </motion.div>
     );
 };
 

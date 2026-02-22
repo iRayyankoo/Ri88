@@ -4,9 +4,10 @@ import React from 'react';
 interface LogoProps {
     className?: string;
     size?: 'sm' | 'md' | 'lg';
+    showText?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ className = "", size = "md" }) => {
+const Logo: React.FC<LogoProps> = ({ className = "", size = "md", showText = true }) => {
     const sizes = {
         sm: "text-xl",
         md: "text-2xl",
@@ -26,12 +27,14 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = "md" }) => {
 
             <span className={`text-white ${sizes[size]} flex items-baseline`}>
                 R
-                <span className="relative inline-block mx-[1px]">
-                    i
-                    {/* Cyan Dot above i */}
-                    <span className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[35%] h-[35%] rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] z-10"></span>
-                </span>
-                88
+                {showText && (
+                    <>
+                        <span className="relative inline-block mx-[1px]">
+                            i
+                        </span>
+                        88
+                    </>
+                )}
             </span>
         </div>
     );

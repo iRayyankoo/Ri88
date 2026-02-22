@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
 
 export const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -8,7 +8,7 @@ export const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             onComplete();
-        }, 3500); // 3.5s duration
+        }, 1500); // Reduced to 1.5s duration
         return () => clearTimeout(timer);
     }, [onComplete]);
 
@@ -36,27 +36,27 @@ export const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
                         damping: 20,
                         duration: 1.5
                     }}
-                    className="w-32 h-32 rounded-3xl bg-gradient-to-br from-brand-primary to-blue-600 flex items-center justify-center shadow-[0_0_80px_rgba(139,92,246,0.5)] border-4 border-white/10"
+                    className="w-24 h-24 lg:w-32 lg:h-32 rounded-3xl bg-gradient-to-br from-brand-primary to-blue-600 flex items-center justify-center shadow-[0_0_80px_rgba(139,92,246,0.5)] border-4 border-white/10"
                 >
-                    <Zap className="w-16 h-16 text-white fill-white" />
+                    <Zap className="w-12 h-12 lg:w-16 lg:h-16 text-white fill-white" />
                 </motion.div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.8 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
                     className="text-center space-y-2"
                 >
-                    <h1 className="text-6xl font-black text-white tracking-tighter">
+                    <h1 className="text-4xl lg:text-6xl font-black text-white tracking-tighter">
                         RI88 <span className="text-brand-primary">PRO</span>
                     </h1>
                     <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: "100%" }}
-                        transition={{ delay: 1.2, duration: 0.8 }}
+                        transition={{ delay: 0.8, duration: 0.5 }}
                         className="h-1 bg-gradient-to-r from-transparent via-brand-secondary to-transparent mx-auto opacity-50"
                     />
-                    <p className="text-sm font-bold text-slate-500 tracking-[0.3em] uppercase pt-2">
+                    <p className="text-[10px] lg:text-sm font-bold text-slate-500 tracking-[0.3em] uppercase pt-2">
                         Future of Automation
                     </p>
                 </motion.div>
@@ -64,18 +64,29 @@ export const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
 
             {/* Loading Bar */}
             <motion.div
-                className="absolute bottom-20 w-64 h-1 bg-white/5 rounded-full overflow-hidden"
+                className="absolute bottom-20 w-48 lg:w-64 h-1 bg-white/5 rounded-full overflow-hidden"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
+                transition={{ delay: 1 }}
             >
                 <motion.div
                     className="h-full bg-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.8)]"
                     initial={{ x: "-100%" }}
                     animate={{ x: "0%" }}
-                    transition={{ delay: 1.5, duration: 1.5, ease: "easeInOut" }}
+                    transition={{ delay: 1, duration: 0.5, ease: "easeInOut" }}
                 />
             </motion.div>
+
+            {/* Manual Skip (Accessibility/Safety) */}
+            <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                whileHover={{ opacity: 1 }}
+                onClick={onComplete}
+                className="absolute bottom-10 text-[10px] text-slate-500 uppercase tracking-widest font-black hover:text-white transition-all underline underline-offset-4"
+            >
+                Skip Intro
+            </motion.button>
 
         </motion.div>
     );

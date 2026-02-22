@@ -1,19 +1,27 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Download, Star, Filter, Package, ShieldCheck } from 'lucide-react';
-import { useNavigation } from '@/context/NavigationContext';
-import GlassCard from '../ui/GlassCard';
+import { Search, Download, Star, Package, ShieldCheck, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { getStoreItems, purchaseItem } from '@/app/actions/store';
 
-/*
-  AddonsStore:
-  A marketplace for installing advanced capabilities / plugins.
-*/
+interface StoreTool {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    price: number;
+    rating: number;
+    installs: number;
+    isPremium: boolean;
+}
 
 const AddonsStore = () => {
-    const { setCurrentView } = useNavigation();
+    const [loading, setLoading] = useState(true);
+    const [items, setItems] = useState<StoreTool[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
+    const [purchasingId, setPurchasingId] = useState<string | null>(null);
 
     const categories = [
         { id: 'all', name: 'الكل' },
@@ -23,19 +31,49 @@ const AddonsStore = () => {
         { id: 'integration', name: 'التكامل' },
     ];
 
-    const addons = [
-        { id: 1, title: 'GPT-4 Turbo Engine', cat: 'ai', price: 'مجاني', installs: '12k', rating: 4.9, desc: 'محرك أداء عالي السرعة لمعالجة النصوص وتوليد الأكواد.' },
-        { id: 2, title: 'PDF OCR Advanced', cat: 'data', price: '49 ر.س', installs: '8.5k', rating: 4.7, desc: 'استخراج النصوص من الصور والملفات الممسوحة ضوئياً بدقة عالية.' },
-        { id: 3, title: 'Saudi VAT Calc', cat: 'data', price: 'مجاني', installs: '25k', rating: 4.8, desc: 'حاسبة ضريبة القيمة المضافة متوافقة مع هيئة الزكاة والدخل.' },
-        { id: 4, title: 'Secure Vault', cat: 'security', price: '99 ر.س', installs: '3k', rating: 5.0, desc: 'تشفير الملفات الحساسة وحمايتها بكلمة مرور متقدمة.' },
-        { id: 5, title: 'Slack Connector', cat: 'integration', price: 'مجاني', installs: '5k', rating: 4.5, desc: 'إرسال الإشعارات والتقارير مباشرة إلى قنوات Slack.' },
-        { id: 6, title: 'Excel Power Pack', cat: 'data', price: '19 ر.س', installs: '10k', rating: 4.6, desc: 'مجموعة أدوات متقدمة لمعالجة جداول البيانات الضخمة.' },
-    ];
+    useEffect(() => {
+        const loadItems = async () => {
+            try {
+                const data = await getStoreItems();
+                setItems(data);
+            } catch (error) {
+                console.error("Failed to load store items", error);
+                toast.error("فشل تحميل المتجر");
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadItems();
+    }, []);
 
-    const filteredAddons = addons.filter(item =>
-        (activeCategory === 'all' || item.cat === activeCategory) &&
-        (item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    const handlePurchase = async (tool: StoreTool) => {
+        setPurchasingId(tool.id);
+        try {
+            const result = await purchaseItem(tool.id);
+            if (result.success) {
+                toast.success(`تم تثبيت ${tool.name} بنجاح!`);
+            } else {
+                toast.error(result.error || "فشلت العملية");
+            }
+        } catch (error) {
+            toast.error("خطأ غير متوقع");
+        } finally {
+            setPurchasingId(null);
+        }
+    };
+
+    const filteredAddons = items.filter(item =>
+        (activeCategory === 'all' || item.category === activeCategory) &&
+        (item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-10 pb-20">
@@ -64,8 +102,8 @@ const AddonsStore = () => {
                         key={cat.id}
                         onClick={() => setActiveCategory(cat.id)}
                         className={`px-6 py-2.5 rounded-xl font-bold text-xs transition-all border ${activeCategory === cat.id
-                                ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
-                                : 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
+                            ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                            : 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
                             }`}
                     >
                         {cat.name}
@@ -87,31 +125,31 @@ const AddonsStore = () => {
                             <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
                                 <Package className="w-6 h-6" />
                             </div>
-                            <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-md border ${addon.price === 'مجاني'
-                                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                                    : 'bg-brand-secondary/10 text-brand-secondary border-brand-secondary/20'
+                            <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-md border ${addon.price === 0
+                                ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                                : 'bg-brand-secondary/10 text-brand-secondary border-brand-secondary/20'
                                 }`}>
-                                {addon.price}
+                                {addon.price === 0 ? 'مجاني' : `${addon.price} ر.س`}
                             </span>
                         </div>
 
                         {/* Content */}
                         <div className="space-y-2">
-                            <h3 className="font-bold text-white text-lg group-hover:text-brand-primary transition-colors">{addon.title}</h3>
-                            <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{addon.desc}</p>
+                            <h3 className="font-bold text-white text-lg group-hover:text-brand-primary transition-colors">{addon.name}</h3>
+                            <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{addon.description}</p>
                         </div>
 
                         {/* Meta */}
                         <div className="flex items-center gap-4 text-xs font-medium text-slate-600 mt-2">
                             <div className="flex items-center gap-1">
                                 <Download className="w-3 h-3" />
-                                {addon.installs}
+                                {addon.installs > 1000 ? `${(addon.installs / 1000).toFixed(1)}k` : addon.installs}
                             </div>
                             <div className="flex items-center gap-1 text-amber-400">
                                 <Star className="w-3 h-3 fill-current" />
                                 {addon.rating}
                             </div>
-                            {addon.id === 4 && (
+                            {addon.rating >= 4.9 && (
                                 <div className="flex items-center gap-1 text-green-400 ml-auto" title="تم التحقق بواسطة RI88">
                                     <ShieldCheck className="w-3 h-3" />
                                 </div>
@@ -119,9 +157,13 @@ const AddonsStore = () => {
                         </div>
 
                         {/* Action */}
-                        <button className="mt-4 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-sm font-bold border border-white/5 hover:border-white/10 transition-all active:scale-95 flex items-center justify-center gap-2">
-                            <Download className="w-4 h-4" />
-                            تثبيت الإضافة
+                        <button
+                            onClick={() => handlePurchase(addon)}
+                            disabled={purchasingId === addon.id}
+                            className="mt-4 w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-sm font-bold border border-white/5 hover:border-white/10 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {purchasingId === addon.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                            {addon.price === 0 ? 'تثبيت الإضافة' : 'شراء الآن'}
                         </button>
                     </motion.div>
                 ))}

@@ -4,6 +4,7 @@ import { ToolShell } from './ToolShell';
 import { ToolButton } from './ToolUi';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { correctArabicText, correctEnglishText, anaIyzeTextStats } from '@/lib/tools/languages';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -39,8 +40,7 @@ function ArabicCorrector() {
     const [text, setText] = useState('');
     const [fixed, setFixed] = useState('');
     const fix = () => {
-        const res = text.replace(/\s+/g, ' ').replace(/ \./g, '.').replace(/ \,/g, '،').replace(/ى\b/g, 'ي').replace(/ة\b/g, 'ه').trim().replace(/التي/g, 'التي');
-        setFixed(res);
+        setFixed(correctArabicText(text));
     };
     return (
         <ToolShell description="تصحيح الأخطاء الإملائية والشائعة في النصوص العربية.">
@@ -72,8 +72,7 @@ function EnglishCorrector() {
     const [text, setText] = useState('');
     const [fixed, setFixed] = useState('');
     const fix = () => {
-        const res = text.replace(/\s+/g, ' ').replace(/ \./g, '.').replace(/ \,/g, ',').replace(/ i /g, ' I ').replace(/(^\w|\.\s+\w)/gm, l => l.toUpperCase()).trim();
-        setFixed(res);
+        setFixed(correctEnglishText(text));
     };
     return (
         <ToolShell description="Fix punctuation and capitalization for English text.">
@@ -103,9 +102,7 @@ function EnglishCorrector() {
 // 4. Smart Editor
 function SmartEditor() {
     const [text, setText] = useState('');
-    const chars = text.length;
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const lines = text.split('\n').length;
+    const { chars, words, lines } = anaIyzeTextStats(text);
     return (
         <ToolShell description="محرر نصوص ذكي مع إحصائيات فورية.">
             <div className="flex gap-4 mb-4 text-sm text-slate-400 justify-center bg-white/5 py-2 px-6 rounded-full w-fit mx-auto border border-white/10">

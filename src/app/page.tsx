@@ -1,18 +1,15 @@
 "use client";
-import React from 'react';
-import { useRouter } from 'next/navigation';
-
-import ComingSoonOverlay from '@/components/Pages/ComingSoonOverlay';
+import AppShell from '@/components/Navigation/AppShell';
+import { useNavigation } from '@/context/NavigationContext';
+import VisitorLanding from '@/components/Pages/VisitorLanding';
+import UserDashboard from '@/components/Pages/UserDashboard';
 
 export default function Home() {
-  const router = useRouter();
-
-  const handleUnlock = () => {
-    // Redirect to the PRO app
-    router.push('/pro');
-  };
+  const { userRole } = useNavigation();
 
   return (
-    <ComingSoonOverlay onUnlock={handleUnlock} />
+    <AppShell>
+      {userRole === 'visitor' ? <VisitorLanding /> : <UserDashboard />}
+    </AppShell>
   );
 }

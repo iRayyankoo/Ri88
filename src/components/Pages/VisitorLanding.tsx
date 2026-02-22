@@ -1,14 +1,13 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
-    Zap, Star, Users, ArrowLeft, Clock, Shield, Grid3X3,
-    Calculator, Percent, Wallet, ArrowRightLeft, Landmark, Coins
+    Zap, ArrowLeft, Clock,
+    Calculator, Percent, Wallet, ArrowRightLeft, Landmark, Coins,
+    ChevronLeft, Sparkles, Globe, ShieldCheck, Network
 } from 'lucide-react';
-import { tools } from '@/data/tools';
-import { useNavigation } from '@/context/NavigationContext';
+import { useVisitorLanding } from '@/hooks/useVisitorLanding';
 
-// Icon Mapping Component
 const ToolIcon = ({ icon, className }: { icon: string, className?: string }) => {
     switch (icon) {
         case 'calculator': return <Calculator className={className} />;
@@ -22,319 +21,235 @@ const ToolIcon = ({ icon, className }: { icon: string, className?: string }) => 
 };
 
 const VisitorLanding = () => {
-    const { setCurrentView, launchTool } = useNavigation();
-    const [timeLeft, setTimeLeft] = useState(3600 * 24 + 3600 * 5); // 29 hours
+    const { popularTools, launchTool, scrollToBrowse, handleStartFree } = useVisitorLanding();
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    const formatTime = (seconds: number) => {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = seconds % 60;
-        return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    };
-
-    const containerVariants = {
+    const containerVariants: import('framer-motion').Variants = {
         hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
+        visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.05 } }
     };
-
-    const itemVariants = {
+    const itemVariants: import('framer-motion').Variants = {
         hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
+        visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 70, damping: 20 } }
     };
 
-    const popularTools = tools.slice(0, 6);
+    const stats = [
+        { val: '+50', label: 'أداة ذكية' },
+        { val: '0', label: 'إعلانات' },
+        { val: '∞', label: 'غير محدود' },
+        { val: '100%', label: 'خصوصية' },
+    ];
+
+    const features = [
+        { icon: Globe, title: 'وصول عالمي', desc: 'أدوات مفعّلة دولياً' },
+        { icon: ShieldCheck, title: 'أمان متطور', desc: 'تشفير بيانات عسكري' },
+        { icon: Zap, title: 'سرعة خيالية', desc: 'استجابة فورية' },
+        { icon: Network, title: 'شبكة متكاملة', desc: 'بيئة عمل مترابطة' },
+    ];
 
     return (
         <motion.div
-            initial="visible"
+            initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="space-y-16 pb-12"
+            className="relative w-full pb-16 space-y-10 sm:space-y-14"
         >
+            {/* AMBIENT BG */}
+            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] rounded-full blur-[140px] opacity-35 bg-emerald-500/15" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full blur-[130px] opacity-25 bg-cyan-500/12" />
+            </div>
 
-            {/* HERO SECTION - PREMIUM POLISH */}
-            <section className="relative min-h-[500px] lg:min-h-[600px] flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 overflow-hidden rounded-[40px] lg:rounded-[64px] bg-[#0F1115] border border-white/5 p-8 md:p-12 lg:p-24 shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
-                {/* Text Content */}
-                <div className="relative z-10 flex-1 text-right space-y-10">
-                    <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-xs font-black text-brand-primary uppercase tracking-[0.2em] backdrop-blur-md">
-                        <Zap className="w-4 h-4 fill-brand-primary" />
-                        منصة الأدوات الأولى في الشرق الأوسط
+            {/* ── HERO ── */}
+            <section className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-20 pt-6 sm:pt-10">
+
+                {/* Text Block */}
+                <div className="w-full lg:flex-1 text-right space-y-6 sm:space-y-8">
+
+                    {/* Badge */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="flex items-center gap-4"
+                    >
+                        <div className="inline-flex items-center gap-2 sm:gap-3 px-4 py-2 sm:px-5 rounded-full border text-xs sm:text-sm font-bold tracking-widest uppercase bg-cyan-500/5 border-cyan-500/30 text-cyan-400">
+                            <Network className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                            <span>شبكة المطورين المتقدمين</span>
+                        </div>
+                        <div className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-black font-cairo animate-pulse">
+                            تشغيل تجريبي 🚀
+                        </div>
                     </motion.div>
 
-                    <div className="space-y-6">
+                    {/* Heading */}
+                    <div className="space-y-0">
                         <motion.h1
                             variants={itemVariants}
-                            className="text-4xl md:text-5xl lg:text-8xl font-black text-white font-cairo leading-[1.1] tracking-tighter"
+                            className="text-3xl sm:text-4xl lg:text-6xl font-black text-white font-cairo leading-[1.1] tracking-tight"
                         >
-                            كل ما تحتاجه <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-l from-emerald-400 via-cyan-400 to-blue-500">من أدوات ذكية</span>
+                            مستقبل
                         </motion.h1>
-
-                        <motion.p
+                        <motion.h1
                             variants={itemVariants}
-                            className="text-slate-400 text-lg md:text-xl font-medium max-w-2xl ml-auto leading-relaxed"
+                            className="text-3xl sm:text-4xl lg:text-6xl font-black font-cairo leading-[1.1] tracking-tight bg-gradient-to-br from-cyan-400 via-emerald-400 to-cyan-500 bg-clip-text text-transparent"
                         >
-                            انضم إلى <span className="text-white font-black underline decoration-brand-primary/30">+50,000</span> مستخدم يعتمدون على RI88 PRO يومياً لمعالجة البيانات، الأتمتة، والتحليل الذكي.
-                        </motion.p>
+                            الابتكار الرقمي
+                        </motion.h1>
                     </div>
 
-                    <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-end gap-6 pt-6">
+                    {/* Subtitle */}
+                    <motion.p
+                        variants={itemVariants}
+                        className="text-slate-400 text-base sm:text-lg font-medium max-w-lg ml-auto leading-relaxed"
+                    >
+                        انضم إلى المنصة الأكثر تطوراً في الشرق الأوسط، حيث تجتمع
+                        الأدوات المتقدمة والذكاء الاصطناعي في واجهة واحدة.
+                    </motion.p>
+
+                    {/* CTAs */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4"
+                    >
                         <button
-                            onClick={() => setCurrentView('auth')}
-                            className="px-12 py-5 bg-white text-black rounded-[20px] font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:shadow-[0_25px_50px_rgba(255,255,255,0.2)]"
+                            onClick={handleStartFree}
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base bg-gradient-to-r from-emerald-500 to-cyan-500 text-black shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-transform overflow-hidden relative group"
                         >
-                            ابدأ الآن مجاناً
+                            <div className="absolute inset-0 bg-white/15 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <span className="relative z-10">ابدأ مجاناً</span>
+                            <ChevronLeft className="relative z-10 w-5 h-5" />
                         </button>
                         <button
-                            onClick={() => setCurrentView('directory')}
-                            className="px-12 py-5 bg-white/5 border border-white/10 text-white rounded-[20px] font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-lg"
+                            onClick={scrollToBrowse}
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-4 text-slate-400 font-bold text-base hover:text-white transition-colors group border border-white/5 rounded-2xl hover:border-white/10"
                         >
-                            استكشف الأدوات
+                            تصفح الأدوات
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         </button>
                     </motion.div>
                 </div>
 
-                {/* Background Decoration */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_rgba(16,185,129,0.15),transparent_50%)] pointer-events-none" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,_rgba(59,130,246,0.1),transparent_50%)] pointer-events-none" />
-                <div className="absolute inset-0 bg-[#0F1115] mix-blend-overlay opacity-50 pointer-events-none" />
-            </section>
-
-            {/* POPULAR TOOLS GRID (PREMIUM BENTO REDESIGN) */}
-            <section className="space-y-12">
-                <div className="flex flex-col items-center text-center space-y-6">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 text-xs font-bold uppercase tracking-[0.2em] backdrop-blur-md">
-                        <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                        الأدوات المختارة بعناية
-                    </div>
-                    <div className="space-y-3">
-                        <h2 className="text-4xl lg:text-5xl font-black text-white font-cairo tracking-tight">الأدوات الأكثر شيوعاً</h2>
-                        <p className="text-slate-400 font-medium max-w-lg mx-auto">مجموعة مختارة من الأدوات التي غيرت حياة آلاف المبدعين والمبرمجين.</p>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-                    {popularTools.map((tool) => {
-                        const getStyle = (cat: string) => {
-                            switch (cat) {
-                                case 'finance': return {
-                                    text: 'text-emerald-400',
-                                    bg: 'bg-emerald-500/10',
-                                    glow: 'from-emerald-500/20 to-emerald-900/10',
-                                    border: 'group-hover:border-emerald-500/40'
-                                };
-                                case 'pdf': return {
-                                    text: 'text-rose-400',
-                                    bg: 'bg-rose-500/10',
-                                    glow: 'from-rose-500/20 to-rose-900/10',
-                                    border: 'group-hover:border-rose-500/40'
-                                };
-                                case 'text': return {
-                                    text: 'text-purple-400',
-                                    bg: 'bg-purple-500/10',
-                                    glow: 'from-purple-500/20 to-purple-900/10',
-                                    border: 'group-hover:border-purple-500/40'
-                                };
-                                case 'time': return {
-                                    text: 'text-amber-400',
-                                    bg: 'bg-amber-500/10',
-                                    glow: 'from-amber-500/20 to-amber-900/10',
-                                    border: 'group-hover:border-amber-500/40'
-                                };
-                                case 'developer': return {
-                                    text: 'text-blue-400',
-                                    bg: 'bg-blue-500/10',
-                                    glow: 'from-blue-500/20 to-blue-900/10',
-                                    border: 'group-hover:border-blue-500/40'
-                                };
-                                default: return {
-                                    text: 'text-brand-primary',
-                                    bg: 'bg-brand-primary/10',
-                                    glow: 'from-brand-primary/20 to-brand-primary/5',
-                                    border: 'group-hover:border-brand-primary/40'
-                                };
-                            }
-                        };
-                        const style = getStyle(tool.cat);
-
-                        return (
-                            <motion.div
-                                key={tool.id}
-                                variants={itemVariants}
-                                whileHover={{ y: -12 }}
-                                onClick={() => launchTool(tool.id)}
-                                className={`relative group p-1 lg:p-1.5 rounded-[40px] bg-white/5 border border-white/5 overflow-hidden transition-all duration-700 cursor-pointer ${style.border} hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)]`}
-                            >
-                                <div className="relative overflow-hidden rounded-[36px] bg-[#0F1115] p-8 lg:p-10 h-full flex flex-col items-start bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${style.glow} opacity-0 group-hover:opacity-10 transition-opacity duration-700`} />
-
-                                    <div className="relative z-10 flex items-start justify-between w-full mb-10">
-                                        <div className={`w-16 h-16 rounded-[24px] ${style.bg} border border-white/10 flex items-center justify-center ${style.text} group-hover:scale-110 transition-transform duration-700 shadow-xl group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]`}>
-                                            <ToolIcon icon={tool.icon} className="w-8 h-8" />
-                                        </div>
-                                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                                            <span className={`w-1.5 h-1.5 rounded-full ${style.text.replace('text', 'bg')} animate-pulse`} />
-                                            شائع الآن
-                                        </div>
-                                    </div>
-
-                                    <div className="relative z-10 flex-1 flex flex-col items-start text-right w-full space-y-4">
-                                        <h3 className="text-2xl lg:text-3xl font-black text-white font-cairo leading-none tracking-tight group-hover:text-white transition-colors">{tool.titleAr || tool.title}</h3>
-                                        <p className="text-slate-400 font-medium font-cairo line-clamp-3 text-base lg:text-lg leading-relaxed">
-                                            {tool.descAr || tool.desc}
-                                        </p>
-                                    </div>
-
-                                    <div className="relative z-10 mt-10 pt-8 border-t border-white/5 w-full flex items-center justify-between">
-                                        <div className="flex items-center gap-2.5 text-xs font-black uppercase text-slate-500 tracking-[0.1em]">
-                                            <Users className="w-4 h-4" />
-                                            <span>+12,000 مستخدم</span>
-                                        </div>
-                                        <div className={`w-10 h-10 rounded-2xl ${style.bg} flex items-center justify-center ${style.text} opacity-0 group-hover:opacity-100 group-hover:-translate-x-0 -translate-x-6 transition-all duration-700 ease-out shadow-lg`}>
-                                            <ArrowLeft className="w-5 h-5" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                </div>
-            </section>
-
-            {/* REGISTER CTA - COMPACT STYLE */}
-            <section className="relative w-full overflow-hidden rounded-[32px] border border-white/10 bg-[#0F1115] group shadow-[0_20px_100px_rgba(0,0,0,0.3)]">
-                <div className="flex flex-col md:flex-row items-stretch min-h-[140px]">
-                    {/* Timer Badge (Left) */}
-                    <div className="relative w-full md:w-[280px] bg-white/[0.02] flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-white/10 group-hover:bg-white/[0.05] transition-colors duration-500">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Clock className="w-5 h-5 text-brand-primary animate-pulse" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">ينتهي العرض خلال</span>
-                        </div>
-                        <div className="text-3xl font-black font-inter tracking-widest text-white tabular-nums">
-                            {formatTime(timeLeft)}
-                        </div>
-                    </div>
-
-                    <div className="flex-1 p-8 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-10 relative overflow-hidden">
-                        <div className="flex items-center gap-8 text-right w-full md:w-auto z-10">
-                            <div className="hidden lg:flex w-20 h-20 rounded-3xl bg-brand-primary/10 border border-brand-primary/20 items-center justify-center shrink-0">
-                                <Zap className="w-10 h-10 text-brand-primary" />
-                            </div>
-                            <div className="space-y-3">
-                                <h2 className="text-2xl lg:text-3xl font-black text-white font-cairo leading-none">
-                                    استمتع بخصم <span className="text-brand-primary">50%</span> على بريميوم
-                                </h2>
-                                <p className="text-slate-400 text-base font-medium font-cairo">
-                                    احصل على وصول كامل لجميع الأدوات المتقدمة والذكية بضغطة زر واحدة.
-                                </p>
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={() => setCurrentView('auth')}
-                            className="relative z-10 bg-brand-primary text-black font-black px-12 py-5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-brand-primary/20 whitespace-nowrap w-full md:w-auto text-xl"
-                        >
-                            سجل حسابك الآن
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            {/* WHY RI88 SECTION */}
-            <div className="py-12 space-y-12">
-                <div className="text-center space-y-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-                        <Star className="w-3 h-3 text-brand-primary" />
-                        <span>PREMIUM EXPERIENCE</span>
-                    </div>
-                    <h2 className="text-4xl lg:text-6xl font-black text-white font-cairo">لماذا RI88 PRO؟</h2>
-                    <p className="text-slate-400 max-w-2xl mx-auto text-lg lg:text-xl font-cairo leading-relaxed">
-                        منصة متكاملة صممت لتعمل معك وبسرعة البرق، مع التركيز التام على الخصوصية والكفاءة في الأداء.
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-                    {[
-                        {
-                            icon: Zap,
-                            title: "سرعة البرق",
-                            desc: "معالجة فورية للبيانات محلياً على جهازك بدون أي تأخير، مما يضمن تجربة سلسة وسريعة.",
-                            gradient: "from-emerald-500/20 to-teal-500/5",
-                            iconColor: "text-emerald-400"
-                        },
-                        {
-                            icon: Shield,
-                            title: "خصوصية تامة",
-                            desc: "بياناتك ملكك وحدك. لا نقوم بتخزين أي مدخلات أو ملفات، كل شيء يتم معالجته في متصفحك.",
-                            gradient: "from-blue-500/20 to-indigo-500/5",
-                            iconColor: "text-blue-400"
-                        },
-                        {
-                            icon: Grid3X3,
-                            title: "تعدد المهام",
-                            desc: "نظام نوافذ متطور يتيح لك تشغيل عدة أدوات في وقت واحد لزيادة إنتاجيتك بشكل غير مسبوق.",
-                            gradient: "from-purple-500/20 to-violet-500/5",
-                            iconColor: "text-purple-400"
-                        }
-                    ].map((feature, i) => (
+                {/* Feature Cards — 2×2 on mobile, side-by-side on desktop */}
+                <motion.div
+                    variants={itemVariants}
+                    className="w-full grid grid-cols-2 gap-3 lg:w-[420px] lg:shrink-0 lg:gap-4"
+                >
+                    {features.map((f, i) => (
                         <motion.div
                             key={i}
-                            variants={itemVariants}
-                            className="relative group p-10 rounded-[40px] bg-[#0F1115] border border-white/5 overflow-hidden transition-all duration-500"
+                            whileHover={{ y: -4 }}
+                            className="relative p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col items-center text-center gap-3 bg-[rgba(10,26,20,0.7)] border border-emerald-500/10 backdrop-blur-lg"
                         >
-                            <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
-                            <div className="relative z-10 flex flex-col items-start gap-8 text-right h-full">
-                                <div className={`w-16 h-16 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center ${feature.iconColor} group-hover:scale-110 transition-transform duration-700 shadow-2xl`}>
-                                    <feature.icon className="w-8 h-8" />
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20">
+                                <f.icon className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
+                            </div>
+                            <div>
+                                <p className="font-bold text-white text-xs sm:text-sm">{f.title}</p>
+                                <p className="text-slate-500 text-[10px] sm:text-xs mt-0.5">{f.desc}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </section>
+
+            {/* ── TOOLS GRID ── */}
+            <section className="space-y-10">
+                <div className="text-center space-y-2 sm:space-y-3">
+                    <motion.h2
+                        variants={itemVariants}
+                        className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-cairo tracking-tight"
+                    >
+                        أدوات احترافية{' '}
+                        <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                            للجميع
+                        </span>
+                    </motion.h2>
+                    <motion.p variants={itemVariants} className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+                        كل الأدوات التي تحتاجها، مصممة بعناية فائقة.
+                    </motion.p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {popularTools.map((tool) => (
+                        <motion.div
+                            key={tool.id}
+                            variants={itemVariants}
+                            whileHover={{ y: -6 }}
+                            onClick={() => launchTool(tool.id)}
+                            className="group relative rounded-2xl sm:rounded-[28px] overflow-hidden cursor-pointer bg-[rgba(8,20,16,0.8)] border border-emerald-500/8 backdrop-blur-xl transition-all duration-300 hover:border-emerald-500/30"
+                        >
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
+
+                            <div className="relative p-5 sm:p-7 flex flex-col items-start gap-4 sm:gap-5">
+                                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-400 bg-emerald-500/8 border border-emerald-500/15 group-hover:scale-110 transition-transform duration-300">
+                                    <ToolIcon icon={tool.icon} className="w-6 h-6 sm:w-7 sm:h-7" />
                                 </div>
-                                <div className="space-y-4">
-                                    <h3 className="text-2xl font-black text-white font-cairo">{feature.title}</h3>
-                                    <p className="text-slate-400 leading-relaxed font-medium font-cairo text-base lg:text-lg">
-                                        {feature.desc}
+
+                                <div className="space-y-1.5 flex-1">
+                                    <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-cyan-400 transition-colors font-cairo">
+                                        {tool.titleAr}
+                                    </h3>
+                                    <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-2">
+                                        {tool.descAr}
                                     </p>
+                                </div>
+
+                                <div className="w-full flex items-center justify-between pt-4 border-t border-white/[0.04]">
+                                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400">
+                                        مجانية
+                                    </span>
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-slate-500 group-hover:bg-emerald-500 group-hover:text-black transition-all duration-300 border border-white/8">
+                                        <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>
                     ))}
                 </div>
+            </section>
 
-                {/* FINAL SECTION CTA */}
-                <motion.div
-                    variants={itemVariants}
-                    className="w-full relative overflow-hidden rounded-[40px] bg-[#0F1115] border border-white/10 p-12 lg:p-16 group"
-                >
-                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-emerald-500/20 transition-colors duration-700" />
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-right">
-                        <div className="space-y-6 max-w-3xl">
-                            <h2 className="text-4xl lg:text-5xl font-black text-white font-cairo leading-tight">
-                                هل أنت مستعد لتجربة <br /> <span className="text-brand-primary">الجيل القادم</span> من الأدوات؟
-                            </h2>
-                            <p className="text-slate-400 text-lg lg:text-xl font-medium font-cairo leading-relaxed">
-                                أنشئ حسابك المجاني الآن وانضم لآلاف المبدعين الذين اختاروا RI88 PRO لتطوير أعمالهم.
-                            </p>
+            {/* ── CTA ── */}
+            <section className="relative">
+                <div className="absolute inset-0 rounded-[28px] sm:rounded-[40px] blur-3xl opacity-20 bg-gradient-to-r from-emerald-500 to-cyan-500 pointer-events-none" />
+
+                <div className="relative rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-20 text-center overflow-hidden bg-[rgba(6,18,14,0.85)] border border-emerald-500/15 backdrop-blur-2xl">
+                    <div className="absolute top-0 right-0 w-48 h-48 sm:w-80 sm:h-80 rounded-full blur-[80px] bg-emerald-500/10 pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-80 sm:h-80 rounded-full blur-[80px] bg-cyan-500/8 pointer-events-none" />
+
+                    <div className="relative z-10 max-w-3xl mx-auto space-y-8 sm:space-y-10">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                            <Clock className="w-4 h-4" />
+                            <span>عرض خاص لفترة محدودة</span>
                         </div>
+
+                        <h2 className="text-xl sm:text-2xl lg:text-4xl font-black text-white font-cairo leading-tight">
+                            انطلق بإنتاجيتك إلى{' '}
+                            <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                                أبعاد جديدة
+                            </span>
+                        </h2>
+
+                        {/* Stats */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 py-6 sm:py-8 border-t border-b border-white/6">
+                            {stats.map((s, i) => (
+                                <div key={i} className="text-center space-y-1 sm:space-y-2">
+                                    <div className="text-2xl sm:text-3xl font-black font-mono bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                                        {s.val}
+                                    </div>
+                                    <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
+                                </div>
+                            ))}
+                        </div>
+
                         <button
-                            onClick={() => setCurrentView('auth')}
-                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black text-xl hover:bg-emerald-500 transition-all shadow-[0_20px_40px_rgba(16,185,129,0.3)] hover:shadow-[0_25px_50px_rgba(16,185,129,0.5)]"
+                            onClick={handleStartFree}
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-4 px-10 sm:px-14 py-4 sm:py-5 rounded-2xl sm:rounded-3xl font-black text-lg sm:text-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-black shadow-[0_0_50px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-transform relative overflow-hidden group"
                         >
-                            <span>ابدأ رحلتك الآن</span>
-                            <ArrowLeft className="w-6 h-6 group-hover:-translate-x-2 transition-transform" />
+                            <div className="absolute inset-0 bg-white/15 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <span className="relative z-10">افتح حساب مجاني</span>
+                            <Sparkles className="relative z-10 w-5 h-5 animate-pulse" />
                         </button>
                     </div>
-                </motion.div>
-            </div>
+                </div>
+            </section>
         </motion.div>
     );
 };

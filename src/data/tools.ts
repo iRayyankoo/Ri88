@@ -329,51 +329,13 @@ export const tools: Tool[] = [
         title: 'JWT Debugger', titleAr: 'فاحص JWT',
         desc: 'Decode and debug JWT tokens.', descAr: 'فك تشفير وفحص رموز JWT.'
     },
-    {
-        id: 'dev-sql', cat: 'developer', icon: 'database', status: 'new',
-        title: 'SQL Formatter', titleAr: 'تنسيق SQL',
-        desc: 'Format and beautify SQL queries.', descAr: 'تنسيق وترتيب استعلامات SQL.'
-    },
-    {
-        id: 'dev-chmod', cat: 'developer', icon: 'shield', status: 'new',
-        title: 'Chmod Calculator', titleAr: 'حاسبة Chmod',
-        desc: 'Calculate Linux file permissions.', descAr: 'حساب صلاحيات الملفات في لينكس.'
-    },
-    {
-        id: 'dev-cron', cat: 'developer', icon: 'clock', status: 'new',
-        title: 'Cron Generator', titleAr: 'مجدول Cron',
-        desc: 'Create Cron job schedules.', descAr: 'إنشاء جداول المهام المجدولة (Cron).'
-    },
-    {
-        id: 'dev-curl', cat: 'developer', icon: 'terminal', status: 'new',
-        title: 'Curl to Fetch', titleAr: 'تحويل Curl',
-        desc: 'Convert Curl commands to JS Fetch.', descAr: 'تحويل أوامر Curl إلى كود Fetch.'
-    },
-    {
-        id: 'dev-ua', cat: 'developer', icon: 'monitor', status: 'new',
-        title: 'User Agent', titleAr: 'تحليل المتصفح',
-        desc: 'Parse User Agent string.', descAr: 'تحليل ومعرفة نوع المتصفح والنظام.'
-    },
+
     {
         id: 'dev-meta', cat: 'developer', icon: 'code', status: 'new',
         title: 'Meta Tags', titleAr: 'ميتا تاج',
         desc: 'Generate SEO meta tags.', descAr: 'توليد وسوم الميتا لمحركات البحث.'
     },
-    {
-        id: 'dev-fav', cat: 'developer', icon: 'image', status: 'new',
-        title: 'Favicon Gen', titleAr: 'أيقونة الموقع',
-        desc: 'Create valid 32x32 Favicon.', descAr: 'إنشاء أيقونة مفضلة للموقع.'
-    },
-    {
-        id: 'dev-svg', cat: 'developer', icon: 'pen-tool', status: 'new',
-        title: 'SVG Optimizer', titleAr: 'تحسين SVG',
-        desc: 'Minify SVG code.', descAr: 'ضغط وتحسين أكواد SVG.'
-    },
-    {
-        id: 'dev-md', cat: 'developer', icon: 'file-text', status: 'new',
-        title: 'Markdown View', titleAr: 'عارد Markdown',
-        desc: 'Preview Markdown text.', descAr: 'معاينة نصوص مارك داون.'
-    },
+
 
     // Saudi Tools
     {
@@ -508,11 +470,6 @@ export const tools: Tool[] = [
         title: 'Pomodoro Timer', titleAr: 'مؤقت بومودورو',
         desc: 'Focus timer (25min work / 5min break).', descAr: 'تقنية بومودورو للتركيز وزيادة الإنتاجية.'
     },
-    {
-        id: 'image-palette', cat: 'image', icon: 'palette', status: 'new',
-        title: 'Color Extractor', titleAr: 'مستخرج الألوان',
-        desc: 'Extract color palette from any image.', descAr: 'استخراج باليت الألوان من أي صورة.'
-    },
 
     // Life Utils (New)
     {
@@ -606,6 +563,11 @@ export const tools: Tool[] = [
         id: 'ai-text', cat: 'ai-tools', icon: 'sparkles', status: 'new',
         title: 'AI Text Assistant', titleAr: 'مساعد النصوص الذكي',
         desc: 'AI-powered text summarization and editing.', descAr: 'تبسيط وتحسين النصوص بالذكاء الاصطناعي.'
+    },
+    {
+        id: 'ai-image', cat: 'ai-tools', icon: 'image', status: 'new',
+        title: 'AI Image Generator', titleAr: 'مولد الصور الذكي',
+        desc: 'Generate images from text descriptions using AI.', descAr: 'توليد الصور من وصف نصي باستخدام الذكاء الاصطناعي.'
     },
 ];
 

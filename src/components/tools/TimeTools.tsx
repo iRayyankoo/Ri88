@@ -2,12 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton } from './ToolUi';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import {
+    convertGregorianToHijri, calculateDateDifference,
+    addDate, getTimeInZone
+} from '@/lib/tools/time';
 
 interface ToolProps {
     toolId: string;
@@ -19,13 +17,11 @@ function HijriConverter() {
     const [res, setRes] = useState<{ str: string, num: string } | null>(null);
 
     const convert = () => {
-        const d = new Date(date);
-        if (isNaN(d.getTime())) return;
-
-        const hijri = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
-        const hijriNum = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' }).format(d);
-
-        setRes({ str: hijri, num: hijriNum });
+        try {
+            setRes(convertGregorianToHijri(date));
+        } catch {
+            return;
+        }
     }
 
     return (
@@ -53,21 +49,11 @@ function DateDiff() {
     const [res, setRes] = useState<{ days: number, weeks: string, y: number, m: number, d: number } | null>(null);
 
     const calc = () => {
-        const s = new Date(start);
-        const e = new Date(end);
-        if (isNaN(s.getTime()) || isNaN(e.getTime())) return;
-
-        const diffTime = Math.abs(e.getTime() - s.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const weeks = (diffDays / 7).toFixed(1);
-
-        let y = e.getFullYear() - s.getFullYear();
-        let m = e.getMonth() - s.getMonth();
-        let d = e.getDate() - s.getDate();
-        if (d < 0) { m--; d += 30; }
-        if (m < 0) { y--; m += 12; }
-
-        setRes({ days: diffDays, weeks, y, m, d });
+        try {
+            setRes(calculateDateDifference(start, end));
+        } catch {
+            return;
+        }
     }
 
     return (
@@ -163,11 +149,11 @@ function DateAdd() {
     const [res, setRes] = useState<string | null>(null);
 
     const calc = () => {
-        const d = new Date(date);
-        if (isNaN(d.getTime())) return;
-        d.setDate(d.getDate() + days);
-        d.setMonth(d.getMonth() + months);
-        setRes(d.toLocaleDateString());
+        try {
+            setRes(addDate(date, days, months));
+        } catch {
+            return;
+        }
     }
 
     return (
@@ -218,7 +204,7 @@ function WorldClock() {
                     <div key={c.name} className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all hover:scale-105 hover:border-brand-primary/30 group">
                         <div className="text-sm text-slate-400 mb-2 group-hover:text-slate-300 uppercase tracking-wide">{c.name}</div>
                         <strong className="text-2xl text-white font-mono block">
-                            {time.toLocaleTimeString('en-US', { timeZone: c.zone, hour: '2-digit', minute: '2-digit' })}
+                            {getTimeInZone(c.zone, time)}
                         </strong>
                     </div>
                 ))}

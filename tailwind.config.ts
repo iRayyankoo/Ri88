@@ -18,7 +18,8 @@ const config: Config = {
                 }
             },
             fontFamily: {
-                cairo: ['Cairo', 'sans-serif'],
+                mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                jakarta: ['Plus Jakarta Sans', 'sans-serif'],
                 inter: ['Inter', 'sans-serif'],
             }
         },

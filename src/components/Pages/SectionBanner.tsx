@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
     Calculator, FileText, Image as ImageIcon, Terminal, Sparkles,
-    Briefcase, Grid, FolderOpen, Code2, Paintbrush, Wand2, Star
+    Grid, FolderOpen, Star
 } from 'lucide-react';
 
 interface Tool {
@@ -21,11 +21,11 @@ interface SectionBannerProps {
 
 export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerProps) => {
 
-    const [randomTools, setRandomTools] = useState<Tool[]>([]);
+    const [randomTools, setRandomTools] = React.useState<Tool[]>([]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (tools.length > 0) {
-            // Shuffle and pick up to 10
+            // Shuffle and pick up to 10 - only on client
             const shuffled = [...tools].sort(() => 0.5 - Math.random());
             setRandomTools(shuffled.slice(0, 10));
         }
@@ -90,7 +90,7 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            className="relative w-full overflow-hidden rounded-[24px] border border-white/5 group min-h-[160px] flex flex-col justify-center"
+            className="relative w-full overflow-hidden rounded-[20px] lg:rounded-[24px] border border-white/5 group min-h-[110px] lg:min-h-[160px] flex flex-col justify-center"
         >
             {/* Background & Gradient */}
             <div className={`absolute inset-0 bg-gradient-to-r ${theme.gradient} opacity-50`} />
@@ -99,10 +99,10 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
             {/* Animated Glow Orb */}
             <div className={`absolute -right-20 -top-20 w-64 h-64 ${theme.patternColor} blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity duration-700`} />
 
-            <div className="relative z-10 p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="relative z-10 p-4 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-6">
 
                 {/* Text Content */}
-                <div className="flex items-start gap-5 text-right w-full md:w-auto relative z-20 bg-black/20 backdrop-blur-sm p-4 rounded-2xl border border-white/5 md:bg-transparent md:backdrop-blur-none md:p-0 md:border-none md:rounded-none">
+                <div className="flex items-start gap-5 text-right w-full md:w-auto relative z-20">
                     <div className="hidden md:flex w-14 h-14 rounded-2xl bg-white/5 border border-white/10 items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-500">
                         <Icon className="w-7 h-7 text-white opacity-80" />
                     </div>
@@ -120,16 +120,16 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
                     </div>
                 </div>
 
-                {/* Animated Tool Ticker (Marquee) */}
-                {randomTools.length > 2 && (
-                    <div className="absolute inset-y-0 left-0 w-full md:w-1/2 overflow-hidden mask-linear-fade flex items-center opacity-30 group-hover:opacity-50 transition-opacity pointer-events-none">
+                {/* Animated Tool Ticker — visible on mobile with lower scale/opacity */}
+                {randomTools.length > 1 && (
+                    <div className="absolute inset-y-0 left-0 w-full md:w-1/2 overflow-hidden mask-linear-fade flex items-center opacity-5 md:opacity-30 group-hover:opacity-40 transition-opacity pointer-events-none scale-90 md:scale-100">
                         <motion.div
                             className="flex gap-4 pr-10"
                             animate={{ x: [0, -100 * randomTools.length] }}
                             transition={{
                                 repeat: Infinity,
                                 ease: "linear",
-                                duration: 20
+                                duration: 30 // Slower move for better readability
                             }}
                         >
                             {[...randomTools, ...randomTools].map((tool, idx) => (
@@ -145,7 +145,7 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
                 {/* Stats Badge */}
                 <div className="relative z-20 flex items-center gap-2 px-4 py-2 bg-black/20 rounded-xl border border-white/5 backdrop-blur-sm self-end md:self-center shrink-0">
                     <span className="text-2xl font-black text-white font-inter">{tools.length}</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tools</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">أداة</span>
                 </div>
             </div>
 

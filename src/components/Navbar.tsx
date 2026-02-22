@@ -13,8 +13,9 @@ export default function Navbar() {
                     {/* Brand */}
                     <Link href="/" className="brand">
                         {/* Note: We will move the logo image later, using text for now or placeholder */}
-                        <div className="brand-text">
+                        <div className="brand-text flex items-center gap-2">
                             Ri88<span className="brand-dot">.</span>
+                            <span className="experimental-tag">تشغيل تجريبي</span>
                         </div>
                     </Link>
 
@@ -69,6 +70,17 @@ export default function Navbar() {
                 .brand-text { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
                 .brand-dot { color: var(--accent-pink); }
                 .beta-link { color: #D35BFF; font-weight: bold; }
+                .experimental-tag {
+                    font-size: 10px;
+                    background: rgba(211, 91, 255, 0.1);
+                    color: #D35BFF;
+                    padding: 2px 8px;
+                    border-radius: 6px;
+                    border: 1px solid rgba(211, 91, 255, 0.2);
+                    font-weight: 900;
+                    letter-spacing: 0;
+                    white-space: nowrap;
+                }
                 .nav-actions { display: flex; gap: 16px; align-items: center; }
                 .beta-mobile-link { color: #D35BFF; }
                 .lang-toggle {

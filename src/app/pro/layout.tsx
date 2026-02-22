@@ -1,4 +1,4 @@
-"use client";
+import React from "react";
 import AppShell from "@/components/Navigation/AppShell";
 import { NavigationProvider } from "@/context/NavigationContext";
 

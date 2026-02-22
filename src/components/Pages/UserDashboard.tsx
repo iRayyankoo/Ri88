@@ -1,229 +1,452 @@
 "use client";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Activity, ArrowRight, Grid, Star,
-    Search, Zap, Terminal, Code,
-    FileText, Calculator,
-    Shield, RefreshCw, Database,
-    Percent, Wallet, ArrowRightLeft, Landmark, HandCoins, Bitcoin, Moon,
-    CalendarClock, Timer, Globe, AlignRight, Eraser, CaseSensitive, Hash,
-    Link2, QrCode, Ruler, Lock, Gauge, Smartphone, PenTool, Lightbulb,
-    SearchCheck, Calendar, Sun, Files, Scissors, Minimize2, Image,
-    ListOrdered, RotateCw, Stamp, Unlock, FileMinus, ArrowUpDown, Crop,
-    ImageMinus, Maximize, Layers, Camera, Share2, Square, EyeOff, Sliders,
-    Flame, Droplet, Braces, Binary, Fingerprint, Link, Regex, GitCompare, Key,
-    Monitor, MousePointer2, Shuffle, Wind, Clock, Users, ArrowLeft
+    Plus, X, Trash2, GripVertical, Search, Zap, Sun, Star, Sparkles, Target, Gauge
 } from 'lucide-react';
 import { tools } from '@/data/tools';
 import { useNavigation } from '@/context/NavigationContext';
+import { AVAILABLE_WIDGETS } from '@/data/widgets';
+import Link from 'next/link';
 
-// Icon Mapping Component
-const ToolIcon = ({ icon, className }: { icon: string, className?: string }) => {
-    switch (icon) {
-        case 'calculator': return <Calculator className={className} />;
-        case 'percent': return <Percent className={className} />;
-        case 'wallet': return <Wallet className={className} />;
-        case 'arrow-right-left': return <ArrowRightLeft className={className} />;
-        case 'landmark': return <Landmark className={className} />;
-        case 'hand-coins': return <HandCoins className={className} />;
-        default: return <Zap className={className} />;
-    }
+// --- Types ---
+
+interface NotesWidgetProps {
+    notes: string;
+    setNotes: (v: string) => void;
+    onSave: () => void;
+}
+
+interface WidgetWrapperProps {
+    children: React.ReactNode;
+    title: string;
+    icon: React.ElementType;
+    onRemove: () => void;
+    size?: 'small' | 'medium' | 'large';
+}
+
+// --- Widget Registry Mapping (Mapping IDs to Components) ---
+// In a real app, these would be separate files.
+
+const TodoWidget = () => (
+    <div className="space-y-2">
+        {['تصميم واجهة المستخدم', 'كتابة المحتوى', 'تحديث السيرفر'].map((item, i) => (
+            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-white/[0.02] border border-white/5 group/todo">
+                <input
+                    type="checkbox"
+                    title="تحديد المهمة كمكتملة"
+                    aria-label="تحديد المهمة كمكتملة"
+                    className="w-3.5 h-3.5 rounded border-white/10 bg-transparent accent-brand-primary"
+                />
+                <span className="text-[10px] text-slate-300 font-medium">{item}</span>
+            </div>
+        ))}
+    </div>
+);
+
+const ResourceWidget = () => (
+    <div className="space-y-4">
+        <div className="flex items-end justify-between">
+            <span className="text-2xl font-black text-white tabular-nums">84%</span>
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">4.2 GB / 5.0 GB</span>
+        </div>
+        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+            <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: '84%' }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="h-full bg-gradient-to-r from-brand-primary to-cyan-500"
+            />
+        </div>
+    </div>
+);
+
+const NotesWidget = ({ notes, setNotes, onSave }: NotesWidgetProps) => (
+    <div className="h-full flex flex-col">
+        <textarea
+            value={notes}
+            title="ملاحظاتك الشخصية"
+            aria-label="ملاحظاتك الشخصية"
+            onChange={(e) => setNotes(e.target.value)}
+            onBlur={onSave}
+            placeholder="اكتب شيئاً هنا..."
+            className="w-full flex-1 bg-white/[0.02] rounded-xl p-3 text-xs text-slate-300 placeholder:text-slate-700 outline-none resize-none border border-white/5 focus:border-brand-primary/20 transition-all font-cairo"
+        />
+    </div>
+);
+
+const AccountWidget = () => (
+    <div className="flex flex-col justify-between h-full gap-4">
+        <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 flex items-center justify-center border border-brand-primary/20 text-brand-primary font-black">R</div>
+            <div className="flex flex-col">
+                <span className="text-white text-xs font-bold font-cairo">ريان المطور</span>
+                <span className="text-[9px] text-brand-secondary font-black uppercase tracking-[0.1em]">عضوية برو ✦</span>
+            </div>
+        </div>
+        <div className="p-3 rounded-xl bg-brand-primary/5 border border-brand-primary/10 flex items-center justify-between group/upgrade cursor-pointer hover:bg-brand-primary/10 transition-all">
+            <div className="flex flex-col">
+                <span className="text-[10px] font-black text-brand-primary uppercase">الرصيد المتاح</span>
+                <span className="text-lg font-black text-white">$1,240.50</span>
+            </div>
+            {/* ArrowLeft is removed from imports, using a generic arrow or removing it */}
+            <span className="text-brand-primary group-hover:-translate-x-1 transition-transform">→</span>
+        </div>
+    </div>
+);
+
+const ActivityWidget = () => (
+    <div className="space-y-3">
+        {[
+            { action: "تم ضغط صورة", time: "منذ دقيقتين", icon: Star }, // Using Star as a placeholder for ImageIcon
+            { action: "تحويل PDF إلى Word", time: "منذ ساعة", icon: Star }, // Using Star as a placeholder for FileText
+            { action: "تنسيق كود JSON", time: "أمس", icon: Star }, // Using Star as a placeholder for Code
+        ].map((act, i) => (
+            <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.02] transition-colors">
+                <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-500"><act.icon size={12} /></div>
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-slate-300 font-medium">{act.action}</span>
+                    <span className="text-[8px] text-slate-600 font-bold">{act.time}</span>
+                </div>
+            </div>
+        ))}
+    </div>
+);
+
+const QuoteWidget = () => (
+    <div className="h-full flex flex-col justify-center italic text-center p-2">
+        <Sparkles className="w-5 h-5 text-brand-primary/40 mx-auto mb-2" />
+        <p className="text-xs text-slate-300 font-medium tracking-tight lh-relaxed">
+            &quot;النجاح ليس نهائياً، والفشل ليس قاتلاً؛ ما يهم هو الشجاعة للاستمرار.&quot;
+        </p>
+        <span className="text-[9px] text-slate-600 font-bold mt-2">— وينستون تشرشل</span>
+    </div>
+);
+
+const WorldClockWidget = () => {
+    const times = [
+        { city: 'مكة المكرمة', time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }) },
+        { city: 'لندن', time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' }) },
+        { city: 'نيويورك', time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' }) }
+    ];
+    return (
+        <div className="space-y-3 py-1">
+            {times.map((t, i) => (
+                <div key={i} className="flex items-center justify-between border-b border-white/[0.03] pb-2 last:border-0 last:pb-0">
+                    <span className="text-[10px] font-bold text-slate-400">{t.city}</span>
+                    <span className="text-xs font-black text-white tabular-nums">{t.time}</span>
+                </div>
+            ))}
+        </div>
+    );
 };
 
+const DailyGoalWidget = () => (
+    <div className="h-full flex flex-col justify-center gap-2">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+            <Target size={12} className="text-brand-primary" />
+            <span>الهدف اليومي</span>
+        </div>
+        <input
+            type="text"
+            placeholder="حدد هدفك لليوم..."
+            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-xs text-white outline-none focus:border-brand-primary/40 transition-all"
+        />
+    </div>
+);
+
+const PrayerTimesWidget = () => (
+    <div className="grid grid-cols-2 gap-2">
+        <div className="p-2 rounded-lg bg-white/[0.02] border border-white/5 flex flex-col items-center">
+            <span className="text-[8px] text-slate-500 font-bold">الفجر</span>
+            <span className="text-[11px] font-black text-white">4:52 AM</span>
+        </div>
+        <div className="p-2 rounded-lg bg-brand-primary/10 border border-brand-primary/20 flex flex-col items-center">
+            <span className="text-[8px] text-brand-primary font-black">الظهر</span>
+            <span className="text-[11px] font-black text-white">12:12 PM</span>
+        </div>
+    </div>
+);
+
+const CurrencyWidget = () => (
+    <div className="space-y-2">
+        <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] border border-white/5">
+            <span className="text-[10px] text-slate-400 font-bold">1 USD</span>
+            <span className="text-xs font-black text-brand-secondary">3.75 SAR</span>
+        </div>
+        <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] border border-white/5">
+            <span className="text-[10px] text-slate-400 font-bold">1 EUR</span>
+            <span className="text-xs font-black text-slate-300">3.94 SAR</span>
+        </div>
+    </div>
+);
+
+// --- Dashboard Component ---
+
+const WidgetWrapper = ({ children, title, icon: Icon, onRemove, size = 'medium' }: WidgetWrapperProps) => (
+    <motion.div
+        layout
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className={`${size === 'large' ? 'col-span-1 md:col-span-2 lg:col-span-3' : size === 'medium' ? 'col-span-1' : 'col-span-1'}
+        relative overflow-hidden rounded-[24px] bg-[#0F1115] border border-white/5 p-5 group flex flex-col h-full shadow-2xl`}
+    >
+        <div className="flex items-center justify-between mb-4 shrink-0">
+            <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                    <Icon className="w-4 h-4 text-brand-primary" />
+                </div>
+                <h3 className="text-xs font-black text-white font-cairo uppercase tracking-widest opacity-80">{title}</h3>
+            </div>
+            <div className="flex items-center gap-2">
+                <span title="اسحب لتغيير الترتيب" className="cursor-grab active:cursor-grabbing">
+                    <GripVertical className="w-4 h-4 text-slate-700 hover:text-slate-400 transition-colors" />
+                </span>
+                <button
+                    onClick={onRemove}
+                    title="إزالة الويدجت"
+                    aria-label="إزالة الويدجت"
+                    className="p-1 px-1.5 rounded-lg bg-white/5 text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                >
+                    <Trash2 size={12} />
+                </button>
+            </div>
+        </div>
+        <div className="flex-1 relative z-10 transition-all">
+            {children}
+        </div>
+    </motion.div>
+);
+
 const UserDashboard = () => {
-    const { setCurrentView, launchTool } = useNavigation();
+    const { launchTool } = useNavigation();
 
-    // Featured Tools (Real Data)
-    const featuredTools = tools.filter(t =>
-        ['loan-calc', 'pdf-merge', 'adobe-fix', 'img-compress'].includes(t.id)
-    );
+    // Initialize state directly from localStorage to avoid useEffect setState warning
+    const [activeWidgetIds, setActiveWidgetIds] = useState<string[]>(() => {
+        if (typeof window !== 'undefined') {
+            const savedIds = localStorage.getItem('ri88-active-widgets');
+            return savedIds ? JSON.parse(savedIds) : ['account', 'resource-usage', 'notes', 'todo'];
+        }
+        return ['account', 'resource-usage', 'notes', 'todo'];
+    });
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 }
+    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+    const [notes, setNotes] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('ri88-user-notes') || "";
+        }
+        return "";
+    });
+
+    const [cryptoData] = useState({ btc: '64,231', eth: '3,452', sol: '142' });
+    const [weather] = useState({ temp: '28°C', city: 'الرياض', condition: 'مشمس' });
+
+    const saveWidgetConfig = (newIds: string[]) => {
+        setActiveWidgetIds(newIds);
+        localStorage.setItem('ri88-active-widgets', JSON.stringify(newIds));
+    };
+
+    const addWidget = (id: string) => {
+        if (!activeWidgetIds.includes(id)) {
+            saveWidgetConfig([...activeWidgetIds, id]);
+        }
+        setIsGalleryOpen(false);
+    };
+
+    const removeWidget = (id: string) => {
+        saveWidgetConfig(activeWidgetIds.filter(wid => wid !== id));
+    };
+
+    const renderWidgetContent = (id: string) => {
+        switch (id) {
+            case 'todo': return <TodoWidget />;
+            case 'notes': return <NotesWidget notes={notes} setNotes={setNotes} onSave={() => localStorage.setItem('ri88-user-notes', notes)} />;
+            case 'resource-usage': return <ResourceWidget />;
+            case 'account-pro': return <AccountWidget />;
+            case 'recent-activity': return <ActivityWidget />;
+            case 'quote': return <QuoteWidget />;
+            case 'world-clock': return <WorldClockWidget />;
+            case 'daily-goal': return <DailyGoalWidget />;
+            case 'prayer-times': return <PrayerTimesWidget />;
+            case 'currency': return <CurrencyWidget />;
+            case 'crypto': return (
+                <div className="grid grid-cols-1 gap-2">
+                    {Object.entries(cryptoData).map(([coin, val]) => (
+                        <div key={coin} className="flex items-center justify-between p-2 rounded-xl bg-white/[0.02] border border-white/5">
+                            <span className="text-[10px] font-black text-white uppercase">{coin}</span>
+                            <span className="text-xs font-bold text-emerald-400 tabular-nums">${val}</span>
+                        </div>
+                    ))}
+                </div>
+            );
+            case 'weather': return (
+                <div className="flex flex-col items-center justify-center h-full">
+                    <Sun className="w-8 h-8 text-yellow-500 mb-2 animate-pulse" />
+                    <span className="text-2xl font-black text-white">{weather.temp}</span>
+                    <span className="text-[10px] text-slate-500 font-bold">{weather.city} - {weather.condition}</span>
+                </div>
+            );
+            case 'network-speed': return (
+                <div className="flex flex-col items-center justify-center h-full gap-2">
+                    <Gauge size={24} className="text-brand-primary/40" />
+                    <div className="text-center">
+                        <div className="text-xl font-black text-white">42 MB/s</div>
+                        <div className="text-[8px] text-emerald-500 font-bold uppercase tracking-widest">مستقر تماماً</div>
+                    </div>
+                </div>
+            );
+            default: return (
+                <div className="flex flex-col items-center justify-center h-full opacity-40">
+                    <Zap size={20} className="mb-2" />
+                    <span className="text-[9px] font-black uppercase tracking-widest italic">متاح لمستخدمي Pro</span>
+                </div>
+            );
         }
     };
 
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
-    };
-
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="space-y-8 pb-24"
-        >
-            {/* 1. PREMIUM HEADER / WELCOME CARD */}
-            <motion.div
-                variants={itemVariants}
-                className="w-full relative overflow-hidden rounded-[32px] bg-[#0F1115] border border-white/5 p-6 lg:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.3)] group"
-            >
-                {/* Background Textures & Glows */}
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
-                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand-primary/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-brand-primary/20 transition-colors duration-700" />
+        <div className="space-y-6 pb-24 relative">
 
-                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="text-right space-y-3">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-[9px] font-black text-brand-primary uppercase tracking-[0.2em]">
-                            <Star className="w-3 h-3 fill-brand-primary" />
-                            Premium Member
-                        </div>
-                        <h1 className="text-2xl lg:text-3xl font-black text-white font-cairo leading-tight">
-                            مرحباً بك، <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-l from-emerald-400 to-cyan-400">ريان المطور</span>
-                        </h1>
-                        <p className="text-slate-400 text-sm font-medium">نظامك عمل بالأمس بـ <span className="text-white">24</span> مهمة ذكية.</p>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <div className="text-left md:text-right hidden md:block">
-                            <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1">الرصيد</p>
-                            <p className="text-xl font-black text-white font-inter">$1,240.50</p>
-                        </div>
-                        <div className="w-16 h-16 rounded-[24px] p-0.5 bg-gradient-to-br from-brand-primary/20 to-white/5">
-                            <div className="w-full h-full rounded-[22px] bg-[#0F1115] flex items-center justify-center border border-white/10 shadow-xl relative overflow-hidden group/avatar">
-                                <span className="text-xl font-black text-white relative z-10">R</span>
-                            </div>
-                        </div>
-                    </div>
+            {/* 1. Header & Quick Search */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 px-1">
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-black text-white font-cairo">لوحة التحكم الذكية</h1>
+                    <p className="text-slate-500 text-xs font-medium">مرحباً بك مجدداً، نظم عملك بذكاء.</p>
                 </div>
-            </motion.div>
 
-            {/* 2. BENTO STATS GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                {/* Usage Status */}
-                <motion.div variants={itemVariants} className="md:col-span-3 relative overflow-hidden rounded-[28px] bg-[#0F1115] border border-white/5 p-6 group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-[40px] pointer-events-none" />
-                    <div className="relative z-10 flex flex-col justify-center h-full">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Activity className="w-4 h-4 text-emerald-400" />
-                            <h3 className="text-xs font-black text-white font-cairo uppercase tracking-widest opacity-60">استهلاك الموارد</h3>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="flex items-end gap-3">
-                                <span className="text-3xl font-black text-white">84%</span>
-                                <span className="text-slate-500 text-[10px] font-bold uppercase mb-1">4.2 GB / 5.0 GB</span>
-                            </div>
-                            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: '84%' }}
-                                    transition={{ duration: 1.5, ease: "easeOut" }}
-                                    className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Quick Action / Token Card */}
-                <motion.div variants={itemVariants} className="relative overflow-hidden rounded-[28px] bg-brand-primary p-6 group cursor-pointer active:scale-95 transition-transform flex flex-col justify-between">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none" />
-                    <Database className="w-6 h-6 text-black/80" />
-                    <h3 className="text-lg font-black font-cairo text-black leading-none mt-4">ترقية</h3>
-                    <ArrowLeft className="w-5 h-5 text-black self-end" />
-                </motion.div>
-            </div>
-
-            {/* 3. SEARCH & TOOLS */}
-            <div className="space-y-6">
-                <motion.div variants={itemVariants} className="relative group">
-                    <div className="absolute inset-0 bg-brand-primary/10 blur-[20px] rounded-[24px] opacity-0 group-focus-within:opacity-100 transition-opacity duration-700" />
-                    <div className="relative flex items-center">
-                        <Search className="absolute right-5 w-5 h-5 text-slate-500 group-focus-within:text-brand-primary transition-colors duration-500" />
+                <div className="flex items-center gap-3">
+                    <div className="relative group flex-1 max-w-md hidden sm:block">
+                        <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-brand-primary transition-colors" />
                         <input
                             type="text"
+                            title="البحث عن أدوات"
+                            aria-label="البحث عن أدوات"
                             placeholder="ابحث عن أداة..."
-                            className="w-full h-14 bg-[#0F1115] border border-white/5 rounded-[20px] pr-14 pl-6 text-white text-sm placeholder:text-slate-600 outline-none focus:border-brand-primary/40 transition-all font-medium"
+                            className="w-full h-11 bg-[#0F1115] border border-white/5 rounded-xl pr-11 pl-4 text-sm text-white placeholder:text-slate-600 outline-none focus:border-brand-primary/40 transition-all font-medium"
                         />
                     </div>
-                </motion.div>
-
-                {/* TOOLS GRID */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between px-1">
-                        <h2 className="text-lg font-black text-white font-cairo tracking-tight">الأكثر استخداماً</h2>
-                        <button
-                            onClick={() => setCurrentView('directory')}
-                            className="text-[10px] font-black text-brand-primary hover:text-brand-primary/80 transition-colors uppercase tracking-widest flex items-center gap-1.5 group"
-                        >
-                            الكل
-                            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-                        </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                        {featuredTools.map((tool) => {
-                            const getStyle = (cat: string) => {
-                                switch (cat) {
-                                    case 'finance': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-                                    case 'pdf': return 'text-rose-400 bg-rose-500/10 border-rose-500/20';
-                                    case 'design': return 'text-purple-400 bg-purple-500/10 border-purple-500/20';
-                                    default: return 'text-brand-primary bg-brand-primary/10 border-brand-primary/20';
-                                }
-                            };
-                            const style = getStyle(tool.cat);
-
-                            return (
-                                <motion.div
-                                    key={tool.id}
-                                    variants={itemVariants}
-                                    whileHover={{ y: -4 }}
-                                    onClick={() => launchTool(tool.id)}
-                                    className="group relative p-4 rounded-[24px] bg-[#0F1115] border border-white/5 overflow-hidden transition-all duration-500 cursor-pointer hover:border-white/20"
-                                >
-                                    <div className="relative z-10 flex flex-col items-center text-center space-y-3">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 ${style} border`}>
-                                            <ToolIcon icon={tool.icon} className="w-6 h-6" />
-                                        </div>
-                                        <div className="space-y-0.5 w-full">
-                                            <h3 className="text-white font-black text-xs font-cairo truncate">{tool.titleAr || tool.title}</h3>
-                                            <p className="text-slate-600 text-[9px] font-medium font-cairo uppercase tracking-widest">{tool.cat}</p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
-                    </div>
+                    <button
+                        onClick={() => setIsGalleryOpen(true)}
+                        className="h-11 px-4 flex items-center gap-2 rounded-xl bg-brand-primary text-black font-black text-xs hover:bg-brand-primary/90 transition-all active:scale-95 shadow-lg shadow-brand-primary/20"
+                    >
+                        <Plus size={16} strokeWidth={3} />
+                        تخصيص
+                    </button>
                 </div>
             </div>
 
-            {/* 4. RECENT ACTIVITY */}
-            <div className="space-y-4">
-                <h2 className="text-lg font-black text-white font-cairo tracking-tight px-1">النشاط الأخير</h2>
-                <div className="grid grid-cols-1 gap-3">
-                    {[
-                        { title: 'حاسبة القروض', sub: 'تم حساب الدفعات الشهرية', time: 'منذ دقيقتين', icon: Calculator, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-                        { title: 'دمج ملفات PDF', sub: 'تم دمج 3 ملفات', time: 'منذ ساعة', icon: Files, color: 'text-brand-primary', bg: 'bg-brand-primary/10' },
-                        { title: 'ضغط الصور', sub: 'توفير 70% من المساحة', time: 'منذ 5 ساعات', icon: ImageMinus, color: 'text-blue-400', bg: 'bg-blue-400/10' },
-                    ].map((item, i) => (
-                        <motion.div
-                            key={i}
-                            variants={itemVariants}
-                            whileHover={{ x: -4 }}
-                            className="flex items-center gap-4 p-4 bg-[#0F1115] border border-white/5 rounded-[24px] hover:bg-white/[0.03] hover:border-white/10 transition-all group cursor-pointer"
+            {/* 2. Widget Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <AnimatePresence mode="popLayout">
+                    {activeWidgetIds.map((id) => {
+                        const def = AVAILABLE_WIDGETS.find(w => w.id === id);
+                        if (!def) return null;
+                        return (
+                            <WidgetWrapper
+                                key={id}
+                                title={def.title}
+                                icon={def.icon}
+                                size={def.defaultSize}
+                                onRemove={() => removeWidget(id)}
+                            >
+                                {renderWidgetContent(id)}
+                            </WidgetWrapper>
+                        );
+                    })}
+                </AnimatePresence>
+            </div>
+
+            {/* 3. Featured Tools (Static for now) */}
+            <div className="space-y-4 pt-4">
+                <div className="flex items-center justify-between px-1">
+                    <h2 className="text-sm font-black text-white font-cairo uppercase tracking-widest opacity-60">الأدوات المفضلة</h2>
+                    <Link href="/pro/tools" className="text-[10px] font-black text-brand-primary hover:underline">عرض الكل</Link>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+                    {tools.slice(0, 4).map((tool) => (
+                        <div
+                            key={tool.id}
+                            onClick={() => launchTool(tool.id)}
+                            className="flex items-center gap-3 p-3 rounded-2xl bg-[#0F1115] border border-white/5 hover:bg-white/5 hover:border-brand-primary/20 transition-all cursor-pointer group/tool"
                         >
-                            <div className={`w-10 h-10 rounded-xl ${item.bg} border border-white/5 flex items-center justify-center shrink-0`}>
-                                <item.icon className={`w-5 h-5 ${item.color}`} />
+                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all">
+                                <Zap className="w-5 h-5" />
                             </div>
-                            <div className="flex-1 text-right">
-                                <h4 className="text-white font-black text-sm font-cairo">{item.title}</h4>
-                                <p className="text-slate-500 text-[10px] font-medium font-cairo">{item.sub}</p>
+                            <div className="flex flex-col min-w-0 text-right">
+                                <span className="text-white text-[11px] font-bold font-cairo truncate">{tool.titleAr || tool.title}</span>
+                                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">{tool.cat}</span>
                             </div>
-                            <div className="text-right">
-                                <span className="text-[9px] text-slate-600 font-black uppercase tracking-widest">{item.time}</span>
-                            </div>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>
-        </motion.div>
+
+            {/* --- Widget Gallery Modal --- */}
+            <AnimatePresence>
+                {isGalleryOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsGalleryOpen(false)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-2xl bg-[#0F1115] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[80vh]"
+                        >
+                            <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
+                                <div className="flex flex-col">
+                                    <h2 className="text-xl font-black text-white font-cairo">متجر الويدجت</h2>
+                                    <p className="text-slate-500 text-xs font-medium">اختر الصناديق التي تريد إضافتها للوحة التحكم</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsGalleryOpen(false)}
+                                    title="إغلاق المتجر"
+                                    aria-label="إغلاق المتجر"
+                                    className="p-2 rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-white/10">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {AVAILABLE_WIDGETS.map((widget) => (
+                                        <div
+                                            key={widget.id}
+                                            onClick={() => addWidget(widget.id)}
+                                            className={`p-4 rounded-2xl border transition-all cursor-pointer group/item
+                                                ${activeWidgetIds.includes(widget.id)
+                                                    ? 'bg-brand-primary/5 border-brand-primary/20 opacity-50 pointer-events-none'
+                                                    : 'bg-white/[0.02] border-white/5 hover:border-brand-primary/40 hover:bg-white/[0.04]'}`}
+                                        >
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className={`p-2 rounded-xl bg-white/5 border border-white/10 group-hover/item:text-brand-primary transition-colors`}>
+                                                    <widget.icon className="w-5 h-5" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <h3 className="text-sm font-bold text-white font-cairo">{widget.title}</h3>
+                                                    <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">{widget.category}</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-[10px] text-slate-400 font-medium leading-relaxed">{widget.description}</p>
+                                            {activeWidgetIds.includes(widget.id) && (
+                                                <div className="mt-2 text-[9px] font-black text-brand-primary uppercase">مضاف حالياً</div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 };
 

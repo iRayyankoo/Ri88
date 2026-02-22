@@ -13,6 +13,7 @@ import {
     Terminal
 } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
+import Link from 'next/link';
 
 const DeveloperPortal = () => {
     const { setCurrentView } = useNavigation();
@@ -56,15 +57,15 @@ const DeveloperPortal = () => {
                     <p className="text-slate-500 font-medium">إدارة الـ <span className="text-brand-primary">API</span> وتحليل أداء أدواتك البرمجية.</p>
                 </div>
                 <div className="flex gap-4">
-                    <button onClick={() => setCurrentView('api-docs')} className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Documentation</button>
-                    <button onClick={() => setCurrentView('error-logs')} className="text-sm font-bold text-slate-400 hover:text-white transition-colors">Logs</button>
-                    <button
-                        onClick={() => setCurrentView('submit-tool')}
+                    <Link href="/pro/api-docs" className="text-sm font-bold text-slate-400 hover:text-white transition-colors flex items-center">Documentation</Link>
+                    <button className="text-sm font-bold text-slate-400 hover:text-white transition-colors cursor-not-allowed opacity-50">Logs</button>
+                    <Link
+                        href="/pro/submit-tool"
                         className="bg-brand-primary hover:bg-brand-primary/90 text-white font-black px-6 py-3 rounded-xl transition-all shadow-xl shadow-brand-primary/30 flex items-center gap-2 text-sm active:scale-95"
                     >
                         <Rocket className="w-4 h-4" />
                         تقديم أداة
-                    </button>
+                    </Link>
                 </div>
             </div>
 
@@ -112,7 +113,7 @@ const DeveloperPortal = () => {
                                 </td>
                                 <td className="px-8 py-6">
                                     <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${key.status === 'نشط' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
-                                            'bg-brand-secondary/10 text-brand-secondary border border-brand-secondary/20'
+                                        'bg-brand-secondary/10 text-brand-secondary border border-brand-secondary/20'
                                         }`}>
                                         {key.status}
                                     </span>

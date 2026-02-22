@@ -1,33 +1,60 @@
-
 import NextAuth from "next-auth"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { prisma } from "@/lib/prisma"
 import Google from "next-auth/providers/google"
-import GitHub from "next-auth/providers/github"
-import LinkedIn from "next-auth/providers/linkedin"
+
+import { DefaultSession } from "next-auth"
+
+declare module "next-auth" {
+    interface Session {
+        user: {
+            id: string;
+            role: string;
+            isPro: boolean;
+            stripeCustomerId?: string | null;
+        } & DefaultSession["user"]
+    }
+
+    interface User {
+        id?: string;
+        role?: string;
+        isPro?: boolean;
+        stripeCustomerId?: string | null;
+    }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+    adapter: PrismaAdapter(prisma),
+    secret: process.env.AUTH_SECRET,
+    trustHost: true,
+    debug: true,
     providers: [
-        Google,
-        GitHub,
-        LinkedIn
+        Google({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        })
     ],
-    pages: {
-        signIn: '/beta', // Custom sign-in modal on beta page
-    },
     callbacks: {
-        async session({ session }: { session: any }) { // Removed 'token' as it's not used in this simple strategy yet
-            // ------------------------------------------------------------------
-            // ROLE-BASED ACCESS CONTROL (RBAC)
-            // ------------------------------------------------------------------
-            // For now, we assign 'admin' to everyone to allow "Customize" access during Beta.
-            // To restrict access, uncomment the lines below and add your specific email:
-
-            // const ADMIN_EMAILS = ['your-email@example.com']; 
-            // session.user.role = ADMIN_EMAILS.includes(session.user?.email) ? 'admin' : 'user';
-
-            session.user.role = 'admin'; // Defaulting to Admin for testing
-            // ------------------------------------------------------------------
-
+        session({ session, user }) {
+            if (session.user) {
+                session.user.id = user.id!;
+                session.user.role = user.role || "USER";
+                session.user.isPro = user.isPro ?? false;
+                session.user.stripeCustomerId = user.stripeCustomerId;
+            }
             return session
         },
     },
+    events: {
+        async signIn({ user }) {
+            // Auto-assign ADMIN role for specified email
+            const adminEmail = process.env.ADMIN_EMAIL;
+            if (user.email === adminEmail && user.role !== "ADMIN") {
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { role: "ADMIN" }
+                });
+            }
+        }
+    }
 })

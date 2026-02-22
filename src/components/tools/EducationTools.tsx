@@ -4,6 +4,7 @@ import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { calculateGrades, calculateGPA, GradeItem, Course, POINTS_MAP_5 } from '@/lib/tools/education';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -15,7 +16,7 @@ interface ToolProps {
 
 // 1. Grade Calculator
 function GradeCalculator() {
-    const [grades, setGrades] = useState<{ name: string, score: number, max: number }[]>([]);
+    const [grades, setGrades] = useState<GradeItem[]>([]);
     const [name, setName] = useState('');
     const [score, setScore] = useState('');
     const [max, setMax] = useState('100');
@@ -26,9 +27,11 @@ function GradeCalculator() {
         setName(''); setScore('');
     };
 
-    const totalScore = grades.reduce((a, b) => a + b.score, 0);
-    const totalMax = grades.reduce((a, b) => a + b.max, 0);
-    const percent = totalMax ? ((totalScore / totalMax) * 100).toFixed(2) : 0;
+    const remove = (index: number) => {
+        setGrades(grades.filter((_, i) => i !== index));
+    };
+
+    const { percent, totalScore, totalMax } = calculateGrades(grades);
 
     return (
         <ToolShell description="حساب الدرجات والنسبة المئوية للمواد الدراسية.">
@@ -55,9 +58,12 @@ function GradeCalculator() {
             {grades.length > 0 && (
                 <div className="mt-8 bg-white/5 rounded-2xl p-6 border border-white/10">
                     {grades.map((g, i) => (
-                        <div key={i} className="flex justify-between items-center border-b border-white/10 py-3 last:border-0">
+                        <div key={i} className="flex justify-between items-center border-b border-white/10 py-3 last:border-0 group">
                             <span className="text-slate-200">{g.name}</span>
-                            <span className="font-mono text-brand-secondary" dir="ltr">{g.score} / {g.max}</span>
+                            <div className="flex items-center gap-4">
+                                <span className="font-mono text-brand-secondary" dir="ltr">{g.score} / {g.max}</span>
+                                <button onClick={() => remove(i)} className="text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                            </div>
                         </div>
                     ))}
                     <div className="mt-4 pt-4 border-t border-white/20 flex justify-between items-center">
@@ -75,20 +81,14 @@ function GradeCalculator() {
 
 // 2. GPA Calculator
 function GPACalculator() {
-    const [scale, setScale] = useState('5');
-    const [courses, setCourses] = useState<{ grade: string, hours: number }[]>([]);
+    const [scale, setScale] = useState<'4' | '5'>('5');
+    const [courses, setCourses] = useState<Course[]>([]);
     const [grade, setGrade] = useState('A+');
     const [hours, setHours] = useState('3');
 
-    const pointsMap5: Record<string, number> = { 'A+': 5.0, 'A': 4.75, 'B+': 4.5, 'B': 4.0, 'C+': 3.5, 'C': 3.0, 'D+': 2.5, 'D': 2.0, 'F': 1.0 };
-    const pointsMap4: Record<string, number> = { 'A+': 4.0, 'A': 3.75, 'B+': 3.5, 'B': 3.0, 'C+': 2.5, 'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0.0 };
-
     const add = () => { setCourses([...courses, { grade, hours: parseFloat(hours) }]); };
     const calc = () => {
-        const map = scale === '5' ? pointsMap5 : pointsMap4;
-        let totalPoints = 0, totalHours = 0;
-        courses.forEach(c => { totalPoints += (map[c.grade] || 0) * c.hours; totalHours += c.hours; });
-        return totalHours ? (totalPoints / totalHours).toFixed(2) : '0.00';
+        return calculateGPA(courses, scale);
     };
 
     return (
@@ -117,7 +117,7 @@ function GPACalculator() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-8">
                 <ToolInputRow label="نظام الدرجات" id="gpa-grade">
                     <ToolSelect id="gpa-grade" value={grade} onChange={e => setGrade(e.target.value)} aria-label="Grade" title="الدرجة (Grade)">
-                        {Object.keys(pointsMap5).map(k => <option key={k} value={k}>{k}</option>)}
+                        {Object.keys(POINTS_MAP_5).map(k => <option key={k} value={k}>{k}</option>)}
                     </ToolSelect>
                 </ToolInputRow>
                 <ToolInputRow label="الساعات">
