@@ -26,6 +26,7 @@ declare module "next-auth" {
 export const { handlers, auth, signIn, signOut } = NextAuth({
     adapter: PrismaAdapter(prisma),
     secret: process.env.AUTH_SECRET,
+    session: { strategy: "jwt" },
     trustHost: true,
     debug: true,
     providers: [
@@ -35,26 +36,56 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
     ],
     callbacks: {
-        session({ session, user }) {
-            if (session.user) {
-                session.user.id = user.id!;
-                session.user.role = user.role || "USER";
-                session.user.isPro = user.isPro ?? false;
-                session.user.stripeCustomerId = user.stripeCustomerId;
-                session.user.image = user.image || '/avatars/avatar1.svg';
+        async jwt({ token, user, trigger, session }) {
+            // Initial sign in or trigger update
+            if (user) {
+                token.id = user.id;
+                token.role = user.role;
+                token.isPro = user.isPro;
+                token.stripeCustomerId = user.stripeCustomerId;
+                token.image = user.image;
             }
-            return session
+            if (trigger === "update" && session?.image) {
+                token.image = session.image;
+            }
+
+            // Check DB for latest role and image just in case
+            if (token.email) {
+                const dbUser = await prisma.user.findUnique({
+                    where: { email: token.email }
+                });
+
+                if (dbUser) {
+                    token.role = dbUser.role;
+                    token.image = dbUser.image;
+                }
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (session.user && token) {
+                session.user.id = token.id as string;
+                session.user.role = token.role as string || "USER";
+                session.user.isPro = token.isPro as boolean ?? false;
+                session.user.stripeCustomerId = token.stripeCustomerId as string | null;
+                session.user.image = token.image as string || '/avatars/avatar1.svg';
+            }
+            return session;
         },
     },
     events: {
         async signIn({ user }) {
             // Auto-assign ADMIN role for specified email
             const adminEmail = process.env.ADMIN_EMAIL;
-            if (user.email === adminEmail && user.role !== "ADMIN") {
-                await prisma.user.update({
-                    where: { id: user.id },
-                    data: { role: "ADMIN" }
-                });
+            if (user.email === adminEmail) {
+                try {
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { role: "ADMIN" }
+                    });
+                } catch (error) {
+                    console.error("Failed to assign admin role:", error);
+                }
             }
         }
     }
