@@ -41,6 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.role = user.role || "USER";
                 session.user.isPro = user.isPro ?? false;
                 session.user.stripeCustomerId = user.stripeCustomerId;
+                session.user.image = user.image || '/avatars/avatar1.svg';
             }
             return session
         },

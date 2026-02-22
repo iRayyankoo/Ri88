@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Moon, Globe, Bell, Shield, Save, Monitor, LogOut } from 'lucide-react';
+import { Moon, Globe, Bell, Shield, Save, Monitor, LogOut, User } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import GlassCard from '../ui/GlassCard';
 
 /*
@@ -12,13 +14,41 @@ import GlassCard from '../ui/GlassCard';
 
 const GlobalSettings = () => {
     const { setIsLoggedIn, setCurrentView, openToolsInModal, setOpenToolsInModal } = useNavigation();
+    const { data: session, update } = useSession();
     const [language, setLanguage] = useState('ar');
     const [theme, setTheme] = useState('dark');
     const [notifications, setNotifications] = useState(true);
+    const [selectedAvatar, setSelectedAvatar] = useState<string>(session?.user?.image || '/avatars/avatar1.svg');
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handleSave = () => {
-        // Mock save
-        alert('تم حفظ الإعدادات بنجاح');
+    const defaultAvatars = [
+        '/avatars/avatar1.svg',
+        '/avatars/avatar2.svg',
+        '/avatars/avatar3.svg',
+        '/avatars/avatar4.svg'
+    ];
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            if (selectedAvatar !== session?.user?.image && selectedAvatar !== '') {
+                // Update avatar
+                const res = await fetch('/api/user/avatar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ avatarUrl: selectedAvatar })
+                });
+                if (res.ok) {
+                    await update({ image: selectedAvatar }); // Update local session
+                }
+            }
+            alert('تم حفظ الإعدادات بنجاح');
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ أثناء الحفظ');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleLogout = () => {
@@ -45,6 +75,62 @@ const GlobalSettings = () => {
 
             {/* Sections */}
             <div className="space-y-10">
+
+                {/* Profile Section */}
+                <GlassCard title="الملف الشخصي" icon={User}>
+                    <div className="p-4 space-y-6">
+                        <div className="flex flex-col md:flex-row gap-8 items-start">
+                            {/* Current Avatar Display */}
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="w-32 h-32 rounded-3xl overflow-hidden shadow-2xl shadow-brand-primary/20 bg-[#0F1115] border border-white/5 relative">
+                                    <Image
+                                        src={selectedAvatar || session?.user?.image || '/avatars/avatar1.svg'}
+                                        alt="Profile Avatar"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="text-center">
+                                    <h3 className="text-white font-bold">{session?.user?.name || 'مستخدم'}</h3>
+                                    <p className="text-sm text-slate-500">{session?.user?.email || ''}</p>
+                                </div>
+                            </div>
+
+                            {/* Avatar Selection */}
+                            <div className="flex-1 space-y-4 md:pt-4">
+                                <label className="text-base font-bold text-slate-300 block">تغيير الصورة الرمزية (الأفاتار)</label>
+                                <div className="flex flex-wrap gap-4">
+                                    {/* Show current external Google avatar if it exists and isn't a default one */}
+                                    {session?.user?.image && !session.user.image.startsWith('/avatars/') && (
+                                        <button
+                                            onClick={() => setSelectedAvatar(session.user!.image!)}
+                                            className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${selectedAvatar === session.user.image ? 'border-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.2)] scale-105' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-white/20'}`}
+                                        >
+                                            <Image src={session.user.image} alt="Google Avatar" fill className="object-cover" />
+                                            {selectedAvatar === session.user.image && (
+                                                <div className="absolute inset-0 bg-brand-primary/20 pointer-events-none" />
+                                            )}
+                                        </button>
+                                    )}
+
+                                    {/* Default Avatars */}
+                                    {defaultAvatars.map((av, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setSelectedAvatar(av)}
+                                            className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${selectedAvatar === av ? 'border-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.2)] scale-105' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-white/20'}`}
+                                        >
+                                            <Image src={av} alt={`Avatar ${index + 1}`} fill className="object-cover" />
+                                            {selectedAvatar === av && (
+                                                <div className="absolute inset-0 bg-brand-primary/20 pointer-events-none" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </GlassCard>
 
                 {/* Visuals */}
                 <GlassCard title="المظهر والعرض" icon={Monitor}>
@@ -165,10 +251,11 @@ const GlobalSettings = () => {
             <div className="sticky bottom-6 flex justify-end">
                 <button
                     onClick={handleSave}
-                    className="flex items-center gap-3 px-10 py-4 rounded-2xl bg-gradient-to-r from-brand-primary to-blue-600 text-white font-black text-lg shadow-2xl shadow-brand-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    disabled={isSaving}
+                    className={`flex items-center gap-3 px-10 py-4 rounded-2xl bg-gradient-to-r from-brand-primary to-blue-600 text-white font-black text-lg shadow-2xl shadow-brand-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all ${isSaving ? 'opacity-70 cursor-wait' : ''}`}
                 >
                     <Save className="w-6 h-6" />
-                    حفظ التغييرات
+                    {isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
                 </button>
             </div>
         </div>
