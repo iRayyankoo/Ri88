@@ -1,7 +1,7 @@
 
 "use client";
 import React, { useState } from 'react';
-import { useSession, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { User, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 
@@ -58,13 +58,13 @@ export default function UserMenu() {
                             <Settings size={16} /> لوحة التحكم
                         </Link>
 
-                        <button
-                            onClick={() => signOut()}
+                        <Link
+                            href="/api/auth/signout"
                             className="dropdown-item"
                             style={{ color: '#ff4444' }}
                         >
                             <LogOut size={16} /> تسجيل خروج
-                        </button>
+                        </Link>
                     </div>
                 </>
             )}

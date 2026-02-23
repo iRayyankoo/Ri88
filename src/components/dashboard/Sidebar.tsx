@@ -10,7 +10,7 @@ import {
     LogOut,
     Sparkles
 } from "lucide-react";
-import { signOut } from "next-auth/react";
+
 
 export function Sidebar({ user }: { user: any }) {
     const pathname = usePathname();
@@ -38,8 +38,8 @@ export function Sidebar({ user }: { user: any }) {
                             key={link.href}
                             href={link.href}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                                    ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/20"
-                                    : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/20"
+                                : "text-slate-400 hover:bg-white/5 hover:text-white"
                                 }`}
                         >
                             <Icon className="w-5 h-5" />
@@ -65,13 +65,13 @@ export function Sidebar({ user }: { user: any }) {
                     </div>
                 </div>
 
-                <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
+                <Link
+                    href="/api/auth/signout"
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors text-sm font-medium"
                 >
                     <LogOut className="w-4 h-4" />
                     تسجيل الخروج
-                </button>
+                </Link>
             </div>
         </div>
     );
