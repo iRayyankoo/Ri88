@@ -37,8 +37,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async jwt({ token, user, trigger, session }) {
+            console.log("[AUTH DEBUG] jwt callback hit. trigger:", trigger);
+
             // Initial sign in or trigger update
             if (user) {
+                console.log("[AUTH DEBUG] jwt callback - Initial user:", user.email, "role:", user.role);
                 token.id = user.id;
                 token.role = user.role;
                 token.isPro = user.isPro;
@@ -56,6 +59,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 });
 
                 if (dbUser) {
+                    console.log("[AUTH DEBUG] jwt callback - DB user found, overriding role to:", dbUser.role);
                     token.role = dbUser.role;
                     token.image = dbUser.image;
                 }
@@ -63,6 +67,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return token;
         },
         async session({ session, token }) {
+            console.log("[AUTH DEBUG] session callback hit. token role:", token?.role);
             if (session.user && token) {
                 session.user.id = token.id as string;
                 session.user.role = token.role as string || "USER";
@@ -76,13 +81,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     events: {
         async signIn({ user }) {
             // Auto-assign ADMIN role for specified email
-            const adminEmail = process.env.ADMIN_EMAIL;
-            if (user.email === adminEmail) {
+            let adminEmail = process.env.ADMIN_EMAIL || "";
+            // Remove any extra quotes that might come from the env file
+            adminEmail = adminEmail.replace(/['"]/g, '').toLowerCase();
+
+            if (user.email?.toLowerCase() === adminEmail) {
                 try {
                     await prisma.user.update({
                         where: { id: user.id },
                         data: { role: "ADMIN" }
                     });
+                    console.log("[AUTH DEBUG] Successfully set ADMIN role in DB for:", user.email);
                 } catch (error) {
                     console.error("Failed to assign admin role:", error);
                 }
