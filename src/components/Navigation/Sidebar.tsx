@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigation } from '@/context/NavigationContext';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -180,14 +180,17 @@ const Sidebar = () => {
                                         <Puzzle className="w-4 h-4 text-brand-primary" />
                                         {!isSidebarCollapsed && <span className="text-sm font-bold">الامتدادات</span>}
                                     </Link>
-                                    <Link
-                                        href="/api/auth/signout"
-                                        onClick={() => setProfileOpen(false)}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setProfileOpen(false);
+                                            signOut({ callbackUrl: '/' });
+                                        }}
                                         className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors text-slate-500 hover:text-red-400 border-t border-white/5"
                                     >
                                         <LogOut className="w-4 h-4" />
                                         {!isSidebarCollapsed && <span className="text-sm font-bold">تسجيل الخروج</span>}
-                                    </Link>
+                                    </button>
                                 </motion.div>
                             )}
                         </AnimatePresence>
