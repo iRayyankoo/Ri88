@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
     Zap, ArrowLeft, ShieldCheck, Globe,
     Calculator, Percent, Wallet, ArrowRightLeft, Landmark, Coins,
-    Sparkles, ChevronLeft, Star, TrendingUp, Users, Cpu,
+    Sparkles, ChevronLeft, Star, TrendingUp, Users,
     CheckCircle2, Lock, Rocket, BarChart3, Brain, Layers,
     ChevronRight
 } from 'lucide-react';
@@ -64,7 +64,7 @@ const Marquee = ({ items }: { items: string[] }) => (
 );
 
 /* ── Spotlight card ── */
-const SpotlightCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+const SpotlightCard = ({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) => {
     const ref = useRef<HTMLDivElement>(null);
     const [pos, setPos] = useState({ x: 0, y: 0, opacity: 0 });
     const handleMove = (e: React.MouseEvent) => {
@@ -74,6 +74,7 @@ const SpotlightCard = ({ children, className = '' }: { children: React.ReactNode
     };
     return (
         <div ref={ref} onMouseMove={handleMove} onMouseLeave={() => setPos(p => ({ ...p, opacity: 0 }))}
+            onClick={onClick}
             className={`relative overflow-hidden ${className}`}>
             <div style={{ background: `radial-gradient(300px circle at ${pos.x}px ${pos.y}px, rgba(16,185,129,0.08), transparent 70%)`, opacity: pos.opacity, transition: 'opacity 0.3s' }}
                 className="absolute inset-0 pointer-events-none z-0" />
