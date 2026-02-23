@@ -23,14 +23,10 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
     // 1. VISITOR PERSPECTIVE
     if (userRole === 'visitor') {
         return (
-            <div className="min-h-screen bg-black overflow-x-hidden" dir="rtl">
-                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
-                    <Suspense fallback={null}>
-                        <VisitorLanding />
-                    </Suspense>
-                </div>
+            <>
+                <VisitorLanding />
                 <ToolPopup />
-            </div>
+            </>
         );
     }
 
