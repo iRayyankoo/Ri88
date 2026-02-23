@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
-    Zap, ArrowLeft, ShieldCheck, Globe, Network,
+    Zap, ArrowLeft, ShieldCheck, Globe,
     Calculator, Percent, Wallet, ArrowRightLeft, Landmark, Coins,
     Sparkles, ChevronLeft, Star, TrendingUp, Users, Cpu,
     CheckCircle2, Lock, Rocket, BarChart3, Brain, Layers
@@ -48,9 +48,9 @@ const VisitorLanding = () => {
     const { scrollY } = useScroll();
     const heroY = useTransform(scrollY, [0, 400], [0, -60]);
 
-    const fadeUp = {
+    const fadeUp: import('framer-motion').Variants = {
         hidden: { opacity: 0, y: 32 },
-        visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: 'easeOut' } })
+        visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] } })
     };
 
     const stats = [
