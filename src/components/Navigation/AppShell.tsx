@@ -6,7 +6,6 @@ import Header from './Header';
 import MobileHeader from './MobileHeader';
 import BottomNav from './BottomNav';
 import ToolPopup from '../ToolPopup';
-// import FloatingAssistant from '../AIAssistant/FloatingAssistant'; // مُعطَّل مؤقتاً
 import { useNavigation } from '@/context/NavigationContext';
 
 interface AppShellProps {
@@ -17,14 +16,10 @@ interface AppShellProps {
 const VisitorLanding = dynamic(() => import('../Pages/VisitorLanding'), {
     loading: () => <div className="h-screen w-full flex items-center justify-center text-slate-500">جاري تحميل الزائر...</div>
 });
-// Main Dashboard is replaced by children in User mode, but we can have specific dashboard wrappers if needed.
-// For now, we assume 'children' is the User Dashboard content when in 'user' mode.
 
 const AdminSuite = dynamic(() => import('../Pages/AdminSuite'), {
     loading: () => <div className="h-screen w-full flex items-center justify-center text-slate-500">جاري تحميل لوحة الإدارة...</div>
 });
-
-import RoleSwitcher from '../ui/RoleSwitcher';
 
 const AppShell: React.FC<AppShellProps> = ({ children }) => {
     const { userRole } = useNavigation();
@@ -38,9 +33,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
                         <VisitorLanding />
                     </Suspense>
                 </div>
-                {/* Minimal Header/Footer for Visitor can be added here inside VisitorLanding or wrap it */}
-                <ToolPopup /> {/* Visitors might still trigger tools via preview */}
-                <RoleSwitcher />
+                <ToolPopup />
             </div>
         );
     }
@@ -49,7 +42,6 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
     if (userRole === 'admin') {
         return (
             <div className="min-h-screen flex overflow-hidden relative" dir="rtl">
-                {/* Admin-specific Sidebar could go here, or reuse Sidebar with admin props */}
                 <Sidebar />
                 <div className="flex-1 flex flex-col h-screen relative z-10 overflow-hidden">
                     <Header />
@@ -59,7 +51,6 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
                         </Suspense>
                     </main>
                 </div>
-                <RoleSwitcher />
             </div>
         );
     }
@@ -99,13 +90,8 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
                 {/* Tool Launcher Modal */}
                 <ToolPopup />
 
-                {/* AI Assistant — مُعطَّل مؤقتاً */}
-                {/* <FloatingAssistant /> */}
-
                 {/* Mobile Bottom Navigation */}
                 <BottomNav />
-
-                <RoleSwitcher />
             </div>
 
         </div>

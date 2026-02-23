@@ -28,19 +28,10 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     const { data: session, status } = useSession();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userRole, setUserRoleState] = useState<UserRole>('visitor'); // Default to visitor initially
-
-    // Initialize from localStorage on mount
-    useEffect(() => {
-        const savedRole = localStorage.getItem('ri88-debug-role') as UserRole;
-        if (savedRole && ['visitor', 'user', 'admin'].includes(savedRole)) {
-            setUserRoleState(prev => prev !== savedRole ? savedRole : prev);
-        }
-    }, []);
+    const [userRole, setUserRoleState] = useState<UserRole>('visitor');
 
     const setUserRole = (role: UserRole) => {
         setUserRoleState(role);
-        localStorage.setItem('ri88-debug-role', role);
     };
 
     const [currentView, setCurrentView] = useState('landing');
@@ -50,33 +41,22 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     const [showToolPopup, setShowToolPopup] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-    // Sync role with session safely without cascading renders
+    // Sync role directly from the session — no localStorage override
     useEffect(() => {
         if (status === 'loading') return;
-
-        const hasManualOverride = typeof window !== 'undefined' && !!localStorage.getItem('ri88-debug-role');
 
         if (status === 'authenticated') {
             if (!isLoggedIn) setIsLoggedIn(true);
             const role = (session?.user?.role?.toLowerCase() as UserRole) || 'user';
-
-            if (role === 'admin' && userRole !== 'admin') {
-                setUserRoleState('admin');
-                if (typeof window !== 'undefined') localStorage.setItem('ri88-debug-role', 'admin');
-            } else if (!hasManualOverride && userRole !== role) {
-                setUserRoleState(role);
-            }
+            setUserRoleState(role);
         } else if (status === 'unauthenticated') {
             if (isLoggedIn) setIsLoggedIn(false);
-            if (!hasManualOverride && userRole !== 'visitor') {
-                setUserRoleState('visitor');
-            }
+            setUserRoleState('visitor');
         }
-    }, [status, session?.user?.role, isLoggedIn, userRole]);
+    }, [status, session?.user?.role]);
 
     const launchTool = (toolId: string) => {
         setActiveToolId(toolId);
-        // Default to popup since Workspace section is removed
         setShowToolPopup(true);
     };
 
