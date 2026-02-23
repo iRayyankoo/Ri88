@@ -50,24 +50,29 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
     const [showToolPopup, setShowToolPopup] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-    // Sync role with session ONLY when status or session changes, AND no manual override exists
+    // Sync role with session safely without cascading renders
     useEffect(() => {
+        if (status === 'loading') return;
+
         const hasManualOverride = typeof window !== 'undefined' && !!localStorage.getItem('ri88-debug-role');
 
         if (status === 'authenticated') {
-            setIsLoggedIn(prev => !prev ? true : prev);
+            if (!isLoggedIn) setIsLoggedIn(true);
             const role = (session?.user?.role?.toLowerCase() as UserRole) || 'user';
 
-            if (!hasManualOverride) {
-                setUserRoleState(prev => prev !== role ? role : prev);
+            if (role === 'admin' && userRole !== 'admin') {
+                setUserRoleState('admin');
+                if (typeof window !== 'undefined') localStorage.setItem('ri88-debug-role', 'admin');
+            } else if (!hasManualOverride && userRole !== role) {
+                setUserRoleState(role);
             }
         } else if (status === 'unauthenticated') {
-            setIsLoggedIn(prev => prev ? false : prev);
-            if (!hasManualOverride) {
-                setUserRoleState(prev => prev !== 'visitor' ? 'visitor' : prev);
+            if (isLoggedIn) setIsLoggedIn(false);
+            if (!hasManualOverride && userRole !== 'visitor') {
+                setUserRoleState('visitor');
             }
         }
-    }, [status, session]);
+    }, [status, session?.user?.role, isLoggedIn, userRole]);
 
     const launchTool = (toolId: string) => {
         setActiveToolId(toolId);
