@@ -1,256 +1,417 @@
 "use client";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
-    Zap, ArrowLeft, Clock,
+    Zap, ArrowLeft, ShieldCheck, Globe, Network,
     Calculator, Percent, Wallet, ArrowRightLeft, Landmark, Coins,
-    ChevronLeft, Sparkles, Globe, ShieldCheck, Network
+    Sparkles, ChevronLeft, Star, TrendingUp, Users, Cpu,
+    CheckCircle2, Lock, Rocket, BarChart3, Brain, Layers
 } from 'lucide-react';
+import Link from 'next/link';
 import { useVisitorLanding } from '@/hooks/useVisitorLanding';
 
-const ToolIcon = ({ icon, className }: { icon: string, className?: string }) => {
-    switch (icon) {
-        case 'calculator': return <Calculator className={className} />;
-        case 'percent': return <Percent className={className} />;
-        case 'wallet': return <Wallet className={className} />;
-        case 'arrow-right-left': return <ArrowRightLeft className={className} />;
-        case 'landmark': return <Landmark className={className} />;
-        case 'hand-coins': return <Coins className={className} />;
-        default: return <Zap className={className} />;
-    }
+/* ── Tool icon helper ── */
+const ToolIcon = ({ icon, className }: { icon: string; className?: string }) => {
+    const icons: Record<string, React.ElementType> = {
+        calculator: Calculator, percent: Percent, wallet: Wallet,
+        'arrow-right-left': ArrowRightLeft, landmark: Landmark, 'hand-coins': Coins,
+    };
+    const Icon = icons[icon] || Zap;
+    return <Icon className={className} />;
+};
+
+/* ── Animated counter ── */
+const CountUp = ({ end, suffix = '' }: { end: number; suffix?: string }) => {
+    const [val, setVal] = useState(0);
+    const ref = useRef<HTMLSpanElement>(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting) return;
+            let start = 0;
+            const step = () => {
+                start += Math.ceil(end / 60);
+                if (start >= end) { setVal(end); return; }
+                setVal(start);
+                requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+            observer.disconnect();
+        });
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, [end]);
+    return <span ref={ref}>{val.toLocaleString()}{suffix}</span>;
 };
 
 const VisitorLanding = () => {
-    const { popularTools, launchTool, scrollToBrowse, handleStartFree } = useVisitorLanding();
+    const { popularTools, launchTool, handleStartFree } = useVisitorLanding();
+    const { scrollY } = useScroll();
+    const heroY = useTransform(scrollY, [0, 400], [0, -60]);
 
-    const containerVariants: import('framer-motion').Variants = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.05 } }
-    };
-    const itemVariants: import('framer-motion').Variants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 70, damping: 20 } }
+    const fadeUp = {
+        hidden: { opacity: 0, y: 32 },
+        visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: 'easeOut' } })
     };
 
     const stats = [
-        { val: '+50', label: 'أداة ذكية' },
-        { val: '0', label: 'إعلانات' },
-        { val: '∞', label: 'غير محدود' },
-        { val: '100%', label: 'خصوصية' },
+        { icon: Zap, val: 50, suffix: '+', label: 'أداة ذكية', color: 'text-brand-primary' },
+        { icon: Users, val: 1, suffix: 'K+', label: 'مستخدم نشط', color: 'text-cyan-400' },
+        { icon: TrendingUp, val: 99, suffix: '%', label: 'رضا المستخدمين', color: 'text-emerald-400' },
+        { icon: Globe, val: 12, suffix: '+', label: 'دولة تستخدمها', color: 'text-violet-400' },
     ];
 
     const features = [
-        { icon: Globe, title: 'وصول عالمي', desc: 'أدوات مفعّلة دولياً' },
-        { icon: ShieldCheck, title: 'أمان متطور', desc: 'تشفير بيانات عسكري' },
-        { icon: Zap, title: 'سرعة خيالية', desc: 'استجابة فورية' },
-        { icon: Network, title: 'شبكة متكاملة', desc: 'بيئة عمل مترابطة' },
+        { icon: Brain, title: 'أدوات مدعومة بالذكاء الاصطناعي', desc: 'أكثر من 50 أداة ذكية تعمل بتقنيات GPT-4 وNLP متقدمة — جاهزة للاستخدام الفوري', color: 'from-brand-primary/20 to-brand-primary/5', border: 'border-brand-primary/20', icon_color: 'text-brand-primary' },
+        { icon: ShieldCheck, title: 'أمان بمعايير عسكرية', desc: 'تشفير AES-256 من طرف إلى طرف. بياناتك لا تُخزَّن ولا تُباع لأي طرف ثالث', color: 'from-cyan-500/20 to-cyan-500/5', border: 'border-cyan-500/20', icon_color: 'text-cyan-400' },
+        { icon: Rocket, title: 'سرعة خيالية', desc: 'استجابة أقل من 100ms لكل أداة. بنية تحتية موزعة على 6 مناطق جغرافية عالمياً', color: 'from-orange-500/20 to-orange-500/5', border: 'border-orange-500/20', icon_color: 'text-orange-400' },
+        { icon: Layers, title: 'واجهة واحدة — كل شيء', desc: 'لا داعي للتنقل بين 20 تطبيق. كل الأدوات في مكان واحد، منظّمة ومتكاملة', color: 'from-violet-500/20 to-violet-500/5', border: 'border-violet-500/20', icon_color: 'text-violet-400' },
+        { icon: BarChart3, title: 'تحليلات متقدمة', desc: 'لوحات تحكم ذكية، تقارير مخصصة، ورؤى فورية لكل مجال عمل', color: 'from-emerald-500/20 to-emerald-500/5', border: 'border-emerald-500/20', icon_color: 'text-emerald-400' },
+        { icon: Cpu, title: 'بنية متقدمة', desc: 'مبنية بـ Next.js 15، Prisma، وVercel Edge — أداء استثنائي في كل مكان', color: 'from-pink-500/20 to-pink-500/5', border: 'border-pink-500/20', icon_color: 'text-pink-400' },
+    ];
+
+    const plans = [
+        {
+            name: 'مجاني', price: '0', currency: 'ر.س', period: '/شهر',
+            color: 'border-white/10', badge: null,
+            features: ['5 أدوات أساسية', 'استخدام محدود', 'دعم مجتمعي', 'واجهة عربية كاملة']
+        },
+        {
+            name: 'برو', price: '49', currency: 'ر.س', period: '/شهر',
+            color: 'border-brand-primary/40', badge: 'الأكثر شيوعاً',
+            features: ['جميع الأدوات (+50)', 'استخدام غير محدود', 'دعم أولوية 24/7', 'تصدير البيانات', 'تكامل API', 'تحليلات متقدمة']
+        },
+    ];
+
+    const testimonials = [
+        { name: 'أحمد الغامدي', role: 'محلل مالي', text: 'وفّر لي RI88 أكثر من 3 ساعات يومياً. الأدوات المالية احترافية جداً وسهلة الاستخدام.', stars: 5 },
+        { name: 'سارة المطيري', role: 'مديرة تسويق', text: 'أخيراً وجدت منصة عربية بهذا المستوى! الواجهة نظيفة والأدوات تساعدني فعلاً في عملي.', stars: 5 },
+        { name: 'فهد الشمري', role: 'مطور برمجيات', text: 'بنية تقنية متينة وسرعة ممتازة. يستحق الدعم والاشتراك بكل تأكيد.', stars: 5 },
     ];
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="relative w-full pb-16 space-y-10 sm:space-y-14"
-        >
-            {/* AMBIENT BG */}
-            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
-                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] rounded-full blur-[140px] opacity-35 bg-emerald-500/15" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full blur-[130px] opacity-25 bg-cyan-500/12" />
+        <div className="relative w-full bg-[#080810] overflow-x-hidden" dir="rtl">
+
+            {/* ── AMBIENT BG ── */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-[180px] opacity-20 bg-brand-primary/30" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[160px] opacity-15 bg-cyan-500/20" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[140px] opacity-10 bg-violet-500/20" />
             </div>
 
-            {/* ── HERO ── */}
-            <section className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 lg:gap-20 pt-6 sm:pt-10">
-
-                {/* Text Block */}
-                <div className="w-full lg:flex-1 text-right space-y-6 sm:space-y-8">
-
-                    {/* Badge */}
-                    <motion.div
-                        variants={itemVariants}
-                        className="flex items-center gap-4"
-                    >
-                        <div className="inline-flex items-center gap-2 sm:gap-3 px-4 py-2 sm:px-5 rounded-full border text-xs sm:text-sm font-bold tracking-widest uppercase bg-cyan-500/5 border-cyan-500/30 text-cyan-400">
-                            <Network className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                            <span>شبكة المطورين المتقدمين</span>
-                        </div>
-                        <div className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-black font-cairo animate-pulse">
-                            تشغيل تجريبي 🚀
-                        </div>
-                    </motion.div>
-
-                    {/* Heading */}
-                    <div className="space-y-0">
-                        <motion.h1
-                            variants={itemVariants}
-                            className="text-3xl sm:text-4xl lg:text-6xl font-black text-white font-cairo leading-[1.1] tracking-tight"
-                        >
-                            مستقبل
-                        </motion.h1>
-                        <motion.h1
-                            variants={itemVariants}
-                            className="text-3xl sm:text-4xl lg:text-6xl font-black font-cairo leading-[1.1] tracking-tight bg-gradient-to-br from-cyan-400 via-emerald-400 to-cyan-500 bg-clip-text text-transparent"
-                        >
-                            الابتكار الرقمي
-                        </motion.h1>
+            {/* ── STICKY NAV ── */}
+            <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#080810]/80 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-brand-primary flex items-center justify-center font-black text-white text-sm">R</div>
+                        <span className="text-white font-black text-lg tracking-tight">RI88</span>
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-brand-primary/15 text-brand-primary border border-brand-primary/20 uppercase tracking-widest">BETA</span>
                     </div>
-
-                    {/* Subtitle */}
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-slate-400 text-base sm:text-lg font-medium max-w-lg ml-auto leading-relaxed"
-                    >
-                        انضم إلى المنصة الأكثر تطوراً في الشرق الأوسط، حيث تجتمع
-                        الأدوات المتقدمة والذكاء الاصطناعي في واجهة واحدة.
-                    </motion.p>
-
-                    {/* CTAs */}
-                    <motion.div
-                        variants={itemVariants}
-                        className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4"
-                    >
-                        <button
-                            onClick={handleStartFree}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base bg-gradient-to-r from-emerald-500 to-cyan-500 text-black shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-transform overflow-hidden relative group"
-                        >
-                            <div className="absolute inset-0 bg-white/15 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <span className="relative z-10">ابدأ مجاناً</span>
-                            <ChevronLeft className="relative z-10 w-5 h-5" />
-                        </button>
-                        <button
-                            onClick={scrollToBrowse}
-                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-4 text-slate-400 font-bold text-base hover:text-white transition-colors group border border-white/5 rounded-2xl hover:border-white/10"
-                        >
-                            تصفح الأدوات
-                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        </button>
-                    </motion.div>
+                    <div className="flex items-center gap-3">
+                        <Link href="/auth" className="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition-colors">
+                            تسجيل الدخول
+                        </Link>
+                        <Link href="/auth" className="px-5 py-2 rounded-xl text-sm font-bold bg-brand-primary hover:bg-brand-primary/90 text-white transition-all active:scale-95 shadow-lg shadow-brand-primary/20">
+                            ابدأ مجاناً ←
+                        </Link>
+                    </div>
                 </div>
+            </nav>
 
-                {/* Feature Cards — 2×2 on mobile, side-by-side on desktop */}
-                <motion.div
-                    variants={itemVariants}
-                    className="w-full grid grid-cols-2 gap-3 lg:w-[420px] lg:shrink-0 lg:gap-4"
-                >
-                    {features.map((f, i) => (
-                        <motion.div
-                            key={i}
-                            whileHover={{ y: -4 }}
-                            className="relative p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col items-center text-center gap-3 bg-[rgba(10,26,20,0.7)] border border-emerald-500/10 backdrop-blur-lg"
-                        >
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20">
-                                <f.icon className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
-                            </div>
-                            <div>
-                                <p className="font-bold text-white text-xs sm:text-sm">{f.title}</p>
-                                <p className="text-slate-500 text-[10px] sm:text-xs mt-0.5">{f.desc}</p>
-                            </div>
-                        </motion.div>
-                    ))}
+            {/* ── HERO ── */}
+            <motion.section style={{ y: heroY }} className="relative z-10 pt-20 pb-32 px-4 sm:px-8 max-w-7xl mx-auto text-center">
+                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brand-primary/30 bg-brand-primary/8 text-brand-primary text-xs font-bold mb-8">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>منصة الأدوات الذكية #1 في الشرق الأوسط</span>
+                    </div>
                 </motion.div>
-            </section>
 
-            {/* ── TOOLS GRID ── */}
-            <section className="space-y-10">
-                <div className="text-center space-y-2 sm:space-y-3">
-                    <motion.h2
-                        variants={itemVariants}
-                        className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-cairo tracking-tight"
+                <motion.h1
+                    initial="hidden" animate="visible" variants={fadeUp} custom={1}
+                    className="text-4xl sm:text-6xl lg:text-7xl font-black text-white font-cairo leading-[1.1] tracking-tight mb-6"
+                >
+                    كل الأدوات التي تحتاجها
+                    <br />
+                    <span className="bg-gradient-to-r from-brand-primary via-cyan-400 to-brand-primary bg-clip-text text-transparent">
+                        في مكان واحد
+                    </span>
+                </motion.h1>
+
+                <motion.p
+                    initial="hidden" animate="visible" variants={fadeUp} custom={2}
+                    className="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-12"
+                >
+                    RI88 هي منصة أدوات ذكاء اصطناعي متكاملة، مبنية للمحترفين العرب.
+                    أكثر من 50 أداة مالية، تحليلية، وإنتاجية — كلها مجانية للبدء.
+                </motion.p>
+
+                <motion.div
+                    initial="hidden" animate="visible" variants={fadeUp} custom={3}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                >
+                    <button
+                        onClick={handleStartFree}
+                        className="flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-lg bg-brand-primary hover:bg-brand-primary/90 text-white shadow-2xl shadow-brand-primary/30 hover:scale-105 active:scale-95 transition-all"
                     >
-                        أدوات احترافية{' '}
-                        <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                            للجميع
-                        </span>
-                    </motion.h2>
-                    <motion.p variants={itemVariants} className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
-                        كل الأدوات التي تحتاجها، مصممة بعناية فائقة.
-                    </motion.p>
-                </div>
+                        <span>ابدأ مجاناً الآن</span>
+                        <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <a href="#features" className="flex items-center gap-2 px-8 py-4 rounded-2xl text-slate-400 font-bold hover:text-white transition-colors border border-white/8 hover:border-white/15">
+                        <span>استكشف المميزات</span>
+                        <ArrowLeft className="w-4 h-4" />
+                    </a>
+                </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {popularTools.map((tool) => (
-                        <motion.div
-                            key={tool.id}
-                            variants={itemVariants}
-                            whileHover={{ y: -6 }}
-                            onClick={() => launchTool(tool.id)}
-                            className="group relative rounded-2xl sm:rounded-[28px] overflow-hidden cursor-pointer bg-[rgba(8,20,16,0.8)] border border-emerald-500/8 backdrop-blur-xl transition-all duration-300 hover:border-emerald-500/30"
-                        >
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
-
-                            <div className="relative p-5 sm:p-7 flex flex-col items-start gap-4 sm:gap-5">
-                                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-400 bg-emerald-500/8 border border-emerald-500/15 group-hover:scale-110 transition-transform duration-300">
-                                    <ToolIcon icon={tool.icon} className="w-6 h-6 sm:w-7 sm:h-7" />
-                                </div>
-
-                                <div className="space-y-1.5 flex-1">
-                                    <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-cyan-400 transition-colors font-cairo">
-                                        {tool.titleAr}
-                                    </h3>
-                                    <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-2">
-                                        {tool.descAr}
-                                    </p>
-                                </div>
-
-                                <div className="w-full flex items-center justify-between pt-4 border-t border-white/[0.04]">
-                                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400">
-                                        مجانية
-                                    </span>
-                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-slate-500 group-hover:bg-emerald-500 group-hover:text-black transition-all duration-300 border border-white/8">
-                                        <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </section>
-
-            {/* ── CTA ── */}
-            <section className="relative">
-                <div className="absolute inset-0 rounded-[28px] sm:rounded-[40px] blur-3xl opacity-20 bg-gradient-to-r from-emerald-500 to-cyan-500 pointer-events-none" />
-
-                <div className="relative rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-20 text-center overflow-hidden bg-[rgba(6,18,14,0.85)] border border-emerald-500/15 backdrop-blur-2xl">
-                    <div className="absolute top-0 right-0 w-48 h-48 sm:w-80 sm:h-80 rounded-full blur-[80px] bg-emerald-500/10 pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-80 sm:h-80 rounded-full blur-[80px] bg-cyan-500/8 pointer-events-none" />
-
-                    <div className="relative z-10 max-w-3xl mx-auto space-y-8 sm:space-y-10">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                            <Clock className="w-4 h-4" />
-                            <span>عرض خاص لفترة محدودة</span>
-                        </div>
-
-                        <h2 className="text-xl sm:text-2xl lg:text-4xl font-black text-white font-cairo leading-tight">
-                            انطلق بإنتاجيتك إلى{' '}
-                            <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                                أبعاد جديدة
-                            </span>
-                        </h2>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 py-6 sm:py-8 border-t border-b border-white/6">
-                            {stats.map((s, i) => (
-                                <div key={i} className="text-center space-y-1 sm:space-y-2">
-                                    <div className="text-2xl sm:text-3xl font-black font-mono bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                                        {s.val}
-                                    </div>
-                                    <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
+                {/* Social proof */}
+                <motion.div
+                    initial="hidden" animate="visible" variants={fadeUp} custom={4}
+                    className="mt-14 flex flex-wrap items-center justify-center gap-6 text-slate-500 text-sm"
+                >
+                    <div className="flex items-center gap-2">
+                        <div className="flex -space-x-2 rtl:space-x-reverse">
+                            {['bg-brand-primary', 'bg-cyan-500', 'bg-violet-500', 'bg-emerald-500'].map((c, i) => (
+                                <div key={i} className={`w-7 h-7 rounded-full ${c} border-2 border-[#080810] flex items-center justify-center text-[9px] font-black text-white`}>
+                                    {['أ', 'س', 'م', 'ف'][i]}
                                 </div>
                             ))}
                         </div>
-
-                        <button
-                            onClick={handleStartFree}
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 sm:gap-4 px-10 sm:px-14 py-4 sm:py-5 rounded-2xl sm:rounded-3xl font-black text-lg sm:text-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-black shadow-[0_0_50px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-transform relative overflow-hidden group"
-                        >
-                            <div className="absolute inset-0 bg-white/15 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <span className="relative z-10">افتح حساب مجاني</span>
-                            <Sparkles className="relative z-10 w-5 h-5 animate-pulse" />
-                        </button>
+                        <span>+1000 مستخدم نشط</span>
                     </div>
+                    <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
+                        <span className="mr-1">4.9/5</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Lock className="w-4 h-4 text-emerald-500" />
+                        <span>لا يلزم بطاقة ائتمانية</span>
+                    </div>
+                </motion.div>
+            </motion.section>
+
+            {/* ── STATS ── */}
+            <section className="relative z-10 py-16 border-y border-white/5 bg-white/[0.02]">
+                <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-8">
+                    {stats.map((s, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className="text-center"
+                        >
+                            <s.icon className={`w-6 h-6 mx-auto mb-3 ${s.color}`} />
+                            <div className={`text-3xl sm:text-4xl font-black font-mono ${s.color}`}>
+                                <CountUp end={s.val} suffix={s.suffix} />
+                            </div>
+                            <div className="text-slate-500 text-xs font-bold mt-1 uppercase tracking-widest">{s.label}</div>
+                        </motion.div>
+                    ))}
                 </div>
             </section>
-        </motion.div>
+
+            {/* ── FEATURES ── */}
+            <section id="features" className="relative z-10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                        className="text-3xl sm:text-5xl font-black text-white font-cairo mb-4"
+                    >
+                        لماذا <span className="text-brand-primary">RI88</span> ؟
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+                        className="text-slate-400 text-lg max-w-xl mx-auto"
+                    >
+                        منصة مصممة من الصفر للمحترف العربي — بدون تعقيد، بدون إعلانات، بدون حدود.
+                    </motion.p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {features.map((f, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+                            whileHover={{ y: -6 }}
+                            className={`group relative p-7 rounded-3xl bg-gradient-to-br ${f.color} border ${f.border} backdrop-blur-sm cursor-default`}
+                        >
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border ${f.border} mb-5`}>
+                                <f.icon className={`w-6 h-6 ${f.icon_color}`} />
+                            </div>
+                            <h3 className="text-white font-black text-lg mb-2 font-cairo">{f.title}</h3>
+                            <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ── TOOLS SHOWCASE ── */}
+            <section className="relative z-10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                        className="text-3xl sm:text-5xl font-black text-white font-cairo mb-4"
+                    >
+                        أدوات تُحدث فرقاً حقيقياً
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+                        className="text-slate-400 text-lg"
+                    >
+                        جرّب مباشرة — لا تسجيل مطلوب للتصفح
+                    </motion.p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {popularTools.map((tool, i) => (
+                        <motion.div
+                            key={tool.id}
+                            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+                            whileHover={{ y: -5, scale: 1.01 }}
+                            onClick={() => launchTool(tool.id)}
+                            className="group relative rounded-3xl overflow-hidden cursor-pointer bg-white/[0.03] border border-white/8 hover:border-brand-primary/30 backdrop-blur-xl transition-all duration-300 p-6 flex flex-col gap-4"
+                        >
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-brand-primary/5 to-transparent pointer-events-none" />
+                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-brand-primary/10 border border-brand-primary/20 group-hover:scale-110 transition-transform">
+                                <ToolIcon icon={tool.icon} className="w-6 h-6 text-brand-primary" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-white font-black text-lg font-cairo group-hover:text-brand-primary transition-colors">{tool.titleAr}</h3>
+                                <p className="text-slate-500 text-sm mt-1 leading-relaxed line-clamp-2">{tool.descAr}</p>
+                            </div>
+                            <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                                <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">مجانية</span>
+                                <div className="w-8 h-8 rounded-full border border-white/10 group-hover:bg-brand-primary group-hover:border-brand-primary flex items-center justify-center transition-all">
+                                    <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+                <motion.div className="text-center mt-10" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+                    <Link href="/auth" className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl border border-white/10 text-slate-400 hover:text-white hover:border-white/20 font-bold transition-all text-sm">
+                        شاهد جميع الأدوات الـ50+
+                        <ArrowLeft className="w-4 h-4" />
+                    </Link>
+                </motion.div>
+            </section>
+
+            {/* ── TESTIMONIALS ── */}
+            <section className="relative z-10 py-24 px-4 sm:px-8 max-w-7xl mx-auto">
+                <div className="text-center mb-14">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                        className="text-3xl sm:text-5xl font-black text-white font-cairo"
+                    >
+                        ماذا يقول <span className="text-brand-primary">مستخدمونا</span>
+                    </motion.h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    {testimonials.map((t, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                            className="p-6 rounded-3xl bg-white/[0.03] border border-white/8"
+                        >
+                            <div className="flex gap-1 mb-4">
+                                {[...Array(t.stars)].map((_, j) => <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
+                            </div>
+                            <p className="text-slate-300 text-sm leading-relaxed mb-5">&ldquo;{t.text}&rdquo;</p>
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-brand-primary flex items-center justify-center text-white font-black text-sm">{t.name[0]}</div>
+                                <div>
+                                    <p className="text-white font-bold text-sm">{t.name}</p>
+                                    <p className="text-slate-500 text-xs">{t.role}</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ── PRICING ── */}
+            <section className="relative z-10 py-24 px-4 sm:px-8 max-w-5xl mx-auto">
+                <div className="text-center mb-14">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                        className="text-3xl sm:text-5xl font-black text-white font-cairo mb-4"
+                    >
+                        باقات تناسب الجميع
+                    </motion.h2>
+                    <p className="text-slate-400 text-lg">ابدأ مجاناً وطوّر تجربتك متى تريد</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {plans.map((plan, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
+                            className={`relative rounded-3xl p-8 border ${plan.color} ${i === 1 ? 'bg-gradient-to-br from-brand-primary/10 to-brand-primary/5' : 'bg-white/[0.03]'}`}
+                        >
+                            {plan.badge && (
+                                <div className="absolute -top-3.5 right-8 px-4 py-1 rounded-full bg-brand-primary text-white text-xs font-black">
+                                    {plan.badge}
+                                </div>
+                            )}
+                            <div className="mb-6">
+                                <h3 className="text-white font-black text-xl mb-2">{plan.name}</h3>
+                                <div className="flex items-end gap-1">
+                                    <span className="text-4xl font-black text-white">{plan.price}</span>
+                                    <span className="text-slate-400 text-sm mb-1">{plan.currency}{plan.period}</span>
+                                </div>
+                            </div>
+                            <ul className="space-y-3 mb-8">
+                                {plan.features.map((f, j) => (
+                                    <li key={j} className="flex items-center gap-3 text-sm text-slate-300">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                        {f}
+                                    </li>
+                                ))}
+                            </ul>
+                            <Link
+                                href="/auth"
+                                className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold transition-all active:scale-95 ${i === 1
+                                    ? 'bg-brand-primary hover:bg-brand-primary/90 text-white shadow-lg shadow-brand-primary/25'
+                                    : 'border border-white/10 text-white hover:bg-white/5'
+                                    }`}
+                            >
+                                {i === 0 ? 'ابدأ مجاناً' : 'ابدأ النسخة البرو'}
+                                <ChevronLeft className="w-4 h-4" />
+                            </Link>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ── FINAL CTA ── */}
+            <section className="relative z-10 py-32 px-4 text-center">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-[600px] h-[300px] bg-brand-primary/20 blur-[120px] rounded-full" />
+                </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                    className="relative max-w-3xl mx-auto"
+                >
+                    <h2 className="text-4xl sm:text-6xl font-black text-white font-cairo mb-6 leading-tight">
+                        الوقت الأفضل للبدء
+                        <br />
+                        <span className="text-brand-primary">هو الآن</span>
+                    </h2>
+                    <p className="text-slate-400 text-xl mb-10">انضم لآلاف المحترفين الذين يستخدمون RI88 يومياً لتسريع أعمالهم.</p>
+                    <button
+                        onClick={handleStartFree}
+                        className="inline-flex items-center gap-3 px-14 py-5 rounded-3xl font-black text-xl bg-brand-primary hover:bg-brand-primary/90 text-white shadow-2xl shadow-brand-primary/30 hover:scale-105 active:scale-95 transition-all"
+                    >
+                        <Sparkles className="w-5 h-5" />
+                        افتح حسابك المجاني
+                        <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <p className="text-slate-600 text-sm mt-5">لا بطاقة ائتمانية · لا إعلانات · خصوصية تامة</p>
+                </motion.div>
+            </section>
+
+            {/* ── FOOTER ── */}
+            <footer className="relative z-10 border-t border-white/5 py-8 px-4 text-center">
+                <p className="text-slate-600 text-sm">© 2025 RI88. جميع الحقوق محفوظة. صُنع بـ ❤️ للمحترف العربي.</p>
+            </footer>
+        </div>
     );
 };
 
