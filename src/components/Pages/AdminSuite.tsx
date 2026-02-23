@@ -32,12 +32,6 @@ const AdminSuite = () => {
     const [isUnauthorized, setIsUnauthorized] = useState(false);
 
     const loadData = useCallback(async () => {
-        // Only load if the UI state thinks we are an admin (prevents unnecessary server crashes during role switching)
-        if (userRole !== 'admin') {
-            setLoading(false);
-            return;
-        }
-
         try {
             setIsUnauthorized(false);
             const [statsData, usersData] = await Promise.all([
@@ -58,7 +52,7 @@ const AdminSuite = () => {
         } finally {
             setLoading(false);
         }
-    }, [userRole]);
+    }, []);
 
     useEffect(() => {
         loadData();

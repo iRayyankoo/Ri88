@@ -36,34 +36,39 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token, user, trigger, session }) {
-            console.log("[AUTH DEBUG] jwt callback hit. trigger:", trigger);
-
-            // Initial sign in or trigger update
+        async jwt({ token, user, trigger, session, account }) {
+            // Initial sign in - merge info from user object
             if (user) {
-                console.log("[AUTH DEBUG] jwt callback - Initial user:", user.email, "role:", user.role);
                 token.id = user.id;
                 token.role = user.role;
                 token.isPro = user.isPro;
                 token.stripeCustomerId = user.stripeCustomerId;
                 token.image = user.image;
-            }
-            if (trigger === "update" && session?.image) {
-                token.image = session.image;
-            }
 
-            // Check DB for latest role and image just in case
-            if (token.email) {
-                const dbUser = await prisma.user.findUnique({
-                    where: { email: token.email }
-                });
-
-                if (dbUser) {
-                    console.log("[AUTH DEBUG] jwt callback - DB user found, overriding role to:", dbUser.role);
-                    token.role = dbUser.role;
-                    token.image = dbUser.image;
+                // On first sign in (when account is present), fetch fresh data from DB to ensure Latest info
+                if (account?.provider === 'google' && token.email) {
+                    try {
+                        const dbUser = await prisma.user.findUnique({
+                            where: { email: token.email }
+                        });
+                        if (dbUser) {
+                            token.role = dbUser.role;
+                            token.isPro = dbUser.isPro;
+                            token.image = dbUser.image;
+                        }
+                    } catch (error) {
+                        console.error("[AUTH ERROR] Failed to fetch DB user during JWT sign in:", error);
+                    }
                 }
             }
+
+            // Handle manual session updates
+            if (trigger === "update" && session) {
+                if (session.image) token.image = session.image;
+                if (session.user?.role) token.role = session.user.role;
+                if (session.user?.isPro !== undefined) token.isPro = session.user.isPro;
+            }
+
             return token;
         },
         async session({ session, token }) {
