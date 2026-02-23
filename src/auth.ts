@@ -36,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token, user, trigger, session, account }) {
+        async jwt({ token, user, trigger, session }) {
             // Initial sign in - merge info from user object
             if (user) {
                 token.id = user.id;
@@ -44,29 +44,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.isPro = user.isPro;
                 token.stripeCustomerId = user.stripeCustomerId;
                 token.image = user.image;
-
-                // On first sign in (when account is present), fetch fresh data from DB to ensure Latest info
-                if (account?.provider === 'google' && token.email) {
-                    try {
-                        const dbUser = await prisma.user.findUnique({
-                            where: { email: token.email }
-                        });
-                        if (dbUser) {
-                            token.role = dbUser.role;
-                            token.isPro = dbUser.isPro;
-                            token.image = dbUser.image;
-                        }
-                    } catch (error) {
-                        console.error("[AUTH ERROR] Failed to fetch DB user during JWT sign in:", error);
-                    }
-                }
             }
 
-            // Handle manual session updates
+            // Handle manual session updates (e.g. avatar change)
             if (trigger === "update" && session) {
                 if (session.image) token.image = session.image;
                 if (session.user?.role) token.role = session.user.role;
                 if (session.user?.isPro !== undefined) token.isPro = session.user.isPro;
+            }
+
+            // Always fetch latest role and image from DB to pick up any changes (e.g. admin promotion)
+            if (token.email) {
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { email: token.email },
+                        select: { role: true, isPro: true, image: true }
+                    });
+                    if (dbUser) {
+                        token.role = dbUser.role;
+                        token.isPro = dbUser.isPro;
+                        token.image = dbUser.image;
+                    }
+                } catch (error) {
+                    console.error("[AUTH ERROR] Failed to fetch DB user in JWT callback:", error);
+                }
             }
 
             return token;
