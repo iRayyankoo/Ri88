@@ -162,7 +162,7 @@ const Sidebar = () => {
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                                     transition={{ duration: 0.15 }}
-                                    className="absolute bottom-[80px] left-4 right-4 bg-[#13131A] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-[100]"
+                                    className="absolute bottom-full mb-2 left-0 right-0 bg-[#13131A] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50"
                                 >
                                     <Link
                                         href="/pro/dashboard"
@@ -193,12 +193,10 @@ const Sidebar = () => {
                         </AnimatePresence>
 
                         {/* Profile Card */}
-                        <div
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setProfileOpen(!profileOpen);
-                            }}
-                            className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} p-3 rounded-2xl bg-[#13131A] hover:bg-white/5 transition-all cursor-pointer border border-white/5 group relative z-40`}
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            onClick={() => setProfileOpen(!profileOpen)}
+                            className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} p-3 rounded-2xl bg-[#13131A] hover:bg-white/5 transition-all cursor-pointer border border-white/5 group`}
                         >
                             {!isSidebarCollapsed && (
                                 <div className="flex-1 text-right">
@@ -217,7 +215,7 @@ const Sidebar = () => {
                                     <User className="w-5 h-5" />
                                 )}
                             </div>
-                        </div>
+                        </motion.div>
                     </>
                 ) : (
                     <Link

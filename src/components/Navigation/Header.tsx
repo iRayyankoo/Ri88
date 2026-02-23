@@ -81,10 +81,10 @@ const Header = () => {
                 ) : isLoggedIn ? (
                     <Link
                         href="/pro/settings"
-                        className="flex items-center gap-3 pl-1 pr-1 lg:pr-2 py-1 rounded-xl hover:bg-white/5 transition-all group relative z-50 cursor-pointer"
+                        className="flex items-center gap-3 pl-1 pr-1 lg:pr-2 py-1 rounded-xl hover:bg-white/5 transition-all group"
                     >
                         {/* Avatar */}
-                        <div className="w-10 h-10 bg-gradient-to-tr from-brand-primary to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-primary/20 ring-2 ring-transparent group-hover:ring-brand-primary/20 transition-all overflow-hidden shrink-0">
+                        <div className="w-10 h-10 bg-gradient-to-tr from-brand-primary to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-primary/20 ring-2 ring-transparent group-hover:ring-brand-primary/20 transition-all overflow-hidden">
                             {session?.user?.image ? (
                                 <img src={session.user.image} alt="User" className="w-full h-full object-cover" />
                             ) : (
