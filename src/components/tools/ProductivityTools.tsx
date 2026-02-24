@@ -8,7 +8,8 @@ import {
     generateQRUrl, generatePassword,
     pickRandomItem
 } from '@/lib/tools/productivity';
-// 1. QR Generator
+import { IbanValidator, HijriDate } from './SaudiTools';
+import { InvoiceGenerator, BillSplitter } from './FinanceTools';
 
 interface ToolProps {
     toolId: string;
@@ -436,7 +437,12 @@ export default function ProductivityTools({ toolId }: ToolProps) {
         case 'speed': return <SpeedTest />;
         case 'prod-pomodoro': return <PomodoroTimer />;
         case 'life-decision': return <WheelOfLuck />;
-        case 'prod-iban': return <div className="text-center py-12 text-gray-400">تحقق الآيبان — قريباً</div>;
+        case 'saudi-hijri': return <HijriDate />;
+        case 'life-iban': return <IbanValidator />;
+        case 'prod-iban': return <IbanValidator />;
+        case 'prod-inv': return <InvoiceGenerator />;
+        case 'life-bill': return <BillSplitter />;
+        case 'life-tip': return <BillSplitter />;
         case 'prod-reaction': return <div className="text-center py-12 text-gray-400">اختبار وقت الاستجابة — قريباً</div>;
         default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
     }

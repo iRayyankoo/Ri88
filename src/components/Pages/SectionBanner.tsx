@@ -3,7 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
     Calculator, FileText, Image as ImageIcon, Terminal, Sparkles,
-    Grid, FolderOpen, Star
+    Grid, FolderOpen, Star, Zap, Clock, Smartphone, Palette, Film,
+    Flag, Trophy, Activity
 } from 'lucide-react';
 
 interface Tool {
@@ -25,9 +26,9 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
 
     React.useEffect(() => {
         if (tools.length > 0) {
-            // Shuffle and pick up to 10 - only on client
+            // Simplified for performance - no heavy tickers
             const shuffled = [...tools].sort(() => 0.5 - Math.random());
-            setRandomTools(shuffled.slice(0, 10));
+            setRandomTools(shuffled.slice(0, 3));
         }
     }, [tools]);
 
@@ -74,6 +75,60 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
             gradient: "from-slate-500/20 to-gray-900/20",
             patternColor: "bg-slate-500"
         },
+        'productivity': {
+            description: "Workflow Boost - أدوات لإنجاز مهامك اليومية بكفاءة.",
+            icon: Zap,
+            gradient: "from-yellow-400/20 to-amber-900/20",
+            patternColor: "bg-yellow-400"
+        },
+        'time': {
+            description: "Time Management - حاسبات التاريخ والوقت والفروقات الزمنية.",
+            icon: Clock,
+            gradient: "from-sky-400/20 to-blue-900/20",
+            patternColor: "bg-sky-400"
+        },
+        'content': {
+            description: "Content Creator - حلول وأفكار وإدارة شاملة للمحتوى.",
+            icon: Smartphone,
+            gradient: "from-cyan-400/20 to-lime-900/20",
+            patternColor: "bg-cyan-400"
+        },
+        'design': {
+            description: "Creative Suite - مولدات الألوان والظلال والتدرجات.",
+            icon: Palette,
+            gradient: "from-fuchsia-400/20 to-pink-900/20",
+            patternColor: "bg-fuchsia-400"
+        },
+        'media': {
+            description: "Media Factory - استخراج ومعالجة الصوتيات والمرئيات.",
+            icon: Film,
+            gradient: "from-lime-400/20 to-green-900/20",
+            patternColor: "bg-lime-400"
+        },
+        'saudi': {
+            description: "Local Tools - حاسبات نهاية الخدمة والرواتب والإجازات.",
+            icon: Flag,
+            gradient: "from-green-500/20 to-green-900/20",
+            patternColor: "bg-green-500"
+        },
+        'sports': {
+            description: "Sports Hub - نتائج ومواعيد الأحداث الرياضية.",
+            icon: Trophy,
+            gradient: "from-red-600/20 to-red-900/20",
+            patternColor: "bg-red-600"
+        },
+        'ai-tools': {
+            description: "Smart Intelligence - أدوات مدعومة بالذكاء الاصطناعي.",
+            icon: Sparkles,
+            gradient: "from-purple-500/20 to-fuchsia-900/20",
+            patternColor: "bg-purple-500"
+        },
+        'health': {
+            description: "Wellness - أدوات متابعة وتقييم الصحة والنشاط.",
+            icon: Activity,
+            gradient: "from-rose-400/20 to-pink-900/20",
+            patternColor: "bg-rose-400"
+        },
         'Current': {
             description: "نتائج البحث الحالية",
             icon: Sparkles,
@@ -96,8 +151,8 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
             <div className={`absolute inset-0 bg-gradient-to-r ${theme.gradient} opacity-50`} />
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02]" />
 
-            {/* Animated Glow Orb */}
-            <div className={`absolute -right-20 -top-20 w-64 h-64 ${theme.patternColor} blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity duration-700`} />
+            {/* Animated Glow Orb (Optimized) */}
+            <div className={`absolute -right-20 -top-20 w-64 h-64 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none ${theme.patternColor}`} style={{ filter: 'blur(60px)', transform: 'translateZ(0)' }} />
 
             <div className="relative z-10 p-4 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-6">
 
@@ -120,25 +175,17 @@ export const SectionBanner = ({ categoryKey, title, tools = [] }: SectionBannerP
                     </div>
                 </div>
 
-                {/* Animated Tool Ticker — visible on mobile with lower scale/opacity */}
+                {/* Static Tool Preview (Optimized for performance instead of infinite ticker) */}
                 {randomTools.length > 1 && (
-                    <div className="absolute inset-y-0 left-0 w-full md:w-1/2 overflow-hidden mask-linear-fade flex items-center opacity-5 md:opacity-30 group-hover:opacity-40 transition-opacity pointer-events-none scale-90 md:scale-100">
-                        <motion.div
-                            className="flex gap-4 pr-10"
-                            animate={{ x: [0, -100 * randomTools.length] }}
-                            transition={{
-                                repeat: Infinity,
-                                ease: "linear",
-                                duration: 30 // Slower move for better readability
-                            }}
-                        >
-                            {[...randomTools, ...randomTools].map((tool, idx) => (
-                                <div key={`${tool.id}-${idx}`} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl whitespace-nowrap">
-                                    <Star className="w-3 h-3 text-white/50" />
-                                    <span className="text-xs font-bold text-white/80 font-cairo">{tool.titleAr}</span>
+                    <div className="absolute inset-y-0 left-0 w-full md:w-1/2 overflow-hidden mask-linear-fade flex items-center justify-end pr-8 opacity-10 md:opacity-40 group-hover:opacity-60 transition-opacity pointer-events-none scale-90 md:scale-100">
+                        <div className="flex gap-4">
+                            {randomTools.map((tool, idx) => (
+                                <div key={`${tool.id}-${idx}`} className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg whitespace-nowrap">
+                                    <Star className="w-3 h-3 text-white/40" />
+                                    <span className="text-xs font-bold text-white/60 font-cairo">{tool.titleAr}</span>
                                 </div>
                             ))}
-                        </motion.div>
+                        </div>
                     </div>
                 )}
 

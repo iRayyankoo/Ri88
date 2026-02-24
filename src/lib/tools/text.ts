@@ -107,3 +107,16 @@ export function convertNumerals(input: string, to: 'arabic' | 'english') {
         return input.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d).toString());
     }
 }
+
+/**
+ * Replace English commas and quotes with Arabic ones
+ */
+export function fixArabicPunctuation(input: string) {
+    if (!input) return "";
+    return input
+        .replace(/,/g, '،')
+        .replace(/;/g, '؛')
+        .replace(/\?/g, '؟')
+        .replace(/"([^"]*)"/g, '«$1»')
+        .replace(/'([^']*)'/g, '«$1»');
+}

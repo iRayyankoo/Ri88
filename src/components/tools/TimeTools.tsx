@@ -219,6 +219,7 @@ export default function TimeTools({ toolId }: ToolProps) {
         case 'diff': return <DateDiff />;
         case 'timer': return <Timer />;
         case 'time-add': return <DateAdd />;
+        case 'timezone': return <WorldClock />;
         case 'time-zones': return <WorldClock />;
         default: return <div className="text-center py-12 text-gray-400">Tool not implemented yet: {toolId}</div>
     }

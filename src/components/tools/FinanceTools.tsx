@@ -513,9 +513,8 @@ function CryptoConverter() {
     );
 }
 
-// --- 9. Invoice ---
-// --- 9. Invoice (Premium) ---
-function InvoiceGenerator() {
+// ---// 3. Invoice Generator
+export function InvoiceGenerator() {
     const [client, setClient] = useState('');
     const [items, setItems] = useState<{ desc: string, price: number }[]>([]);
     const [desc, setDesc] = useState('');
@@ -592,8 +591,8 @@ function InvoiceGenerator() {
     );
 }
 
-// --- 10. Bill Splitter ---
-function BillSplitter() {
+// ---// 4. Bill Splitter
+export function BillSplitter() {
     const [total, setTotal] = useState('');
     const [people, setPeople] = useState('2');
     const [tip, setTip] = useState('0');

@@ -5,7 +5,7 @@ import { ToolInput, ToolTextarea, ToolButton, ToolCheckbox } from './ToolUi';
 import {
     fixArabicAdobe, cleanText, convertCase, generateHashtags,
     buildUTM, generateLoremIpsum, extractLinks, removeTashkeel,
-    convertNumerals
+    convertNumerals, fixArabicPunctuation
 } from '@/lib/tools/text';
 
 interface ToolProps {
@@ -524,6 +524,51 @@ function NumConverter() {
     );
 }
 
+// 11. Arabic Punctuation
+function ArabicPunctuation() {
+    const [input, setInput] = useState('');
+    const [output, setOutput] = useState('');
+
+    const fix = () => {
+        setOutput(fixArabicPunctuation(input));
+    }
+
+    return (
+        <ToolShell
+            description="تصحيح الفواصل وعلامات التنصيص إلى علامات الترقيم العربية."
+            results={output && (
+                <div className="h-full flex flex-col">
+                    <h3 className="text-sm font-bold text-slate-400 mb-4 text-center">النص المصحح</h3>
+                    <ToolTextarea
+                        readOnly
+                        value={output}
+                        title="النص المصحح"
+                        className="flex-1 mb-4 min-h-[200px] text-right font-sans text-brand-primary bg-black/40 border-brand-secondary/20 focus:border-brand-secondary/50"
+                    />
+                    <ToolButton
+                        onClick={() => navigator.clipboard.writeText(output)}
+                        variant="secondary"
+                        className="w-full"
+                    >
+                        نسخ النص
+                    </ToolButton>
+                </div>
+            )}
+        >
+            <ToolInputRow label="النص">
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={8}
+                    placeholder="اكتب النص هنا وسيتم تصحيح علامات الترقيم..."
+                    title="النص"
+                />
+            </ToolInputRow>
+            <ToolButton onClick={fix} className="mt-4 w-full">تصحيح علامات الترقيم</ToolButton>
+        </ToolShell>
+    );
+}
+
 export default function TextTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'adobe-fix': return <AdobeFixer />;
@@ -533,8 +578,10 @@ export default function TextTools({ toolId }: ToolProps) {
         case 'utm': return <UTMBuilder />;
         case 'text-lorem': return <LoremIpsum />;
         case 'text-markdown': return <MarkdownViewer />;
-        case 'text-urls': return <LinkExtractor />;
-        case 'text-tashkeel': return <RemoveTashkeel />;
+        case 'text-link': return <LinkExtractor />;
+        case 'text-dia': return <RemoveTashkeel />;
+        case 'text-tashkeel': return <RemoveTashkeel />; // Keep alias just in case
+        case 'text-punc': return <ArabicPunctuation />;
         case 'text-num': return <NumConverter />;
         default: return <div className="text-center py-12 text-gray-400">Tool not implemented: {toolId}</div>
     }

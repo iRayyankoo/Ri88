@@ -213,9 +213,10 @@ function TextProofreader() {
 export default function ContentTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'social-sizes': return <SocialSizes />;
-        case 'caption-gen': return <CaptionGenerator />;
-        case 'content-ideas': return <ContentIdeas />;
-        case 'proof-read': return <TextProofreader />;
+        case 'caption': return <CaptionGenerator />;
+        case 'caption-gen': return <CaptionGenerator />; // Keep alias
+        case 'ideas': return <ContentIdeas />;
+        case 'proof': return <TextProofreader />;
         default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
     }
 }

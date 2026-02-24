@@ -521,6 +521,90 @@ function ImageCropper() {
     return <ToolShell description="قص الصور (مربع تلقائي)." results={res && <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5"><img src={res} alt="Cropped result" className="max-w-full max-h-[400px] rounded-2xl shadow-xl border border-white/10" /><div className="mt-6 w-full"><a href={res} download="cropped.jpg" className={btnClassResult}><span className="font-bold">تحميل الصورة</span></a></div></div>}><div className="mb-8"><FileUploadZone onFileChange={setFile} accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }} /></div><ToolButton onClick={process} disabled={!file} className="w-full text-lg">Crop Square</ToolButton></ToolShell>;
 }
 
+// 12. Meme Generator
+function MemeGenerator() {
+    const [file, setFile] = useState<File | null>(null);
+    const [topText, setTopText] = useState('');
+    const [bottomText, setBottomText] = useState('');
+    const [res, setRes] = useState<string | null>(null);
+
+    const process = async () => {
+        if (!file) return;
+        const dataUrl = await readFile(file);
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Draw original image
+            ctx.drawImage(img, 0, 0);
+
+            // Text Styles
+            const fontSize = Math.floor(img.width / 10);
+            ctx.font = `bold ${fontSize}px sans-serif`;
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = Math.floor(fontSize / 15);
+            ctx.textAlign = 'center';
+
+            // Draw Top Text
+            if (topText) {
+                ctx.textBaseline = 'top';
+                ctx.fillText(topText.toUpperCase(), img.width / 2, 20);
+                ctx.strokeText(topText.toUpperCase(), img.width / 2, 20);
+            }
+
+            // Draw Bottom Text
+            if (bottomText) {
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(bottomText.toUpperCase(), img.width / 2, img.height - 20);
+                ctx.strokeText(bottomText.toUpperCase(), img.width / 2, img.height - 20);
+            }
+
+            setRes(canvas.toDataURL('image/jpeg', 0.95));
+        };
+        img.src = dataUrl;
+    };
+
+    return (
+        <ToolShell
+            description="إضافة نصوص مضحكة للصور (Meme Maker)."
+            results={res && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={res} alt="Meme result" className="max-w-full max-h-[400px] rounded-2xl shadow-xl border border-white/10" />
+                    <div className="mt-6 w-full">
+                        <a href={res} download="meme.jpg" className={btnClassResult}>
+                            <span className="font-bold">تحميل الميم</span>
+                        </a>
+                    </div>
+                </div>
+            )}
+        >
+            <div className="mb-6">
+                <FileUploadZone
+                    onFileChange={setFile}
+                    accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
+                />
+            </div>
+
+            <div className="grid gap-4 mb-6">
+                <ToolInputRow label="النص العلوي">
+                    <ToolInput value={topText} onChange={e => setTopText(e.target.value)} placeholder="Top Text..." className="font-bold text-center" />
+                </ToolInputRow>
+                <ToolInputRow label="النص السفلي">
+                    <ToolInput value={bottomText} onChange={e => setBottomText(e.target.value)} placeholder="Bottom Text..." className="font-bold text-center" />
+                </ToolInputRow>
+            </div>
+
+            <ToolButton onClick={process} disabled={!file} className="w-full text-lg">صناعة الميم</ToolButton>
+        </ToolShell>
+    );
+}
+
 export default function MediaTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'img-compress': return <ImageCompressor />;
@@ -534,7 +618,7 @@ export default function MediaTools({ toolId }: ToolProps) {
         case 'img-border': return <AddFrame />;
         case 'img-social': return <SocialPostPrep />;
         case 'img-crop': return <ImageCropper />;
-        case 'img-meme': return <div className="text-center py-12 text-gray-400 font-bold">مولد الميمز — قريباً</div>;
+        case 'img-meme': return <MemeGenerator />;
         case 'image-palette': return <div className="text-center py-12 text-gray-400 font-bold">استخراج لوحة الألوان — قريباً</div>;
         default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
     }

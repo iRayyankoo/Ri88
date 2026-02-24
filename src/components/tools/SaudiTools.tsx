@@ -108,7 +108,7 @@ function VacationCalculator() {
 }
 
 // 5. IBAN
-function IbanValidator() {
+export function IbanValidator() {
     const [iban, setIban] = useState('');
     const [valid, setValid] = useState<boolean | null>(null);
 
@@ -158,7 +158,7 @@ function TafqeetTool() {
 }
 
 // 3. Hijri
-function HijriDate() {
+export function HijriDate() {
     const [today] = useState(() => getSaudiHijriDate());
     return (
         <ToolShell description="عرض التاريخ الهجري لليوم.">

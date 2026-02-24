@@ -60,7 +60,7 @@ const ToolsDirectory = () => {
         if (activeCategory !== 'all') return { 'Current': filteredTools };
 
         const groups: Record<string, typeof tools> = {};
-        const priorityCats = ['finance', 'pdf', 'text', 'image', 'developer'];
+        const priorityCats = ['productivity', 'finance', 'text', 'time', 'image', 'content', 'pdf', 'design', 'media', 'developer', 'saudi', 'sports', 'ai-tools', 'health'];
 
         priorityCats.forEach(cat => {
             const groupTools = filteredTools.filter(t => t.cat === cat);
@@ -79,6 +79,15 @@ const ToolsDirectory = () => {
         'text': 'النصوص والمحتوى',
         'image': 'تحرير الصور',
         'developer': 'أدوات المطورين',
+        'productivity': 'الإنتاجية',
+        'time': 'الوقت والتاريخ',
+        'content': 'صناعة المحتوى',
+        'design': 'أدوات التصميم',
+        'media': 'أدوات الوسائط',
+        'saudi': 'خدمات سعودية',
+        'sports': 'الرياضة',
+        'ai-tools': 'الذكاء الاصطناعي',
+        'health': 'الصحة والرفاهية',
         'others': 'أدوات أخرى',
         'Current': 'النتائج'
     };
@@ -197,12 +206,12 @@ const ToolsDirectory = () => {
                                     return (
                                         <motion.div
                                             key={tool.id}
-                                            whileHover={{ y: -8, scale: 1.01 }}
+                                            whileHover={{ y: -4, scale: 1.01 }}
                                             onClick={() => launchTool(tool.id)}
-                                            className="bg-white/[0.03] backdrop-blur-[24px] border border-white/[0.08] p-4 lg:p-7 rounded-[24px] lg:rounded-[28px] cursor-pointer transition-all group relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-brand-primary/40 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]"
+                                            className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] p-4 lg:p-7 rounded-[24px] lg:rounded-[28px] cursor-pointer transition-all group relative overflow-hidden shadow-md hover:border-brand-primary/40 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]"
                                         >
-                                            {/* Decorative Corner Glow */}
-                                            <div className="absolute -top-10 -right-10 w-16 h-16 bg-brand-primary/10 blur-3xl group-hover:bg-brand-primary/20 transition-colors" />
+                                            {/* Decorative Corner Glow (Optimized) */}
+                                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/20 to-transparent opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none" />
 
                                             <div className="flex flex-col gap-3 lg:gap-6 text-right items-start">
                                                 <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner border border-white/5 group-hover:border-brand-primary/50 relative overflow-hidden">
@@ -217,7 +226,7 @@ const ToolsDirectory = () => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="absolute -bottom-10 -right-10 w-20 h-20 bg-brand-primary/5 blur-3xl rounded-full group-hover:bg-brand-primary/20 transition-all" />
+                                            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/10 to-transparent opacity-30 group-hover:opacity-60 transition-opacity pointer-events-none" />
                                         </motion.div>
                                     );
                                 })}
