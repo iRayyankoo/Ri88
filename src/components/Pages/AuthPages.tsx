@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, ArrowLeft, Eye, EyeOff, Chrome, Sparkles, ShieldCheck, Globe } from 'lucide-react';
+import { Mail, Lock, User, ArrowLeft, Eye, EyeOff, Sparkles, ShieldCheck, Globe, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { toast } from 'sonner';
+import { registerAction } from '@/actions/auth';
 
 type AuthStep = 'login' | 'register' | 'otp';
 
@@ -12,25 +14,55 @@ const AuthPages = () => {
     // const { setCurrentView, setIsLoggedIn } = useNavigation(); // Legacy removed
     const [step, setStep] = useState<AuthStep>('register');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         password: ''
     });
 
-
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setTimeout(() => {
-            // setIsLoggedIn(true); // Handled by SessionWrapper/NextAuth
-            // setCurrentView('dashboard');
-            router.push('/pro/dashboard');
-        }, 1000);
+        setIsLoading(true);
+        try {
+            const res = await signIn('credentials', {
+                email: formData.email,
+                password: formData.password,
+                redirect: false,
+            });
+
+            if (res?.error) {
+                toast.error(res.error);
+            } else {
+                toast.success('تم تسجيل الدخول بنجاح');
+                router.push('/pro/dashboard');
+                router.refresh();
+            }
+        } catch {
+            toast.error('حدث خطأ في الاتصال');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleRegister = (e: React.FormEvent) => {
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        setStep('otp');
+        setIsLoading(true);
+        try {
+            const formInputs = new FormData(e.target as HTMLFormElement);
+            const res = await registerAction(formInputs);
+
+            if (res.error) {
+                toast.error(res.error);
+            } else if (res.success) {
+                toast.success(res.success, { duration: 6000 });
+                setStep('login');
+            }
+        } catch {
+            toast.error('حدث خطأ غير متوقع');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -194,9 +226,14 @@ const AuthPages = () => {
                                                     <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
                                                     <User className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
                                                     <input
+                                                        name="name"
                                                         type="text"
                                                         placeholder="الاسم الكامل"
+                                                        value={formData.fullName}
+                                                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                                        disabled={isLoading}
                                                         className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-6 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                        required
                                                     />
                                                 </div>
                                             </div>
@@ -207,9 +244,14 @@ const AuthPages = () => {
                                                 <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
                                                 <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
                                                 <input
+                                                    name="email"
                                                     type="email"
                                                     placeholder="البريد الإلكتروني"
+                                                    value={formData.email}
+                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                    disabled={isLoading}
                                                     className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-6 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -219,11 +261,14 @@ const AuthPages = () => {
                                                 <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
                                                 <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
                                                 <input
+                                                    name="password"
                                                     type={showPassword ? "text" : "password"}
                                                     placeholder="كلمة المرور"
                                                     value={formData.password}
                                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                    disabled={isLoading}
                                                     className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-14 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                    required
                                                 />
                                                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors z-10 p-1">
                                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -233,15 +278,22 @@ const AuthPages = () => {
 
                                         <button
                                             type="submit"
+                                            disabled={isLoading}
                                             className={`w-full py-5 rounded-2xl font-black text-xl transition-all active:scale-95 flex items-center justify-center gap-3 group/btn relative overflow-hidden ${step === 'login'
-                                                ? 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
-                                                : 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-400'
+                                                ? 'bg-white/5 text-white border border-white/10 hover:bg-white/10 disabled:opacity-50'
+                                                : 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-400 disabled:opacity-50'
                                                 }`}
                                         >
-                                            <span className="font-cairo uppercase">
-                                                {step === 'login' ? 'تشفير الدخول' : 'تفعيل العضوية'}
-                                            </span>
-                                            <ArrowLeft className="w-5.5 h-5.5 group-hover/btn:-translate-x-1.5 transition-transform" />
+                                            {isLoading ? (
+                                                <Loader2 className="w-6 h-6 animate-spin text-brand-primary mx-auto" />
+                                            ) : (
+                                                <>
+                                                    <span className="font-cairo uppercase">
+                                                        {step === 'login' ? 'تشفير الدخول' : 'تفعيل العضوية'}
+                                                    </span>
+                                                    <ArrowLeft className="w-5.5 h-5.5 group-hover/btn:-translate-x-1.5 transition-transform" />
+                                                </>
+                                            )}
                                         </button>
                                     </form>
                                 </div>
