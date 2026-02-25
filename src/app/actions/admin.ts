@@ -76,6 +76,80 @@ export async function toggleProStatus(userId: string) {
     revalidatePath('/pro/admin');
 }
 
+export async function getAdminAnalytics() {
+    const session = await auth();
+    if (session?.user?.role !== 'ADMIN') throw new Error("Unauthorized");
+
+    // 1. Tool Categories Distribution
+    // Counting tools by category from DB + Static Tools
+    const dbTools = await prisma.tool.findMany({ select: { category: true } });
+    const { tools: staticTools } = await import('@/data/tools');
+
+    const categoryCounts: Record<string, number> = {};
+
+    // Process DB Tools
+    dbTools.forEach(t => {
+        categoryCounts[t.category] = (categoryCounts[t.category] || 0) + 1;
+    });
+
+    // Process Static Tools, ensuring no double counting if already in DB
+    const dbIds = new Set(dbTools.map((t: any) => t.id));
+    staticTools.forEach((st: any) => {
+        if (!dbIds.has(st.id)) {
+            categoryCounts[st.cat] = (categoryCounts[st.cat] || 0) + 1;
+        }
+    });
+
+    const categoriesData = Object.entries(categoryCounts).map(([name, value]) => ({
+        name,
+        value
+    }));
+
+    // 2. User Growth (Last 7 Days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const recentUsers = await prisma.user.findMany({
+        where: {
+            createdAt: {
+                gte: sevenDaysAgo
+            }
+        },
+        select: {
+            createdAt: true,
+            isPro: true
+        }
+    });
+
+    // Group by Day
+    const daysMap: Record<string, { name: string, users: number, proUsers: number }> = {};
+
+    // Initialize last 7 days with 0
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toLocaleDateString('ar-SA', { weekday: 'short' });
+        if (!daysMap[dateStr]) {
+            daysMap[dateStr] = { name: dateStr, users: 0, proUsers: 0 };
+        }
+    }
+
+    recentUsers.forEach(u => {
+        const dateStr = new Date(u.createdAt).toLocaleDateString('ar-SA', { weekday: 'short' });
+        if (daysMap[dateStr]) {
+            daysMap[dateStr].users += 1;
+            if (u.isPro) daysMap[dateStr].proUsers += 1;
+        }
+    });
+
+    const userGrowthData = Object.values(daysMap);
+
+    return {
+        categoriesData,
+        userGrowthData
+    };
+}
+
 export async function getAdminTools() {
     try {
         const session = await auth();

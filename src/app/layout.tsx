@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 import SessionWrapper from "@/components/auth/SessionWrapper";
 
 import { NavigationProvider } from "@/context/NavigationContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -39,10 +40,12 @@ export default function RootLayout({
       </head>
       <body>
         <SessionWrapper>
-          <NavigationProvider>
-            {children}
-            <CinematicToaster />
-          </NavigationProvider>
+          <ThemeProvider>
+            <NavigationProvider>
+              {children}
+              <CinematicToaster />
+            </NavigationProvider>
+          </ThemeProvider>
         </SessionWrapper>
       </body>
     </html>

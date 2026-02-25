@@ -3,24 +3,30 @@
 @theme {
   /* STITCH DESIGN SYSTEM - RI88 PRO */
 
-  /* Core Colors */
-  --color-brand-bg: #0D0D0F;
-  /* Deep Charcoal */
+  /* Semantic Theme Variables */
+  --color-brand-bg: var(--brand-bg);
   --color-brand-primary: #059669;
   /* Emerald-600 */
-  /* Purple */
   --color-brand-secondary: #22D3EE;
   /* Cyan Accent */
 
+  /* Dynamics Surface Colors */
+  --color-surface-base: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+
   /* Glass Tokens */
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --color-surface-glass: var(--surface-glass);
+  --glass-border: var(--border-subtle);
   --glass-blur: 20px;
   --glass-radius: 24px;
 
   /* Text Colors */
-  --color-text-main: #FFFFFF;
-  --color-text-muted: #94A3B8;
+  --color-text-main: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+
+  /* Borders */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
 
   /* Fonts */
   --font-inter: "Inter", sans-serif;
@@ -29,6 +35,39 @@
 
 @layer base {
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cairo:wght@400;600;700;900&display=swap');
+
+  /* default: Dark Theme */
+  :root {
+    --brand-bg: #0D0D0F;
+    --surface-base: #0D0D0F;
+    --surface-raised: #111118;
+    --surface-glass: rgba(255, 255, 255, 0.03);
+
+    --text-primary: #FFFFFF;
+    --text-muted: #94A3B8;
+
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-strong: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Light Theme Overrides */
+  [data-theme="light"] {
+    --brand-bg: #F8FAFC;
+    --surface-base: #F8FAFC;
+    /* Light gray background */
+    --surface-raised: #FFFFFF;
+    /* Pure white cards */
+    --surface-glass: rgba(0, 0, 0, 0.02);
+    /* Subtle dark glass */
+
+    --text-primary: #0F172A;
+    /* Slate-900 */
+    --text-muted: #64748B;
+    /* Slate-500 */
+
+    --border-subtle: rgba(0, 0, 0, 0.06);
+    --border-strong: rgba(0, 0, 0, 0.12);
+  }
 
   body {
     background-color: var(--color-brand-bg);
@@ -65,10 +104,10 @@
 
   /* Glass Card Component Class */
   .stitch-glass {
-    background: var(--glass-bg);
+    background: var(--surface-glass);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--glass-radius);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
@@ -109,7 +148,7 @@
 
   /* Mobile Bottom Nav Glass */
   .bottom-nav-glass {
-    @apply fixed bottom-0 left-0 right-0 h-20 bg-[#0D0D0F]/80 backdrop-blur-xl border-t border-white/5 z-50 pb-2;
+    @apply fixed bottom-0 left-0 right-0 h-20 bg-brand-bg/80 backdrop-blur-xl border-t border-border-subtle z-50 pb-2;
   }
 
   /* Gradient Mask */

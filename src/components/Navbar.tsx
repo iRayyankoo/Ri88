@@ -45,7 +45,7 @@ export default function Navbar() {
                             title="Open Menu"
                             aria-label="Open Menu"
                         >
-                            <Menu color="white" size={28} />
+                            <Menu className="text-text-primary" size={28} />
                         </button>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ export default function Navbar() {
             <div className={`mobile-nav-overlay ${mobileMenuOpen ? 'active' : ''}`}>
                 <div className="mobile-nav-content">
                     <button className="close-mobile-nav" onClick={() => setMobileMenuOpen(false)} title="Close Menu" aria-label="Close Menu">
-                        <X color="white" />
+                        <X className="text-text-primary" />
                     </button>
                     <Link href="/beta" className="mobile-link beta-mobile-link" onClick={() => setMobileMenuOpen(false)}>تجربة البيتا 🚀</Link>
                     <Link href="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>الرئيسية</Link>
@@ -85,8 +85,8 @@ export default function Navbar() {
                 .beta-mobile-link { color: #D35BFF; }
                 .lang-toggle {
                     background: transparent;
-                    border: 1px solid rgba(255,255,255,0.2);
-                    color: white;
+                    border: 1px solid var(--border-subtle);
+                    color: var(--text-primary);
                     padding: 6px 12px;
                     border-radius: 12px;
                     cursor: pointer;

@@ -51,14 +51,14 @@ const DeveloperPortal = () => {
             className="space-y-10 pb-20"
         >
             {/* HEADER */}
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 pb-6 border-b border-white/5">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 pb-6 border-b border-border-subtle">
                 <div className="text-right space-y-1">
-                    <h2 className="text-3xl font-black text-white">بوابة المطورين</h2>
-                    <p className="text-slate-500 font-medium">إدارة الـ <span className="text-brand-primary">API</span> وتحليل أداء أدواتك البرمجية.</p>
+                    <h2 className="text-3xl font-black text-text-primary">بوابة المطورين</h2>
+                    <p className="text-text-muted font-medium">إدارة الـ <span className="text-brand-primary">API</span> وتحليل أداء أدواتك البرمجية.</p>
                 </div>
                 <div className="flex gap-4">
-                    <Link href="/pro/api-docs" className="text-sm font-bold text-slate-400 hover:text-white transition-colors flex items-center">Documentation</Link>
-                    <button className="text-sm font-bold text-slate-400 hover:text-white transition-colors cursor-not-allowed opacity-50">Logs</button>
+                    <Link href="/pro/api-docs" className="text-sm font-bold text-text-muted hover:text-text-primary transition-colors flex items-center">Documentation</Link>
+                    <button className="text-sm font-bold text-text-muted hover:text-text-primary transition-colors cursor-not-allowed opacity-50">Logs</button>
                     <Link
                         href="/pro/submit-tool"
                         className="bg-brand-primary hover:bg-brand-primary/90 text-white font-black px-6 py-3 rounded-xl transition-all shadow-xl shadow-brand-primary/30 flex items-center gap-2 text-sm active:scale-95"
@@ -75,26 +75,26 @@ const DeveloperPortal = () => {
                     <motion.div
                         key={i}
                         variants={itemVariants}
-                        className="stitch-glass p-6 group hover:border-brand-primary/30 transition-colors"
+                        className="bg-surface-glass border border-border-subtle p-6 rounded-3xl group hover:border-brand-primary/30 transition-colors"
                     >
-                        <p className="text-sm font-bold text-slate-500 mb-2">{stat.label}</p>
+                        <p className="text-sm font-bold text-text-muted mb-2">{stat.label}</p>
                         <h3 className={`text-3xl font-black ${stat.color}`}>{stat.value}</h3>
-                        <p className="text-[10px] text-slate-600 mt-2 font-mono bg-white/5 py-1 px-2 rounded w-fit uppercase">{stat.trend}</p>
+                        <p className="text-[10px] text-text-muted mt-2 font-mono bg-surface-raised border border-border-subtle py-1 px-2 rounded w-fit uppercase">{stat.trend}</p>
                     </motion.div>
                 ))}
             </div>
 
             {/* API Keys Table */}
-            <motion.div variants={itemVariants} className="stitch-glass overflow-hidden rounded-3xl">
-                <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between flex-row-reverse">
+            <motion.div variants={itemVariants} className="bg-surface-glass border border-border-subtle overflow-hidden rounded-3xl">
+                <div className="px-8 py-6 border-b border-border-subtle flex items-center justify-between flex-row-reverse">
                     <div className="flex items-center gap-3 flex-row-reverse">
                         <Terminal className="w-5 h-5 text-brand-secondary" />
-                        <h3 className="text-xl font-black text-white">مفاتيح API</h3>
+                        <h3 className="text-xl font-black text-text-primary">مفاتيح API</h3>
                     </div>
                 </div>
 
                 <table className="w-full text-right">
-                    <thead className="bg-white/5 text-slate-400 text-[10px] uppercase font-bold tracking-wider">
+                    <thead className="bg-surface-raised text-text-muted text-[10px] uppercase font-bold tracking-wider">
                         <tr>
                             <th className="px-8 py-5">الاسم / المفتاح</th>
                             <th className="px-8 py-5">الحالة</th>
@@ -102,13 +102,13 @@ const DeveloperPortal = () => {
                             <th className="px-8 py-5">إجراءات</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border-subtle">
                         {apiKeys.map((key) => (
-                            <tr key={key.id} className="hover:bg-white/[0.02] transition-colors group">
+                            <tr key={key.id} className="hover:bg-surface-raised transition-colors group">
                                 <td className="px-8 py-6">
                                     <div>
-                                        <div className="font-bold text-white text-sm">{key.name}</div>
-                                        <div className="text-[10px] text-slate-500 font-mono mt-1 opacity-50 group-hover:opacity-100 transition-opacity">{key.key}</div>
+                                        <div className="font-bold text-text-primary text-sm">{key.name}</div>
+                                        <div className="text-[10px] text-text-muted font-mono mt-1 opacity-50 group-hover:opacity-100 transition-opacity">{key.key}</div>
                                     </div>
                                 </td>
                                 <td className="px-8 py-6">
@@ -118,15 +118,15 @@ const DeveloperPortal = () => {
                                         {key.status}
                                     </span>
                                 </td>
-                                <td className="px-8 py-6 text-xs font-bold text-slate-400 font-mono">
+                                <td className="px-8 py-6 text-xs font-bold text-text-muted font-mono">
                                     {key.usage.toLocaleString()} req
                                 </td>
                                 <td className="px-8 py-6">
                                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors">
+                                        <button className="p-2 bg-surface-base border border-border-subtle rounded-lg text-text-muted hover:text-text-primary transition-colors">
                                             <RefreshCcw className="w-3.5 h-3.5" />
                                         </button>
-                                        <button className="p-2 bg-white/5 rounded-lg text-red-500/20 hover:text-red-500 transition-colors">
+                                        <button className="p-2 bg-surface-base border border-border-subtle rounded-lg text-red-500/50 hover:text-red-500 transition-colors">
                                             <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
@@ -139,18 +139,18 @@ const DeveloperPortal = () => {
 
             {/* Code Snippet */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                <motion.div variants={itemVariants} className="lg:col-span-12 glass-card p-0 overflow-hidden">
-                    <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between flex-row-reverse bg-black/20">
+                <motion.div variants={itemVariants} className="lg:col-span-12 bg-surface-glass border border-border-subtle rounded-3xl p-0 overflow-hidden">
+                    <div className="px-8 py-6 border-b border-border-subtle flex items-center justify-between flex-row-reverse bg-surface-raised">
                         <div className="flex items-center gap-3 flex-row-reverse">
                             <Code2 className="w-5 h-5 text-brand-primary" />
-                            <h3 className="text-lg font-black text-white">مثال التكامل (cURL)</h3>
+                            <h3 className="text-lg font-black text-text-primary">مثال التكامل (cURL)</h3>
                         </div>
                     </div>
-                    <div className="p-8 font-mono text-xs text-brand-secondary leading-loose relative group bg-[#0D0D0F] direction-ltr text-left">
+                    <div className="p-8 font-mono text-xs text-brand-secondary leading-loose relative group bg-surface-base border-t border-border-subtle direction-ltr text-left">
                         <div className="absolute top-4 right-4">
-                            <Copy className="w-4 h-4 text-slate-600 group-hover:text-white cursor-pointer transition-colors" />
+                            <Copy className="w-4 h-4 text-text-muted group-hover:text-text-primary cursor-pointer transition-colors" />
                         </div>
-                        <p className="text-slate-500 mb-2"># Example Request</p>
+                        <p className="text-text-muted mb-2"># Example Request</p>
                         <p><span className="text-purple-400">curl</span> -X POST "https://api.ri88.info/v1/tools/process" \</p>
                         <p className="pl-4">  -H "Authorization: Bearer <span className="text-brand-primary">YOUR_API_KEY</span>" \</p>
                         <p className="pl-4">  -H "Content-Type: application/json" \</p>

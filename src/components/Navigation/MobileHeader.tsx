@@ -6,6 +6,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { handleSignOut } from '@/actions/auth';
 import Link from 'next/link';
 import Image from 'next/image';
+import NotificationsDropdown from './NotificationsDropdown';
 
 const MobileHeader = () => {
     const { data: session, status } = useSession();
@@ -25,7 +26,7 @@ const MobileHeader = () => {
     }, [menuOpen]);
 
     return (
-        <header className="lg:hidden h-16 px-4 flex items-center justify-between sticky top-0 z-40 bg-[#0D0D0F]/90 backdrop-blur-xl border-b border-white/5">
+        <header className="lg:hidden h-16 px-4 flex items-center justify-between sticky top-0 z-40 bg-surface-base/90 backdrop-blur-xl border-b border-border-subtle">
             {/* Logo */}
             <div className="flex items-center gap-2 scale-90 origin-right">
                 <Logo size="sm" showText />
@@ -37,17 +38,11 @@ const MobileHeader = () => {
             {/* Actions */}
             <div className="flex items-center gap-2">
                 {isLoggedIn && (
-                    <Link
-                        href="/pro/notifications"
-                        className="relative p-2.5 text-slate-400 hover:text-white transition-colors rounded-xl hover:bg-white/5"
-                    >
-                        <Bell className="w-5 h-5" />
-                        <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#0D0D0F]" />
-                    </Link>
+                    <NotificationsDropdown />
                 )}
 
                 {status === 'loading' ? (
-                    <div className="w-10 h-10 rounded-full bg-white/5 animate-pulse" />
+                    <div className="w-10 h-10 rounded-full bg-surface-raised animate-pulse" />
                 ) : isLoggedIn ? (
                     <div ref={menuRef} className="relative">
                         {/* Avatar button */}
@@ -76,11 +71,11 @@ const MobileHeader = () => {
 
                         {/* Dropdown menu */}
                         {menuOpen && (
-                            <div className="absolute top-12 left-0 w-56 rounded-2xl bg-[#111118] border border-white/10 shadow-2xl shadow-black/50 overflow-hidden z-50">
+                            <div className="absolute top-12 left-0 w-56 rounded-2xl bg-surface-raised border border-border-strong shadow-2xl shadow-black/50 overflow-hidden z-50">
                                 {/* User info */}
-                                <div className="px-4 py-3 border-b border-white/5">
-                                    <p className="text-white font-bold text-sm truncate">{session?.user?.name || 'مستخدم'}</p>
-                                    <p className="text-slate-500 text-xs truncate">{session?.user?.email}</p>
+                                <div className="px-4 py-3 border-b border-border-subtle">
+                                    <p className="text-text-primary font-bold text-sm truncate">{session?.user?.name || 'مستخدم'}</p>
+                                    <p className="text-text-muted text-xs truncate">{session?.user?.email}</p>
                                 </div>
 
                                 {/* Menu items */}
@@ -88,9 +83,9 @@ const MobileHeader = () => {
                                     <Link
                                         href="/pro/settings"
                                         onClick={() => setMenuOpen(false)}
-                                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors"
+                                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-text-primary hover:bg-surface-glass transition-colors"
                                     >
-                                        <Settings className="w-4 h-4 text-slate-500" />
+                                        <Settings className="w-4 h-4 text-text-muted" />
                                         الإعدادات
                                     </Link>
 

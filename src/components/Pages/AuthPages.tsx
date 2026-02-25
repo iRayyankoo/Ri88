@@ -161,11 +161,11 @@ const AuthPages = () => {
                             <Sparkles className="w-3.5 h-3.5" />
                             شبكة المطورين المتقدمين
                         </div>
-                        <h1 className="text-6xl font-black text-white leading-tight font-cairo">
+                        <h1 className="text-6xl font-black text-text-primary leading-tight font-cairo">
                             مستقبل <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500">الابتكار الرقمي</span>
                         </h1>
-                        <p className="text-slate-400 text-lg leading-relaxed max-w-md font-cairo">
+                        <p className="text-text-muted text-lg leading-relaxed max-w-md font-cairo">
                             انضم إلى المنصة الأكثر تطوراً في الشرق الأوسط، حيث تجتمع الأدوات المتقدمة والذكاء الاصطناعي في واجهة واحدة.
                         </p>
                     </div>
@@ -175,10 +175,10 @@ const AuthPages = () => {
                             { icon: ShieldCheck, label: "أمان متطور", desc: "تشفير بيانات عسكري" },
                             { icon: Globe, label: "وصول عالمي", desc: "أدوات مفعّلة دولياً" }
                         ].map((stat, i) => (
-                            <div key={i} className="p-6 rounded-[24px] bg-white/5 border border-white/5 space-y-3 hover:bg-white/10 transition-colors">
+                            <div key={i} className="p-6 rounded-[24px] bg-surface-glass border border-border-subtle space-y-3 hover:bg-surface-raised transition-colors">
                                 <stat.icon className="w-8 h-8 text-brand-primary" />
-                                <h4 className="text-white font-bold font-cairo">{stat.label}</h4>
-                                <p className="text-slate-500 text-xs font-medium font-cairo">{stat.desc}</p>
+                                <h4 className="text-text-primary font-bold font-cairo">{stat.label}</h4>
+                                <p className="text-text-muted text-xs font-medium font-cairo">{stat.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -194,30 +194,30 @@ const AuthPages = () => {
                         {/* Outer Glow Effect */}
                         <div className="absolute -inset-4 bg-brand-primary/5 blur-3xl opacity-50 rounded-[48px] pointer-events-none" />
 
-                        <div className="relative rounded-[40px] bg-[#0A0A0C]/80 backdrop-blur-3xl border border-white/10 shadow-2xl p-1 lg:p-1.5 flex flex-col overflow-hidden">
+                        <div className="relative rounded-[40px] bg-surface-base/80 backdrop-blur-3xl border border-border-subtle shadow-2xl p-1 lg:p-1.5 flex flex-col overflow-hidden">
                             {/* Inner Carbon Texture */}
                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none" />
 
                             {/* Content */}
-                            <div className="relative rounded-[36px] bg-[#0D0D10]/40 p-8 lg:p-12 space-y-10">
+                            <div className="relative rounded-[36px] bg-surface-raised/40 p-8 lg:p-12 space-y-10">
 
                                 {/* Header Toggle */}
                                 <div className="text-center space-y-4">
                                     <div className="flex justify-center gap-8 mb-6">
                                         <button
                                             onClick={() => setStep('login')}
-                                            className={`text-sm font-black uppercase tracking-widest transition-all ${step === 'login' ? 'text-brand-primary' : 'text-slate-600 hover:text-slate-400'}`}
+                                            className={`text-sm font-black uppercase tracking-widest transition-all ${step === 'login' ? 'text-brand-primary' : 'text-text-muted hover:text-text-primary'}`}
                                         >
                                             دخول
                                         </button>
                                         <button
                                             onClick={() => setStep('register')}
-                                            className={`text-sm font-black uppercase tracking-widest transition-all ${step === 'register' ? 'text-brand-primary' : 'text-slate-600 hover:text-slate-400'}`}
+                                            className={`text-sm font-black uppercase tracking-widest transition-all ${step === 'register' ? 'text-brand-primary' : 'text-text-muted hover:text-text-primary'}`}
                                         >
                                             تسجيل
                                         </button>
                                     </div>
-                                    <h2 className="text-4xl font-black text-white font-cairo tracking-tight">
+                                    <h2 className="text-4xl font-black text-text-primary font-cairo tracking-tight">
                                         {step === 'login' ? 'مرحباً بعودتك' : step === 'register' ? 'دخول النخبة' : 'استعادة الوصول'}
                                     </h2>
                                 </div>
@@ -228,9 +228,9 @@ const AuthPages = () => {
                                     <button
                                         type="button"
                                         onClick={() => signIn('google', { callbackUrl: '/pro' })}
-                                        className="group relative w-full flex items-center justify-center gap-4 bg-white text-black font-black py-4.5 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.15)] overflow-hidden"
+                                        className="group relative w-full flex items-center justify-center gap-4 bg-text-primary text-surface-base border border-border-subtle font-black py-4.5 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.15)] overflow-hidden"
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-text-muted/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                         <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                                             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -243,11 +243,11 @@ const AuthPages = () => {
                                     </button>
 
                                     <div className="relative flex items-center gap-4 py-2">
-                                        <div className="h-px bg-white/5 flex-1" />
-                                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                                        <div className="h-px bg-border-subtle flex-1" />
+                                        <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">
                                             {step === 'forgot-password' ? 'أدخل بريدك الإلكتروني أدناه' : 'أو عبر البريد الإلكتروني'}
                                         </span>
-                                        <div className="h-px bg-white/5 flex-1" />
+                                        <div className="h-px bg-border-subtle flex-1" />
                                     </div>
 
                                     {/* Form Fields */}
@@ -256,7 +256,7 @@ const AuthPages = () => {
                                             <div className="group space-y-2">
                                                 <div className="relative">
                                                     <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
-                                                    <User className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
+                                                    <User className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
                                                     <input
                                                         name="name"
                                                         type="text"
@@ -264,7 +264,7 @@ const AuthPages = () => {
                                                         value={formData.fullName}
                                                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                                         disabled={isLoading}
-                                                        className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-6 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                        className="relative z-10 w-full bg-surface-glass border border-border-subtle rounded-2xl py-5 pr-14 pl-6 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary/40 focus:bg-surface-raised transition-all font-bold font-cairo shadow-inner"
                                                         required
                                                     />
                                                 </div>
@@ -274,7 +274,7 @@ const AuthPages = () => {
                                         <div className="group space-y-2">
                                             <div className="relative">
                                                 <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
-                                                <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
+                                                <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
                                                 <input
                                                     name="email"
                                                     type="email"
@@ -282,7 +282,7 @@ const AuthPages = () => {
                                                     value={step === 'forgot-password' ? resetEmail : formData.email}
                                                     onChange={(e) => step === 'forgot-password' ? setResetEmail(e.target.value) : setFormData({ ...formData, email: e.target.value })}
                                                     disabled={isLoading}
-                                                    className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-6 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                    className="relative z-10 w-full bg-surface-glass border border-border-subtle rounded-2xl py-5 pr-14 pl-6 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary/40 focus:bg-surface-raised transition-all font-bold font-cairo shadow-inner"
                                                     required
                                                 />
                                             </div>
@@ -292,7 +292,7 @@ const AuthPages = () => {
                                             <div className="group space-y-2">
                                                 <div className="relative">
                                                     <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
-                                                    <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
+                                                    <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
                                                     <input
                                                         name="password"
                                                         type={showPassword ? "text" : "password"}
@@ -300,10 +300,10 @@ const AuthPages = () => {
                                                         value={formData.password}
                                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                         disabled={isLoading}
-                                                        className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-14 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                        className="relative z-10 w-full bg-surface-glass border border-border-subtle rounded-2xl py-5 pr-14 pl-14 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary/40 focus:bg-surface-raised transition-all font-bold font-cairo shadow-inner"
                                                         required
                                                     />
-                                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors z-10 p-1">
+                                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors z-10 p-1">
                                                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                                     </button>
                                                 </div>
@@ -326,7 +326,7 @@ const AuthPages = () => {
                                             type="submit"
                                             disabled={isLoading}
                                             className={`w-full py-5 rounded-2xl font-black text-xl transition-all active:scale-95 flex items-center justify-center gap-3 group/btn relative overflow-hidden ${step === 'login'
-                                                ? 'bg-white/5 text-white border border-white/10 hover:bg-white/10 disabled:opacity-50'
+                                                ? 'bg-surface-glass text-text-primary border border-border-subtle hover:bg-surface-raised disabled:opacity-50'
                                                 : 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 hover:bg-indigo-400 disabled:opacity-50'
                                                 }`}
                                         >

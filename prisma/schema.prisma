@@ -55,6 +55,7 @@ model User {
   purchases     Purchase[]
   transactions  Transaction[]
   savedItems    SavedItem[]
+  notifications Notification[]
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -138,5 +139,17 @@ model SavedItem {
   data      String   // Stored as JSON string
   createdAt DateTime @default(now())
   
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, SUCCESS, WARNING, PROMO
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

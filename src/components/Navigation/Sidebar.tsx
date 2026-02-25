@@ -64,13 +64,13 @@ const Sidebar = () => {
             <Link href={item.href} className="w-full block" title={isSidebarCollapsed ? item.name : undefined}>
                 <motion.div
                     whileHover={{ x: isSidebarCollapsed ? 0 : -4 }}
-                    className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center px-0 py-3' : 'justify-start gap-4 px-4 py-3'} rounded-xl transition-all group relative overflow-hidden ${isActive ? 'text-white shadow-[0_0_25px_rgba(139,92,246,0.3)]' : 'text-slate-500 hover:text-white hover:bg-white/5'
+                    className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center px-0 py-3' : 'justify-start gap-4 px-4 py-3'} rounded-xl transition-all group relative overflow-hidden ${isActive ? 'text-white shadow-[0_0_25px_rgba(139,92,246,0.3)]' : 'text-text-muted hover:text-text-primary hover:bg-surface-glass'
                         }`}
                 >
                     {isActive && (
                         <motion.div layoutId="sidebar-active" className="absolute inset-0 bg-brand-primary rounded-xl -z-10" />
                     )}
-                    <item.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-brand-primary'}`} />
+                    <item.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-white' : 'text-text-muted group-hover:text-brand-primary'}`} />
                     {!isSidebarCollapsed && (
                         <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`font-bold text-sm relative z-10 ${isActive ? 'text-white' : ''}`}>
                             {item.name}
@@ -83,9 +83,9 @@ const Sidebar = () => {
 
     return (
         <aside className={`
-            fixed inset-y-0 right-0 z-50 bg-[#0D0D0F]/95 backdrop-blur-xl border-l border-white/5 flex flex-col transition-all duration-300 ease-in-out
+            fixed inset-y-0 right-0 z-50 bg-surface-base/95 backdrop-blur-xl border-l border-border-subtle flex flex-col transition-all duration-300 ease-in-out
             ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
-            lg:relative lg:translate-x-0 lg:flex lg:border-l lg:border-white/5
+            lg:relative lg:translate-x-0 lg:flex lg:border-l lg:border-border-subtle
             ${isSidebarCollapsed ? 'w-[88px] px-3 py-6' : 'w-72 px-6 py-8'}
             hidden
         `}>
@@ -93,7 +93,7 @@ const Sidebar = () => {
             {/* Collapse Toggle */}
             <button
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="absolute top-8 -left-3 w-6 h-6 bg-brand-primary border border-white/10 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-brand-primary/80 transition-colors z-50 hidden lg:flex"
+                className="absolute top-8 -left-3 w-6 h-6 bg-brand-primary border border-border-strong rounded-full flex items-center justify-center text-white shadow-lg hover:bg-brand-primary/80 transition-colors z-50 hidden lg:flex"
             >
                 {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
             </button>
@@ -127,10 +127,10 @@ const Sidebar = () => {
                                         whileHover={{ x: isSidebarCollapsed ? 0 : -4 }}
                                         className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center px-0 py-3' : 'justify-start gap-4 px-4 py-3'} rounded-xl transition-all group border ${isActive
                                             ? 'bg-brand-secondary/10 border-brand-secondary/20 text-brand-secondary'
-                                            : 'border-transparent text-slate-500 hover:text-white hover:bg-white/5'
+                                            : 'border-transparent text-text-muted hover:text-text-primary hover:bg-surface-glass'
                                             }`}
                                     >
-                                        <item.icon className={`w-5 h-5 ${isActive ? 'text-brand-secondary' : 'text-slate-500 group-hover:text-brand-secondary'}`} />
+                                        <item.icon className={`w-5 h-5 ${isActive ? 'text-brand-secondary' : 'text-text-muted group-hover:text-brand-secondary'}`} />
                                         {!isSidebarCollapsed && <span className="font-bold text-sm">{item.name}</span>}
                                     </motion.div>
                                 </Link>
@@ -141,15 +141,15 @@ const Sidebar = () => {
             </nav>
 
             {/* Profile Footer */}
-            <div className={`mt-auto pt-6 border-t border-white/5 relative ${isSidebarCollapsed ? 'flex justify-center' : ''}`} ref={profileRef}>
+            <div className={`mt-auto pt-6 border-t border-border-subtle relative ${isSidebarCollapsed ? 'flex justify-center' : ''}`} ref={profileRef}>
 
                 {isLoading ? (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#13131A] border border-white/5 animate-pulse">
-                        <div className="w-8 h-8 rounded-lg bg-white/5" />
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-surface-raised border border-border-subtle animate-pulse">
+                        <div className="w-8 h-8 rounded-lg bg-border-subtle" />
                         {!isSidebarCollapsed && (
                             <div className="flex-1 space-y-2">
-                                <div className="h-3 w-20 bg-white/5 rounded" />
-                                <div className="h-2 w-16 bg-white/5 rounded" />
+                                <div className="h-3 w-20 bg-border-subtle rounded" />
+                                <div className="h-2 w-16 bg-border-subtle rounded" />
                             </div>
                         )}
                     </div>
@@ -163,12 +163,12 @@ const Sidebar = () => {
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                                     transition={{ duration: 0.15 }}
-                                    className="absolute bottom-full mb-2 left-0 right-0 bg-[#13131A] border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50"
+                                    className="absolute bottom-full mb-2 left-0 right-0 bg-surface-raised border border-border-strong rounded-2xl overflow-hidden shadow-2xl z-50"
                                 >
                                     <Link
                                         href="/pro/dashboard"
                                         onClick={() => setProfileOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-slate-300 hover:text-white"
+                                        className="flex items-center gap-3 px-4 py-3 hover:bg-surface-glass transition-colors text-text-primary"
                                     >
                                         <LayoutGrid className="w-4 h-4 text-brand-primary" />
                                         {!isSidebarCollapsed && <span className="text-sm font-bold">لوحة التحكم</span>}
@@ -176,7 +176,7 @@ const Sidebar = () => {
                                     <Link
                                         href="/pro/extensions"
                                         onClick={() => setProfileOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-slate-300 hover:text-white border-t border-white/5"
+                                        className="flex items-center gap-3 px-4 py-3 hover:bg-surface-glass transition-colors text-text-primary border-t border-border-subtle"
                                     >
                                         <Puzzle className="w-4 h-4 text-brand-primary" />
                                         {!isSidebarCollapsed && <span className="text-sm font-bold">الامتدادات</span>}
@@ -184,7 +184,7 @@ const Sidebar = () => {
                                     <form action={handleSignOut}>
                                         <button
                                             type="submit"
-                                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors text-slate-500 hover:text-red-400 border-t border-white/5"
+                                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors text-text-muted hover:text-red-500 border-t border-border-subtle"
                                         >
                                             <LogOut className="w-4 h-4" />
                                             {!isSidebarCollapsed && <span className="text-sm font-bold">تسجيل الخروج</span>}
@@ -198,11 +198,11 @@ const Sidebar = () => {
                         <motion.div
                             whileHover={{ scale: 1.02 }}
                             onClick={() => setProfileOpen(!profileOpen)}
-                            className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} p-3 rounded-2xl bg-[#13131A] hover:bg-white/5 transition-all cursor-pointer border border-white/5 group`}
+                            className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'gap-3'} p-3 rounded-2xl bg-surface-raised hover:bg-surface-glass transition-all cursor-pointer border border-border-subtle group`}
                         >
                             {!isSidebarCollapsed && (
                                 <div className="flex-1 text-right">
-                                    <p className="text-xs font-black text-white group-hover:text-brand-primary transition-colors truncate max-w-[120px]">
+                                    <p className="text-xs font-black text-text-primary group-hover:text-brand-primary transition-colors truncate max-w-[120px]">
                                         {session?.user?.name || 'مستخدم'}
                                     </p>
                                     <p className="text-[9px] text-brand-secondary font-bold uppercase tracking-widest">

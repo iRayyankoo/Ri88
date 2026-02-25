@@ -14,7 +14,20 @@ const config: Config = {
                 brand: {
                     primary: '#8B5CF6',
                     secondary: '#22D3EE',
-                    bg: '#0D0D0F'
+                    bg: "var(--brand-bg)",
+                },
+                surface: {
+                    base: "var(--surface-base)",
+                    raised: "var(--surface-raised)",
+                    glass: "var(--surface-glass)",
+                },
+                border: {
+                    subtle: "var(--border-subtle)",
+                    strong: "var(--border-strong)",
+                },
+                text: {
+                    primary: "var(--text-primary)",
+                    muted: "var(--text-muted)",
                 }
             },
             fontFamily: {

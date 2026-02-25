@@ -9,10 +9,10 @@ export default function Footer() {
                 {/* Brand Column */}
                 <div className="footer-col">
                     {/* We can use text or logo here. Using text for now as per Navbar */}
-                    <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px', color: 'white', marginBottom: '20px' }}>
+                    <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px', color: 'var(--text-primary)', marginBottom: '20px' }}>
                         Ri88<span style={{ color: 'var(--accent-pink)' }}>.</span>
                     </div>
-                    <p style={{ color: 'var(--text-secondary)', maxWidth: '300px' }}>
+                    <p style={{ color: 'var(--text-muted)', maxWidth: '300px' }}>
                         Ri88 is the leading digital toolbox for the modern Saudi creator. Trusted by over 10,000 users daily.
                     </p>
                 </div>
@@ -42,7 +42,7 @@ export default function Footer() {
                         Get the latest tools delivered to your inbox.
                     </p>
                     <div className="footer-input-group">
-                        <input type="email" placeholder="Enter your email" className="bg-transparent border-none text-white focus:outline-none flex-1 p-2" />
+                        <input type="email" placeholder="Enter your email" className="bg-transparent border-none text-text-primary focus:outline-none flex-1 p-2" />
                         <button style={{ background: 'var(--accent-pink)', border: 'none', borderRadius: '8px', width: '40px', height: '40px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                             {/* RTL aware arrow? usually arrow-left for RTL if input is RTL but let's stick to standard */}
                             <ArrowLeft size={20} className="rtl-flip" />

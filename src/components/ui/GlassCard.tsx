@@ -19,24 +19,24 @@ export const GlassCard = ({ children, className = '', onClick, hoverEffect = tru
             whileHover={hoverEffect && onClick ? { y: -8, scale: 1.01 } : {}}
             className={`
                 relative overflow-hidden
-                bg-white/[0.03] backdrop-blur-xl
-                border border-white/10
+                bg-surface-glass backdrop-blur-xl
+                border border-border-subtle
                 rounded-[32px]
                 shadow-[0_8px_32px_rgba(0,0,0,0.12)]
                 group transition-all duration-500
-                ${onClick ? 'cursor-pointer hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:border-white/20' : ''}
+                ${onClick ? 'cursor-pointer hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:border-brand-primary/50' : ''}
                 ${className}
             `}
         >
             {/* Header if title exists */}
             {(title || Icon) && (
-                <div className="flex items-center gap-3 px-8 pt-8 pb-4 border-b border-white/5">
+                <div className="flex items-center gap-3 px-8 pt-8 pb-4 border-b border-border-subtle">
                     {Icon && (
                         <div className="p-2 rounded-xl bg-brand-primary/10 text-brand-primary">
                             <Icon className="w-5 h-5" />
                         </div>
                     )}
-                    {title && <h3 className="text-xl font-bold text-white font-cairo">{title}</h3>}
+                    {title && <h3 className="text-xl font-bold text-text-primary font-cairo">{title}</h3>}
                 </div>
             )}
 

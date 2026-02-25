@@ -235,8 +235,8 @@ const ToolsDirectory = () => {
 
             <section className="space-y-6 lg:space-y-8">
                 <div className="flex items-center justify-between px-4 lg:px-2">
-                    <h3 className="text-lg lg:text-xl font-black text-white font-cairo">أبرز الأدوات {allTools.length > 0 ? `(${allTools.length})` : ''}</h3>
-                    <button onClick={() => setActiveCategory('all')} className="flex items-center gap-2 text-brand-primary font-black text-[10px] uppercase tracking-widest hover:text-white transition-colors">
+                    <h3 className="text-lg lg:text-xl font-black text-text-primary font-cairo">أبرز الأدوات {allTools.length > 0 ? `(${allTools.length})` : ''}</h3>
+                    <button onClick={() => setActiveCategory('all')} className="flex items-center gap-2 text-brand-primary font-black text-[10px] uppercase tracking-widest hover:text-text-primary transition-colors">
                         Browse
                         <ArrowRight className="w-3.5 h-3.5" />
                     </button>
@@ -245,7 +245,7 @@ const ToolsDirectory = () => {
                 <div className="flex gap-4 lg:gap-6 overflow-x-auto pb-6 no-scrollbar -mx-4 px-4 snap-x relative">
                     {isLoading ? (
                         [1, 2, 3, 4].map(n => (
-                            <div key={n} className="min-w-[200px] lg:min-w-[400px] h-[240px] rounded-[24px] bg-white/5 animate-pulse skeleton" />
+                            <div key={n} className="min-w-[200px] lg:min-w-[400px] h-[240px] rounded-[24px] bg-surface-glass animate-pulse skeleton" />
                         ))
                     ) : allTools.slice(0, 8).map((tool) => {
                         const Icon = getIcon(tool.icon);
@@ -256,8 +256,8 @@ const ToolsDirectory = () => {
                                 whileInView={{ opacity: 1, scale: [0.9, 1.05, 1], y: 0 }}
                                 viewport={{ once: false, amount: 0.5 }}
                                 whileHover={{ y: -10, scale: 1.02, transition: { duration: 0.2 } }}
-                                className={`min-w-[200px] lg:min-w-[400px] rounded-[20px] lg:rounded-[24px] overflow-hidden border bg-white/[0.03] backdrop-blur-[24px] p-4 lg:p-6 snap-center group cursor-pointer transition-shadow relative
-                                ${tool.isMaintenance ? 'border-red-500/20 hover:border-red-500/40 opacity-80' : 'border-white/[0.08] hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]'}`}
+                                className={`min-w-[200px] lg:min-w-[400px] rounded-[20px] lg:rounded-[24px] overflow-hidden border bg-surface-glass backdrop-blur-[24px] p-4 lg:p-6 snap-center group cursor-pointer transition-shadow relative
+                                ${tool.isMaintenance ? 'border-red-500/20 hover:border-red-500/40 opacity-80' : 'border-border-subtle hover:border-border-strong hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]'}`}
                                 onClick={() => handleToolClick(tool)}
                             >
                                 {tool.isMaintenance ? (
@@ -284,8 +284,8 @@ const ToolsDirectory = () => {
                                 </div>
 
                                 <div className="space-y-3 lg:space-y-4">
-                                    <h4 className="text-lg font-black text-white font-cairo truncate">{tool.name}</h4>
-                                    <p className="text-slate-500 text-xs font-medium leading-relaxed font-cairo line-clamp-2">
+                                    <h4 className="text-lg font-black text-text-primary font-cairo truncate">{tool.name}</h4>
+                                    <p className="text-text-muted text-xs font-medium leading-relaxed font-cairo line-clamp-2">
                                         {tool.description}
                                     </p>
                                 </div>
@@ -299,14 +299,14 @@ const ToolsDirectory = () => {
                 <header className="space-y-6 pt-4 px-2">
                     <div className="relative group max-w-2xl mx-auto">
                         <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                            <Search className="w-5 h-5 text-slate-500 group-focus-within:text-brand-primary transition-colors" />
+                            <Search className="w-5 h-5 text-text-muted group-focus-within:text-brand-primary transition-colors" />
                         </div>
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="ابحث في الأدوات..."
-                            className="w-full h-14 lg:h-16 bg-white/[0.03] backdrop-blur-[24px] border border-white/[0.08] rounded-[24px] lg:rounded-[32px] pr-14 pl-8 text-white placeholder:text-slate-500 outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all font-medium text-sm lg:text-base text-right font-cairo shadow-2xl"
+                            className="w-full h-14 lg:h-16 bg-surface-glass backdrop-blur-[24px] border border-border-subtle rounded-[24px] lg:rounded-[32px] pr-14 pl-8 text-text-primary placeholder:text-text-muted outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all font-medium text-sm lg:text-base text-right font-cairo shadow-2xl"
                         />
                     </div>
                     {/* Category Chips */}
@@ -320,7 +320,7 @@ const ToolsDirectory = () => {
                                     onClick={() => setActiveCategory(cat.id)}
                                     className={`flex items-center gap-2 lg:gap-3 px-5 lg:px-8 py-2.5 lg:py-4 rounded-[20px] lg:rounded-[24px] text-[11px] lg:text-xs font-black whitespace-nowrap transition-all border snap-start font-cairo ${isActive
                                         ? 'bg-brand-primary border-brand-primary text-white shadow-xl shadow-brand-primary/30'
-                                        : 'bg-white/[0.03] backdrop-blur-[24px] border-white/5 text-slate-400 hover:border-white/20 hover:text-white'
+                                        : 'bg-surface-glass backdrop-blur-[24px] border-border-subtle text-text-muted hover:border-border-strong hover:text-text-primary'
                                         }`}
                                 >
                                     {isActive && <Icon className="w-4 h-4" />}

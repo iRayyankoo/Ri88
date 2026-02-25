@@ -33,7 +33,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
     // 2. ADMIN PERSPECTIVE — same shell as user, admin panel accessible via /pro/admin
     if (userRole === 'admin') {
         return (
-            <div className="min-h-screen flex overflow-hidden relative" dir="rtl">
+            <div className="min-h-screen flex overflow-hidden relative bg-surface-base" dir="rtl">
 
                 {/* BACKGROUND EFFECTS */}
                 <div className="fixed inset-0 z-0 pointer-events-none">
@@ -62,7 +62,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
     // 3. USER PERSPECTIVE (Default)
     return (
-        <div className="min-h-screen flex overflow-hidden relative" dir="rtl">
+        <div className="min-h-screen flex overflow-hidden relative bg-surface-base" dir="rtl">
 
             {/* BACKGROUND EFFECTS */}
             <div className="fixed inset-0 z-0 pointer-events-none">
