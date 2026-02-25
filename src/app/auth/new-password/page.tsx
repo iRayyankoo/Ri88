@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
-export default function NewPasswordPage() {
+function NewPasswordForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
@@ -161,5 +161,17 @@ export default function NewPasswordPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function NewPasswordPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen bg-[#030303] text-white font-cairo" dir="rtl">
+                <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+            </div>
+        }>
+            <NewPasswordForm />
+        </Suspense>
     );
 }
