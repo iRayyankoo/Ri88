@@ -26,7 +26,7 @@ interface Window {
 }
 
 const MultiWindowWorkspace = () => {
-    const { activeToolId } = useNavigation();
+    const { activeToolId, activeDbTool } = useNavigation();
     const [windows, setWindows] = useState<Window[]>([
         { id: '1', toolId: 'vat-calc', title: 'حاسبة الضريبة', x: 50, y: 50, isOpen: true, isMaximized: false },
         { id: '2', toolId: 'currency', title: 'محول العملات', x: 400, y: 150, isOpen: true, isMaximized: false },
@@ -35,24 +35,47 @@ const MultiWindowWorkspace = () => {
     // Handle external tool launch requests
     React.useEffect(() => {
         if (activeToolId) {
-            const tool = tools.find(t => t.id === activeToolId);
-            if (tool) {
-                // Check if already open
-                const existing = windows.find(w => w.toolId === activeToolId); // Check by toolId instead of title
-                if (!existing) {
-                    setWindows(prev => [...prev, {
-                        id: Date.now().toString(),
-                        toolId: tool.id,
-                        title: tool.titleAr || tool.title,
-                        x: 150 + (prev.length * 30),
-                        y: 150 + (prev.length * 30),
-                        isOpen: true,
-                        isMaximized: false
-                    }]);
-                }
+            const staticTool = tools.find(t => t.id === activeToolId);
+
+            // Build the merged title
+            const toolTitle = activeDbTool ? activeDbTool.name : (staticTool?.titleAr || staticTool?.title || 'أداة جديدة');
+            const toolCategory = activeDbTool ? activeDbTool.category : (staticTool?.cat || 'ai-tools');
+            const toolIcon = activeDbTool ? activeDbTool.icon : (staticTool?.icon || 'sparkles');
+            const toolDesc = activeDbTool ? activeDbTool.description : (staticTool?.descAr || staticTool?.desc || '');
+
+            let routerId = activeToolId;
+            if (activeDbTool?.url?.startsWith('/tools/')) {
+                routerId = activeDbTool.url.replace('/tools/', '');
+            }
+
+            // Create an object equivalent to Tool to store in window state if needed
+            const toolProps = {
+                id: routerId,
+                cat: toolCategory,
+                icon: toolIcon,
+                status: staticTool?.status || 'existing',
+                title: toolTitle,
+                titleAr: toolTitle,
+                desc: toolDesc,
+                descAr: toolDesc
+            };
+
+            // Check if already open
+            const existing = windows.find(w => w.toolId === activeToolId); // Check by toolId instead of title
+            if (!existing) {
+                setWindows(prev => [...prev, {
+                    id: Date.now().toString(),
+                    toolId: activeToolId,
+                    title: toolTitle,
+                    x: 150 + (prev.length * 30),
+                    y: 150 + (prev.length * 30),
+                    isOpen: true,
+                    isMaximized: false,
+                    toolData: toolProps // store the toolData directly on the window so it can be passed to ToolRouter
+                } as Window & { toolData?: any }]);
             }
         }
-    }, [activeToolId]);
+    }, [activeToolId, activeDbTool]);
 
     const closeWindow = (id: string) => {
         setWindows(windows.filter(w => w.id !== id));
@@ -159,8 +182,8 @@ const MultiWindowWorkspace = () => {
 
                                 {/* Window Content - Render ToolRouter */}
                                 <div className="flex-1 overflow-auto bg-black/20 custom-scrollbar relative p-4" dir="rtl">
-                                    {toolData ? (
-                                        <ToolRouter tool={toolData} />
+                                    {(win as any).toolData || tools.find(t => t.id === win.toolId) ? (
+                                        <ToolRouter tool={(win as any).toolData || tools.find(t => t.id === win.toolId)!} />
                                     ) : (
                                         <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">
                                             <MousePointer2 className="w-8 h-8 opacity-50" />

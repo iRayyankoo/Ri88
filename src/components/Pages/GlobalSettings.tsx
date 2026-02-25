@@ -6,6 +6,8 @@ import { useNavigation } from '@/context/NavigationContext';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import GlassCard from '../ui/GlassCard';
+import { updateProfile } from '@/actions/profile';
+import { toast } from 'sonner';
 
 /*
   GlobalSettings:
@@ -19,7 +21,13 @@ const GlobalSettings = () => {
     const [theme, setTheme] = useState('dark');
     const [notifications, setNotifications] = useState(true);
     const [selectedAvatar, setSelectedAvatar] = useState<string>(session?.user?.image || '/avatars/avatar1.svg');
+    const [name, setName] = useState(session?.user?.name || '');
     const [isSaving, setIsSaving] = useState(false);
+
+    React.useEffect(() => {
+        if (session?.user?.name) setName(session.user.name);
+        if (session?.user?.image) setSelectedAvatar(session.user.image);
+    }, [session]);
 
     const defaultAvatars = [
         '/avatars/avatar1.svg',
@@ -31,21 +39,30 @@ const GlobalSettings = () => {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            if (selectedAvatar !== session?.user?.image && selectedAvatar !== '') {
-                // Update avatar
-                const res = await fetch('/api/user/avatar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ avatarUrl: selectedAvatar })
+            const hasAvatarChanged = selectedAvatar !== session?.user?.image && selectedAvatar !== '';
+            const hasNameChanged = name !== session?.user?.name && name.trim() !== '';
+
+            if (hasAvatarChanged || hasNameChanged) {
+                const res = await updateProfile({
+                    name: hasNameChanged ? name : undefined,
+                    image: hasAvatarChanged ? selectedAvatar : undefined
                 });
-                if (res.ok) {
-                    await update({ image: selectedAvatar }); // Update local session
+
+                if (res.error) {
+                    toast.error(res.error);
+                } else if (res.success) {
+                    await update({
+                        name: res.user?.name,
+                        image: res.user?.image
+                    });
+                    toast.success(res.success);
                 }
+            } else {
+                toast.success('تم حفظ الإعدادات بنجاح');
             }
-            alert('تم حفظ الإعدادات بنجاح');
         } catch (error) {
             console.error(error);
-            alert('حدث خطأ أثناء الحفظ');
+            toast.error('حدث خطأ أثناء الحفظ');
         } finally {
             setIsSaving(false);
         }
@@ -90,42 +107,55 @@ const GlobalSettings = () => {
                                         className="object-cover"
                                     />
                                 </div>
-                                <div className="text-center">
+                                <div className="text-center w-full">
                                     <h3 className="text-white font-bold">{session?.user?.name || 'مستخدم'}</h3>
-                                    <p className="text-sm text-slate-500">{session?.user?.email || ''}</p>
+                                    <p className="text-sm text-slate-500 truncate w-32">{session?.user?.email || ''}</p>
                                 </div>
                             </div>
 
-                            {/* Avatar Selection */}
-                            <div className="flex-1 space-y-4 md:pt-4">
-                                <label className="text-base font-bold text-slate-300 block">تغيير الصورة الرمزية (الأفاتار)</label>
-                                <div className="flex flex-wrap gap-4">
-                                    {/* Show current external Google avatar if it exists and isn't a default one */}
-                                    {session?.user?.image && !session.user.image.startsWith('/avatars/') && (
-                                        <button
-                                            onClick={() => setSelectedAvatar(session.user!.image!)}
-                                            className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${selectedAvatar === session.user.image ? 'border-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.2)] scale-105' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-white/20'}`}
-                                        >
-                                            <Image src={session.user.image} alt="Google Avatar" fill className="object-cover" />
-                                            {selectedAvatar === session.user.image && (
-                                                <div className="absolute inset-0 bg-brand-primary/20 pointer-events-none" />
-                                            )}
-                                        </button>
-                                    )}
+                            {/* Editable Info & Avatar Selection */}
+                            <div className="flex-1 space-y-6 md:pt-4 w-full">
+                                <div className="space-y-3">
+                                    <label className="text-base font-bold text-slate-300 block">الاسم الكامل</label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="w-full max-w-md bg-[#121217] border border-white/5 rounded-2xl py-3 px-5 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo"
+                                        placeholder="أدخل اسمك للظهور"
+                                    />
+                                </div>
 
-                                    {/* Default Avatars */}
-                                    {defaultAvatars.map((av, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setSelectedAvatar(av)}
-                                            className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${selectedAvatar === av ? 'border-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.2)] scale-105' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-white/20'}`}
-                                        >
-                                            <Image src={av} alt={`Avatar ${index + 1}`} fill className="object-cover" />
-                                            {selectedAvatar === av && (
-                                                <div className="absolute inset-0 bg-brand-primary/20 pointer-events-none" />
-                                            )}
-                                        </button>
-                                    ))}
+                                <div className="space-y-3">
+                                    <label className="text-base font-bold text-slate-300 block">تغيير الصورة الرمزية (الأفاتار)</label>
+                                    <div className="flex flex-wrap gap-4">
+                                        {/* Show current external Google avatar if it exists and isn't a default one */}
+                                        {session?.user?.image && !session.user.image.startsWith('/avatars/') && (
+                                            <button
+                                                onClick={() => setSelectedAvatar(session.user!.image!)}
+                                                className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${selectedAvatar === session.user.image ? 'border-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.2)] scale-105' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-white/20'}`}
+                                            >
+                                                <Image src={session.user.image} alt="Google Avatar" fill className="object-cover" />
+                                                {selectedAvatar === session.user.image && (
+                                                    <div className="absolute inset-0 bg-brand-primary/20 pointer-events-none" />
+                                                )}
+                                            </button>
+                                        )}
+
+                                        {/* Default Avatars */}
+                                        {defaultAvatars.map((av, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => setSelectedAvatar(av)}
+                                                className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${selectedAvatar === av ? 'border-brand-primary shadow-[0_0_20px_rgba(139,92,246,0.2)] scale-105' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-white/20'}`}
+                                            >
+                                                <Image src={av} alt={`Avatar ${index + 1}`} fill className="object-cover" />
+                                                {selectedAvatar === av && (
+                                                    <div className="absolute inset-0 bg-brand-primary/20 pointer-events-none" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -7,7 +7,7 @@ import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 import { registerAction } from '@/actions/auth';
 
-type AuthStep = 'login' | 'register' | 'otp';
+type AuthStep = 'login' | 'register' | 'forgot-password';
 
 const AuthPages = () => {
     const router = useRouter();
@@ -20,6 +20,9 @@ const AuthPages = () => {
         email: '',
         password: ''
     });
+
+    // Add reset password state
+    const [resetEmail, setResetEmail] = useState('');
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,6 +63,33 @@ const AuthPages = () => {
             }
         } catch {
             toast.error('حدث خطأ غير متوقع');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleForgotPassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const res = await fetch('/api/auth/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: resetEmail })
+            });
+
+            const data = await res.json();
+
+            if (data?.error) {
+                toast.error(data.error);
+            } else if (data?.success) {
+                toast.success(data.success, { duration: 6000 });
+                setStep('login');
+            } else {
+                toast.error('حدث خطأ غير متوقع');
+            }
+        } catch {
+            toast.error('حدث خطأ في الاتصال');
         } finally {
             setIsLoading(false);
         }
@@ -188,7 +218,7 @@ const AuthPages = () => {
                                         </button>
                                     </div>
                                     <h2 className="text-4xl font-black text-white font-cairo tracking-tight">
-                                        {step === 'login' ? 'مرحباً بعودتك' : 'دخول النخبة'}
+                                        {step === 'login' ? 'مرحباً بعودتك' : step === 'register' ? 'دخول النخبة' : 'استعادة الوصول'}
                                     </h2>
                                 </div>
 
@@ -214,12 +244,14 @@ const AuthPages = () => {
 
                                     <div className="relative flex items-center gap-4 py-2">
                                         <div className="h-px bg-white/5 flex-1" />
-                                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">أو عبر البريد الإلكتروني</span>
+                                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                                            {step === 'forgot-password' ? 'أدخل بريدك الإلكتروني أدناه' : 'أو عبر البريد الإلكتروني'}
+                                        </span>
                                         <div className="h-px bg-white/5 flex-1" />
                                     </div>
 
                                     {/* Form Fields */}
-                                    <form onSubmit={step === 'login' ? handleLogin : handleRegister} className="space-y-6">
+                                    <form onSubmit={step === 'login' ? handleLogin : step === 'register' ? handleRegister : handleForgotPassword} className="space-y-6">
                                         {step === 'register' && (
                                             <div className="group space-y-2">
                                                 <div className="relative">
@@ -247,8 +279,8 @@ const AuthPages = () => {
                                                     name="email"
                                                     type="email"
                                                     placeholder="البريد الإلكتروني"
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                    value={step === 'forgot-password' ? resetEmail : formData.email}
+                                                    onChange={(e) => step === 'forgot-password' ? setResetEmail(e.target.value) : setFormData({ ...formData, email: e.target.value })}
                                                     disabled={isLoading}
                                                     className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-6 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
                                                     required
@@ -256,25 +288,39 @@ const AuthPages = () => {
                                             </div>
                                         </div>
 
-                                        <div className="group space-y-2">
-                                            <div className="relative">
-                                                <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
-                                                <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
-                                                <input
-                                                    name="password"
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="كلمة المرور"
-                                                    value={formData.password}
-                                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                                    disabled={isLoading}
-                                                    className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-14 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
-                                                    required
-                                                />
-                                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors z-10 p-1">
-                                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        {step !== 'forgot-password' && (
+                                            <div className="group space-y-2">
+                                                <div className="relative">
+                                                    <div className="absolute inset-0 bg-brand-primary/5 rounded-[18px] opacity-0 group-focus-within:opacity-100 transition-opacity blur-xl" />
+                                                    <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 w-5.5 h-5.5 group-focus-within:text-brand-primary transition-colors z-10" />
+                                                    <input
+                                                        name="password"
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="كلمة المرور"
+                                                        value={formData.password}
+                                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                        disabled={isLoading}
+                                                        className="relative z-10 w-full bg-[#121217] border border-white/5 rounded-2xl py-5 pr-14 pl-14 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:bg-[#15151A] transition-all font-bold font-cairo shadow-inner"
+                                                        required
+                                                    />
+                                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors z-10 p-1">
+                                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {step === 'login' && (
+                                            <div className="flex justify-end">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setStep('forgot-password')}
+                                                    className="text-slate-400 text-xs font-bold font-cairo hover:text-brand-primary transition-colors"
+                                                >
+                                                    نسيت كلمة المرور؟
                                                 </button>
                                             </div>
-                                        </div>
+                                        )}
 
                                         <button
                                             type="submit"
@@ -289,7 +335,7 @@ const AuthPages = () => {
                                             ) : (
                                                 <>
                                                     <span className="font-cairo uppercase">
-                                                        {step === 'login' ? 'تشفير الدخول' : 'تفعيل العضوية'}
+                                                        {step === 'login' ? 'تشفير الدخول' : step === 'register' ? 'تفعيل العضوية' : 'إرسال رابط الاستعادة'}
                                                     </span>
                                                     <ArrowLeft className="w-5.5 h-5.5 group-hover/btn:-translate-x-1.5 transition-transform" />
                                                 </>
@@ -299,12 +345,22 @@ const AuthPages = () => {
                                 </div>
 
                                 <div className="text-center">
-                                    <button
-                                        onClick={() => setStep(step === 'login' ? 'register' : 'login')}
-                                        className="text-slate-500 text-sm font-bold font-cairo hover:text-white transition-colors"
-                                    >
-                                        {step === 'login' ? 'لا تمتلك مفتاح وصول؟ انضم للنخبة' : 'تمتلك تصريح دخول بالفعل؟ سجل هنا'}
-                                    </button>
+                                    {step === 'forgot-password' ? (
+                                        <button
+                                            onClick={() => setStep('login')}
+                                            className="text-slate-500 text-sm font-bold font-cairo hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto"
+                                        >
+                                            <ArrowLeft className="w-4 h-4" />
+                                            العودة لتسجيل الدخول
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => setStep(step === 'login' ? 'register' : 'login')}
+                                            className="text-slate-500 text-sm font-bold font-cairo hover:text-white transition-colors"
+                                        >
+                                            {step === 'login' ? 'لا تمتلك مفتاح وصول؟ انضم للنخبة' : 'تمتلك تصريح دخول بالفعل؟ سجل هنا'}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

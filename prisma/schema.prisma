@@ -68,6 +68,15 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
 // Custom Application Models
 
 model Tool {
@@ -78,6 +87,9 @@ model Tool {
   category    String
   url         String
   isPremium   Boolean  @default(false)
+  isFreeForLimitedTime Boolean @default(false) // Shows a "Free for a limited time" badge
+  isActive    Boolean  @default(true) // Switch to false to hide completely
+  isMaintenance Boolean @default(false) // Switch to true to show as "Maintenance" but keep visible
   price       Float    @default(0.0)
   rating      Float    @default(0.0)
   installs    Int      @default(0)

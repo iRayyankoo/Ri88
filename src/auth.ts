@@ -73,7 +73,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     throw new Error("يرجى تفعيل حسابك من خلال الرابط المرسل لبريدك الإلكتروني");
                 }
 
-                // Return a simplified user object for jwt and session to pickup
                 return {
                     id: user.id,
                     email: user.email,
@@ -131,6 +130,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.isPro = token.isPro as boolean ?? false;
                 session.user.stripeCustomerId = token.stripeCustomerId as string | null;
                 session.user.image = token.image as string || '/avatars/avatar1.svg';
+                session.user.name = token.name as string || '';
             }
             return session;
         },

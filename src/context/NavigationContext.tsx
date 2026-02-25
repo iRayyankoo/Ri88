@@ -12,7 +12,8 @@ interface NavigationContextType {
     currentView: string;
     setCurrentView: (view: string) => void;
     activeToolId: string | null;
-    launchTool: (toolId: string) => void;
+    activeDbTool: any | null;
+    launchTool: (toolId: string, dbTool?: any) => void;
     isSidebarOpen: boolean;
     setIsSidebarOpen: (isOpen: boolean) => void;
     openToolsInModal: boolean;
@@ -36,6 +37,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 
     const [currentView, setCurrentView] = useState('landing');
     const [activeToolId, setActiveToolId] = useState<string | null>(null);
+    const [activeDbTool, setActiveDbTool] = useState<any | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [openToolsInModal, setOpenToolsInModal] = useState(false);
     const [showToolPopup, setShowToolPopup] = useState(false);
@@ -55,8 +57,9 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [status, session?.user?.role]);
 
-    const launchTool = (toolId: string) => {
+    const launchTool = (toolId: string, dbTool?: any) => {
         setActiveToolId(toolId);
+        setActiveDbTool(dbTool || null);
         setShowToolPopup(true);
     };
 
@@ -69,6 +72,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
             currentView,
             setCurrentView,
             activeToolId,
+            activeDbTool,
             launchTool,
             isSidebarOpen,
             setIsSidebarOpen,
