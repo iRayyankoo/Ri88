@@ -1,321 +1,229 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { ToolShell, ToolInputRow } from './ToolShell';
-import { ToolInput, ToolTextarea, ToolButton, ToolSelect } from './ToolUi';
-import {
-    formatJSON, convertBase64, testRegex, generateMetaTags,
-    encodeUrl, parseJWT, diffText
-} from '@/lib/tools/developer';
+import { ToolInput, ToolTextarea, ToolButton } from './ToolUi';
 
 interface ToolProps {
     toolId: string;
 }
 
-// 1. JSON Formatter
-function JsonFormatter() {
+// 1. User-Agent Parser (Phase 7)
+function UserAgentParser() {
+    const [ua, setUa] = useState('');
+    const [data, setData] = useState<any>(null);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') setUa(navigator.userAgent);
+    }, []);
+
+    const parse = () => {
+        // Simple mock parser for UI demo
+        const isMobile = /Mobile|Android|iPhone/i.test(ua);
+        const browser = ua.includes('Chrome') ? 'Chrome' : ua.includes('Firefox') ? 'Firefox' : 'Other';
+        setData({ browser, os: 'Windows/MacOS', device: isMobile ? 'Mobile' : 'Desktop' });
+    };
+
+    return (
+        <ToolShell description="استخراج تفاصيل الجهاز والمتصفح ونظام التشغيل من سلسلة User-Agent.">
+            <ToolTextarea value={ua} onChange={e => setUa(e.target.value)} className="h-32 font-mono text-sm" placeholder="سلسلة User Agent..." />
+            <ToolButton onClick={parse} className="w-full mt-4 h-14">تحليل البيانات</ToolButton>
+            {data && (
+                <div className="mt-8 grid grid-cols-3 gap-4">
+                    {Object.entries(data).map(([k, v]) => (
+                        <div key={k} className="p-4 bg-white/5 border border-white/10 rounded-2xl text-center">
+                            <span className="text-[10px] text-slate-500 uppercase font-black block mb-1">{k}</span>
+                            <span className="text-white font-bold">{v as string}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </ToolShell>
+    );
+}
+
+// 2. Base64 Image Decoder (Phase 7)
+function Base64ImageDecoder() {
     const [input, setInput] = useState('');
-    const [output, setOutput] = useState('');
-    const [msg, setMsg] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
+    return (
+        <ToolShell description="معاينة الصور المشفرة بكود Base64 فوراً وبسهولة.">
+            <ToolTextarea value={input} onChange={e => setInput(e.target.value)} className="h-48 font-mono text-[10px]" placeholder="data:image/png;base64,..." />
+            <div className="mt-8 p-4 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center min-h-[200px]">
+                {input ? <img src={input} alt="Preview" className="max-w-full rounded-xl shadow-2xl" /> : <span className="text-slate-500">الصق الكود للمعاينة</span>}
+            </div>
+        </ToolShell>
+    );
+}
 
+// 3. Unix Timestamp (Phase 8)
+function UnixConverter() {
+    const [input, setInput] = useState('');
+    const [res, setRes] = useState('');
 
+    useEffect(() => {
+        setInput(Math.floor(Date.now() / 1000).toString());
+    }, []);
 
-    const process = (action: 'fmt' | 'min' | 'val') => {
+    const convert = () => {
         try {
-            const res = formatJSON(input, action);
-            if (res.valid) {
-                if (action !== 'val') setOutput(res.output);
-                setMsg({ text: action === 'val' ? 'Valid JSON' : (action === 'fmt' ? 'Formatted' : 'Minified'), type: 'success' });
-            }
-        } catch (e: unknown) {
-            setMsg({ text: e instanceof Error ? e.message : 'Invalid JSON', type: 'error' });
-        }
+            const date = new Date(parseInt(input) * 1000);
+            setRes(date.toLocaleString('ar-EG'));
+        } catch { toast.error("طابع وقت غير صحيح"); }
     };
-
     return (
-        <ToolShell description="تنسيق وتشذيب والتحقق من أكواد JSON.">
-            <ToolTextarea
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                className="font-mono min-h-[300px]"
-                placeholder="Paste JSON here..."
-                aria-label="JSON Input"
-            />
-
-            <div className="flex gap-2 mt-4">
-                <ToolButton onClick={() => process('fmt')}>Format</ToolButton>
-                <ToolButton onClick={() => process('min')} variant="secondary">Minify</ToolButton>
-                <ToolButton onClick={() => process('val')} variant="ghost">Validate</ToolButton>
-            </div>
-
-            {msg && (
-                <div className={`p-4 mt-4 rounded-xl text-center font-bold border ${msg.type === 'error' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20'}`}>
-                    {msg.text}
-                </div>
-            )}
-
-            {output && (
-                <div className="mt-6">
-                    <h3 className="text-sm font-bold text-slate-400 mb-2">Output</h3>
-                    <ToolTextarea value={output} readOnly aria-label="JSON Output" className="font-mono min-h-[300px]" />
-                </div>
-            )}
+        <ToolShell description="التحويل بين طابع الوقت Unix والتاريخ المقروء.">
+            <ToolInputRow label="طابع الوقت (Unix)"><ToolInput value={input} onChange={e => setInput(e.target.value)} /></ToolInputRow>
+            <ToolButton onClick={convert} className="w-full mt-4">تحويل إلى تاريخ</ToolButton>
+            {res && <div className="mt-6 p-6 bg-white/5 border border-white/10 rounded-2xl text-center text-xl font-bold text-brand-primary">{res}</div>}
         </ToolShell>
     );
 }
 
-// 2. Base64 Converter
-function Base64Converter() {
-    const [input, setInput] = useState('');
-
-
-
-    const encode = () => { try { setInput(convertBase64(input, 'encode')); } catch { alert('Invalid input'); } }
-    const decode = () => { try { setInput(convertBase64(input, 'decode')); } catch { alert('Invalid Base64'); } }
-
+// 4. Color Pro (Phase 8)
+function ColorPro() {
+    const [color, setColor] = useState('#6366f1');
     return (
-        <ToolShell description="تشفير وفك تشفير النصوص بصيغة Base64.">
-            <ToolTextarea
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                aria-label="Base64 Input"
-                className="min-h-[200px]"
-                placeholder="Text to encode/decode..."
-            />
-            <div className="grid grid-cols-2 gap-4 mt-4">
-                <ToolButton onClick={encode}>Encode</ToolButton>
-                <ToolButton onClick={decode} variant="secondary">Decode</ToolButton>
+        <ToolShell description="محول ألوان متقدم مع اقتراحات Tailwind CSS.">
+            <div className="flex gap-4 items-center mb-6">
+                <input type="color" value={color} onChange={e => setColor(e.target.value)} className="w-20 h-20 rounded-2xl bg-transparent border-0 cursor-pointer" />
+                <ToolInput value={color} onChange={e => setColor(e.target.value)} className="flex-1 text-2xl font-bold" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                    <span className="text-[10px] text-slate-500 block">قيمة HEX</span>
+                    <code className="text-white">{color.toUpperCase()}</code>
+                </div>
+                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                    <span className="text-[10px] text-slate-500 block">Tailwind</span>
+                    <code className="text-brand-secondary">bg-indigo-500</code>
+                </div>
             </div>
         </ToolShell>
     );
 }
 
-// 3. Regex Tester
-function RegexTester() {
-    const [pattern, setPattern] = useState('');
-    const [text, setText] = useState('');
-    const [result, setResult] = useState<{ match: boolean, msg: string } | null>(null);
-
-
-
-    const test = () => {
-        const res = testRegex(pattern, text);
-        setResult({ match: res.match, msg: res.error ? 'Invalid Regex' : (res.match ? 'Match Found!' : 'No Match') });
-    };
-
+// 5. Binary Visualizer (Phase 8)
+function BinaryVisualizer() {
+    const [bin, setBin] = useState('01101001 01101100 01101111 01110110 01100101 01111001 01101111 01110101');
+    const bits = bin.replace(/\s/g, '').split('');
     return (
-        <ToolShell description="اختبار التعابير المنطقية (Regex).">
-            <ToolInputRow label="Pattern (Regex)">
-                <ToolInput value={pattern} onChange={e => setPattern(e.target.value)} className="font-mono ltr" placeholder="e.g. ^[a-z]+$" style={{ direction: 'ltr' }} />
-            </ToolInputRow>
-            <ToolInputRow label="Test String">
-                <ToolTextarea value={text} onChange={e => setText(e.target.value)} className="min-h-[150px]" placeholder="Test text..." />
-            </ToolInputRow>
-            <ToolButton onClick={test} className="w-full mt-4">Test Regex</ToolButton>
-
-            {result && (
-                <div className="mt-6 text-center">
-                    <strong className={`text-xl font-bold ${result.match ? 'text-green-400' : 'text-red-400'}`}>
-                        {result.msg}
-                    </strong>
-                </div>
-            )}
-        </ToolShell>
-    );
-}
-
-// 4. Meta Tag Generator
-function MetaGenerator() {
-    const [title, setTitle] = useState('');
-    const [desc, setDesc] = useState('');
-    const [out, setOut] = useState('');
-
-
-
-    const gen = () => {
-        setOut(generateMetaTags(title, desc));
-    };
-
-    return (
-        <ToolShell description="توليد وسوم الميتا لمحركات البحث (SEO).">
-            <ToolInputRow label="Page Title">
-                <ToolInput value={title} onChange={e => setTitle(e.target.value)} aria-label="Page Title" />
-            </ToolInputRow>
-            <ToolInputRow label="Description">
-                <ToolTextarea value={desc} onChange={e => setDesc(e.target.value)} aria-label="Page Description" />
-            </ToolInputRow>
-            <ToolButton onClick={gen} className="w-full mt-4">Generate Tags</ToolButton>
-            {out && (
-                <div className="mt-6">
-                    <ToolTextarea value={out} readOnly aria-label="Generated Meta Tags" className="font-mono min-h-[200px] text-xs" />
-                </div>
-            )}
-        </ToolShell>
-    );
-}
-
-// 5. URL Encoder
-function UrlEncoder() {
-    const [input, setInput] = useState('');
-
-
-
-    const encode = () => setInput(encodeUrl(input, 'encode'));
-    const decode = () => setInput(encodeUrl(input, 'decode'));
-
-    return (
-        <ToolShell description="تشفير الروابط (URL Encode/Decode).">
-            <ToolTextarea value={input} onChange={e => setInput(e.target.value)} aria-label="URL Input" className="min-h-[200px]" placeholder="Enter URL..." />
-            <div className="grid grid-cols-2 gap-4 mt-4">
-                <ToolButton onClick={encode}>Encode</ToolButton>
-                <ToolButton onClick={decode} variant="secondary">Decode</ToolButton>
+        <ToolShell description="تحويل البيانات الثنائية (Binary) إلى تمثيل مرئي هندسي.">
+            <ToolTextarea value={bin} onChange={e => setBin(e.target.value)} className="font-mono text-xs mb-4" />
+            <div className="grid grid-cols-8 sm:grid-cols-16 gap-1 p-4 bg-black/40 rounded-3xl border border-white/5">
+                {bits.map((b, i) => (
+                    <div key={i} className={`aspect-square rounded-sm ${b === '1' ? 'bg-cyan-400 shadow-[0_0_5px_rgba(34,211,238,0.5)]' : 'bg-white/5'}`} />
+                ))}
             </div>
         </ToolShell>
     );
 }
 
-// 6. Hash Generator
-function HashGenerator() {
-    const [text, setText] = useState('');
-    const [algo, setAlgo] = useState('SHA-256');
-    const [hash, setHash] = useState('');
-
-    const generate = async () => {
-        const msgBuffer = new TextEncoder().encode(text);
-        const hashBuffer = await crypto.subtle.digest(algo, msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        setHash(hashArray.map(b => b.toString(16).padStart(2, '0')).join(''));
-    };
-
-    return (
-        <ToolShell description="توليد الهاش (Hash) للنصوص.">
-            <ToolInputRow label="Text">
-                <ToolInput value={text} onChange={e => setText(e.target.value)} placeholder="Text to hash" />
-            </ToolInputRow>
-            <ToolInputRow label="Algorithm" id="hash-algo">
-                <ToolSelect id="hash-algo" value={algo} onChange={e => setAlgo(e.target.value)} aria-label="Hash Algorithm" title="خوارزمية الهاش (Hash Algorithm)">
-                    <option value="SHA-256">SHA-256 (Recommended)</option>
-                    <option value="SHA-1">SHA-1</option>
-                    <option value="SHA-384">SHA-384</option>
-                    <option value="SHA-512">SHA-512</option>
-                </ToolSelect>
-            </ToolInputRow>
-            <ToolButton onClick={generate} className="w-full mt-4">Generate Hash</ToolButton>
-            {hash && (
-                <div className="mt-6">
-                    <ToolTextarea value={hash} readOnly className="font-mono text-xs break-all" />
-                </div>
-            )}
-        </ToolShell>
-    );
-}
-
-// 7. JWT Debugger
+// 6. JWT Debugger
 function JwtDebugger() {
     const [token, setToken] = useState('');
-    const [header, setHeader] = useState('');
-    const [payload, setPayload] = useState('');
-
-
-
+    const [decoded, setDecoded] = useState<{ header: object; payload: object } | null>(null);
     const decode = () => {
         try {
-            const { header, payload } = parseJWT(token);
-            setHeader(header);
-            setPayload(payload);
-        } catch {
-            setHeader('Error decoding header');
-            setPayload('Error decoding payload');
-        }
+            const parts = token.split('.');
+            if (parts.length !== 3) throw new Error('Invalid JWT');
+            const header = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')));
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            setDecoded({ header, payload });
+        } catch { toast.error('توكن JWT غير صحيح'); }
     };
-
     return (
-        <ToolShell description="فحص وفك رموز توكن JWT.">
-            <ToolTextarea value={token} onChange={e => setToken(e.target.value)} className="min-h-[100px] mb-4 font-mono text-xs" placeholder="Paste JWT Token (ey...)" />
-            <ToolButton onClick={decode} className="w-full mb-6">Decode</ToolButton>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label className="text-sm font-bold text-slate-400 mb-2 block">Header</label>
-                    <ToolTextarea value={header} readOnly aria-label="Header Output" className="font-mono min-h-[200px] text-xs" />
+        <ToolShell description="فك تشفير وفحص رموز JWT مباشرة.">
+            <ToolTextarea value={token} onChange={e => setToken(e.target.value)} className="h-24 font-mono text-xs text-left" dir="ltr" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+            <ToolButton onClick={decode} className="w-full mt-4 h-12">فك التشفير</ToolButton>
+            {decoded && (
+                <div className="mt-6 space-y-4">
+                    <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                        <div className="text-xs text-brand-primary font-bold mb-2">Header</div>
+                        <pre className="text-xs text-slate-300 font-mono overflow-auto">{JSON.stringify(decoded.header, null, 2)}</pre>
+                    </div>
+                    <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                        <div className="text-xs text-brand-secondary font-bold mb-2">Payload</div>
+                        <pre className="text-xs text-slate-300 font-mono overflow-auto">{JSON.stringify(decoded.payload, null, 2)}</pre>
+                    </div>
                 </div>
-                <div>
-                    <label className="text-sm font-bold text-slate-400 mb-2 block">Payload</label>
-                    <ToolTextarea value={payload} readOnly aria-label="Payload Output" className="font-mono min-h-[200px] text-xs" />
-                </div>
-            </div>
+            )}
         </ToolShell>
     );
 }
 
-// 8. Text Diff
-function TextDiff() {
-    const [t1, setT1] = useState('');
-    const [t2, setT2] = useState('');
-    const [res, setRes] = useState<string | null>(null);
-
-
-
-    const compare = () => {
-        const res = diffText(t1, t2);
-        if (res.identical) setRes('Identical');
-        else setRes(`${res.diffLines} lines difference found.`);
-    };
-
+// 7. Cron Job Generator
+function CronGen() {
+    const [min, setMin] = useState('0');
+    const [hr, setHr] = useState('*');
+    const [dom, setDom] = useState('*');
+    const [mon, setMon] = useState('*');
+    const [dow, setDow] = useState('*');
+    const cron = `${min} ${hr} ${dom} ${mon} ${dow}`;
+    const presets = [
+        { label: 'كل دقيقة', value: '* * * * *' },
+        { label: 'كل ساعة', value: '0 * * * *' },
+        { label: 'يومياً 12 ص', value: '0 12 * * *' },
+        { label: 'أسبوعياً', value: '0 9 * * 1' },
+        { label: 'شهرياً', value: '0 0 1 * *' },
+    ];
+    const copy = () => { navigator.clipboard.writeText(cron); toast.success('تم النسخ!'); };
     return (
-        <ToolShell description="مقارنة بين نصين لمعرفة الاختلافات.">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <ToolTextarea value={t1} onChange={e => setT1(e.target.value)} aria-label="Original Text" className="min-h-[200px]" placeholder="Original Text" />
-                <ToolTextarea value={t2} onChange={e => setT2(e.target.value)} aria-label="Modified Text" className="min-h-[200px]" placeholder="Modified Text" />
+        <ToolShell description="توليد جداول Cron للمهام المجدولة.">
+            <div className="grid grid-cols-5 gap-2 mb-4">
+                {[['Min', min, setMin], ['Hour', hr, setHr], ['DOM', dom, setDom], ['Mon', mon, setMon], ['DOW', dow, setDow]].map(([label, val, setter]) => (
+                    <ToolInputRow key={label as string} label={label as string}>
+                        <ToolInput value={val as string} onChange={e => (setter as (v: string) => void)(e.target.value)} className="text-center font-mono" />
+                    </ToolInputRow>
+                ))}
             </div>
-            <ToolButton onClick={compare} className="w-full">Compare</ToolButton>
-            {res && <div className="mt-4 p-4 text-center font-bold text-white bg-white/5 rounded-xl border border-white/10">{res}</div>}
+            <div className="p-4 bg-black/30 rounded-2xl font-mono text-xl text-brand-primary text-center border border-white/10 mb-4">{cron}</div>
+            <div className="grid grid-cols-3 gap-2 mb-4">
+                {presets.map(p => <ToolButton key={p.label} variant="secondary" onClick={() => { const parts = p.value.split(' '); setMin(parts[0]); setHr(parts[1]); setDom(parts[2]); setMon(parts[3]); setDow(parts[4]); }}>{p.label}</ToolButton>)}
+            </div>
+            <ToolButton onClick={copy} className="w-full h-12">نسخ الجدول</ToolButton>
+        </ToolShell>
+    );
+}
+
+// 8. Meta Tags Generator
+function MetaTagsGen() {
+    const [title, setTitle] = useState('عنوان الصفحة');
+    const [desc, setDesc] = useState('وصف الصفحة');
+    const [url, setUrl] = useState('https://example.com');
+    const tags = `<title>${title}</title>\n<meta name="description" content="${desc}">\n<meta property="og:title" content="${title}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${url}">\n<meta name="twitter:card" content="summary_large_image">`;
+    const copy = () => { navigator.clipboard.writeText(tags); toast.success('تم النسخ!'); };
+    return (
+        <ToolShell description="توليد وسوم الميتا وSEO لصفحات الويب.">
+            <div className="space-y-4 mb-6">
+                <ToolInputRow label="عنوان الصفحة"><ToolInput value={title} onChange={e => setTitle(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="الوصف"><ToolInput value={desc} onChange={e => setDesc(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="رابط URL"><ToolInput value={url} onChange={e => setUrl(e.target.value)} dir="ltr" /></ToolInputRow>
+            </div>
+            <div className="p-4 bg-black/30 rounded-2xl font-mono text-xs text-brand-secondary border border-white/10 mb-4 whitespace-pre-wrap overflow-auto max-h-44" dir="ltr">{tags}</div>
+            <ToolButton onClick={copy} className="w-full h-12">نسخ الكود</ToolButton>
         </ToolShell>
     );
 }
 
 // 9. Screen Info
 function ScreenInfo() {
-    const [info, setInfo] = useState<Record<string, number | string>>({});
-
-    React.useEffect(() => {
-        const update = () => {
-            setInfo({
-                width: window.screen.width,
-                height: window.screen.height,
-                availWidth: window.screen.availWidth,
-                availHeight: window.screen.availHeight,
-                colorDepth: window.screen.colorDepth,
-                dpr: window.devicePixelRatio,
-                userAgent: navigator.userAgent
-            });
-        };
-        update();
-        window.addEventListener('resize', update);
-        return () => window.removeEventListener('resize', update);
-    }, []);
-
+    const info = typeof window !== 'undefined' ? [
+        { label: 'دقة الشاشة', value: `${window.screen.width} × ${window.screen.height}` },
+        { label: 'نافذة المتصفح', value: `${window.innerWidth} × ${window.innerHeight}` },
+        { label: 'كثافة البكسل', value: `${window.devicePixelRatio}x` },
+        { label: 'نظام التشغيل', value: navigator.platform },
+        { label: 'المتصفح', value: navigator.userAgent.split(') ')[0].split('(')[1] || navigator.appName },
+        { label: 'اللغة', value: navigator.language },
+    ] : [];
     return (
-        <ToolShell description="معلومات الشاشة والجهاز الحالية.">
-            <div className="text-center py-12">
-                <div className="text-6xl font-black text-brand-primary glow-text tracking-widest">
-                    {info.width} x {info.height}
-                </div>
-                <div className="text-sm text-slate-400 mt-2">Resolution</div>
-            </div>
-
+        <ToolShell description="معلومات دققية عن شاشتك ومتصفحك.">
             <div className="grid grid-cols-2 gap-4">
-                <div className="bg-black/20 p-6 rounded-xl border border-white/5 text-center">
-                    <span className="text-xs text-slate-500 uppercase tracking-widest font-bold">Available Space</span>
-                    <strong className="block mt-2 font-mono text-xl text-white">{info.availWidth} x {info.availHeight}</strong>
-                </div>
-                <div className="bg-black/20 p-6 rounded-xl border border-white/5 text-center">
-                    <span className="text-xs text-slate-500 uppercase tracking-widest font-bold">Pixel Ratio</span>
-                    <strong className="block mt-2 font-mono text-xl text-white">{info.dpr}x</strong>
-                </div>
-            </div>
-
-            <div className="mt-4 p-4 bg-black/40 rounded-xl border border-white/5 text-xs text-slate-400 break-all font-mono">
-                {info.userAgent}
+                {info.map((item, i) => (
+                    <div key={i} className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                        <div className="text-xs text-slate-400 font-bold mb-1">{item.label}</div>
+                        <div className="text-white font-mono font-bold truncate">{item.value}</div>
+                    </div>
+                ))}
             </div>
         </ToolShell>
     );
@@ -323,15 +231,15 @@ function ScreenInfo() {
 
 export default function DeveloperTools({ toolId }: ToolProps) {
     switch (toolId) {
-        case 'dev-json': return <JsonFormatter />;
-        case 'dev-base64': return <Base64Converter />;
-        case 'dev-regex': return <RegexTester />;
-        case 'dev-meta': return <MetaGenerator />;
-        case 'dev-url': return <UrlEncoder />;
-        case 'dev-hash': return <HashGenerator />;
+        case 'tech-ua-parser': return <UserAgentParser />;
+        case 'tech-base64-img': return <Base64ImageDecoder />;
+        case 'dev-unix': return <UnixConverter />;
+        case 'dev-color-pro': return <ColorPro />;
+        case 'dev-binary': return <BinaryVisualizer />;
         case 'dev-jwt': return <JwtDebugger />;
-        case 'dev-diff': return <TextDiff />;
+        case 'dev-cron': return <CronGen />;
+        case 'dev-meta': return <MetaTagsGen />;
         case 'dev-screen': return <ScreenInfo />;
-        default: return <div className="text-center py-12">Tool coming soon: {toolId}</div>
+        default: return null;
     }
 }

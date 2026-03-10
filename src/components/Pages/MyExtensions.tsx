@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Trash2, Settings, Power } from 'lucide-react';
+import { Package, Trash2, Settings } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 
 const MyExtensions = () => {
@@ -29,7 +29,7 @@ const MyExtensions = () => {
                     <p className="text-slate-500 font-medium">إدارة وتكوين الأدوات المثبتة لديك.</p>
                 </div>
                 <button
-                    onClick={() => setCurrentView('store')}
+                    onClick={() => setCurrentView('tools')}
                     className="btn-primary"
                 >
                     تصفح المتجر
@@ -58,16 +58,18 @@ const MyExtensions = () => {
 
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2 bg-black/20 p-1 rounded-lg">
-                                <button className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors">
+                                <button title="إعدادات" className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors">
                                     <Settings className="w-4 h-4" />
                                 </button>
-                                <button className="p-2 text-red-400 hover:bg-red-500/10 rounded-md transition-colors">
+                                <button title="حذف" className="p-2 text-red-400 hover:bg-red-500/10 rounded-md transition-colors">
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                             </div>
                             <div className="h-8 w-[1px] bg-white/10" />
                             <button
                                 onClick={() => toggleExtension(ext.id)}
+                                title={ext.active ? "إيقاف التفعيل" : "تفعيل"}
+                                aria-label={ext.active ? "إيقاف التفعيل" : "تفعيل"}
                                 className={`w-12 h-6 rounded-full relative transition-colors ${ext.active ? 'bg-brand-primary' : 'bg-slate-700'}`}
                             >
                                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-md ${ext.active ? 'left-1' : 'left-7'}`} />

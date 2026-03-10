@@ -34,7 +34,7 @@ const ToolWorkspace = () => {
         <div className={`h-full flex flex-col lg:flex-row ${showToolPopup ? '' : 'px-6 lg:px-12 xl:px-20 pb-20'}`}>
 
             {/* LEFT COLUMN: ACTIVE TOOL */}
-            <main className={`flex-1 flex flex-col overflow-hidden ${showToolPopup ? 'lg:pr-10' : 'w-full max-w-7xl mx-auto'}`}>
+            <main className="flex-1 flex flex-col overflow-hidden w-full max-w-7xl mx-auto">
                 {/* 1. CINEMATIC HEADER */}
                 <header className="flex items-center justify-between py-4 lg:py-8 mb-2 lg:mb-4 border-b border-white/[0.04] shrink-0">
                     <div className="flex items-center gap-4 lg:gap-6">

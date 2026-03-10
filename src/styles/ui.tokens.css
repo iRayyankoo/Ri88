@@ -1,5 +1,5 @@
 :root {
-  /* --- Colors --- */
+  /* --- Colors (Dark Mode Default) --- */
   --ui-bg: #070A12;
   --ui-card: rgba(255, 255, 255, 0.06);
   --ui-card-hover: rgba(255, 255, 255, 0.08);
@@ -13,7 +13,6 @@
   /* --- Accents (Gradients) --- */
   --ui-g1: #8C40FF;
   --ui-g2: #3B82F6;
-  /* Slightly reduced saturation/opacity for a 'Clean' look */
   --ui-grad-primary: linear-gradient(135deg, rgba(140, 64, 255, .85), rgba(59, 130, 246, .85));
   --ui-grad-hover: linear-gradient(135deg, rgba(160, 100, 255, 1), rgba(80, 150, 255, 1));
   --ui-grad-glass: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
@@ -22,7 +21,6 @@
   --ui-shadow: 0 24px 80px rgba(0, 0, 0, .55);
   --ui-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
   --ui-glow: 0 0 0 4px rgba(59, 130, 246, .18), 0 18px 50px rgba(0, 0, 0, .35);
-
   --ui-backdrop: blur(18px);
 
   /* --- Dimensions --- */
@@ -32,4 +30,29 @@
 
   /* --- Fonts --- */
   --ui-font: "Tajawal", "Cairo", system-ui, sans-serif;
+}
+
+/* ===================================================
+   LIGHT MODE OVERRIDES
+   =================================================== */
+[data-theme="light"] {
+  --ui-bg: #F1F5F9;
+  --ui-card: rgba(255, 255, 255, 0.90);
+  --ui-card-hover: rgba(255, 255, 255, 1);
+  --ui-stroke: rgba(0, 0, 0, 0.10);
+  --ui-stroke-hover: rgba(0, 0, 0, 0.20);
+
+  --ui-text: #0F172A;
+  --ui-text-muted: #475569;
+  --ui-text-dim: #94A3B8;
+
+  --ui-g1: #7C3AED;
+  --ui-g2: #2563EB;
+  --ui-grad-primary: linear-gradient(135deg, #7C3AED, #2563EB);
+  --ui-grad-hover: linear-gradient(135deg, #6D28D9, #1D4ED8);
+  --ui-grad-glass: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(248,250,252,0.90));
+
+  --ui-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --ui-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --ui-glow: 0 0 0 4px rgba(99, 102, 241, 0.15), 0 8px 24px rgba(0, 0, 0, 0.10);
 }

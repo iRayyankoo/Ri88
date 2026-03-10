@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef } from 'react';
-import { Mic, Square } from 'lucide-react';
+import { Mic, Square, Video as VideoIcon, StopCircle } from 'lucide-react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { FileUploadZone } from '../Inputs/FileUploadZone';
 import { FinalResultView } from '../Outputs/FinalResultView';
@@ -331,6 +331,79 @@ function AudioRecorder() {
     );
 }
 
+// 13. Screen Recorder
+function ScreenRecorder() {
+    const [recording, setRecording] = useState(false);
+    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const chunksRef = useRef<Blob[]>([]);
+
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: { frameRate: { ideal: 30 } },
+                audio: true
+            });
+
+            mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            chunksRef.current = [];
+
+            mediaRecorderRef.current.ondataavailable = (e) => {
+                if (e.data.size > 0) chunksRef.current.push(e.data);
+            };
+
+            mediaRecorderRef.current.onstop = () => {
+                const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+                setVideoUrl(URL.createObjectURL(blob));
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorderRef.current.start();
+            setRecording(true);
+        } catch (err) {
+            console.error("Error starting screen record:", err);
+            alert("فشل في بدء تسجيل الشاشة. تأكد من إعطاء الصلاحيات.");
+        }
+    };
+
+    const stopRecording = () => {
+        mediaRecorderRef.current?.stop();
+        setRecording(false);
+    };
+
+    return (
+        <ToolShell
+            description="تسجيل شاشة الكمبيوتر مباشرة من المتصفح بدون برامج."
+            results={videoUrl && (
+                <div className="h-full flex flex-col justify-center items-center p-6 bg-white/5 rounded-3xl border border-white/5">
+                    <video src={videoUrl} controls className="w-full rounded-xl shadow-2xl border border-white/10 mb-6" />
+                    <a href={videoUrl} download="screen-recording.webm" className={btnClassResult}>
+                        <span className="font-bold">تحميل التسجيل</span>
+                    </a>
+                </div>
+            )}
+        >
+            <div className="text-center py-12 flex flex-col items-center justify-center min-h-[300px]">
+                <button
+                    onClick={recording ? stopRecording : startRecording}
+                    className={`w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${recording
+                        ? 'bg-red-500 border-red-900 shadow-[0_0_50px_rgba(239,68,68,0.5)] animate-pulse'
+                        : 'bg-white/5 border-white/10 hover:bg-brand-primary hover:border-brand-primary hover:shadow-[0_0_30px_rgba(139,92,246,0.4)]'
+                        }`}
+                >
+                    {recording ? <StopCircle size={40} fill="white" className="text-white" /> : <VideoIcon size={40} className="text-white" />}
+                </button>
+                <div className="mt-8">
+                    <p className={`text-lg font-bold ${recording ? 'text-red-400' : 'text-slate-400'}`}>
+                        {recording ? 'جاري تسجيل الشاشة... (اضغط للإيقاف)' : 'اضغط لبدء تسجيل الشاشة'}
+                    </p>
+                    <p className="text-sm text-white/30 mt-2">يمكنك اختيار نافذة معينة أو الشاشة كاملة</p>
+                </div>
+            </div>
+        </ToolShell>
+    );
+}
+
 // ... Additional tools (Remove BG, HEIC, etc.) kept mostly as-is due to specific browser logic dependency
 // ... Implementing one more key refactoring for SocialPostPrep
 
@@ -605,6 +678,64 @@ function MemeGenerator() {
     );
 }
 
+// 14. Color Palette Extractor
+function ColorPaletteExtractor() {
+    const [file, setFile] = useState<File | null>(null);
+    const [palette, setPalette] = useState<string[]>([]);
+
+    const extractColors = async () => {
+        if (!file) return;
+        const dataUrl = await readFile(file);
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const size = 100;
+            canvas.width = size; canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            ctx.drawImage(img, 0, 0, size, size);
+            const data = ctx.getImageData(0, 0, size, size).data;
+            const colorMap: Record<string, number> = {};
+            for (let i = 0; i < data.length; i += 4 * 10) {
+                const r = Math.round(data[i] / 32) * 32;
+                const g = Math.round(data[i + 1] / 32) * 32;
+                const b = Math.round(data[i + 2] / 32) * 32;
+                const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                colorMap[hex] = (colorMap[hex] || 0) + 1;
+            }
+            const sorted = Object.entries(colorMap).sort((a, b) => b[1] - a[1]).slice(0, 8).map(e => e[0]);
+            setPalette(sorted);
+        };
+        img.src = dataUrl;
+    };
+
+    return (
+        <ToolShell description="استخراج لوحة الألوان السائدة من أي صورة.">
+            <div className="mb-6">
+                <FileUploadZone onFileChange={setFile} accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }} />
+            </div>
+            <ToolButton onClick={extractColors} disabled={!file} className="w-full text-lg mb-6">استخراج الألوان</ToolButton>
+            {palette.length > 0 && (
+                <div>
+                    <div className="flex h-16 rounded-2xl overflow-hidden mb-4 border border-white/10">
+                        {palette.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
+                    </div>
+                    <div className="grid grid-cols-4 gap-3">
+                        {palette.map((c, i) => (
+                            <button key={i} onClick={() => { navigator.clipboard.writeText(c); }}
+                                className="group flex flex-col items-center gap-1 p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
+                                <div className="w-full aspect-square rounded-lg border border-white/10" style={{ background: c }} />
+                                <span className="text-[10px] font-mono text-slate-400">{c}</span>
+                            </button>
+                        ))}
+                    </div>
+                    <p className="text-center text-xs text-slate-500 mt-3">اضغط على أي لون لنسخه</p>
+                </div>
+            )}
+        </ToolShell>
+    );
+}
+
 export default function MediaTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'img-compress': return <ImageCompressor />;
@@ -619,7 +750,9 @@ export default function MediaTools({ toolId }: ToolProps) {
         case 'img-social': return <SocialPostPrep />;
         case 'img-crop': return <ImageCropper />;
         case 'img-meme': return <MemeGenerator />;
-        case 'image-palette': return <div className="text-center py-12 text-gray-400 font-bold">استخراج لوحة الألوان — قريباً</div>;
-        default: return <div className="text-center py-12">Tool not implemented: {toolId}</div>
+        case 'media-screen-rec': return <ScreenRecorder />;
+        case 'image-palette':
+        case 'design-palette': return <ColorPaletteExtractor />;
+        default: return null;
     }
 }

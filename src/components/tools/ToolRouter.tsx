@@ -28,6 +28,9 @@ const DesignTools = dynamic(() => import('./DesignTools'), { loading: () => <Too
 const LanguagesTools = dynamic(() => import('./LanguagesTools'), { loading: () => <ToolLoader /> });
 const AiTools = dynamic(() => import('./AiTools'), { loading: () => <ToolLoader /> });
 const VideoTools = dynamic(() => import('./VideoTools'), { loading: () => <ToolLoader /> });
+const BusinessTools = dynamic(() => import('./BusinessTools'), { loading: () => <ToolLoader /> });
+const SocialTools = dynamic(() => import('./SocialTools'), { loading: () => <ToolLoader /> });
+const GamingTools = dynamic(() => import('./GamingTools'), { loading: () => <ToolLoader /> });
 const SportsDashboard = dynamic(() => import('../sports/SportsDashboard'), { loading: () => <ToolLoader /> });
 
 interface ToolRouterProps {
@@ -56,11 +59,21 @@ export default function ToolRouter({ tool }: ToolRouterProps) {
             return <MediaTools toolId={id} />;
 
         case 'media':
+            if (id === 'media-rec' || id === 'media-screen-rec') return <MediaTools toolId={id} />;
             return <VideoTools toolId={id} />;
 
         case 'content':
-            if (id === 'media-rec') return <MediaTools toolId={id} />;
+            if (id === 'text-thread' || id === 'text-readtime') return <TextTools toolId={id} />;
             return <ContentTools toolId={id} />;
+
+        case 'business':
+            return <BusinessTools toolId={id} />;
+
+        case 'social':
+            return <SocialTools toolId={id} />;
+
+        case 'gaming':
+            return <GamingTools toolId={id} />;
 
         case 'pdf':
             return <PdfTools toolId={id} />;

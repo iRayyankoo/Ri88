@@ -156,18 +156,18 @@ function CaseConverter() {
                         variant="secondary"
                         className="w-full"
                     >
-                        Copy
+                        نسخ
                     </ToolButton>
                 </div>
             )}
         >
-            <ToolInputRow label="Text to Convert">
+            <ToolInputRow label="النص المراد تحويله">
                 <ToolTextarea
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     rows={8}
-                    placeholder="Type text here..."
-                    title="English Text"
+                    placeholder="اكتب النص هنا..."
+                    title="النص الإنجليزي"
                     dir="ltr"
                 />
             </ToolInputRow>
@@ -351,7 +351,7 @@ function MarkdownViewer() {
             results={
                 <div className="h-full flex flex-col bg-black/40 rounded-xl border border-white/10 overflow-hidden min-h-[400px]">
                     <div className="bg-white/5 p-4 border-b border-white/5 flex justify-between items-center">
-                        <span className="font-bold text-white text-xs uppercase tracking-wider">Preview</span>
+                        <span className="font-bold text-white text-xs uppercase tracking-wider">معاينة</span>
                         <div className="flex gap-2">
                             <span className="w-3 h-3 rounded-full bg-red-400/80"></span>
                             <span className="w-3 h-3 rounded-full bg-yellow-400/80"></span>
@@ -360,22 +360,22 @@ function MarkdownViewer() {
                     </div>
                     <div
                         className="flex-1 p-6 overflow-auto prose prose-invert max-w-none prose-headings:text-brand-primary prose-a:text-blue-400 prose-code:text-pink-400"
-                        dangerouslySetInnerHTML={{ __html: html || '<p class="text-slate-500 italic">Preview will appear here...</p>' }}
+                        dangerouslySetInnerHTML={{ __html: html || '<p class="text-slate-500 italic">ستظهر المعاينة هنا...</p>' }}
                     />
                 </div>
             }
         >
-            <ToolInputRow label="Markdown Editor">
+            <ToolInputRow label="محرر Markdown">
                 <ToolTextarea
                     value={input}
                     onChange={e => { setInput(e.target.value); setTimeout(render, 100); }}
                     className="font-mono text-sm leading-relaxed min-h-[400px]"
                     rows={15}
-                    placeholder="# Title..."
-                    title="Markdown Editor"
+                    placeholder="# عنوان..."
+                    title="محرر Markdown"
                 />
             </ToolInputRow>
-            <div className="text-xs text-slate-500 mt-2 text-center">Live Preview Enabled</div>
+            <div className="text-xs text-slate-500 mt-2 text-center">المعاينة الحية مفعّلة</div>
         </ToolShell>
     );
 }
@@ -569,6 +569,132 @@ function ArabicPunctuation() {
     );
 }
 
+// 12. Thread Maker
+function ThreadMaker() {
+    const [input, setInput] = useState('');
+    const [tweets, setTweets] = useState<string[]>([]);
+
+    const createThread = () => {
+        if (!input.trim()) return setTweets([]);
+
+        const words = input.trim().split(/\s+/);
+        let currentTweet = '';
+        const newTweets: string[] = [];
+
+        // Max length approx 265 to leave room for '10/10 '
+        for (const word of words) {
+            if (currentTweet.length + word.length + 1 > 265) {
+                newTweets.push(currentTweet.trim());
+                currentTweet = word + ' ';
+            } else {
+                currentTweet += word + ' ';
+            }
+        }
+        if (currentTweet.trim()) newTweets.push(currentTweet.trim());
+
+        const total = newTweets.length;
+        const numbered = newTweets.map((t, i) => `${i + 1}/${total}\n${t}`);
+        setTweets(numbered);
+    };
+
+    return (
+        <ToolShell
+            description="تقسيم المقالات الطويلة إلى سلسلة تغريدات (Thread)."
+            results={tweets.length > 0 && (
+                <div className="h-full flex flex-col">
+                    <h3 className="text-sm font-bold text-slate-400 mb-4 flex justify-between items-center">
+                        <span>التغريدات ({tweets.length})</span>
+                    </h3>
+                    <div className="flex-1 overflow-auto space-y-4 pr-1 scrollbar-thin mb-4">
+                        {tweets.map((t, i) => (
+                            <div key={i} className="bg-black/40 p-4 rounded-xl border border-white/5 relative group">
+                                <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{t}</div>
+                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <ToolButton size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(t)}>نسخ</ToolButton>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <ToolButton
+                        onClick={() => navigator.clipboard.writeText(tweets.join('\n\n'))}
+                        variant="secondary"
+                        className="w-full"
+                    >
+                        نسخ كل السلسلة
+                    </ToolButton>
+                </div>
+            )}
+        >
+            <ToolInputRow label="النص الطويل">
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={12}
+                    placeholder="ضع مقالتك هنا..."
+                    title="المقالة"
+                />
+            </ToolInputRow>
+            <ToolButton onClick={createThread} className="mt-4 w-full">توليد الثريد</ToolButton>
+        </ToolShell>
+    );
+}
+
+// 13. Read Time Estimator
+function ReadTimeEstimator() {
+    const [input, setInput] = useState('');
+
+    const words = input.trim() ? input.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
+    const chars = input.replace(/\s+/g, '').length;
+
+    // Average 200 WPM reading
+    const readMinutes = Math.floor(words / 200);
+    const readSeconds = Math.round((words % 200) / (200 / 60));
+
+    // Speak 130 WPM
+    const speakMinutes = Math.floor(words / 130);
+    const speakSeconds = Math.round((words % 130) / (130 / 60));
+
+    return (
+        <ToolShell
+            description="حاسبة الوقت المقدر للقراءة والتحدث بناءً على عدد الكلمات."
+            results={words > 0 && (
+                <div className="flex flex-col h-full justify-center">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-brand-primary/10 border border-brand-primary/30 p-6 rounded-2xl text-center">
+                            <span className="block text-brand-primary font-bold text-3xl mb-1">{readMinutes}m {readSeconds}s</span>
+                            <span className="text-slate-400 text-xs uppercase tracking-widest font-bold">وقت القراءة</span>
+                        </div>
+                        <div className="bg-brand-secondary/10 border border-brand-secondary/30 p-6 rounded-2xl text-center">
+                            <span className="block text-brand-secondary font-bold text-3xl mb-1">{speakMinutes}m {speakSeconds}s</span>
+                            <span className="text-slate-400 text-xs uppercase tracking-widest font-bold">وقت التحدث</span>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                        <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+                            <span className="block text-2xl font-mono text-white mb-1">{words}</span>
+                            <span className="text-xs text-slate-500">كلمات</span>
+                        </div>
+                        <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+                            <span className="block text-2xl font-mono text-white mb-1">{chars}</span>
+                            <span className="text-xs text-slate-500">أحرف</span>
+                        </div>
+                    </div>
+                </div>
+            )}
+        >
+            <ToolInputRow label="النص المراد قياسه">
+                <ToolTextarea
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    rows={12}
+                    placeholder="ابدأ الكتابة أو الصق النص هنا..."
+                    title="النص"
+                />
+            </ToolInputRow>
+        </ToolShell>
+    );
+}
+
 export default function TextTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'adobe-fix': return <AdobeFixer />;
@@ -583,6 +709,8 @@ export default function TextTools({ toolId }: ToolProps) {
         case 'text-tashkeel': return <RemoveTashkeel />; // Keep alias just in case
         case 'text-punc': return <ArabicPunctuation />;
         case 'text-num': return <NumConverter />;
-        default: return <div className="text-center py-12 text-gray-400">Tool not implemented: {toolId}</div>
+        case 'text-thread': return <ThreadMaker />;
+        case 'text-readtime': return <ReadTimeEstimator />;
+        default: return <div className="text-center py-12 text-gray-400">أداة غير مُنفَّذة: {toolId}</div>
     }
 }

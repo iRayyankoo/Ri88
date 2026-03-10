@@ -189,6 +189,32 @@ function SaudiEvents() {
     );
 }
 
+// Saudi Official Holidays
+function SaudiHolidays() {
+    const holidays = [
+        { name: 'يوم التأسيس', date: '22 فبراير', emoji: '🇸🇦', desc: 'خامس جمادى الثانية 1727هـ' },
+        { name: 'عيد الفطر', date: 'أول شوال', emoji: '🌙', desc: '3 أيام إجازة رسمية' },
+        { name: 'عيد الأضحى', date: 'التاسع من ذي الحجة', emoji: '🐑', desc: '4 أيام إجازة رسمية' },
+        { name: 'اليوم الوطني', date: '23 سبتمبر', emoji: '🎉', desc: 'ذكرى توحيد المملكة' },
+    ];
+    return (
+        <ToolShell description="الإجازات الرسمية في المملكة العربية السعودية.">
+            <div className="space-y-4">
+                {holidays.map((h, i) => (
+                    <div key={i} className="flex items-center gap-4 p-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all">
+                        <div className="text-4xl">{h.emoji}</div>
+                        <div className="flex-1">
+                            <div className="font-bold text-white text-lg">{h.name}</div>
+                            <div className="text-brand-primary text-sm font-bold">{h.date}</div>
+                            <div className="text-slate-400 text-xs mt-1">{h.desc}</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </ToolShell>
+    );
+}
+
 export default function SaudiTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'saudi-eos': return <EOSCalculator />;
@@ -199,7 +225,7 @@ export default function SaudiTools({ toolId }: ToolProps) {
         case 'prod-iban':
         case 'saudi-iban': return <IbanValidator />;
         case 'saudi-tafqeet': return <TafqeetTool />;
-        case 'saudi-holiday': return <div className="text-center py-12 text-gray-400">الإجازات الرسمية السعودية — قريباً</div>;
-        default: return <div className="text-center py-12">Tool coming soon: {toolId}</div>
+        case 'saudi-holiday': return <SaudiHolidays />;
+        default: return null;
     }
 }

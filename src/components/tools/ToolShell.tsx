@@ -37,12 +37,12 @@ export function ToolShell({
                 {/* 1. LIQUID GLASS TOOL HEADER - HIDDEN */}
 
                 {/* 2. DUAL-PANEL WORKSPACE */}
-                <div className={isSingle ? "flex flex-col gap-10" : "grid grid-cols-1 lg:grid-cols-12 gap-10 items-start"}>
+                <div className={isSingle ? "flex flex-col gap-6 lg:gap-10" : "grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start"}>
 
                     {/* INPUT CANVAS */}
                     <div className={isSingle ? "w-full" : "col-span-1 lg:col-span-7"}>
-                        <div className="p-10 rounded-[44px] bg-white/[0.01] border border-white/[0.03] shadow-[inset_0_0_40px_rgba(255,255,255,0.01)] min-h-[500px] backdrop-blur-3xl relative overflow-hidden text-right">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/5 blur-[80px] rounded-full -mr-32 -mt-32 pointer-events-none" />
+                        <div className="p-6 lg:p-10 rounded-[28px] lg:rounded-[44px] bg-white/[0.01] border border-white/[0.03] shadow-[inset_0_0_40px_rgba(255,255,255,0.01)] min-h-[300px] lg:min-h-[500px] backdrop-blur-3xl relative overflow-hidden text-right">
+                            <div className="absolute top-0 right-0 w-48 h-48 lg:w-64 lg:h-64 bg-brand-primary/5 blur-[80px] rounded-full -mr-24 -mt-24 lg:-mr-32 lg:-mt-32 pointer-events-none" />
 
                             <div className="relative z-10 space-y-10">
                                 {children}
@@ -60,8 +60,8 @@ export function ToolShell({
                     {/* In single mode: only show if results exist. In split mode: always show (placeholder). */}
                     {(!isSingle || results) && (
                         <div className={isSingle ? "w-full" : "col-span-1 lg:col-span-5"}>
-                            <div className={isSingle ? "" : "sticky top-10"}>
-                                <div className="rounded-[44px] bg-[#050507]/60 backdrop-blur-3xl border border-brand-primary/20 shadow-[0_40px_100px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(139,92,246,0.1)] min-h-[400px] flex flex-col relative overflow-hidden group/result-canvas isolate text-right">
+                            <div className={isSingle ? "" : "sticky top-4 lg:top-10"}>
+                                <div className="rounded-[28px] lg:rounded-[44px] bg-[#050507]/60 backdrop-blur-3xl border border-brand-primary/20 shadow-[0_40px_100px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(139,92,246,0.1)] min-h-[350px] lg:min-h-[400px] flex flex-col relative overflow-hidden group/result-canvas isolate text-right">
                                     {/* Cinematic Texture */}
                                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
@@ -82,7 +82,7 @@ export function ToolShell({
                                             )}
                                         </div>
 
-                                        <div className="flex-1 p-8 relative z-10 h-full flex flex-col justify-center">
+                                        <div className="flex-1 p-4 lg:p-8 relative z-10 h-full flex flex-col justify-center">
                                             {results ? (
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 10 }}

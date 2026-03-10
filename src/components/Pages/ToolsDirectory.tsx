@@ -47,6 +47,7 @@ const ToolsDirectory = () => {
     const [activeCategory, setActiveCategory] = useState<string>('all');
     const [dbTools, setDbTools] = useState<DbTool[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [featuredTools, setFeaturedTools] = useState<DbTool[]>([]);
 
     // --- Data Fetching ---
     useEffect(() => {
@@ -65,6 +66,20 @@ const ToolsDirectory = () => {
         loadTools();
     }, []);
 
+    // Build TWO lookup maps from staticTools:
+    // 1. by id (for tools added via seedTools.ts script which preserves tool.id)
+    // 2. by English title (for tools in DB where id is a CUID, not the tool's id)
+    const staticToolMap = useMemo(() => {
+        const byId: Record<string, { titleAr: string; descAr: string; url: string }> = {};
+        const byTitle: Record<string, { titleAr: string; descAr: string; url: string }> = {};
+        staticTools.forEach(st => {
+            const val = { titleAr: st.titleAr || st.title, descAr: st.descAr || st.desc, url: `/tools/${st.id}` };
+            byId[st.id] = val;
+            byTitle[st.title.toLowerCase()] = val;
+        });
+        return { byId, byTitle };
+    }, []);
+
     // Combine static tools and db tools into one list
     const allTools = useMemo(() => {
         // Map static tools to DbTool structure
@@ -74,11 +89,11 @@ const ToolsDirectory = () => {
             description: st.descAr || st.desc,
             icon: st.icon,
             category: st.cat,
-            url: `/tools/${st.id}`, // Default placeholder
-            isPremium: false, // Default for static
-            isActive: true, // Default for static
-            isMaintenance: false, // Default for static
-            isFreeForLimitedTime: false, // Default for static
+            url: `/tools/${st.id}`,
+            isPremium: false,
+            isActive: true,
+            isMaintenance: false,
+            isFreeForLimitedTime: false,
             price: 0,
             rating: 5,
             installs: 0
@@ -88,8 +103,30 @@ const ToolsDirectory = () => {
         const dbIds = new Set(dbTools.map(t => t.id));
         const filteredStaticTools = mappedStaticTools.filter(st => !dbIds.has(st.id));
 
-        return [...dbTools, ...filteredStaticTools];
-    }, [dbTools]);
+        // Enrich dbTools with Arabic names from staticTools
+        // Match by id first (if seedTools.ts was used with custom IDs), then fall back to English title match
+        const enrichedDbTools = dbTools.map(t => {
+            const byId = staticToolMap.byId[t.id];
+            const byTitle = staticToolMap.byTitle[t.name.toLowerCase()];
+            const match = byId || byTitle;
+            return {
+                ...t,
+                name: match?.titleAr || t.name,
+                description: match?.descAr || t.description,
+                url: match?.url || t.url,
+            };
+        });
+
+        return [...enrichedDbTools, ...filteredStaticTools];
+    }, [dbTools, staticToolMap]);
+
+    // Randomize featured tools
+    useEffect(() => {
+        if (allTools.length > 0) {
+            const shuffledTools = [...allTools].sort(() => 0.5 - Math.random());
+            setFeaturedTools(shuffledTools.slice(0, 8));
+        }
+    }, [allTools.length]);
 
     const handleSeed = async () => {
         const toastId = toast.loading("جاري إضافة أدوات تجريبية...");
@@ -237,17 +274,17 @@ const ToolsDirectory = () => {
                 <div className="flex items-center justify-between px-4 lg:px-2">
                     <h3 className="text-lg lg:text-xl font-black text-text-primary font-cairo">أبرز الأدوات {allTools.length > 0 ? `(${allTools.length})` : ''}</h3>
                     <button onClick={() => setActiveCategory('all')} className="flex items-center gap-2 text-brand-primary font-black text-[10px] uppercase tracking-widest hover:text-text-primary transition-colors">
-                        Browse
+                        تصفح
                         <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                 </div>
 
                 <div className="flex gap-4 lg:gap-6 overflow-x-auto pb-6 no-scrollbar -mx-4 px-4 snap-x relative">
-                    {isLoading ? (
+                    {isLoading || featuredTools.length === 0 ? (
                         [1, 2, 3, 4].map(n => (
                             <div key={n} className="min-w-[200px] lg:min-w-[400px] h-[240px] rounded-[24px] bg-surface-glass animate-pulse skeleton" />
                         ))
-                    ) : allTools.slice(0, 8).map((tool) => {
+                    ) : featuredTools.map((tool) => {
                         const Icon = getIcon(tool.icon);
                         return (
                             <motion.div

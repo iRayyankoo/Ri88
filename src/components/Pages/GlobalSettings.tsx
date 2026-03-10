@@ -84,10 +84,6 @@ const GlobalSettings = () => {
         }
     };
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        setCurrentView('landing');
-    };
 
     return (
         <div className="max-w-full px-4 lg:px-8 mx-auto space-y-12 pb-24">
@@ -97,13 +93,6 @@ const GlobalSettings = () => {
                     <h2 className="text-4xl font-black text-text-primary font-cairo">الإعدادات العامة</h2>
                     <p className="text-text-muted text-lg font-medium">تخصيص تجربة الاستخدام وتفضيلات النظام بالكامل.</p>
                 </div>
-                <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all font-bold text-sm hover:scale-105 active:scale-95"
-                >
-                    <LogOut className="w-5 h-5" />
-                    تسجيل الخروج
-                </button>
             </div>
 
             {/* Sections */}
