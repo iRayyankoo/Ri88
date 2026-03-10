@@ -698,6 +698,88 @@ function RunwayCalc() {
     );
 }
 
+
+function OfferComparison() {
+    const [a, setA] = useState({ name: 'العرض الأول', price: '100', discount: '10' });
+    const [b, setB] = useState({ name: 'العرض الثاني', price: '90', discount: '5' });
+    const [result, setResult] = useState<string | null>(null);
+    const compare = () => {
+        const netA = parseFloat(a.price) * (1 - parseFloat(a.discount) / 100);
+        const netB = parseFloat(b.price) * (1 - parseFloat(b.discount) / 100);
+        if (netA < netB) setResult(`✅ ${a.name} أفضل — السعر الفعلي: ${netA.toFixed(2)} ريال`);
+        else if (netB < netA) setResult(`✅ ${b.name} أفضل — السعر الفعلي: ${netB.toFixed(2)} ريال`);
+        else setResult('⚖️ العرضان متعادلان!');
+    };
+    return (
+        <ToolShell description="قارن بين عرضين من حيث السعر والخصم لمعرفة الأوفر.">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+                {[{ side: a, set: setA, label: 'العرض الأول' }, { side: b, set: setB, label: 'العرض الثاني' }].map(({ side, set, label }) => (
+                    <div key={label} className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-3">
+                        <div className="text-xs text-brand-primary font-bold">{label}</div>
+                        <ToolInputRow label="الاسم"><ToolInput value={side.name} onChange={e => set(s => ({ ...s, name: e.target.value }))} /></ToolInputRow>
+                        <ToolInputRow label="السعر"><ToolInput type="number" value={side.price} onChange={e => set(s => ({ ...s, price: e.target.value }))} /></ToolInputRow>
+                        <ToolInputRow label="الخصم %"><ToolInput type="number" value={side.discount} onChange={e => set(s => ({ ...s, discount: e.target.value }))} /></ToolInputRow>
+                    </div>
+                ))}
+            </div>
+            <ToolButton onClick={compare} className="w-full h-12" variant="iridescent">قارن الآن</ToolButton>
+            {result && <div className="mt-4 p-4 bg-brand-primary/10 border border-brand-primary/20 rounded-2xl text-center font-bold text-white">{result}</div>}
+        </ToolShell>
+    );
+}
+
+// NEW: Trip Cost Calculator
+function TripCostCalc() {
+    const [dist, setDist] = useState('400');
+    const [cons, setCons] = useState('10');
+    const [price, setPrice] = useState('2.18');
+    const [result, setResult] = useState<number | null>(null);
+    const calc = () => setResult((parseFloat(dist) / 100) * parseFloat(cons) * parseFloat(price));
+    return (
+        <ToolShell description="احسب تكلفة البنزين للرحلة بالسيارة.">
+            <div className="space-y-4 mb-6">
+                <ToolInputRow label="المسافة (كيلومتر)"><ToolInput type="number" value={dist} onChange={e => setDist(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="استهلاك الوقود (لتر/100كم)"><ToolInput type="number" value={cons} onChange={e => setCons(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="سعر اللتر (ريال)"><ToolInput type="number" value={price} onChange={e => setPrice(e.target.value)} /></ToolInputRow>
+            </div>
+            <ToolButton onClick={calc} className="w-full h-12" variant="iridescent">احسب التكلفة</ToolButton>
+            {result !== null && (
+                <div className="mt-6 p-6 bg-brand-primary/10 border border-brand-primary/20 rounded-2xl text-center">
+                    <div className="text-xs text-slate-400 mb-1">تكلفة الرحلة التقريبية</div>
+                    <div className="text-4xl font-black text-brand-primary">{result.toFixed(2)}</div>
+                    <div className="text-slate-400 text-sm mt-1">ريال سعودي</div>
+                </div>
+            )}
+        </ToolShell>
+    );
+}
+
+// NEW: Gold Zakat (Saudi)
+function GoldZakatCalc() {
+    const [grams, setGrams] = useState('100');
+    const [goldPrice, setGoldPrice] = useState('245'); // ريال/جرام تقريبي
+    const nisab21g = 85; // نصاب الذهب 85 جرام
+    const res = React.useMemo(() => {
+        const g = parseFloat(grams);
+        const p = parseFloat(goldPrice);
+        if (g < nisab21g) return { zakat: 0, msg: 'لم تبلغ النصاب (85 جرام)' };
+        return { zakat: g * p * 0.025, msg: '✅ مبلغ الزكاة (2.5%)' };
+    }, [grams, goldPrice]);
+    return (
+        <ToolShell description="احسب زكاة الذهب بالجرام أو القيمة. النصاب = 85 جرام.">
+            <div className="space-y-4 mb-6">
+                <ToolInputRow label="وزن الذهب (جرام)"><ToolInput type="number" value={grams} onChange={e => setGrams(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="سعر الجرام (ريال)"><ToolInput type="number" value={goldPrice} onChange={e => setGoldPrice(e.target.value)} /></ToolInputRow>
+            </div>
+            <div className="p-6 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-center">
+                <div className="text-xs text-yellow-400 mb-1">{res.msg}</div>
+                <div className="text-4xl font-black text-yellow-400">{res.zakat.toFixed(2)}</div>
+                <div className="text-slate-400 text-sm mt-1">ريال سعودي</div>
+            </div>
+        </ToolShell>
+    );
+}
+
 export default function FinanceTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'fin-comm': return <CommissionCalc />;
@@ -721,6 +803,9 @@ export default function FinanceTools({ toolId }: ToolProps) {
         case 'finance-roi': return <ROICalc />;
         case 'finance-breakeven': return <BreakEvenCalc />;
         case 'finance-runway': return <RunwayCalc />;
-        default: return <div className="text-center py-12 text-gray-400">Tool coming soon...</div>;
+        case 'fin-compare-offers': return <OfferComparison />;
+        case 'fin-trip-cost': return <TripCostCalc />;
+        case 'fin-gold-zakat': return <GoldZakatCalc />;
+        default: return null;
     }
 }

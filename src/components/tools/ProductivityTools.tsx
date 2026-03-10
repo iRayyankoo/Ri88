@@ -482,6 +482,10 @@ export default function ProductivityTools({ toolId }: ToolProps) {
         case 'prod-list': return <ListProcessor />;
         case 'life-trip': return <TripSplitter />;
         case 'life-recipe': return <RecipeScaler />;
+        case 'prod-video-summary': return <YouTubeSummary />;
+        case 'prod-username': return <UsernameGen />;
+        case 'prod-reading-plan': return <ReadingPlan />;
+        case 'fin-contract-gen': return <ServiceContract />;
         default: return (
             <div className="text-center py-20 opacity-50 space-y-4 flex justify-center flex-col items-center">
                 <div className="w-16 h-16 rounded-full border-4 border-white/20 border-t-brand-primary animate-spin" />
@@ -489,4 +493,122 @@ export default function ProductivityTools({ toolId }: ToolProps) {
             </div>
         );
     }
+}
+
+// ======= أدوات جديدة =======
+
+function YouTubeSummary() {
+    const [url, setUrl] = useState('');
+    const getSummary = () => {
+        if (!url) return;
+        const videoId = url.match(/(?:v=|youtu\.be\/)([^&]+)/)?.[1] ?? '';
+        if (!videoId) { alert('رابط غير صحيح'); return; }
+        window.open(`https://www.summarize.tech/https://www.youtube.com/watch?v=${videoId}`, '_blank');
+    };
+    return (
+        <ToolShell description="أدخل رابط يوتيوب لفتح ملخص ذكي للفيديو في تبويب جديد.">
+            <ToolInput
+                value={url}
+                onChange={e => setUrl(e.target.value)}
+                placeholder="https://youtube.com/watch?v=..."
+                className="h-14 mb-6 font-mono"
+            />
+            <ToolButton onClick={getSummary} className="w-full h-12" variant="iridescent">فتح الملخص الذكي ↗</ToolButton>
+        </ToolShell>
+    );
+}
+
+function UsernameGen() {
+    const [name, setName] = useState('');
+    const [results, setResults] = useState<string[]>([]);
+    const generate = () => {
+        if (!name) return;
+        const base = name.replace(/\s+/g, '').toLowerCase();
+        const nums = () => Math.floor(Math.random() * 999);
+        setResults([
+            base,
+            `${base}${nums()}`,
+            `the_${base}`,
+            `${base}_sa`,
+            `${base}x`,
+            `${base}_official`,
+            `real_${base}`,
+            `${base}.ksa`,
+        ]);
+    };
+    return (
+        <ToolShell description="أدخل اسمك أو أي كلمة واحصل على اقتراحات أسماء مستخدمين فريدة.">
+            <ToolInput value={name} onChange={e => setName(e.target.value)} placeholder="مثال: ريان" className="h-14 mb-4" />
+            <ToolButton onClick={generate} className="w-full h-12 mb-6" variant="iridescent">توليد أسماء</ToolButton>
+            {results.length > 0 && (
+                <div className="grid grid-cols-2 gap-2">
+                    {results.map(r => (
+                        <div key={r} onClick={() => { navigator.clipboard.writeText(r); }}
+                            className="p-3 bg-white/5 border border-white/10 rounded-xl text-center font-mono text-sm cursor-pointer hover:bg-brand-primary/10 hover:border-brand-primary/30 transition-all">
+                            @{r}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </ToolShell>
+    );
+}
+
+function ReadingPlan() {
+    const [pages, setPages] = useState('300');
+    const [perDay, setPerDay] = useState('20');
+    const days = Math.ceil(parseInt(pages) / parseInt(perDay));
+    const finish = new Date();
+    finish.setDate(finish.getDate() + days);
+    return (
+        <ToolShell description="حدد عدد صفحات الكتاب وعدد الصفحات يومياً لمعرفة موعد الانتهاء.">
+            <div className="space-y-4 mb-6">
+                <ToolInputRow label="عدد صفحات الكتاب"><ToolInput type="number" value={pages} onChange={e => setPages(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="صفحات يومياً"><ToolInput type="number" value={perDay} onChange={e => setPerDay(e.target.value)} /></ToolInputRow>
+            </div>
+            <div className="p-6 bg-brand-primary/10 border border-brand-primary/20 rounded-2xl text-center space-y-2">
+                <div className="text-slate-400 text-sm">ستنهي الكتاب في</div>
+                <div className="text-3xl font-black text-brand-primary">{days} يوم</div>
+                <div className="text-slate-400 text-sm">{finish.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+            </div>
+        </ToolShell>
+    );
+}
+
+function ServiceContract() {
+    const [client, setClient] = useState('');
+    const [service, setService] = useState('');
+    const [price, setPrice] = useState('');
+    const [days, setDays] = useState('7');
+    const generate = () => {
+        if (!client || !service || !price) return;
+        const text = `عقد خدمة بسيط
+================================
+الطرف الأول (مقدم الخدمة): _________________
+الطرف الثاني (العميل): ${client}
+
+الخدمة المتفق عليها: ${service}
+المبلغ: ${price} ريال سعودي
+مدة التسليم: ${days} أيام عمل
+
+الشروط:
+1. يلتزم مقدم الخدمة بالتسليم في الموعد المحدد.
+2. يتم الدفع بعد قبول العميل للعمل.
+3. لا يحق للعميل استخدام العمل قبل إتمام الدفع.
+
+تاريخ العقد: ${new Date().toLocaleDateString('ar-SA')}`;
+        navigator.clipboard.writeText(text);
+        alert('تم نسخ العقد!');
+    };
+    return (
+        <ToolShell description="أنشئ عقد خدمة بسيط لمشاريع العمل الحر وانسخه فوراً.">
+            <div className="space-y-4 mb-6">
+                <ToolInputRow label="اسم العميل"><ToolInput value={client} onChange={e => setClient(e.target.value)} placeholder="مثال: أحمد محمد" /></ToolInputRow>
+                <ToolInputRow label="الخدمة"><ToolInput value={service} onChange={e => setService(e.target.value)} placeholder="مثال: تصميم شعار" /></ToolInputRow>
+                <ToolInputRow label="المبلغ (ريال)"><ToolInput type="number" value={price} onChange={e => setPrice(e.target.value)} /></ToolInputRow>
+                <ToolInputRow label="مدة التسليم (أيام)"><ToolInput type="number" value={days} onChange={e => setDays(e.target.value)} /></ToolInputRow>
+            </div>
+            <ToolButton onClick={generate} className="w-full h-12" variant="iridescent">توليد العقد ونسخه 📋</ToolButton>
+        </ToolShell>
+    );
 }

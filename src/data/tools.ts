@@ -993,6 +993,48 @@ export const tools: Tool[] = [
         id: 'life-year', cat: 'time', icon: 'hourglass', status: 'new',
         title: 'Year Progress', titleAr: 'تقدم العام الحالي',
         desc: 'Visual year progress bar.', descAr: 'متابعة ما تم استهلاكه من العام الحالي مئوياً.'
+    },
+
+    // --- أدوات جديدة مضافة ---
+    {
+        id: 'fin-compare-offers', cat: 'finance', icon: 'scale', status: 'new',
+        title: 'Offer Comparison', titleAr: 'مقارنة العروض والصفقات',
+        desc: 'Compare two offers by price, discount, and value.', descAr: 'قارن بين عرضين من حيث السعر والخصم والقيمة الحقيقية.'
+    },
+    {
+        id: 'prod-video-summary', cat: 'productivity', icon: 'youtube', status: 'new',
+        title: 'YouTube Summary Link', titleAr: 'ملخص فيديو يوتيوب',
+        desc: 'Open an AI summary for any YouTube video.', descAr: 'افتح ملخص ذكي لأي فيديو يوتيوب من رابطه مباشرة.'
+    },
+    {
+        id: 'fin-trip-cost', cat: 'finance', icon: 'car', status: 'new',
+        title: 'Trip Cost Calculator', titleAr: 'حاسبة تكلفة الرحلة',
+        desc: 'Calculate fuel cost for a road trip.', descAr: 'حساب تكلفة البنزين والرحلة بالسيارة بين مدينتين.'
+    },
+    {
+        id: 'prod-username', cat: 'productivity', icon: 'at-sign', status: 'new',
+        title: 'Username Generator', titleAr: 'مولد أسماء المستخدمين',
+        desc: 'Generate unique usernames from your name.', descAr: 'توليد أسماء مستخدمين فريدة من اسمك أو كلمة اخترتها.'
+    },
+    {
+        id: 'text-abbrev', cat: 'text', icon: 'book-marked', status: 'new',
+        title: 'Arabic Abbreviations', titleAr: 'قاموس الاختصارات العربية',
+        desc: 'Expand common Arabic abbreviations (ص، م، هـ).', descAr: 'شرح الاختصارات العربية الشائعة مثل (ص، م، جدة= جامعة...).'
+    },
+    {
+        id: 'fin-contract-gen', cat: 'productivity', icon: 'file-signature', status: 'new',
+        title: 'Service Contract Gen', titleAr: 'مولد عقود الخدمات',
+        desc: 'Generate a simple freelance service contract.', descAr: 'توليد عقد خدمة بسيط لعمل حر أو مشروع صغير.'
+    },
+    {
+        id: 'fin-gold-zakat', cat: 'saudi', icon: 'gem', status: 'new',
+        title: 'Gold Zakat Calculator', titleAr: 'حاسبة زكاة الذهب',
+        desc: 'Calculate Zakat on gold by grams or riyals.', descAr: 'احسب زكاة الذهب الخاص بك بالجرام أو بالريال السعودي.'
+    },
+    {
+        id: 'prod-reading-plan', cat: 'productivity', icon: 'book-open-check', status: 'new',
+        title: 'Reading Plan', titleAr: 'خطة قراءة كتاب',
+        desc: 'Plan pages per day to finish a book.', descAr: 'خطط لإنهاء كتاب بتحديد عدد الصفحات يومياً وموعد الانتهاء.'
     }
 ];
 
