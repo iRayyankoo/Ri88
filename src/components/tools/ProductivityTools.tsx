@@ -15,8 +15,9 @@ function QRGenerator() {
             <ToolInput value={text} onChange={e => setText(e.target.value)} placeholder="أدخل الرابط أو النص هنا..." className="h-16 mb-8 text-center text-lg font-mono" />
             <div className="flex justify-center flex-col items-center">
                 {qrUrl ? (
-                    <div className="p-4 bg-white rounded-2xl shadow-[0_0_40px_rgba(255,255,255,0.1)] transition-all hover:scale-[1.02]">
-                        <img src={qrUrl} alt="QR Code" className="w-64 h-64 rounded-xl" />
+                    <div className="bg-white p-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] inline-block mb-6 relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={qrUrl} alt="QR Code" className="w-48 h-48 rounded" />
                     </div>
                 ) : (
                     <div className="w-64 h-64 border-2 border-dashed border-white/20 rounded-2xl flex items-center justify-center text-slate-500">أدخل نصاً للبدء</div>
@@ -78,6 +79,7 @@ function PassGen() {
     const generate = () => {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
         let res = "";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const cryptoObj = window.crypto || (window as any).msCrypto; // fallback if needed
         if (cryptoObj?.getRandomValues) {
             const arr = new Uint32Array(parseInt(length));
@@ -281,7 +283,7 @@ function TipCalculator() {
                     <label className="text-sm text-slate-300 font-bold uppercase">نسبة الإكرامية</label>
                     <div className="px-4 py-1 bg-brand-primary/20 text-brand-primary font-bold rounded-full">{tipPct}%</div>
                 </div>
-                <input type="range" min="0" max="50" step="1" value={tipPct} onChange={e => setTipPct(e.target.value)} className="w-full h-2 rounded-lg cursor-pointer" />
+                <input type="range" title="Tip Percentage" aria-label="Tip Percentage" min="0" max="50" step="1" value={tipPct} onChange={e => setTipPct(e.target.value)} className="w-full h-2 rounded-lg cursor-pointer" />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="p-6 bg-white/5 rounded-2xl text-center border border-white/10">

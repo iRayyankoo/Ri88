@@ -26,9 +26,9 @@ function ShadowGenerator() {
             </div>
         }>
             <div className="grid grid-cols-1 gap-4">
-                <ToolInputRow label={`X: ${x}px`}><input type="range" min="-50" max="50" value={x} onChange={e => setX(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
-                <ToolInputRow label={`Y: ${y}px`}><input type="range" min="-50" max="50" value={y} onChange={e => setY(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
-                <ToolInputRow label={`Blur: ${blur}px`}><input type="range" min="0" max="80" value={blur} onChange={e => setBlur(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`X: ${x}px`}><input type="range" title="X Position" aria-label="X Position" min="-50" max="50" value={x} onChange={e => setX(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`Y: ${y}px`}><input type="range" title="Y Position" aria-label="Y Position" min="-50" max="50" value={y} onChange={e => setY(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`Blur: ${blur}px`}><input type="range" title="Blur" aria-label="Blur" min="0" max="80" value={blur} onChange={e => setBlur(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
                 <ToolInputRow label="اللون"><ToolInput type="color" value={color} onChange={e => setColor(e.target.value)} /></ToolInputRow>
             </div>
         </ToolShell>
@@ -61,7 +61,7 @@ function GradientGenerator() {
                 </ToolInputRow>
                 {type === 'linear' && (
                     <ToolInputRow label={`الزاوية: ${angle}°`}>
-                        <input type="range" min="0" max="360" value={angle} onChange={e => setAngle(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" />
+                        <input type="range" title="Angle" aria-label="Angle" min="0" max="360" value={angle} onChange={e => setAngle(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" />
                     </ToolInputRow>
                 )}
             </div>
@@ -143,9 +143,9 @@ function GlassMorphism() {
                 </div>
             </div>
             <div className="space-y-4 mb-6">
-                <ToolInputRow label={`Blur: ${blur}px`}><input type="range" min="0" max="30" value={blur} onChange={e => setBlur(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
-                <ToolInputRow label={`الشفافية: ${Math.round(opacity * 100)}%`}><input type="range" min="0" max="100" value={Math.round(opacity * 100)} onChange={e => setOpacity(parseInt(e.target.value) / 100)} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
-                <ToolInputRow label={`الحدود: ${Math.round(border * 100)}%`}><input type="range" min="0" max="100" value={Math.round(border * 100)} onChange={e => setBorder(parseInt(e.target.value) / 100)} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`Blur: ${blur}px`}><input type="range" title="Blur" aria-label="Blur" min="0" max="30" value={blur} onChange={e => setBlur(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`الشفافية: ${Math.round(opacity * 100)}%`}><input type="range" title="Opacity" aria-label="Opacity" min="0" max="100" value={Math.round(opacity * 100)} onChange={e => setOpacity(parseInt(e.target.value) / 100)} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`الحدود: ${Math.round(border * 100)}%`}><input type="range" title="Border" aria-label="Border" min="0" max="100" value={Math.round(border * 100)} onChange={e => setBorder(parseInt(e.target.value) / 100)} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
             </div>
             <div className="p-4 bg-black/30 rounded-2xl font-mono text-xs text-brand-secondary border border-white/10 mb-4 whitespace-pre">{css}</div>
             <ToolButton onClick={copy} className="w-full h-12">نسخ الكود</ToolButton>
@@ -233,7 +233,7 @@ function BlobGenerator() {
                 </svg>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-6">
-                <ToolInputRow label={`التعقيد: ${complexity}`}><input type="range" min="3" max="12" value={complexity} onChange={e => setComplexity(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+                <ToolInputRow label={`التعقيد: ${complexity}`}><input type="range" title="Complexity" aria-label="Complexity" min="3" max="12" value={complexity} onChange={e => setComplexity(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
                 <ToolInputRow label="تحديث"><ToolButton onClick={() => setSeed(Math.floor(Math.random() * 1000))} className="w-full h-10">🎲 شكل جديد</ToolButton></ToolInputRow>
             </div>
             <ToolButton onClick={copy} className="w-full h-12">نسخ SVG</ToolButton>
@@ -288,7 +288,7 @@ function AnimationBuilder() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-primary to-purple-600"
                     style={{ animation: `${animType === 'fade' ? 'fadeIn' : animType} ${duration}s ${animType === 'spin' ? 'linear' : 'ease'} infinite`, opacity: 1 }} />
             </div>
-            <ToolInputRow label={`المدة: ${duration}s`}><input type="range" min="0.2" max="3" step="0.1" value={duration} onChange={e => setDuration(parseFloat(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
+            <ToolInputRow label={`المدة: ${duration}s`}><input type="range" title="Duration" aria-label="Duration" min="0.2" max="3" step="0.1" value={duration} onChange={e => setDuration(parseFloat(e.target.value))} className="w-full accent-brand-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer" /></ToolInputRow>
             <div className="mt-6 p-4 bg-black/30 rounded-2xl font-mono text-xs text-brand-secondary border border-white/10 whitespace-pre overflow-auto max-h-40">
                 {anims[animType]}
             </div>
@@ -308,7 +308,7 @@ function CodeToImage() {
     return (
         <ToolShell description="تحويل الأكواد البرمجية إلى صور جاهزة للنشر.">
             <div className="mb-4 flex gap-3">
-                <select value={lang} onChange={e => setLang(e.target.value)} className="flex-1 h-10 rounded-xl px-3 bg-white/10 border border-white/10 text-white text-sm">
+                <select title="Language" aria-label="Language selection" value={lang} onChange={e => setLang(e.target.value)} className="flex-1 h-10 rounded-xl px-3 bg-white/10 border border-white/10 text-white text-sm">
                     {['JavaScript', 'TypeScript', 'Python', 'CSS', 'HTML', 'SQL'].map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
                 <ToolButton variant={theme === 'dark' ? 'primary' : 'secondary'} onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
@@ -323,6 +323,8 @@ function CodeToImage() {
                     <span className="text-xs text-slate-400 mr-2 font-mono">{lang}</span>
                 </div>
                 <textarea
+                    title="Code"
+                    aria-label="Code Editor"
                     value={code}
                     onChange={e => setCode(e.target.value)}
                     className={`w-full p-4 font-mono text-sm resize-none outline-none bg-transparent ${theme === 'dark' ? 'text-[#cdd6f4]' : 'text-[#24292e]'}`}

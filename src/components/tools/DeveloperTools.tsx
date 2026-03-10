@@ -11,7 +11,7 @@ interface ToolProps {
 // 1. User-Agent Parser (Phase 7)
 function UserAgentParser() {
     const [ua, setUa] = useState('');
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<Record<string, unknown> | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') setUa(navigator.userAgent);
@@ -49,7 +49,12 @@ function Base64ImageDecoder() {
         <ToolShell description="معاينة الصور المشفرة بكود Base64 فوراً وبسهولة.">
             <ToolTextarea value={input} onChange={e => setInput(e.target.value)} className="h-48 font-mono text-[10px]" placeholder="data:image/png;base64,..." />
             <div className="mt-8 p-4 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center min-h-[200px]">
-                {input ? <img src={input} alt="Preview" className="max-w-full rounded-xl shadow-2xl" /> : <span className="text-slate-500">الصق الكود للمعاينة</span>}
+                {input ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={input} alt="Preview" className="max-w-full rounded-xl shadow-2xl" />
+                ) : (
+                    <span className="text-slate-500">الصق الكود للمعاينة</span>
+                )}
             </div>
         </ToolShell>
     );
@@ -85,7 +90,7 @@ function ColorPro() {
     return (
         <ToolShell description="محول ألوان متقدم مع اقتراحات Tailwind CSS.">
             <div className="flex gap-4 items-center mb-6">
-                <input type="color" value={color} onChange={e => setColor(e.target.value)} className="w-20 h-20 rounded-2xl bg-transparent border-0 cursor-pointer" />
+                <input type="color" title="Color Picker" aria-label="Color Picker" value={color} onChange={e => setColor(e.target.value)} className="w-20 h-20 rounded-2xl bg-transparent border-0 cursor-pointer" />
                 <ToolInput value={color} onChange={e => setColor(e.target.value)} className="flex-1 text-2xl font-bold" />
             </div>
             <div className="grid grid-cols-2 gap-4">

@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
-import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
-import { toast } from 'sonner';
+import { ToolInput, ToolButton } from './ToolUi';
 
 interface ToolProps {
     toolId: string;
@@ -109,7 +108,7 @@ function CommissionCalc() {
                     <label className="text-sm text-slate-300 font-bold uppercase">نسبة العمولة</label>
                     <div className="px-4 py-1 bg-brand-primary/20 text-brand-primary font-bold rounded-full">{rate}%</div>
                 </div>
-                <input type="range" min="0" max="100" step="0.5" value={rate} onChange={e => setRate(e.target.value)} className="w-full h-2 rounded-lg cursor-pointer accent-brand-primary" />
+                <input type="range" title="Commission Rate" aria-label="Commission Rate" min="0" max="100" step="0.5" value={rate} onChange={e => setRate(e.target.value)} className="w-full h-2 rounded-lg cursor-pointer accent-brand-primary" />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="p-6 bg-white/5 rounded-2xl text-center border border-white/10">
@@ -294,13 +293,13 @@ function CurrencyConverter() {
             <div className="flex gap-4 mb-6">
                 <div className="flex-1">
                     <label className="text-xs text-slate-500 mb-2 block">من عملة</label>
-                    <select value={from} onChange={e => setFrom(e.target.value)} className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white outline-none focus:border-brand-primary text-center">
+                    <select title="From Currency" aria-label="From Currency" value={from} onChange={e => setFrom(e.target.value)} className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white outline-none focus:border-brand-primary text-center">
                         {Object.keys(rates).map(k => <option key={k} value={k} className="bg-slate-900">{k}</option>)}
                     </select>
                 </div>
                 <div className="flex-1">
                     <label className="text-xs text-slate-500 mb-2 block">إلى عملة</label>
-                    <select value={to} onChange={e => setTo(e.target.value)} className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white outline-none focus:border-brand-primary text-center">
+                    <select title="To Currency" aria-label="To Currency" value={to} onChange={e => setTo(e.target.value)} className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white outline-none focus:border-brand-primary text-center">
                         {Object.keys(rates).map(k => <option key={k} value={k} className="bg-slate-900">{k}</option>)}
                     </select>
                 </div>
