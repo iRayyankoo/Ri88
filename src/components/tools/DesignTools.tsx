@@ -138,7 +138,7 @@ function GlassMorphism() {
         <ToolShell description="مولد تأثير الزجاجية CSS (Glassmorphism).">
             <div className="relative h-40 w-full mb-6 rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
                 <div className="absolute inset-4 rounded-2xl flex items-center justify-center text-white font-bold"
-                    style={{ backdropFilter: `blur(${blur}px)`, background: `rgba(255,255,255,${opacity})`, border: `1px solid rgba(255,255,255,${border})` }}>
+                    style={{ backdropFilter: `blur(${blur}px)`, background: `rgba(255,255,255,${opacity})`, border: `1px solid rgba(255,255,255,${border})` } as React.CSSProperties}>
                     Glass Effect ✨
                 </div>
             </div>

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton, ToolTextarea, ToolSelect } from './ToolUi';
-import { Sparkles, Instagram, ExternalLink, Youtube } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ToolProps {

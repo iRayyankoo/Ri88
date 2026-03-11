@@ -43,7 +43,7 @@ function EOSCalculator() {
                     <ToolInput type="number" value={years} onChange={e => setYears(e.target.value)} placeholder="e.g. 6.5" />
                 </ToolInputRow>
                 <ToolInputRow label="سبب الإنهاء" id="eos-reason">
-                    <ToolSelect id="eos-reason" value={reason} onChange={e => setReason(e.target.value as any)} aria-label="Termination Reason" title="سبب انتهاء الخدمة (Termination Reason)">
+                    <ToolSelect id="eos-reason" value={reason} onChange={e => setReason(e.target.value as 'term' | 'resign')} aria-label="Termination Reason" title="سبب انتهاء الخدمة (Termination Reason)">
                         <option value="term">إنهاء (كامل)</option>
                         <option value="resign">استقالة</option>
                     </ToolSelect>

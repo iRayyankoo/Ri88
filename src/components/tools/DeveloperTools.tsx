@@ -14,7 +14,9 @@ function UserAgentParser() {
     const [data, setData] = useState<Record<string, unknown> | null>(null);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') setUa(navigator.userAgent);
+        if (typeof window !== 'undefined') {
+            setTimeout(() => setUa(navigator.userAgent), 0);
+        }
     }, []);
 
     const parse = () => {
@@ -66,7 +68,7 @@ function UnixConverter() {
     const [res, setRes] = useState('');
 
     useEffect(() => {
-        setInput(Math.floor(Date.now() / 1000).toString());
+        setTimeout(() => setInput(Math.floor(Date.now() / 1000).toString()), 0);
     }, []);
 
     const convert = () => {

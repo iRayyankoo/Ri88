@@ -79,8 +79,7 @@ function PassGen() {
     const generate = () => {
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
         let res = "";
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const cryptoObj = window.crypto || (window as any).msCrypto; // fallback if needed
+        const cryptoObj = window.crypto || (window as unknown as { msCrypto: Crypto }).msCrypto; // fallback if needed
         if (cryptoObj?.getRandomValues) {
             const arr = new Uint32Array(parseInt(length));
             cryptoObj.getRandomValues(arr);

@@ -28,7 +28,8 @@ function AiAssistant() {
             });
             const data = await res.json();
             setResponse(data.result);
-        } catch (err) {
+        } catch (err: unknown) {
+            console.error('AI Error:', err);
             toast.error('حدث خطأ أثناء المعالجة');
         } finally {
             setLoading(false);
@@ -56,7 +57,7 @@ function AiAssistant() {
             <div className="flex flex-col space-y-6">
                 <div className="grid grid-cols-3 gap-2 p-1 bg-black/20 rounded-xl border border-white/5">
                     {['summarize', 'brainstorm', 'improve'].map(m => (
-                        <button key={m} onClick={() => setMode(m as any)} className={`py-2 px-3 rounded-lg text-sm font-bold transition-all ${mode === m ? 'bg-brand-primary text-white' : 'text-slate-400'}`}>
+                        <button key={m} onClick={() => setMode(m as 'summarize' | 'brainstorm' | 'improve')} className={`py-2 px-3 rounded-lg text-sm font-bold transition-all ${mode === m ? 'bg-brand-primary text-white' : 'text-slate-400'}`}>
                             {m === 'summarize' ? 'ملخص' : m === 'brainstorm' ? 'أفكار' : 'تحسين'}
                         </button>
                     ))}
@@ -101,7 +102,7 @@ function EmailProfessionalizer() {
 // 3. Sentiment Analyzer
 function SentimentAnalyzer() {
     const [input, setInput] = useState('');
-    const [res, setRes] = useState<any>(null);
+    const [res, setRes] = useState<{ score: string, label: string, color: string } | null>(null);
 
     const analyze = () => {
         if (!input.trim()) return;

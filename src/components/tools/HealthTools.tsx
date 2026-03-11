@@ -19,14 +19,10 @@ interface HealthWidgetProps {
 const WidgetCard = ({ title, icon: Icon, color, children }: HealthWidgetProps) => (
     <GlassCard className="h-full flex flex-col p-0 overflow-hidden relative group hover:border-brand-primary/20 transition-all duration-300">
         <style jsx>{`
-            .icon-wrapper {
-                color: ${color};
-            }
-            .glow-bg {
-                background-color: ${color};
-            }
+            .widget-${color.replace('#', '')} .icon-wrapper { color: ${color}; }
+            .widget-${color.replace('#', '')} .glow-bg { background-color: ${color}; }
         `}</style>
-        <div className="p-5 border-b border-white/5 flex items-center gap-3 bg-white/5 relative z-10">
+        <div className={`p-5 border-b border-white/5 flex items-center gap-3 bg-white/5 relative z-10 widget-${color.replace('#', '')}`}>
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-black/20 text-white icon-wrapper">
                 <Icon size={20} />
             </div>
@@ -36,7 +32,7 @@ const WidgetCard = ({ title, icon: Icon, color, children }: HealthWidgetProps) =
             {children}
         </div>
         {/* Glow effect based on color */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[60px] opacity-10 pointer-events-none transition-opacity group-hover:opacity-20 glow-bg" />
+        <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[60px] opacity-10 pointer-events-none transition-opacity group-hover:opacity-20 glow-bg widget-${color.replace('#', '')}`} />
     </GlassCard>
 );
 
@@ -62,9 +58,7 @@ function BMICalculator() {
             {result && (
                 <div className="mt-2 bg-black/40 rounded-xl p-4 text-center border border-white/5">
                     <style jsx>{`
-                        .bmi-val, .bmi-cat {
-                            color: ${result.color};
-                        }
+                        .bmi-val, .bmi-cat { color: ${result.color}; }
                     `}</style>
                     <div className="text-[2.5em] font-black bmi-result drop-shadow-lg bmi-val">
                         {result.bmi}
@@ -235,9 +229,7 @@ function BreathingExercise() {
             <div className="flex justify-center py-8">
                 <div className={`breathing-circle ${phase} w-[100px] h-[100px] rounded-full border-[3px] flex items-center justify-center transition-all duration-[4000ms] ease-in-out ${phase === 'inhale' || phase === 'hold' ? 'scale-150 shadow-[0_0_30px_rgba(0,210,211,0.4)]' : 'scale-100 shadow-none'}`}>
                     <style jsx>{`
-                        .breathing-circle {
-                            border-color: ${phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'};
-                        }
+                        .breathing-circle { border-color: ${phase === 'inhale' ? '#00d2d3' : phase === 'hold' ? '#00cec9' : 'rgba(255,255,255,0.1)'}; }
                     `}</style>
                     <span className="text-xl font-bold text-white transition-all">{active ? text : 'ابدأ'}</span>
                 </div>
@@ -460,8 +452,10 @@ function HabitHeatmap() {
     const [days, setDays] = useState<{ id: number, active: boolean }[]>([]);
 
     useEffect(() => {
-        const generated = Array.from({ length: 28 }, (_, i) => ({ id: i, active: Math.random() > 0.5 }));
-        setDays(generated);
+        setTimeout(() => {
+            const generated = Array.from({ length: 28 }, (_, i) => ({ id: i, active: Math.random() > 0.5 }));
+            setDays(generated);
+        }, 0);
     }, []);
 
     return (
@@ -519,7 +513,13 @@ function BodyFatNavy() {
 
     return (
         <WidgetCard title="نسبة الدهون (Navy)" icon={Scale} color="#3498db">
-            <div className="grid grid-cols-2 gap-2">
+            <ToolInputRow label="الجنس">
+                <ToolSelect value={gender} onChange={e => setGender(e.target.value)} id="bf-gender" title="الجنس">
+                    <option value="m">ذكر</option>
+                    <option value="f">أنثى</option>
+                </ToolSelect>
+            </ToolInputRow>
+            <div className="grid grid-cols-2 gap-2 mt-2">
                 <ToolInputRow label="الخصر (سم)"><ToolInput type="number" value={waist} onChange={e => setWaist(e.target.value)} /></ToolInputRow>
                 <ToolInputRow label="الرقبة (سم)"><ToolInput type="number" value={neck} onChange={e => setNeck(e.target.value)} /></ToolInputRow>
             </div>
