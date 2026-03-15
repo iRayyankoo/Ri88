@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, CartesianGrid } from 'recharts';
 import { Pencil } from 'lucide-react';
 import AccessDenied from '@/components/AccessControl/AccessDenied';
+import { useSession } from 'next-auth/react';
 
 // Dnd-kit imports
 import { 
@@ -174,7 +175,8 @@ function DroppableColumn({ id, children, className }: { id: string; children: Re
 }
 
 export default function CRMDashboard() {
-    const { currentWorkspace, permissions, isLoading: isLoadingWorkspace } = useWorkspace();
+    const { currentWorkspace, permissions, workspaceRole, isLoading: isLoadingWorkspace } = useWorkspace();
+    const { data: session } = useSession();
     const router = useRouter();
     const [clients, setClients] = useState<Client[]>([]);
     const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -185,6 +187,9 @@ export default function CRMDashboard() {
     const [view, setView] = useState<'clients' | 'pipeline' | 'tasks' | 'history' | 'analytics' | 'pipelineSettings'>('clients');
     const [taskViewMode, setTaskViewMode] = useState<'list' | 'board' | 'calendar'>('list');
     const [currentMonth, setCurrentMonth] = useState(new Date());
+
+    const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || permissions['can_access_crm'];
 
 
     // Analytics Data State
