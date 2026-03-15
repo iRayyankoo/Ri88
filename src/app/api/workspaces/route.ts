@@ -87,8 +87,8 @@ export async function GET() {
         });
         return NextResponse.json({ 
             error: "Internal error", 
-            details: error.message,
-            code: error.code 
+            details: message,
+            code: (error as any).code 
         }, { status: 500 });
     }
 }
@@ -166,8 +166,8 @@ export async function POST(req: Request) {
         });
         return NextResponse.json({ 
             error: "فشل إنشاء مساحة العمل", 
-            details: error.message,
-            code: error.code 
+            details: message,
+            code: (error as any).code 
         }, { status: 500 });
     }
 }
