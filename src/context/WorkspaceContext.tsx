@@ -98,7 +98,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
             }
 
             try {
-                const res = await fetch(`/api/workspaces/${currentWorkspace.id}/my-permissions`);
+                const res = await fetch(`/api/workspaces/${currentWorkspace.id}/my-permissions`, { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setPermissions(data.permissions || {});

@@ -191,6 +191,19 @@ export default function CRMDashboard() {
     const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
     const canAccess = isAdmin || (permissions && permissions['can_access_crm'] === true);
 
+    // Debugging - Remove in production
+    useEffect(() => {
+        if (session) {
+            console.log("[DEBUG CRM ACCESS]", {
+                userRole: session.user.role,
+                workspaceRole,
+                permissions,
+                isAdmin,
+                canAccess
+            });
+        }
+    }, [session, workspaceRole, permissions, isAdmin, canAccess]);
+
 
     // Analytics Data State
     const [pipelineData, setPipelineData] = useState<{name: string, value: number}[]>([]);

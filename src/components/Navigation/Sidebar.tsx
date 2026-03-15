@@ -40,13 +40,17 @@ const Sidebar = () => {
     const { currentWorkspace, workspaces, setCurrentWorkspace, permissions, workspaceRole } = useWorkspace();
     const isAdmin = userRole === 'admin' || session?.user?.role === 'ADMIN' || workspaceRole === 'OWNER' || workspaceRole === 'ADMIN';
     
-    console.log("Sidebar Auth Debug:", { 
-        userRole, 
-        sessionRole: session?.user?.role, 
-        workspaceRole, 
-        isAdmin,
-        workspaceId: currentWorkspace?.id
-    });
+    useEffect(() => {
+        if (session) {
+            console.log("Sidebar Auth Debug:", { 
+                systemRole: userRole, 
+                sessionRole: session?.user?.role, 
+                workspaceRole, 
+                isAdmin,
+                workspaceId: currentWorkspace?.id
+            });
+        }
+    }, [session, userRole, workspaceRole, isAdmin, currentWorkspace]);
 
     const [workspaceOpen, setWorkspaceOpen] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -303,8 +307,17 @@ const Sidebar = () => {
                                     <p className="text-xs font-black text-text-primary group-hover:text-brand-primary transition-colors truncate max-w-[120px]">
                                         {session?.user?.name || 'مستخدم'}
                                     </p>
-                                    <p className="text-[9px] text-brand-secondary font-bold uppercase tracking-widest">
+                                    <p className="text-[9px] text-brand-secondary font-bold uppercase tracking-widest flex items-center gap-1">
                                         {session?.user?.isPro ? 'عضوية برو' : 'الخطة المجانية'}
+                                        {workspaceRole && (
+                                            <>
+                                                <span className="text-white/20">|</span>
+                                                <span className="text-brand-primary">{
+                                                    workspaceRole === 'OWNER' ? 'مالك' : 
+                                                    workspaceRole === 'ADMIN' ? 'مدير' : 'عضو'
+                                                }</span>
+                                            </>
+                                        )}
                                     </p>
                                 </div>
                             )}
