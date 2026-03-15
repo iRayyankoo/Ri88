@@ -45,7 +45,7 @@ assert(proof === "Hello, world.", "proofreadText punctuation");
 
 // 4. AI
 console.log("Testing AI Tools...");
-const aiResp = getMockAiResponse('summarize', 'test');
+const aiResp = getMockAiResponse('summarize');
 assert(aiResp.length > 0, "getMockAiResponse");
 
 console.log("🎉 Batch 6 Verification Complete!");
