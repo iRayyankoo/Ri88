@@ -1183,8 +1183,12 @@ export default function CRMDashboard() {
                                             <div className="w-[15%] p-3 border-l border-border-subtle text-center">الأولوية</div>
                                             <div className="flex-1 p-3 text-center">التاريخ</div>
                                         </div>
-                                        {filteredTasksArr.filter(t => t.group === group).map(task => (
-                                            <div key={task.id} className="flex border-b border-white/5 hover:bg-surface-glass transition-colors group relative">
+                                                {filteredTasksArr.filter(t => t.group === group).map(task => (
+                                                    <div 
+                                                        key={task.id} 
+                                                        onClick={() => handleTaskClick(task)}
+                                                        className="flex border-b border-white/5 hover:bg-surface-glass transition-colors group relative cursor-pointer"
+                                                    >
                                                 <div className={`w-10 shrink-0 border-l border-border-subtle border-r-4 ${groupColors[gIdx]}`}></div>
                                                 <div className="w-[30%] p-1 border-l border-border-subtle flex items-center">
                                                     <input 
@@ -1193,6 +1197,7 @@ export default function CRMDashboard() {
                                                         value={task.title} 
                                                         onChange={e => setTasks(prev => prev.map(t => t.id === task.id ? { ...t, title: e.target.value } : t))}
                                                         onBlur={e => handleTitleChange(task.id, e.target.value)}
+                                                        onClick={(e) => e.stopPropagation()}
                                                         className="bg-transparent text-sm font-bold text-white outline-none w-full px-2 py-2 rounded-md focus:bg-white/5"
                                                     />
                                                 </div>
@@ -1202,7 +1207,12 @@ export default function CRMDashboard() {
                                                     className="w-[15%] p-0 border-l border-border-subtle relative group/status"
                                                     title="تغيير الحالة"
                                                 >
-                                                    <div className={`w-full h-full ${statusColors[task.status] || 'bg-slate-500'} flex items-center justify-center text-white font-black text-[12px] cursor-pointer`}>{statusLabels[task.status] || task.status}</div>
+                                                    <div 
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className={`w-full h-full ${statusColors[task.status] || 'bg-slate-500'} flex items-center justify-center text-white font-black text-[12px] cursor-pointer`}
+                                                    >
+                                                        {statusLabels[task.status] || task.status}
+                                                    </div>
                                                     <div className="absolute top-full right-0 w-full bg-surface-raised border border-border-strong rounded-b-lg shadow-2xl opacity-0 invisible group-hover/status:opacity-100 group-hover/status:visible transition-all z-50 p-1 flex flex-col gap-1">
                                                         {Object.entries(statusLabels).map(([val, lab]) => (
                                                             <div key={val} onClick={() => handleStatusChange(task.id, val)} className={`${statusColors[val]} p-2 text-center text-[10px] font-black rounded cursor-pointer hover:opacity-90`}>{lab}</div>
@@ -1213,7 +1223,12 @@ export default function CRMDashboard() {
                                                     className="w-[15%] p-0 border-l border-border-subtle relative group/priority"
                                                     title="تغيير الأولوية"
                                                 >
-                                                    <div className={`w-full h-full ${priorityColors[task.priority] || 'bg-slate-500'} flex items-center justify-center text-white font-black text-[12px] cursor-pointer`}>{priorityLabels[task.priority] || task.priority}</div>
+                                                    <div 
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className={`w-full h-full ${priorityColors[task.priority] || 'bg-slate-500'} flex items-center justify-center text-white font-black text-[12px] cursor-pointer`}
+                                                    >
+                                                        {priorityLabels[task.priority] || task.priority}
+                                                    </div>
                                                     <div className="absolute top-full right-0 w-full bg-surface-raised border border-border-strong rounded-b-lg shadow-2xl opacity-0 invisible group-hover/priority:opacity-100 group-hover/priority:visible transition-all z-50 p-1 flex flex-col gap-1">
                                                         {Object.entries(priorityLabels).map(([val, lab]) => (
                                                             <div key={val} onClick={() => handlePriorityChange(task.id, val)} className={`${priorityColors[val]} p-2 text-center text-[10px] font-black rounded cursor-pointer hover:opacity-90`}>{lab}</div>
@@ -1323,7 +1338,15 @@ export default function CRMDashboard() {
                                                     <div className="flex flex-col h-full">
                                                         <span className="text-[10px] font-black text-slate-500 mb-1">{d}</span>
                                                         <div className="space-y-1">
-                                                            {dt.map(t => <div key={t.id} className={`p-1 rounded text-[8px] font-bold ${priorityColors[t.priority]} text-white truncate`}>{t.title}</div>)}
+                                                            {dt.map(t => (
+                                                                <div 
+                                                                    key={t.id} 
+                                                                    onClick={() => handleTaskClick(t)}
+                                                                    className={`p-1 rounded text-[8px] font-bold ${priorityColors[t.priority]} text-white truncate cursor-pointer hover:scale-[1.02] transition-transform`}
+                                                                >
+                                                                    {t.title}
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 )}
