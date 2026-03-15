@@ -127,8 +127,8 @@ export default function HRDashboard() {
     };
 
     const { data: session } = useSession();
-    const isAdmin = session?.user?.role === 'ADMIN' || permissions['can_manage_tasks'] || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
-    const canAccess = isAdmin || permissions['can_manage_tasks'];
+    const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || (permissions && permissions['can_manage_tasks'] === true);
 
     if (wsLoading) {
         return (

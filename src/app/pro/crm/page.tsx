@@ -189,7 +189,7 @@ export default function CRMDashboard() {
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
     const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
-    const canAccess = isAdmin || permissions['can_access_crm'];
+    const canAccess = isAdmin || (permissions && permissions['can_access_crm'] === true);
 
 
     // Analytics Data State
@@ -939,7 +939,7 @@ export default function CRMDashboard() {
                                 className="w-full h-11 bg-surface-raised border border-border-subtle rounded-xl pr-11 pl-4 text-sm text-foreground outline-none focus:border-brand-primary/50 transition-all"
                             />
                         </div>
-                        {permissions['can_manage_clients'] !== false ? (
+                        {permissions['can_manage_clients'] === true ? (
                             <button
                                 onClick={() => setShowNewClient(true)}
                                 className="w-full sm:w-auto h-11 px-6 flex items-center justify-center gap-2 rounded-xl bg-brand-primary text-black font-black text-sm hover:bg-brand-primary/90 transition-all"
@@ -1152,7 +1152,7 @@ export default function CRMDashboard() {
                                 ))}
                             </div>
 
-                            {permissions['can_manage_tasks'] !== false ? (
+                            {permissions['can_manage_tasks'] === true ? (
                                 <button 
                                     onClick={() => handleCreateTask('هذا الأسبوع')} 
                                     title="إضافة مهمة جديدة"

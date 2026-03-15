@@ -80,7 +80,7 @@ export default function FinanceDashboard() {
     const draftedInvoicesCount = invoices.filter(i => i.status === 'DRAFT').length;
 
     const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
-    const canAccess = isAdmin || permissions['can_access_finance'];
+    const canAccess = isAdmin || (permissions && permissions['can_access_finance'] === true);
 
     if (!currentWorkspace) {
         return (
