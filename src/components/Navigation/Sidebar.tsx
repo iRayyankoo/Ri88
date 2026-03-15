@@ -131,7 +131,7 @@ const Sidebar = () => {
             </div>
 
             {/* Workspace Selector */}
-            {isLoggedIn && workspaces.length > 0 && (
+            {isLoggedIn && (
                 <div className={`mb-6 px-2 relative ${isSidebarCollapsed ? 'flex justify-center' : ''}`} ref={workspaceRef}>
                     <button
                         onClick={() => setWorkspaceOpen(!workspaceOpen)}
@@ -143,9 +143,9 @@ const Sidebar = () => {
                             <>
                                 <div className="flex items-center gap-2 overflow-hidden text-right">
                                     <div className="w-6 h-6 rounded bg-brand-primary/20 text-brand-primary flex flex-shrink-0 items-center justify-center font-bold text-xs uppercase">
-                                        {currentWorkspace?.name?.charAt(0) || 'W'}
+                                        {currentWorkspace?.name?.charAt(0) || <PlusCircle className="w-3 h-3" />}
                                     </div>
-                                    <span className="text-sm font-bold text-text-primary truncate">{currentWorkspace?.name || 'اختر مساحة'}</span>
+                                    <span className="text-sm font-bold text-text-primary truncate">{currentWorkspace?.name || 'إنشاء مساحة عمل'}</span>
                                 </div>
                                 <ChevronRight className={`w-4 h-4 text-text-muted transition-transform ${workspaceOpen ? 'rotate-90' : ''}`} />
                             </>
@@ -175,6 +175,11 @@ const Sidebar = () => {
                                             {currentWorkspace?.id === ws.id && <Check className="w-4 h-4 shrink-0" />}
                                         </button>
                                     ))}
+                                    {workspaces.length === 0 && (
+                                        <div className="px-3 py-4 text-center">
+                                            <p className="text-[10px] text-text-muted font-bold mb-1">لا توجد مساحات عمل</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="p-1 border-t border-border-subtle">
                                     <button
