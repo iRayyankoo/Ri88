@@ -4,12 +4,14 @@ import { Moon, Globe, Bell, Shield, Save, Monitor, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useTheme } from '../ThemeProvider';
 import { useNavigation } from '@/context/NavigationContext';
+import { useWorkspace } from '@/context/WorkspaceContext';
 import Image from 'next/image';
 import GlassCard from '../ui/GlassCard';
 import { updateProfile, getUserTransactions } from '@/actions/profile';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { arSA } from 'date-fns/locale';
+import AccessDenied from '../AccessControl/AccessDenied';
 
 /*
   GlobalSettings:
@@ -18,6 +20,7 @@ import { arSA } from 'date-fns/locale';
 
 const GlobalSettings = () => {
     const { openToolsInModal, setOpenToolsInModal } = useNavigation();
+    const { currentWorkspace, permissions, workspaceRole } = useWorkspace();
     const { data: session, update } = useSession();
     const { theme, setTheme } = useTheme();
     const [language, setLanguage] = useState('ar');
@@ -84,6 +87,13 @@ const GlobalSettings = () => {
         }
     };
 
+
+    const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || (permissions && permissions['can_access_settings'] === true);
+
+    if (!canAccess) {
+        return <AccessDenied moduleName="الإعدادات العامة" />;
+    }
 
     return (
         <div className="max-w-full px-4 lg:px-8 mx-auto space-y-12 pb-24">

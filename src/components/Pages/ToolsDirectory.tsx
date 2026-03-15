@@ -4,11 +4,13 @@ import { Search, Sparkles, ArrowRight, Code, Clock, Database, Grid, Wrench, Crow
 import { motion } from 'framer-motion';
 import { categories, tools as staticTools } from '@/data/tools';
 import { useNavigation } from '@/context/NavigationContext';
+import { useWorkspace } from '@/context/WorkspaceContext';
 import { SectionBanner } from './SectionBanner';
 import { HeroBanner } from './HeroBanner';
 import { getTools, seedTools } from '@/actions/tools';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
+import AccessDenied from '../AccessControl/AccessDenied';
 
 // The new DB structure for Tool
 interface DbTool {
@@ -29,6 +31,7 @@ interface DbTool {
 
 const ToolsDirectory = () => {
     const { launchTool } = useNavigation();
+    const { currentWorkspace, permissions, workspaceRole } = useWorkspace();
     const { data: session } = useSession();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -234,6 +237,13 @@ const ToolsDirectory = () => {
         launchTool(tool.id, tool as unknown as Record<string, unknown>);
     };
 
+
+    const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || (permissions && permissions['can_access_tools'] === true);
+
+    if (!canAccess) {
+        return <AccessDenied moduleName="مركز الأدوات" />;
+    }
 
     return (
         <div className="w-full max-w-7xl mx-auto pb-32 space-y-8 lg:space-y-12 animate-in fade-in duration-700 overflow-x-hidden pt-6">

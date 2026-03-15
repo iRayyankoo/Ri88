@@ -79,8 +79,8 @@ const Sidebar = () => {
         { name: 'العملاء (CRM)', icon: Users, href: '/pro/crm', permission: 'can_access_crm' },
         { name: 'المهام (HR)', icon: CheckSquare, href: '/pro/hr', permission: 'can_manage_tasks' },
         { name: 'المالية والفواتير', icon: Receipt, href: '/pro/finance', permission: 'can_access_finance' },
-        { name: 'مركز الأدوات', icon: Zap, href: '/pro/tools' },
-        { name: 'الإعدادات', icon: Settings, href: '/pro/settings' },
+        { name: 'مركز الأدوات', icon: Zap, href: '/pro/tools', permission: 'can_access_tools' },
+        { name: 'الإعدادات', icon: Settings, href: '/pro/settings', permission: 'can_access_settings' },
     ];
 
     // ── قائمة الأدمن الإضافية ────────────────────────────
@@ -208,6 +208,11 @@ const Sidebar = () => {
 
                 {/* عناصر العضو */}
                 {navItems.map((item: { name: string; icon: React.ElementType; href: string; permission?: string }) => {
+                    // Show item if no permission key is required OR user has permission OR is an admin
+                    const hasPermission = !item.permission || (permissions && permissions[item.permission] === true);
+                    const shouldShow = hasPermission || isAdmin;
+                    
+                    if (!shouldShow) return null;
                     return <NavLink key={item.href} item={item} />;
                 })}
 

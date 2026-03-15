@@ -15,7 +15,8 @@ import {
     LayoutDashboard,
     Briefcase,
     Building,
-    Settings
+    Settings,
+    Zap
 } from 'lucide-react';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { toast } from 'sonner';
@@ -50,8 +51,9 @@ const PERMISSION_KEYS = [
     { key: 'can_manage_clients', label: 'إدارة العملاء', icon: Users },
     { key: 'can_manage_opportunities', label: 'إدارة الفرص البيعية', icon: Briefcase },
     { key: 'can_manage_tasks', label: 'إدارة المهام', icon: Check },
-    { key: 'can_access_finance', label: 'الوصول إلى المالية', icon: Building },
-    { key: 'can_manage_settings', label: 'إدارة الإعدادات', icon: Settings },
+    { key: 'can_access_finance', label: 'الوصول إلى المالية والمحاسبة', icon: Building },
+    { key: 'can_access_tools', label: 'الوصول إلى مركز الأدوات', icon: Zap },
+    { key: 'can_access_settings', label: 'الوصول إلى الإعدادات', icon: Settings },
 ];
 
 const WorkgroupManagement = () => {

@@ -20,7 +20,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                 'can_manage_opportunities': true,
                 'can_manage_tasks': true,
                 'can_access_finance': true,
-                'can_manage_settings': true,
+                'can_access_tools': true,
+                'can_access_settings': true,
             };
             return NextResponse.json({ permissions, role: 'ADMIN' });
         }
@@ -58,7 +59,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             permissions['can_manage_opportunities'] = true;
             permissions['can_manage_tasks'] = true;
             permissions['can_access_finance'] = true;
-            permissions['can_manage_settings'] = true;
+            permissions['can_access_tools'] = true;
+            permissions['can_access_settings'] = true;
         } else if (member.workgroups) {
             member.workgroups.forEach((wg: any) => {
                 const wgPerms = wg.permissions as Record<string, boolean>;
