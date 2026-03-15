@@ -44,14 +44,21 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
             
             if (res.status === 401) {
                 // Session expired or user deleted after DB reset
+                console.warn("Session invalid or user not found. Clearing workspaces.");
                 setWorkspaces([]);
                 setCurrentWorkspaceState(null);
+                setIsLoading(false);
                 return;
             }
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
-                console.error("Failed to fetch workspaces:", res.statusText, errorData);
+                console.error("Failed to fetch workspaces:", { 
+                    status: res.status, 
+                    statusText: res.statusText, 
+                    errorData 
+                });
+                setIsLoading(false);
                 return;
             }
 

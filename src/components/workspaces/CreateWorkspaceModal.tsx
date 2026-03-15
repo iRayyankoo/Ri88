@@ -28,15 +28,21 @@ export default function CreateWorkspaceModal({ isOpen, onClose }: CreateWorkspac
                 body: JSON.stringify({ name: name.trim() })
             });
 
-            if (!res.ok) throw new Error('Failed to create workspace');
+            const data = await res.json();
+
+            if (!res.ok) {
+                const errorMessage = data.error || 'فشل إنشاء مساحة العمل';
+                const errorDetails = data.details ? ` (${data.details})` : '';
+                throw new Error(`${errorMessage}${errorDetails}`);
+            }
 
             await refreshWorkspaces();
             toast.success('تم إنشاء المساحة بنجاح!');
             setName('');
             onClose();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error('حدث خطأ أثناء إنشاء المساحة');
+            toast.error(error.message || 'حدث خطأ أثناء إنشاء المساحة');
         } finally {
             setIsSubmitting(false);
         }

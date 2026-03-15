@@ -44,26 +44,35 @@ export async function GET() {
 
         // Auto-create a default workspace if none exists
         if (workspaces.length === 0) {
-            const userName = session.user.name || "Default";
-            const newWorkspace = await prisma.workspace.create({
-                data: {
-                    name: `${userName}'s Workspace`,
-                    slug: `ws-${Date.now()}`,
-                    members: {
-                        create: {
-                            userId: session.user.id,
-                            role: "OWNER"
+            try {
+                const userName = session.user.name || "Default";
+                const newWorkspace = await prisma.workspace.create({
+                    data: {
+                        name: `${userName}'s Workspace`,
+                        slug: `ws-${Date.now()}`,
+                        members: {
+                            create: {
+                                userId: session.user.id,
+                                role: "OWNER"
+                            }
                         }
+                    },
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        logoUrl: true,
                     }
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    logoUrl: true,
-                }
-            });
-            return NextResponse.json({ workspaces: [newWorkspace] });
+                });
+                return NextResponse.json({ workspaces: [newWorkspace] });
+            } catch (createError: any) {
+                console.error("[API/WORKSPACES] Failed to auto-create workspace:", {
+                    message: createError.message,
+                    code: createError.code
+                });
+                // Continue to return empty workspaces so UI can show manual creation
+                return NextResponse.json({ workspaces: [], error: "Auto-creation failed" });
+            }
         }
 
         return NextResponse.json({ workspaces });
@@ -71,8 +80,7 @@ export async function GET() {
         console.error("[API/WORKSPACES] Detailed error fetching workspaces:", {
             message: error.message,
             stack: error.stack,
-            code: error.code,
-            meta: error.meta
+            code: error.code
         });
         return NextResponse.json({ 
             error: "Internal error", 
@@ -87,6 +95,16 @@ export async function POST(req: Request) {
         const session = await auth();
         if (!session?.user?.id) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Verify user exists in DB
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        });
+
+        if (!user) {
+            console.error(`[API/WORKSPACES] User ${session.user.id} not found in database.`);
+            return NextResponse.json({ error: "User record missing. Please login again." }, { status: 401 });
         }
 
         const body = await req.json();
@@ -104,10 +122,14 @@ export async function POST(req: Request) {
         let slug = baseSlug;
         let counter = 1;
         while (true) {
-            const existing = await prisma.workspace.findUnique({ where: { slug } });
-            if (!existing) break;
-            slug = `${baseSlug}-${counter}`;
-            counter++;
+            try {
+                const existing = await prisma.workspace.findUnique({ where: { slug } });
+                if (!existing) break;
+                slug = `${baseSlug}-${counter}`;
+                counter++;
+            } catch (e) {
+                break; // Let the create call handle the failure if findUnique fails
+            }
         }
 
         const newWorkspace = await prisma.workspace.create({
@@ -130,8 +152,17 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ workspace: newWorkspace, success: true });
-    } catch (error) {
-        console.error("Error creating workspace:", error);
-        return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    } catch (error: any) {
+        console.error("[API/WORKSPACES] Detailed error creating workspace:", {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta
+        });
+        return NextResponse.json({ 
+            error: "فشل إنشاء مساحة العمل", 
+            details: error.message,
+            code: error.code 
+        }, { status: 500 });
     }
 }
