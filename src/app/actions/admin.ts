@@ -82,7 +82,7 @@ export async function getAdminAnalytics() {
 
     // 1. Tool Categories Distribution
     // Counting tools by category from DB + Static Tools
-    const dbTools = await prisma.tool.findMany({ select: { category: true } });
+    const dbTools = await prisma.tool.findMany({ select: { id: true, category: true } });
     const { tools: staticTools } = await import('@/data/tools');
 
     const categoryCounts: Record<string, number> = {};
@@ -93,8 +93,8 @@ export async function getAdminAnalytics() {
     });
 
     // Process Static Tools, ensuring no double counting if already in DB
-    const dbIds = new Set(dbTools.map((t: any) => t.id));
-    staticTools.forEach((st: any) => {
+    const dbIds = new Set(dbTools.map((t) => t.id));
+    staticTools.forEach((st: { id: string; cat: string }) => {
         if (!dbIds.has(st.id)) {
             categoryCounts[st.cat] = (categoryCounts[st.cat] || 0) + 1;
         }
@@ -121,32 +121,118 @@ export async function getAdminAnalytics() {
         }
     });
 
-    // Group by Day
-    const daysMap: Record<string, { name: string, users: number, proUsers: number }> = {};
+    // Group by Day (using ISO date as key for stability)
+    const daysMap: Record<string, { label: string, users: number, proUsers: number }> = {};
 
     // Initialize last 7 days with 0
     for (let i = 6; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        const dateStr = d.toLocaleDateString('ar-SA', { weekday: 'short' });
-        if (!daysMap[dateStr]) {
-            daysMap[dateStr] = { name: dateStr, users: 0, proUsers: 0 };
-        }
+        const isoDate = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString('ar-SA', { weekday: 'short' });
+        daysMap[isoDate] = { label, users: 0, proUsers: 0 };
     }
 
     recentUsers.forEach(u => {
-        const dateStr = new Date(u.createdAt).toLocaleDateString('ar-SA', { weekday: 'short' });
-        if (daysMap[dateStr]) {
-            daysMap[dateStr].users += 1;
-            if (u.isPro) daysMap[dateStr].proUsers += 1;
+        const isoDate = new Date(u.createdAt).toISOString().split('T')[0];
+        if (daysMap[isoDate]) {
+            daysMap[isoDate].users += 1;
+            if (u.isPro) daysMap[isoDate].proUsers += 1;
         }
     });
 
-    const userGrowthData = Object.values(daysMap);
+    const userGrowthData = Object.entries(daysMap).map(([iso, data]) => ({
+        name: data.label,
+        users: data.users,
+        proUsers: data.proUsers,
+        date: iso
+    }));
+
+    // 3. Revenue Growth (Last 7 Days)
+    const recentTransactions = await prisma.transaction.findMany({
+        where: {
+            createdAt: { gte: sevenDaysAgo },
+            type: 'DEPOSIT'
+        },
+        select: {
+            createdAt: true,
+            amount: true
+        }
+    });
+
+    const revenueMap: Record<string, { label: string, revenue: number }> = {};
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const isoDate = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString('ar-SA', { weekday: 'short' });
+        revenueMap[isoDate] = { label, revenue: 0 };
+    }
+
+    recentTransactions.forEach(t => {
+        const isoDate = new Date(t.createdAt).toISOString().split('T')[0];
+        if (revenueMap[isoDate]) {
+            revenueMap[isoDate].revenue += t.amount;
+        }
+    });
+
+    const revenueGrowthData = Object.entries(revenueMap).map(([iso, data]) => ({
+        name: data.label,
+        revenue: data.revenue,
+        date: iso
+    }));
+
+    // 4. Workspace Growth (Last 7 Days)
+    const recentWorkspaces = await prisma.workspace.findMany({
+        where: {
+            createdAt: { gte: sevenDaysAgo }
+        },
+        select: {
+            createdAt: true
+        }
+    });
+
+    const workspaceMap: Record<string, { label: string, workspaces: number }> = {};
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const isoDate = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString('ar-SA', { weekday: 'short' });
+        workspaceMap[isoDate] = { label, workspaces: 0 };
+    }
+
+    recentWorkspaces.forEach(w => {
+        const isoDate = new Date(w.createdAt).toISOString().split('T')[0];
+        if (workspaceMap[isoDate]) {
+            workspaceMap[isoDate].workspaces += 1;
+        }
+    });
+
+    const workspaceGrowthData = Object.entries(workspaceMap).map(([iso, data]) => ({
+        name: data.label,
+        workspaces: data.workspaces,
+        date: iso
+    }));
+
+    // 5. Transaction Distribution
+    const transactions = await prisma.transaction.groupBy({
+        by: ['type'],
+        _count: {
+            _all: true
+        }
+    });
+
+    const transactionTypeData = transactions.map(t => ({
+        name: t.type === 'DEPOSIT' ? 'إيداع' : t.type === 'PURCHASE' ? 'شراء' : t.type === 'REFUND' ? 'استرجاع' : t.type,
+        value: t._count._all
+    }));
 
     return {
         categoriesData,
-        userGrowthData
+        userGrowthData,
+        revenueGrowthData,
+        workspaceGrowthData,
+        transactionTypeData
     };
 }
 
@@ -173,7 +259,7 @@ export async function getAdminTools() {
         });
 
         return { tools, success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Failed fetching admin tools:", error);
         return { error: 'حدث خطأ أثناء تحميل الأدوات', tools: null };
     }
@@ -186,7 +272,7 @@ export async function updateToolState(toolId: string, data: { isPremium?: boolea
             return { error: 'غير مصرح لك للقيام بهذا الإجراء' };
         }
 
-        const validData: any = {};
+        const validData: Record<string, boolean> = {};
         if (data.isPremium !== undefined) validData.isPremium = data.isPremium;
         if (data.isActive !== undefined) validData.isActive = data.isActive;
         if (data.isMaintenance !== undefined) validData.isMaintenance = data.isMaintenance;
@@ -201,7 +287,7 @@ export async function updateToolState(toolId: string, data: { isPremium?: boolea
         if (!existingTool) {
             // Possibly a static tool that needs to be inserted into the DB first
             const { tools: staticTools } = await import('@/data/tools');
-            const staticTool = staticTools.find((t: any) => t.id === toolId);
+            const staticTool = staticTools.find((t: { id: string }) => t.id === toolId);
 
             if (!staticTool) {
                 return { error: 'الأداة غير موجودة' };
@@ -235,7 +321,7 @@ export async function updateToolState(toolId: string, data: { isPremium?: boolea
         revalidatePath('/'); // Revalidate the main directory page so changes are reflected
 
         return { success: 'تم تحديث الأداة بنجاح' };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Failed updating tool:", error);
         return { error: 'حدث خطأ أثناء التحديث' };
     }

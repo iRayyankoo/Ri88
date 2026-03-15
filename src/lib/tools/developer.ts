@@ -8,8 +8,8 @@ export function formatJSON(input: string, mode: 'fmt' | 'min' | 'val') {
         if (mode === 'fmt') return { valid: true, output: JSON.stringify(obj, null, 2) };
         if (mode === 'min') return { valid: true, output: JSON.stringify(obj) };
         return { valid: false, output: '' };
-    } catch (e: any) {
-        throw new Error(e.message || "Invalid JSON");
+    } catch (e: unknown) {
+        throw new Error(e instanceof Error ? e.message : "Invalid JSON");
     }
 }
 
@@ -51,8 +51,8 @@ export function testRegex(pattern: string, text: string) {
         const regex = new RegExp(pattern);
         const match = regex.test(text);
         return { match, error: null };
-    } catch (e: any) {
-        return { match: false, error: e.message };
+    } catch (e: unknown) {
+        return { match: false, error: e instanceof Error ? e.message : "Error" };
     }
 }
 

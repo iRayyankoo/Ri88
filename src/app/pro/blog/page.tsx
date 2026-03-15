@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 
 "use client";
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, User } from 'lucide-react';
+import { ArrowRight, User } from 'lucide-react';
 import { blogPosts } from '@/data/blog';
 
 export default function BlogPage() {

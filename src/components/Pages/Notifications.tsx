@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { motion } from 'framer-motion';
+
 import { Bell, CheckCircle2, AlertTriangle, Info, Clock, X } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
 import { useNavigation } from '@/context/NavigationContext';
@@ -53,6 +53,7 @@ const Notifications = () => {
                     <p className="text-slate-400">آخر المستجدات والتنبيهات الخاصة بحسابك</p>
                 </div>
                 <button
+                    title="إغلاق"
                     onClick={() => setCurrentView('dashboard')}
                     className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors"
                 >
@@ -62,13 +63,13 @@ const Notifications = () => {
 
             {/* List */}
             <div className="grid gap-4">
-                {notifications.map((note, i) => (
+                {notifications.map((note) => (
                     <GlassCard key={note.id} className={`p-6 flex gap-4 items-start group transition-all duration-300 hover:border-brand-primary/20 ${!note.read ? 'bg-brand-primary/5 border-brand-primary/10' : ''}`}>
 
                         {/* Icon */}
                         <div className={`mt-1 w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${note.type === 'success' ? 'bg-emerald-500/10 text-emerald-500' :
-                                note.type === 'warning' ? 'bg-orange-500/10 text-orange-500' :
-                                    'bg-blue-500/10 text-blue-500'
+                            note.type === 'warning' ? 'bg-orange-500/10 text-orange-500' :
+                                'bg-blue-500/10 text-blue-500'
                             }`}>
                             {note.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> :
                                 note.type === 'warning' ? <AlertTriangle className="w-5 h-5" /> :

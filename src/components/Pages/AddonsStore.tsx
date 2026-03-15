@@ -55,7 +55,7 @@ const AddonsStore = () => {
             } else {
                 toast.error(result.error || "فشلت العملية");
             }
-        } catch (error) {
+        } catch {
             toast.error("خطأ غير متوقع");
         } finally {
             setPurchasingId(null);

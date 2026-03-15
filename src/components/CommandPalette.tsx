@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Command, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { Search, CornerDownLeft } from 'lucide-react';
 import { tools, Tool } from '@/data/tools';
 
 interface CommandPaletteProps {
@@ -40,6 +40,7 @@ export default function CommandPalette({ onSelectTool }: CommandPaletteProps) {
     // Focus input when opened
     useEffect(() => {
         if (open) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuery('');
             setActiveIndex(0);
             setTimeout(() => inputRef.current?.focus(), 50);

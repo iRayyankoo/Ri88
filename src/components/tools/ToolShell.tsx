@@ -16,10 +16,7 @@ interface ToolShellProps {
     onSave?: () => void;
     isSaving?: boolean;
 }
-
 export function ToolShell({
-    title,
-    description,
     children,
     className = '',
     footer,

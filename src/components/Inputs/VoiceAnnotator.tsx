@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Square, Play, Trash2, Volume2 } from 'lucide-react';
+import { Mic, Square, Play, Trash2 } from 'lucide-react';
 
 interface VoiceAnnotatorProps {
     onSave: (blob: Blob | null) => void;
@@ -110,7 +110,7 @@ export const VoiceAnnotator = ({ onSave }: VoiceAnnotatorProps) => {
                         {[...Array(20)].map((_, i) => (
                             <motion.div
                                 key={i}
-                                animate={{ height: [4, Math.random() * 24 + 4, 4] }}
+                                animate={{ height: [4, ((i * 13) % 24) + 4, 4] }}
                                 transition={{ repeat: Infinity, duration: 0.5, delay: i * 0.05 }}
                                 className="w-1 bg-brand-primary rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"
                             />

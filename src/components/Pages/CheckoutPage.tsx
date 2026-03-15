@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import { CreditCard, Lock, ShieldCheck, CheckCircle2, ChevronRight, Apple } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 

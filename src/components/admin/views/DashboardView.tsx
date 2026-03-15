@@ -1,7 +1,7 @@
 import React from 'react';
 import { Map as MapIcon, ArrowUpRight, ArrowDownRight, Activity, Users, Globe, Smartphone } from 'lucide-react';
 
-function StatCard({ title, value, change, isPositive, icon: Icon, color }: any) {
+function StatCard({ title, value, change, isPositive, icon: Icon, color }: { title: string; value: string; change: string; isPositive: boolean; icon: import('lucide-react').LucideIcon; color: string }) {
     return (
         <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', padding: '24px', borderRadius: '16px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, right: 0, padding: '20px', opacity: 0.1 }}>

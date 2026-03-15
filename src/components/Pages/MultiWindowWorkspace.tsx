@@ -44,7 +44,7 @@ const MultiWindowWorkspace = () => {
             const toolDesc = activeDbTool ? activeDbTool.description : (staticTool?.descAr || staticTool?.desc || '');
 
             let routerId = activeToolId;
-            if (activeDbTool?.url?.startsWith('/tools/')) {
+            if (typeof activeDbTool?.url === 'string' && activeDbTool.url.startsWith('/tools/')) {
                 routerId = activeDbTool.url.replace('/tools/', '');
             }
 
@@ -61,19 +61,22 @@ const MultiWindowWorkspace = () => {
             };
 
             // Check if already open
-            const existing = windows.find(w => w.toolId === activeToolId); // Check by toolId instead of title
-            if (!existing) {
-                setWindows(prev => [...prev, {
-                    id: Date.now().toString(),
-                    toolId: activeToolId,
-                    title: toolTitle,
-                    x: 150 + (prev.length * 30),
-                    y: 150 + (prev.length * 30),
-                    isOpen: true,
-                    isMaximized: false,
-                    toolData: toolProps // store the toolData directly on the window so it can be passed to ToolRouter
-                } as Window & { toolData?: any }]);
-            }
+            setWindows(prev => {
+                const existing = prev.find(w => w.toolId === activeToolId);
+                if (!existing) {
+                    return [...prev, {
+                        id: Date.now().toString(),
+                        toolId: activeToolId,
+                        title: toolTitle,
+                        x: 150 + (prev.length * 30),
+                        y: 150 + (prev.length * 30),
+                        isOpen: true,
+                        isMaximized: false,
+                        toolData: toolProps
+                    } as Window & { toolData?: import('@/data/tools').Tool }];
+                }
+                return prev;
+            });
         }
     }, [activeToolId, activeDbTool]);
 
@@ -131,7 +134,6 @@ const MultiWindowWorkspace = () => {
             <div className="relative h-full w-full">
                 <AnimatePresence>
                     {windows.map((win) => {
-                        const toolData = tools.find(t => t.id === win.toolId);
                         return (
                             <motion.div
                                 key={win.id}
@@ -163,18 +165,20 @@ const MultiWindowWorkspace = () => {
 
                                     <div className="flex items-center gap-1">
                                         <button
+                                            title="إغلاق"
                                             onClick={() => closeWindow(win.id)}
                                             className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-500/20 text-slate-500 hover:text-red-500 transition-all"
                                         >
                                             <X className="w-4 h-4" />
                                         </button>
                                         <button
+                                            title="تكبير"
                                             onClick={() => toggleMaximize(win.id)}
                                             className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-brand-secondary/20 text-slate-500 hover:text-brand-secondary transition-all"
                                         >
                                             <Maximize2 className="w-4 h-4" />
                                         </button>
-                                        <button className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white/10 text-slate-500 hover:text-white transition-all">
+                                        <button title="تصغير" className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white/10 text-slate-500 hover:text-white transition-all">
                                             <Minus className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -182,8 +186,8 @@ const MultiWindowWorkspace = () => {
 
                                 {/* Window Content - Render ToolRouter */}
                                 <div className="flex-1 overflow-auto bg-black/20 custom-scrollbar relative p-4" dir="rtl">
-                                    {(win as any).toolData || tools.find(t => t.id === win.toolId) ? (
-                                        <ToolRouter tool={(win as any).toolData || tools.find(t => t.id === win.toolId)!} />
+                                    {(win as Window & { toolData?: import('@/data/tools').Tool }).toolData || tools.find(t => t.id === win.toolId) ? (
+                                        <ToolRouter tool={(win as Window & { toolData?: import('@/data/tools').Tool }).toolData || tools.find(t => t.id === win.toolId)!} />
                                     ) : (
                                         <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-4">
                                             <MousePointer2 className="w-8 h-8 opacity-50" />

@@ -38,7 +38,7 @@ export async function markAsRead(id: string) {
         });
 
         return { success: true };
-    } catch (error) {
+    } catch {
         return { error: "فشل التحديث" };
     }
 }
@@ -54,7 +54,7 @@ export async function markAllAsRead() {
         });
 
         return { success: true };
-    } catch (error) {
+    } catch {
         return { error: "فشل التحديث" };
     }
 }

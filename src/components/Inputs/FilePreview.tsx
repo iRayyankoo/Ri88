@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, X, Maximize2, RotateCw, FileText } from 'lucide-react';
+import { X, Maximize2, RotateCw, FileText } from 'lucide-react';
 
 interface FilePreviewProps {
     file: File;
@@ -15,6 +16,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove }) => {
     useEffect(() => {
         if (isImage) {
             const url = URL.createObjectURL(file);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setPreviewUrl(url);
             return () => URL.revokeObjectURL(url);
         }
@@ -39,15 +41,16 @@ export const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove }) => {
 
                 {/* Floating Controls */}
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center space-x-3 gap-3 backdrop-blur-sm">
-                    <button className="p-3 bg-white/10 hover:bg-brand-primary rounded-full transition-all text-white shadow-lg border border-white/10 hover:border-brand-primary">
+                    <button title="تكبير" className="p-3 bg-white/10 hover:bg-brand-primary rounded-full transition-all text-white shadow-lg border border-white/10 hover:border-brand-primary">
                         <Maximize2 className="w-5 h-5" />
                     </button>
                     {isImage && (
-                        <button className="p-3 bg-white/10 hover:bg-brand-primary rounded-full transition-all text-white shadow-lg border border-white/10 hover:border-brand-primary">
+                        <button title="تدوير" className="p-3 bg-white/10 hover:bg-brand-primary rounded-full transition-all text-white shadow-lg border border-white/10 hover:border-brand-primary">
                             <RotateCw className="w-5 h-5" />
                         </button>
                     )}
                     <button
+                        title="حذف"
                         onClick={(e) => { e.stopPropagation(); onRemove(); }}
                         className="p-3 bg-red-500/20 hover:bg-red-500 rounded-full transition-all text-red-400 hover:text-white shadow-lg border border-white/10 hover:border-red-500"
                     >

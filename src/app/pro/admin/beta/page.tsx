@@ -1,21 +1,8 @@
 "use client";
 import React from 'react';
-import { LayoutGrid, Folder, CheckSquare, Calendar as CalIcon, Settings, LogOut, Bell, Search, Plus, MoreHorizontal } from 'lucide-react';
-import Image from 'next/image';
+import { LayoutGrid, Folder, CheckSquare, Calendar as CalIcon, Settings, LogOut } from 'lucide-react';
 
-// Types
-interface Task {
-    id: number;
-    title: string;
-    completed: boolean;
-    date: string;
-}
 
-interface Project {
-    name: string;
-    progress: number;
-    color: string;
-}
 
 export default function BetaDashboard() {
     return (
@@ -215,7 +202,7 @@ export default function BetaDashboard() {
     );
 }
 
-function NavItem({ icon, label, active = false }: any) {
+function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
     return (
         <div style={{
             display: 'flex', alignItems: 'center', gap: '15px', padding: '12px 16px',

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Check, ChevronLeft, ChevronRight, Code } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, Code } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 import GlassCard from '../ui/GlassCard';
 

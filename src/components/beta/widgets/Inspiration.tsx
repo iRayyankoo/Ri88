@@ -9,7 +9,7 @@ export default function InspirationWidget() {
                     <Quote size={20} className="text-indigo-300" />
                 </div>
                 <div>
-                    <h4 className="text-[14px] font-bold text-white leading-snug">"وَفِي السَّمَاءِ رِزْقُكُمْ وَمَا تُوعَدُونَ"</h4>
+                    <h4 className="text-[14px] font-bold text-white leading-snug">&quot;وَفِي السَّمَاءِ رِزْقُكُمْ وَمَا تُوعَدُونَ&quot;</h4>
                     <p className="text-[11px] text-indigo-100/70 mt-0.5">آية اليوم</p>
                 </div>
             </div>

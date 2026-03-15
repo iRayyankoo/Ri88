@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-    Clock, Database,
+    Clock,
     QrCode,
-    Hash, Languages,
+    Languages,
     Timer, Calendar, Cloud, Bitcoin,
-    LifeBuoy,
-    ListTodo, Palette, Gauge, Quote, FileText, Search,
+    ListTodo, Palette, Gauge,
     Globe, Trophy, Target, Sparkles,
     DollarSign, Moon,
     AlignLeft, StickyNote, Activity

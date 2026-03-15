@@ -1,15 +1,17 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Download, Copy, Mail, CheckCircle, Share2, ArrowRight, Star, Sparkles, Cloud } from 'lucide-react';
+import { Download, Copy, Mail, CheckCircle, Share2, ArrowRight, Sparkles, Cloud } from 'lucide-react';
 import { ResultExporter } from './ResultExporter';
 
 interface FinalResultViewProps {
-    resultData: any; // The main result (text, url, or object)
+    resultData: unknown; // The main result (text, url, or object)
     type: 'text' | 'image' | 'file' | 'code';
     title?: string;
     onDownload?: () => void;
-    relatedTools?: Array<{ name: string; icon: any; action: () => void }>;
+    relatedTools?: Array<{ name: string; icon: React.ReactNode; action: () => void }>;
 }
 
 export const FinalResultView: React.FC<FinalResultViewProps> = ({
@@ -19,7 +21,6 @@ export const FinalResultView: React.FC<FinalResultViewProps> = ({
     onDownload,
     relatedTools = []
 }) => {
-    const [activeTab, setActiveTab] = useState<'preview' | 'raw'>('preview');
 
     return (
         <div className="w-full animate-in fade-in duration-500">
@@ -104,7 +105,7 @@ export const FinalResultView: React.FC<FinalResultViewProps> = ({
                                         <img src={resultData} alt="Result" className="max-h-[300px] object-contain rounded-lg shadow-2xl" />
                                     </div>
                                 ) : (
-                                    <pre className="font-mono text-sm text-slate-300 whitespace-pre-wrap">{typeof resultData === 'object' ? JSON.stringify(resultData, null, 2) : resultData}</pre>
+                                    <pre className="font-mono text-sm text-slate-300 whitespace-pre-wrap">{typeof resultData === 'object' ? JSON.stringify(resultData, null, 2) : String(resultData)}</pre>
                                 )}
                             </div>
                         </div>
@@ -162,7 +163,7 @@ export const FinalResultView: React.FC<FinalResultViewProps> = ({
                         <img src={resultData} alt="Result" className="w-full rounded-lg shadow-lg mb-4" />
                     ) : (
                         <div className="max-h-60 overflow-y-auto bg-black/30 p-4 rounded-xl border border-white/5 text-sm text-slate-300 font-mono mb-4">
-                            {typeof resultData === 'object' ? JSON.stringify(resultData, null, 2) : resultData}
+                            {typeof resultData === 'object' ? JSON.stringify(resultData, null, 2) : String(resultData)}
                         </div>
                     )}
 

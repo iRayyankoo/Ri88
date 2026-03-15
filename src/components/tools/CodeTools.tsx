@@ -47,7 +47,7 @@ export default function CodeTools() {
             } else {
                 toast.error("فشل تحويل الكود");
             }
-        } catch (err) {
+        } catch {
             toast.error("حدث خطأ في الاتصال");
         } finally {
             setIsLoading(false);

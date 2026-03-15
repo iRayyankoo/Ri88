@@ -69,6 +69,7 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadUsers();
         loadTools();
     }, []);
@@ -269,6 +270,8 @@ export default function AdminDashboard() {
                                                 <button
                                                     onClick={() => setActiveDropdown(activeDropdown === user.id ? null : user.id)}
                                                     className="p-2 rounded-lg hover:bg-white/10 text-slate-400 transition-colors inline-block"
+                                                    title="إجراءات المستخدم"
+                                                    aria-label="إجراءات المستخدم"
                                                 >
                                                     <MoreVertical className="w-5 h-5" />
                                                 </button>
@@ -390,6 +393,8 @@ export default function AdminDashboard() {
                                                 <button
                                                     onClick={() => setActiveToolDropdown(activeToolDropdown === tool.id ? null : tool.id)}
                                                     className="p-2 rounded-lg hover:bg-white/10 text-slate-400 transition-colors inline-block"
+                                                    title="إجراءات الأداة"
+                                                    aria-label="إجراءات الأداة"
                                                 >
                                                     <MoreVertical className="w-5 h-5" />
                                                 </button>

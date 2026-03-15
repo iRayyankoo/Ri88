@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloudUpload, CheckCircle2 } from 'lucide-react';

@@ -1,4 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
@@ -7,12 +9,11 @@ import {
     LayoutDashboard,
     FileText,
     Settings,
-    LogOut,
-    Sparkles
+    LogOut
 } from "lucide-react";
 
 
-export function Sidebar({ user }: { user: any }) {
+export function Sidebar({ user }: { user: { name?: string | null; email?: string | null; image?: string | null } }) {
     const pathname = usePathname();
 
     const links = [
@@ -53,7 +54,7 @@ export function Sidebar({ user }: { user: any }) {
             <div className="border-t border-white/10 pt-6 mt-6">
                 <div className="flex items-center gap-3 mb-4 px-2">
                     {user.image ? (
-                        <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full border border-white/10" />
+                        <img src={user.image} alt={user.name || "User"} className="w-10 h-10 rounded-full border border-white/10" />
                     ) : (
                         <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg font-bold">
                             {user.name?.[0] || "U"}

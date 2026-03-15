@@ -58,8 +58,8 @@ export default function VideoTools({ toolId }: ToolProps) {
                     "output.gif"
                 ]);
                 const data = await ffmpeg.readFile("output.gif");
-                const buffer = data instanceof Uint8Array ? data.buffer : new Uint8Array(data as any).buffer;
-                const url = URL.createObjectURL(new Blob([buffer], { type: "image/gif" }));
+                const buffer = data instanceof Uint8Array ? data.buffer : new Uint8Array(data as unknown as ArrayBufferLike).buffer;
+                const url = URL.createObjectURL(new Blob([buffer as ArrayBuffer], { type: "image/gif" }));
                 setResultUrl(url);
                 toast.success("تم تحويل الفيديو إلى GIF بنجاح!");
             } else if (toolId === 'media-mp3') {
@@ -70,8 +70,8 @@ export default function VideoTools({ toolId }: ToolProps) {
                     "output.mp3"
                 ]);
                 const data = await ffmpeg.readFile("output.mp3");
-                const buffer = data instanceof Uint8Array ? data.buffer : new Uint8Array(data as any).buffer;
-                const url = URL.createObjectURL(new Blob([buffer], { type: "audio/mp3" }));
+                const buffer = data instanceof Uint8Array ? data.buffer : new Uint8Array(data as unknown as ArrayBufferLike).buffer;
+                const url = URL.createObjectURL(new Blob([buffer as ArrayBuffer], { type: "audio/mp3" }));
                 setResultUrl(url);
                 toast.success("تم استخراج الصوت بنجاح!");
             } else if (toolId === 'media-compress') {
@@ -82,7 +82,7 @@ export default function VideoTools({ toolId }: ToolProps) {
                     "output.mp4"
                 ]);
                 const data = await ffmpeg.readFile("output.mp4");
-                const url = URL.createObjectURL(new Blob([(data as Uint8Array).buffer], { type: "video/mp4" }));
+                const url = URL.createObjectURL(new Blob([(data as Uint8Array).buffer as ArrayBuffer], { type: "video/mp4" }));
                 setResultUrl(url);
                 toast.success("تم ضغط الفيديو بنجاح!");
             } else if (toolId === 'media-trim') {
@@ -96,7 +96,7 @@ export default function VideoTools({ toolId }: ToolProps) {
                     "output.mp4"
                 ]);
                 const data = await ffmpeg.readFile("output.mp4");
-                const url = URL.createObjectURL(new Blob([(data as Uint8Array).buffer], { type: "video/mp4" }));
+                const url = URL.createObjectURL(new Blob([(data as Uint8Array).buffer as ArrayBuffer], { type: "video/mp4" }));
                 setResultUrl(url);
                 toast.success("تم قص أول 10 ثوانٍ بنجاح!");
             }

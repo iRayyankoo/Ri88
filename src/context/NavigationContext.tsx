@@ -12,8 +12,8 @@ interface NavigationContextType {
     currentView: string;
     setCurrentView: (view: string) => void;
     activeToolId: string | null;
-    activeDbTool: any | null;
-    launchTool: (toolId: string, dbTool?: any) => void;
+    activeDbTool: Record<string, unknown> | null;
+    launchTool: (toolId: string, dbTool?: Record<string, unknown> | null) => void;
     isSidebarOpen: boolean;
     setIsSidebarOpen: (isOpen: boolean) => void;
     openToolsInModal: boolean;
@@ -37,7 +37,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
 
     const [currentView, setCurrentView] = useState('landing');
     const [activeToolId, setActiveToolId] = useState<string | null>(null);
-    const [activeDbTool, setActiveDbTool] = useState<any | null>(null);
+    const [activeDbTool, setActiveDbTool] = useState<Record<string, unknown> | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [openToolsInModal, setOpenToolsInModal] = useState(false);
     const [showToolPopup, setShowToolPopup] = useState(false);
@@ -48,6 +48,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
         if (status === 'loading') return;
 
         if (status === 'authenticated') {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             if (!isLoggedIn) setIsLoggedIn(true);
             const role = (session?.user?.role?.toLowerCase() as UserRole) || 'user';
             setUserRoleState(role);
@@ -55,9 +56,9 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
             if (isLoggedIn) setIsLoggedIn(false);
             setUserRoleState('visitor');
         }
-    }, [status, session?.user?.role]);
+    }, [status, session?.user?.role, isLoggedIn]);
 
-    const launchTool = (toolId: string, dbTool?: any) => {
+    const launchTool = (toolId: string, dbTool?: Record<string, unknown> | null) => {
         setActiveToolId(toolId);
         setActiveDbTool(dbTool || null);
         setShowToolPopup(true);

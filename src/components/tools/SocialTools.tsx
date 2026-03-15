@@ -32,6 +32,7 @@ function YoutubeThumbSeer() {
             <ToolButton onClick={extract} className="w-full mt-4 h-14" variant="iridescent">استخراج الصورة</ToolButton>
             {thumb && (
                 <div className="mt-8">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={thumb} alt="YouTube Thumbnail" className="w-full rounded-2xl border border-white/10 shadow-2xl" />
                     <a href={thumb} target="_blank" rel="noreferrer" className="block mt-4 text-center text-sm font-bold text-brand-primary hover:underline">تحميل الصورة الأصلية</a>
                 </div>

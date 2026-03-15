@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata } from "next";
 import "./globals.css";
 import { CinematicToaster } from "@/components/ui/CinematicToaster";
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 import SessionWrapper from "@/components/auth/SessionWrapper";
 
 import { NavigationProvider } from "@/context/NavigationContext";
+import { WorkspaceProvider } from "@/context/WorkspaceContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
@@ -41,10 +43,12 @@ export default function RootLayout({
       <body>
         <SessionWrapper>
           <ThemeProvider>
-            <NavigationProvider>
-              {children}
-              <CinematicToaster />
-            </NavigationProvider>
+            <WorkspaceProvider>
+              <NavigationProvider>
+                {children}
+                <CinematicToaster />
+              </NavigationProvider>
+            </WorkspaceProvider>
           </ThemeProvider>
         </SessionWrapper>
       </body>

@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 export async function saveToHistory(data: {
     title: string;
     type: string;
-    data: any;
+    data: unknown;
 }) {
     const session = await auth();
 
@@ -32,7 +32,7 @@ export async function saveToHistory(data: {
                 userId: user.id,
                 title: data.title,
                 type: data.type,
-                data: data.data,
+                data: JSON.stringify(data.data),
             },
         });
 

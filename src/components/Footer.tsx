@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Twitter, Instagram, Linkedin, ArrowLeft } from 'lucide-react';
+import { Twitter, Instagram, Linkedin, ArrowLeft } from 'lucide-react';
 
 export default function Footer() {
     return (

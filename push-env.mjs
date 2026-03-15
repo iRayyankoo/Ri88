@@ -29,7 +29,7 @@ for (const line of envFile.split("\n")) {
             // Using vercel env add is interactive by default if value is not piped
             // But we can pipe it: echo "value" | vercel env add KEY production
             execSync(`echo "${cleanValue}" | vercel env add ${key} production`, { stdio: "inherit" });
-        } catch (e) {
+        } catch {
             console.error(`Failed to add ${key}`);
         }
     }

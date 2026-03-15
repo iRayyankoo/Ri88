@@ -1,9 +1,8 @@
 "use client";
 import React, { useState } from 'react';
 import { ToolShell, ToolInputRow } from './ToolShell';
-import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
+import { ToolInput, ToolButton } from './ToolUi';
 import { GraduationCap, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface ToolProps {
     toolId: string;

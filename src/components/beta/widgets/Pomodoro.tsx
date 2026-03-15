@@ -1,16 +1,18 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Timer } from 'lucide-react';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 
 export default function PomodoroWidget() {
     const [timeLeft, setTimeLeft] = useState(25 * 60);
     const [isActive, setIsActive] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [mode, setMode] = useState<'focus' | 'break'>('focus'); // future proofing
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     // Persist state (simple)
     useEffect(() => {
         const saved = localStorage.getItem('ri88_pomo_time');
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (saved) setTimeLeft(parseInt(saved));
     }, []);
 
@@ -26,6 +28,7 @@ export default function PomodoroWidget() {
                 });
             }, 1000);
         } else if (timeLeft === 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsActive(false);
             // Play sound if we had one
             if (audioRef.current) audioRef.current.play();
@@ -63,7 +66,7 @@ export default function PomodoroWidget() {
                 <button onClick={toggleTimer} className={`pomo-btn ${isActive ? 'active' : ''}`}>
                     {isActive ? <Pause size={18} /> : <Play size={18} />}
                 </button>
-                <button onClick={resetTimer} className="pomo-btn secondary">
+                <button onClick={resetTimer} className="pomo-btn secondary" title="Reset Timer" aria-label="Reset Timer">
                     <RotateCcw size={16} />
                 </button>
             </div>

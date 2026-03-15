@@ -41,7 +41,8 @@ export async function getUsers() {
             stats: { totalUsers, proUsers, totalAdmins }
         };
 
-    } catch (error: any) {
+    } catch (e) {
+        const error = e as Error;
         console.error("Admin Get Users Error:", error);
         return { error: error.message || "حدث خطأ غير متوقع." };
     }
@@ -66,7 +67,8 @@ export async function updateUserStatus(userId: string, data: { role?: "USER" | "
 
         return { success: "تم تحديث بيانات المستخدم بنجاح.", user: updatedUser };
 
-    } catch (error: any) {
+    } catch (e) {
+        const error = e as Error;
         console.error("Admin Update User Error:", error);
         return { error: error.message || "حدث خطأ أثناء التحديث." };
     }
@@ -86,7 +88,8 @@ export async function deleteUser(userId: string) {
 
         return { success: "تم حذف المستخدم بشكل نهائي." };
 
-    } catch (error: any) {
+    } catch (e) {
+        const error = e as Error;
         console.error("Admin Delete User Error:", error);
         return { error: error.message || "حدث خطأ أثناء الحذف." };
     }
@@ -99,7 +102,7 @@ export async function getAdminTools() {
             orderBy: { createdAt: "desc" }
         });
         return { success: true, tools };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Admin Get Tools Error:", error);
         return { error: "حدث خطأ أثناء تحميل الأدوات." };
     }
@@ -113,7 +116,7 @@ export async function updateToolState(toolId: string, data: { isPremium?: boolea
             data
         });
         return { success: "تم تحديث حالة الأداة بنجاح.", tool: updatedTool };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Admin Update Tool Error:", error);
         return { error: "حدث خطأ أثناء التحديث." };
     }

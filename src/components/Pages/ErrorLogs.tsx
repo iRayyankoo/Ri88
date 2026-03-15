@@ -1,11 +1,8 @@
 "use client";
 import React from 'react';
-import { motion } from 'framer-motion';
-import { AlertTriangle, Clock, Filter, Archive, RefreshCw } from 'lucide-react';
-import { useNavigation } from '@/context/NavigationContext';
+import { Archive, RefreshCw } from 'lucide-react';
 
 const ErrorLogs = () => {
-    const { setCurrentView } = useNavigation();
 
     const logs = [
         { id: 1, type: 'error', code: 500, msg: 'Internal Server Error: Timeout exceeded', time: '10:42:05', tool: 'Image Resizer' },
@@ -23,10 +20,10 @@ const ErrorLogs = () => {
                     <p className="text-slate-500 font-medium">مراقبة حية لأداء أدواتك البرمجية.</p>
                 </div>
                 <div className="flex gap-3">
-                    <button className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-colors">
+                    <button title="Refresh logs" aria-label="Refresh logs" className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-colors">
                         <RefreshCw className="w-5 h-5" />
                     </button>
-                    <button className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-colors">
+                    <button title="Archive logs" aria-label="Archive logs" className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-colors">
                         <Archive className="w-5 h-5" />
                     </button>
                 </div>
@@ -58,8 +55,8 @@ const ErrorLogs = () => {
                         <div key={log.id} className="flex gap-4 items-start hover:bg-white/5 p-2 rounded-lg transition-colors group">
                             <span className="text-slate-600 shrink-0 select-none">{log.time}</span>
                             <span className={`font-bold shrink-0 w-16 text-center rounded px-1 py-0.5 text-[10px] uppercase ${log.type === 'error' ? 'bg-red-500/20 text-red-400' :
-                                    log.type === 'warn' ? 'bg-brand-secondary/20 text-brand-secondary' :
-                                        'bg-brand-primary/20 text-brand-primary'
+                                log.type === 'warn' ? 'bg-brand-secondary/20 text-brand-secondary' :
+                                    'bg-brand-primary/20 text-brand-primary'
                                 }`}>
                                 {log.type}
                             </span>

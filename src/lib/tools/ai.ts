@@ -1,5 +1,5 @@
 
-export function getMockAiResponse(type: string, input: string) {
+export function getMockAiResponse(type: string) {
     const mockResponses: Record<string, string> = {
         summarize: "يقدم هذا النص نظرة عامة شاملة حول أهمية تقنيات الذكاء الاصطناعي...",
         brainstorm: "1. تطبيق لتنظيم الوقت\n2. منصة لتبادل المهارات\n3. نظام مكافآت ذكي",

@@ -83,7 +83,7 @@ const ServerMonitoring = () => {
                                 <div className="h-16 w-2 bg-white/10 mx-auto rounded-full relative overflow-hidden">
                                     <motion.div
                                         initial={{ height: 0 }}
-                                        animate={{ height: `${Math.random() * 80 + 20}%` }}
+                                        animate={{ height: `${((core * 17) % 80) + 20}%` }}
                                         className="absolute bottom-0 w-full bg-brand-secondary/50 rounded-full"
                                     />
                                 </div>

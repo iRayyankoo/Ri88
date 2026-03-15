@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Moon, Globe, Bell, Shield, Save, Monitor, LogOut, User } from 'lucide-react';
+import { Moon, Globe, Bell, Shield, Save, Monitor, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useTheme } from '../ThemeProvider';
 import { useNavigation } from '@/context/NavigationContext';
@@ -17,7 +17,7 @@ import { arSA } from 'date-fns/locale';
 */
 
 const GlobalSettings = () => {
-    const { setIsLoggedIn, setCurrentView, openToolsInModal, setOpenToolsInModal } = useNavigation();
+    const { openToolsInModal, setOpenToolsInModal } = useNavigation();
     const { data: session, update } = useSession();
     const { theme, setTheme } = useTheme();
     const [language, setLanguage] = useState('ar');
@@ -26,7 +26,7 @@ const GlobalSettings = () => {
     const [name, setName] = useState(session?.user?.name || '');
     const [isSaving, setIsSaving] = useState(false);
 
-    const [transactions, setTransactions] = useState<any[]>([]);
+    const [transactions, setTransactions] = useState<{ type: string; description: string; amount: number; date: Date }[]>([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
     React.useEffect(() => {

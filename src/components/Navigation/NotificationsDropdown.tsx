@@ -49,12 +49,13 @@ export default function NotificationsDropdown() {
     const fetchAlerts = async () => {
         const res = await getUserNotifications();
         if (res.success && res.data) {
-            setNotifications(res.data as any);
+            setNotifications(res.data as unknown as NotificationProps[]);
             setUnreadCount(res.unreadCount || 0);
         }
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchAlerts();
         // Optional: Could poll every X seconds
     }, []);

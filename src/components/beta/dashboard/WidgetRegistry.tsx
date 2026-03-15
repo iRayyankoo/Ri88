@@ -166,7 +166,7 @@ const WelcomeWidget = () => {
     const [greeting, setGreeting] = useState('أهلاً');
     useEffect(() => {
         const h = new Date().getHours();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setGreeting(h < 12 ? 'صباح الخير' : h < 17 ? 'مساء الخير' : 'مساء النور');
     }, []);
     const name = session?.user?.name?.split(' ')[0] || 'مبدع';

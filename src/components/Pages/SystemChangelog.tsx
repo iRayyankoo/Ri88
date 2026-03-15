@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GitCommit, Tag, CheckCircle2 } from 'lucide-react';
+import { GitCommit, CheckCircle2 } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 
 const SystemChangelog = () => {

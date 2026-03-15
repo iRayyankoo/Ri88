@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from "next-auth/react";
 import {
-    LayoutGrid, Clock as ClockIcon, Plus, Trash2,
+    Clock as ClockIcon, Plus,
     GripVertical, CloudSun, TrendingUp, Quote,
     Sparkles, Droplets, Cpu, Languages, CalendarHeart,
-    CalendarDays, User, Edit3, Check, X as XIcon, Lock
+    CalendarDays, User, Edit3, Check, X as XIcon
 } from 'lucide-react';
 import { tools, Tool } from '@/data/tools';
 
@@ -123,7 +123,6 @@ export default function BetaHUD({ onSelectTool }: { onSelectTool: (tool: Tool) =
     };
 
     // Formatters
-    const formatDate = (date: Date) => new Intl.DateTimeFormat('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date);
     const formatTime = (date: Date) => new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).format(date);
 
     const renderWidgetContent = (id: string) => {

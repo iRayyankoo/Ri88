@@ -895,11 +895,6 @@ export const tools: Tool[] = [
         desc: 'Calculate CTR, CPC, and CAC.', descAr: 'حساب مؤشرات أداء الحملات التسويقية.'
     },
     {
-        id: 'edu-gpa', cat: 'education', icon: 'graduation-cap', status: 'new',
-        title: 'GPA Calculator', titleAr: 'حاسبة المعدل',
-        desc: 'Calculate academic GPA accurately.', descAr: 'حساب المعدل التراكمي والفصلي للطلاب.'
-    },
-    {
         id: 'tech-ua-parser', cat: 'developer', icon: 'monitor', status: 'new',
         title: 'User-Agent Parser', titleAr: 'محلل بيانات المتصفح',
         desc: 'Extract device and browser info.', descAr: 'استخراج تفاصيل الجهاز والمتصفح ونظام التشغيل.'

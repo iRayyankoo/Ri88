@@ -26,14 +26,16 @@ export async function POST(req: Request) {
             signature,
             webhookSecret
         );
-    } catch (error: any) {
-        return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+        return new NextResponse(`Webhook Error: ${message}`, { status: 400 });
     }
 
     const session = event.data.object as Stripe.Checkout.Session;
 
     if (event.type === "checkout.session.completed") {
         const stripe = getStripe();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const subscription = await stripe.subscriptions.retrieve(
             session.subscription as string
         );

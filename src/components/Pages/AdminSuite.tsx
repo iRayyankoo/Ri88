@@ -2,11 +2,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Users, DollarSign, Activity, ShieldCheck } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { updateUserRole, toggleProStatus } from '@/app/actions/admin';
 import { toast } from 'sonner';
 import { useNavigation } from '@/context/NavigationContext';
+import { useWorkspace } from '@/context/WorkspaceContext';
 import { tools as staticTools } from '@/data/tools';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
+import WorkgroupManagement from './WorkgroupManagement';
 
 interface AdminStats {
     users: number;
@@ -39,7 +42,25 @@ interface DbTool {
 }
 
 const AdminSuite = () => {
+    const { data: session } = useSession();
     const { userRole } = useNavigation();
+    const { workspaceRole } = useWorkspace();
+    
+    // Comprehensive admin check
+    const isAdmin = 
+        userRole === 'admin' || 
+        session?.user?.role === 'ADMIN' || 
+        workspaceRole === 'OWNER' || 
+        workspaceRole === 'ADMIN';
+
+    console.log("Admin Suite Auth Debug:", { 
+        userRole, 
+        sessionRole: session?.user?.role, 
+        workspaceRole, 
+        isAdmin,
+        sessionStatus: session ? 'authenticated' : 'no session'
+    });
+
     const [stats, setStats] = useState<AdminStats | null>(null);
     const [users, setUsers] = useState<UserData[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,13 +68,20 @@ const AdminSuite = () => {
     const [isUnauthorized, setIsUnauthorized] = useState(false);
 
     // New State for Tabs and Tools
-    const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'tools'>('analytics');
+    const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'tools' | 'workgroups'>('analytics');
     const [tools, setTools] = useState<DbTool[]>([]);
     const [isLoadingTools, setIsLoadingTools] = useState(true);
     const [activeToolDropdown, setActiveToolDropdown] = useState<string | null>(null);
-    const [analyticsData, setAnalyticsData] = useState<any>(null);
+    const [analyticsData, setAnalyticsData] = useState<{ 
+        userGrowthData: { name: string; users: number; proUsers: number }[]; 
+        categoriesData: { name: string; value: number }[]; 
+        revenueGrowthData: { name: string; revenue: number }[];
+        workspaceGrowthData: { name: string; workspaces: number }[];
+        transactionTypeData: { name: string; value: number }[];
+    } | null>(null);
 
     const loadData = useCallback(async () => {
+        if (!isAdmin) return;
         try {
             setIsUnauthorized(false);
             const { getAdminStats, getUsers, getAdminTools, getAdminAnalytics } = await import('@/app/actions/admin');
@@ -68,7 +96,7 @@ const AdminSuite = () => {
             setUsers(usersData);
             setAnalyticsData(analyticsRes);
             if (toolsRes && toolsRes.tools) {
-                // Map static tools to DbTool structure
+                // ... same as before
                 const mappedStaticTools: DbTool[] = staticTools.map(st => ({
                     id: st.id,
                     name: st.titleAr || st.title,
@@ -83,8 +111,7 @@ const AdminSuite = () => {
                     isStatic: true
                 }));
 
-                // Ensure db tools map structure if missing props
-                const mappedDbTools: DbTool[] = toolsRes.tools.map((t: any) => ({
+                const mappedDbTools: DbTool[] = toolsRes.tools.map((t: DbTool & { description?: string }) => ({
                     id: t.id,
                     name: t.name,
                     category: t.category,
@@ -98,7 +125,6 @@ const AdminSuite = () => {
                     isStatic: false
                 }));
 
-                // Combine them without duplicates (if static tool is now in DB, use the DB version)
                 const dbIds = new Set(mappedDbTools.map(t => t.id));
                 const filteredStaticTools = mappedStaticTools.filter(st => !dbIds.has(st.id));
                 const combinedTools = [...mappedDbTools, ...filteredStaticTools];
@@ -117,7 +143,7 @@ const AdminSuite = () => {
             setLoading(false);
             setIsLoadingTools(false);
         }
-    }, []);
+    }, [isAdmin]);
 
     useEffect(() => {
         loadData();
@@ -165,7 +191,7 @@ const AdminSuite = () => {
         }
     };
 
-    if (isUnauthorized || userRole !== 'admin') return (
+    if (isUnauthorized || !isAdmin) return (
         <div className="h-[60vh] w-full flex flex-col items-center justify-center gap-6 text-center">
             <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20">
                 <ShieldCheck className="w-10 h-10" />
@@ -250,6 +276,13 @@ const AdminSuite = () => {
                 >
                     <Activity className="w-4 h-4" /> إدارة الأدوات والتحكم
                 </button>
+                <button
+                    onClick={() => setActiveTab('workgroups')}
+                    className={`px-6 py-4 font-bold text-sm flex items-center gap-2 transition-all border-b-2 whitespace-nowrap ${activeTab === 'workgroups' ? 'border-brand-primary text-brand-primary' : 'border-transparent text-text-muted hover:text-text-primary'
+                        }`}
+                >
+                    <ShieldCheck className="w-4 h-4" /> مجموعات العمل والصلاحيات
+                </button>
             </div>
 
             {/* Analytics Tab */}
@@ -278,6 +311,32 @@ const AdminSuite = () => {
                             </div>
                         </div>
 
+                        {/* Revenue Growth Chart */}
+                        <div className="bg-surface-glass border border-border-subtle rounded-3xl p-6 lg:p-8 relative overflow-hidden group">
+                            <div className="absolute top-0 left-0 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] -translate-y-1/2 -translate-x-1/2" />
+                            <h3 className="text-xl font-black text-text-primary mb-6 relative z-10 font-cairo">نمو الأرباح (آخر 7 أيام)</h3>
+                            <div className="h-[300px] w-full relative z-10 text-xs font-cairo" dir="ltr">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={analyticsData.revenueGrowthData}>
+                                        <defs>
+                                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
+                                        <XAxis dataKey="name" stroke="var(--text-muted)" tick={{ fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="var(--text-muted)" tick={{ fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: 'var(--surface-raised)', border: '1px solid var(--border-subtle)', borderRadius: '16px', color: 'var(--text-primary)' }}
+                                            itemStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }}
+                                        />
+                                        <Area type="monotone" dataKey="revenue" name="الأرباح اليومية" stroke="#22c55e" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={4} />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
                         {/* Tool Categories Chart */}
                         <div className="bg-surface-glass border border-border-subtle rounded-3xl p-6 lg:p-8 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2" />
@@ -295,6 +354,56 @@ const AdminSuite = () => {
                                         />
                                         <Bar dataKey="value" name="عدد الأدوات" fill="#f59e0b" radius={[6, 6, 0, 0]} barSize={40} />
                                     </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Workspace Growth Chart */}
+                        <div className="bg-surface-glass border border-border-subtle rounded-3xl p-6 lg:p-8 relative overflow-hidden group">
+                            <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] translate-y-1/2 translate-x-1/2" />
+                            <h3 className="text-xl font-black text-text-primary mb-6 relative z-10 font-cairo">نمو مساحات العمل (Workspaces)</h3>
+                            <div className="h-[300px] w-full relative z-10 text-xs font-cairo" dir="ltr">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={analyticsData.workspaceGrowthData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
+                                        <XAxis dataKey="name" stroke="var(--text-muted)" tick={{ fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="var(--text-muted)" tick={{ fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: 'var(--surface-raised)', border: '1px solid var(--border-subtle)', borderRadius: '16px', color: 'var(--text-primary)' }}
+                                            itemStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }}
+                                        />
+                                        <Bar dataKey="workspaces" name="مساحات العمل الجديدة" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={40} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Transaction Distribution Pie Chart */}
+                        <div className="bg-surface-glass border border-border-subtle rounded-3xl p-6 lg:p-8 relative overflow-hidden group lg:col-span-2">
+                            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-secondary/5" />
+                            <h3 className="text-xl font-black text-text-primary mb-6 relative z-10 font-cairo text-center">توزيع العمليات المالية</h3>
+                            <div className="h-[400px] w-full relative z-10 text-sm font-cairo" dir="ltr">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={analyticsData.transactionTypeData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={80}
+                                            outerRadius={140}
+                                            paddingAngle={5}
+                                            dataKey="value"
+                                            label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                                        >
+                                            {analyticsData.transactionTypeData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={['#8B5CF6', '#10b981', '#f59e0b', '#3b82f6'][index % 4]} stroke="none" />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: 'var(--surface-raised)', border: '1px solid var(--border-subtle)', borderRadius: '16px', color: 'var(--text-primary)' }}
+                                        />
+                                        <Legend verticalAlign="bottom" height={36}/>
+                                    </PieChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
@@ -469,6 +578,7 @@ const AdminSuite = () => {
                                             <td className="px-8 py-6 text-left relative">
                                                 <button
                                                     onClick={() => setActiveToolDropdown(activeToolDropdown === tool.id ? null : tool.id)}
+                                                    title="خيارات الأداة"
                                                     className="p-2 rounded-xl hover:bg-surface-glass text-text-muted transition-colors inline-block border border-transparent hover:border-border-subtle"
                                                 >
                                                     <div className="flex items-center gap-1">
@@ -506,6 +616,13 @@ const AdminSuite = () => {
                             </table>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Workgroups Tab */}
+            {activeTab === 'workgroups' && (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <WorkgroupManagement />
                 </div>
             )}
         </div>

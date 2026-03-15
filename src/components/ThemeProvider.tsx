@@ -18,6 +18,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         // Load theme from local storage
         const storedTheme = localStorage.getItem('theme') as Theme;
         if (storedTheme) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setTheme(storedTheme);
             document.documentElement.setAttribute('data-theme', storedTheme);
         } else {

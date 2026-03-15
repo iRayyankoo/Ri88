@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import Logo from '../Brand/Logo';
-import { Bell, Settings, LogOut, User } from 'lucide-react';
+import { Settings, LogOut, User } from 'lucide-react';
 import { useSession, signIn } from 'next-auth/react';
 import { handleSignOut } from '@/actions/auth';
 import Link from 'next/link';

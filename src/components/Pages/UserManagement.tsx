@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, MoreVertical, Shield, User, Ban, CheckCircle } from 'lucide-react';
+import { Search, MoreVertical, Ban, CheckCircle } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 
 const UserManagement = () => {
@@ -108,7 +108,7 @@ const UserManagement = () => {
                                     {user.date}
                                 </td>
                                 <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors">
+                                    <button title="خيارات" className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors">
                                         <MoreVertical className="w-4 h-4" />
                                     </button>
                                 </td>

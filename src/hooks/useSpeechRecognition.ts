@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 export const useSpeechRecognition = (onResult: (text: string) => void) => {
     const [isListening, setIsListening] = useState(false);
-    const [recognition, setRecognition] = useState<any>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const recognitionRef = useRef<any>(null);
     const onResultRef = useRef(onResult);
 
     // Update ref when onResult changes to avoid re-triggering the effect
@@ -14,6 +15,7 @@ export const useSpeechRecognition = (onResult: (text: string) => void) => {
         if (typeof window === 'undefined') return;
 
         // Browser Support Check
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
         if (SpeechRecognition) {
@@ -24,6 +26,7 @@ export const useSpeechRecognition = (onResult: (text: string) => void) => {
 
             recog.onstart = () => setIsListening(true);
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             recog.onresult = (event: any) => {
                 const transcript = event.results[0][0].transcript;
                 // Use the ref to access the latest callback
@@ -33,6 +36,7 @@ export const useSpeechRecognition = (onResult: (text: string) => void) => {
                 setIsListening(false);
             };
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             recog.onerror = (event: any) => {
                 console.error("Speech Recognition Error", event.error);
                 setIsListening(false);
@@ -40,14 +44,14 @@ export const useSpeechRecognition = (onResult: (text: string) => void) => {
 
             recog.onend = () => setIsListening(false);
 
-            setRecognition(recog);
+            recognitionRef.current = recog;
         }
     }, []); // Run only once on mount
 
     const startListening = useCallback(() => {
-        if (recognition) {
+        if (recognitionRef.current) {
             try {
-                recognition.start();
+                recognitionRef.current.start();
             } catch (e) {
                 // If already started, ignore
                 console.log("Recognition already started or error", e);
@@ -55,14 +59,14 @@ export const useSpeechRecognition = (onResult: (text: string) => void) => {
         } else {
             console.warn("Browser does not support Speech Recognition.");
         }
-    }, [recognition]);
+    }, []);
 
     const stopListening = useCallback(() => {
-        if (recognition) {
-            recognition.stop();
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
             setIsListening(false);
         }
-    }, [recognition]);
+    }, []);
 
     return { isListening, startListening, stopListening };
 };

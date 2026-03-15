@@ -16,6 +16,7 @@ function VerifyEmailContent() {
 
     useEffect(() => {
         if (!token) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setStatus("error");
             setMessage("رابط تفعيل مفقود أو غير صالح.");
             return;

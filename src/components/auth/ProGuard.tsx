@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { useSession } from 'next-auth/react';
-import { motion } from 'framer-motion';
 import { Lock, Crown, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 

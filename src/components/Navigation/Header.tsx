@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from 'react';
 import { Search, Menu, User, Sparkles, LogIn } from 'lucide-react';

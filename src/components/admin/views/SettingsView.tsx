@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Palette, Moon, Sun, Monitor, Layout, Save, CheckCircle } from 'lucide-react';
+import { Moon, Sun, Monitor, Save, CheckCircle } from 'lucide-react';
 
 export function AppearanceView() {
     const [theme, setTheme] = useState('dark');
@@ -77,11 +77,11 @@ export function SettingsView() {
             <div className="panel" style={{ background: 'rgba(255,255,255,0.03)', padding: '24px', borderRadius: '16px', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div>
                     <label style={{ display: 'block', color: '#aaa', marginBottom: '8px', fontSize: '0.9em' }}>Site Title</label>
-                    <input type="text" defaultValue="Ri88 - Smart Tools Portal" className="glass-input" />
+                    <input type="text" title="Site Title" placeholder="Site Title" defaultValue="Ri88 - Smart Tools Portal" className="glass-input" />
                 </div>
                 <div>
                     <label style={{ display: 'block', color: '#aaa', marginBottom: '8px', fontSize: '0.9em' }}>SEO Description</label>
-                    <textarea defaultValue="The most advanced collection of web tools for developers, designers, and productive people." className="glass-input" rows={3} />
+                    <textarea title="SEO Description" placeholder="SEO Description" defaultValue="The most advanced collection of web tools for developers, designers, and productive people." className="glass-input" rows={3} />
                 </div>
             </div>
 

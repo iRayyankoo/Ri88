@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { tools } from '@/data/tools';
-import { Search, Edit, Trash2, Eye, Plus, FileText } from 'lucide-react';
+import { Search, Edit, Eye, Plus, FileText } from 'lucide-react';
 
 export default function ContentView() {
     const [tab, setTab] = useState<'tools' | 'blog'>('tools');
@@ -60,7 +60,7 @@ export default function ContentView() {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredTools.slice(0, 10).map((tool, idx) => (
+                            {filteredTools.slice(0, 10).map((tool) => (
                                 <tr key={tool.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', fontSize: '0.95em' }}>
                                     <td style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <div style={{ width: '32px', height: '32px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -84,8 +84,8 @@ export default function ContentView() {
                                     </td>
                                     <td style={{ padding: '16px', textAlign: 'right' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
-                                            <button style={{ padding: '6px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#aaa' }}><Edit size={16} /></button>
-                                            <button style={{ padding: '6px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#aaa' }}><Eye size={16} /></button>
+                                            <button title="Edit" style={{ padding: '6px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#aaa' }}><Edit size={16} /></button>
+                                            <button title="View" style={{ padding: '6px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#aaa' }}><Eye size={16} /></button>
                                         </div>
                                     </td>
                                 </tr>

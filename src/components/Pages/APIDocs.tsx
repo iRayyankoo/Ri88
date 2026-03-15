@@ -1,12 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Copy, Play, Terminal, ChevronDown } from 'lucide-react';
-import { useNavigation } from '@/context/NavigationContext';
+import { Play, Terminal } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
 
 const APIDocs = () => {
-    const { setCurrentView } = useNavigation();
     const [activeEndpoint, setActiveEndpoint] = useState('auth');
 
     const endpoints = [
@@ -28,8 +25,8 @@ const APIDocs = () => {
                             key={ep.id}
                             onClick={() => setActiveEndpoint(ep.id)}
                             className={`w-full flex items-center justify-between p-3 rounded-lg transition-all border ${activeEndpoint === ep.id
-                                    ? 'bg-brand-primary/10 border-brand-primary/30'
-                                    : 'bg-transparent border-transparent hover:bg-white/5'
+                                ? 'bg-brand-primary/10 border-brand-primary/30'
+                                : 'bg-transparent border-transparent hover:bg-white/5'
                                 }`}
                         >
                             <span className="text-sm font-bold text-slate-300">{ep.title}</span>
@@ -58,7 +55,7 @@ const APIDocs = () => {
                         <div className="space-y-4">
                             <h3 className="text-lg font-bold text-white">Description</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                Execute a specific tool by its ID. Requires a valid API token with 'execute' scope. The input payload must match the tool's schema.
+                                Execute a specific tool by its ID. Requires a valid API token with &apos;execute&apos; scope. The input payload must match the tool&apos;s schema.
                             </p>
                         </div>
 
@@ -98,6 +95,8 @@ const APIDocs = () => {
                         </div>
                         <div className="flex-1 p-4 relative">
                             <textarea
+                                title="Request Body"
+                                aria-label="Request Body Input"
                                 className="w-full h-full bg-transparent resize-none outline-none text-green-400/90 font-mono leading-relaxed"
                                 defaultValue={`{
   "tool_id": "translator_pro",

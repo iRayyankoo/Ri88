@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, X, Zap, Crown, User, Code2 } from 'lucide-react';
+import { Check, X, Crown, User, Code2 } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 
 const PlanComparison = () => {

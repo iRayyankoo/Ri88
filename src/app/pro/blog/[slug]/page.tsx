@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { ArrowRight, Lock, User, Calendar } from 'lucide-react';
 import { blogPosts } from '@/data/blog';

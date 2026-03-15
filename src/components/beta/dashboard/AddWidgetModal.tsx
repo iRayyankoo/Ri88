@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { X, Plus } from 'lucide-react';
-import { WIDGET_REGISTRY, WidgetDef } from './WidgetRegistry';
+import { WIDGET_REGISTRY } from './WidgetRegistry';
 
 interface AddWidgetModalProps {
     isOpen: boolean;

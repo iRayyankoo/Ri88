@@ -5,8 +5,7 @@ import { motion } from 'framer-motion';
 interface AuroraBackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
     showRadialOverlay?: boolean;
 }
-
-export const AuroraBackground = ({ className = '', showRadialOverlay = true, ...props }: AuroraBackgroundProps) => {
+export const AuroraBackground = ({ className = '', ...props }: AuroraBackgroundProps) => {
     return (
         <div className={`absolute inset-0 z-0 pointer-events-none overflow-hidden bg-[#0A0A0C] ${className}`} {...props}>
             {/* Base Gradient Mesh */}

@@ -1,12 +1,11 @@
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, FileText, CheckCircle2, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ToolShell, ToolInputRow } from './ToolShell';
 import { ToolInput, ToolButton, ToolSelect } from './ToolUi';
 import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import { parsePageRange } from '@/lib/tools/pdf';
-// @ts-ignore - pdfjs-dist type definitions
 import * as pdfjsLibImport from 'pdfjs-dist';
 
 // Handle default export if it exists
@@ -30,7 +29,6 @@ if (typeof Promise.withResolvers === 'undefined') {
 if (typeof window !== 'undefined' && 'Worker' in window) {
     try {
         console.log('Configuring PDF.js Worker...', pdfjsLib.version);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (pdfjsLib.GlobalWorkerOptions) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (pdfjsLib as any).GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
@@ -415,7 +413,8 @@ function PDFExtractText() {
     const [file, setFile] = useState<File | null>(null);
     const [processing, setProcessing] = useState(false);
     const [textResult, setTextResult] = useState('');
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_errorMessage, setErrorMessage] = useState<string | null>(null);
     const [extractMode, setExtractMode] = useState<'all' | 'page'>('all');
     const [targetPage, setTargetPage] = useState<string>('1');
     const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -454,7 +453,6 @@ function PDFExtractText() {
             const resultFileUrl = fileUrl || URL.createObjectURL(file); // Use existing or create new
             console.log('Loading Document with CMaps:', resultFileUrl);
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const loadingTask = pdfjsLib.getDocument({
                 url: resultFileUrl,
                 cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',

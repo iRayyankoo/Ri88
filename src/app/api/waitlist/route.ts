@@ -17,21 +17,21 @@ export async function POST(request: Request) {
             );
         }
 
-        let waitlist: any[] = [];
+        let waitlist: { email: string; date?: string; userAgent?: string }[] = [];
 
         // Read existing file if it exists
         if (fs.existsSync(WAITLIST_FILE)) {
             const fileContent = fs.readFileSync(WAITLIST_FILE, 'utf-8');
             try {
                 waitlist = JSON.parse(fileContent);
-            } catch (error) {
+            } catch {
                 // If file is empty or invalid, start with empty array
                 waitlist = [];
             }
         }
 
         // Check for duplicates
-        if (waitlist.some((entry: any) => entry.email === email)) {
+        if (waitlist.some((entry) => entry.email === email)) {
             return NextResponse.json(
                 { message: 'You are already on the waitlist!' },
                 { status: 200 }

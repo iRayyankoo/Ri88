@@ -54,7 +54,7 @@ const MoyasarPayment: React.FC<MoyasarPaymentProps> = ({ amount, description, on
             if (document.head.contains(link)) document.head.removeChild(link);
             if (document.body.contains(script)) document.body.removeChild(script);
         };
-    }, [amount, description]);
+    }, [amount, description, onComplete]);
 
     return (
         <div className="w-full">

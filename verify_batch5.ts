@@ -1,6 +1,6 @@
 
 import { calculateGrades, calculateGPA } from './src/lib/tools/education';
-import { generateShadowCSS, generateGradientCSS, calculateContrastRatio } from './src/lib/tools/design';
+import { generateShadowCSS, calculateContrastRatio } from './src/lib/tools/design';
 import { calculateEOS, calculateVacation, validateSAIBAN, tafqeet } from './src/lib/tools/saudi';
 import { correctArabicText, anaIyzeTextStats } from './src/lib/tools/languages';
 

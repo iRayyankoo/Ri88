@@ -2,24 +2,25 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-    Activity,
     Rocket,
     Code2,
     Copy,
     RefreshCcw,
     Trash2,
-    CheckCircle,
-    AlertCircle,
     Terminal
 } from 'lucide-react';
-import { useNavigation } from '@/context/NavigationContext';
 import Link from 'next/link';
+import { useNavigation } from '@/context/NavigationContext';
+import { useWorkspace } from '@/context/WorkspaceContext';
+import { ShieldCheck } from 'lucide-react';
 
 const DeveloperPortal = () => {
-    const { setCurrentView } = useNavigation();
+    const { userRole } = useNavigation();
+    const { workspaceRole } = useWorkspace();
+    const isAdmin = userRole === 'admin' || workspaceRole === 'OWNER' || workspaceRole === 'ADMIN';
 
     // Mock Data
-    const [apiKeys, setApiKeys] = useState([
+    const [apiKeys] = useState([
         { id: '1', name: 'خدمة التمويل', key: 'ri88_live_9823x...882', status: 'نشط', usage: 1240 },
         { id: '2', name: 'أداة النصوص', key: 'ri88_test_1234a...001', status: 'تجريبي', usage: 85 }
     ]);
@@ -31,8 +32,6 @@ const DeveloperPortal = () => {
         { label: 'الأخطاء', value: '0.01%', trend: 'Low', color: 'text-orange-500' },
     ];
 
-    const [showSubmitModal, setShowSubmitModal] = useState(false);
-
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
@@ -42,6 +41,18 @@ const DeveloperPortal = () => {
         hidden: { y: 20, opacity: 0 },
         visible: { y: 0, opacity: 1 }
     };
+
+    if (!isAdmin) return (
+        <div className="h-[60vh] w-full flex flex-col items-center justify-center gap-6 text-center">
+            <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20">
+                <ShieldCheck className="w-10 h-10" />
+            </div>
+            <div className="space-y-2">
+                <h3 className="text-2xl font-black text-text-primary">وصول غير مصرح به</h3>
+                <p className="text-text-muted max-w-sm">ليس لديك الصلاحيات الكافية لعرض هذه الصفحة. يرجى التأكد من تسجيل الدخول بحساب المطور أو المدير.</p>
+            </div>
+        </div>
+    );
 
     return (
         <motion.div
@@ -123,10 +134,10 @@ const DeveloperPortal = () => {
                                 </td>
                                 <td className="px-8 py-6">
                                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="p-2 bg-surface-base border border-border-subtle rounded-lg text-text-muted hover:text-text-primary transition-colors">
+                                        <button title="تحديث المفتاح" aria-label="تحديث المفتاح" className="p-2 bg-surface-base border border-border-subtle rounded-lg text-text-muted hover:text-text-primary transition-colors">
                                             <RefreshCcw className="w-3.5 h-3.5" />
                                         </button>
-                                        <button className="p-2 bg-surface-base border border-border-subtle rounded-lg text-red-500/50 hover:text-red-500 transition-colors">
+                                        <button title="حذف المفتاح" aria-label="حذف المفتاح" className="p-2 bg-surface-base border border-border-subtle rounded-lg text-red-500/50 hover:text-red-500 transition-colors">
                                             <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
@@ -151,10 +162,10 @@ const DeveloperPortal = () => {
                             <Copy className="w-4 h-4 text-text-muted group-hover:text-text-primary cursor-pointer transition-colors" />
                         </div>
                         <p className="text-text-muted mb-2"># Example Request</p>
-                        <p><span className="text-purple-400">curl</span> -X POST "https://api.ri88.info/v1/tools/process" \</p>
-                        <p className="pl-4">  -H "Authorization: Bearer <span className="text-brand-primary">YOUR_API_KEY</span>" \</p>
-                        <p className="pl-4">  -H "Content-Type: application/json" \</p>
-                        <p className="pl-4">  -d '{"{"} "input": "data", "action": "run" {"}"}'</p>
+                        <p><span className="text-purple-400">curl</span> -X POST &quot;https://api.ri88.info/v1/tools/process&quot; \</p>
+                        <p className="pl-4">  -H &quot;Authorization: Bearer <span className="text-brand-primary">YOUR_API_KEY</span>&quot; \</p>
+                        <p className="pl-4">  -H &quot;Content-Type: application/json&quot; \</p>
+                        <p className="pl-4">  -d &apos;{JSON.stringify({ input: "data", action: "run" })}&apos;</p>
                     </div>
                 </motion.div>
             </div>

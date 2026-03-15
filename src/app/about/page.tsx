@@ -1,7 +1,8 @@
 
 import React from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar'; // Re-using existing Navbar
-import { Smartphone, Download, Play, Twitter, Instagram, Linkedin, ArrowRight } from 'lucide-react';
+import { Smartphone, Play, Twitter, Instagram, Linkedin, ArrowRight } from 'lucide-react';
 
 export const metadata = {
     title: 'Ri88 | About',
@@ -93,10 +94,10 @@ export default function AboutPage() {
                     </div>
                     <div className="footer-col">
                         <h4>Explore</h4>
-                        <a href="/">All Tools</a>
+                        <Link href="/">All Tools</Link>
                         <a href="#">Magazine</a>
-                        <a href="/sports">Live Sports</a>
-                        <a href="/about">About Us</a>
+                        <Link href="/sports">Live Sports</Link>
+                        <Link href="/about">About Us</Link>
                     </div>
                     <div className="footer-col">
                         <h4>Legal</h4>

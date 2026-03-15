@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Wallet, TrendingUp, TrendingDown, Download, Loader2, RefreshCw } from 'lucide-react';
 import { getWalletData, addFunds } from '@/app/actions/wallet';
 import { toast } from 'sonner';
@@ -27,9 +26,9 @@ const WalletActivity = () => {
             const data = await getWalletData();
             setBalance(data.balance);
             setCurrency(data.currency);
-            // @ts-ignore
+            // @ts-expect-error: Prisma types missing strict bindings for transactions
             setTransactions(data.transactions);
-            // @ts-ignore
+            // @ts-expect-error: Prisma types missing strict bindings for monthlySpending
             setMonthlySpending(data.monthlySpending);
         } catch (error) {
             console.error("Failed to fetch wallet data", error);
@@ -48,7 +47,7 @@ const WalletActivity = () => {
             await addFunds(100); // Mock amount for now
             toast.success("تم شحن الرصيد بنجاح (تجريبي)");
             await fetchData();
-        } catch (error) {
+        } catch {
             toast.error("حدث خطأ أثناء الشحن");
         } finally {
             setIsAddingFunds(false);
@@ -120,7 +119,7 @@ const WalletActivity = () => {
             <div className="stitch-glass rounded-[32px] overflow-hidden">
                 <div className="p-8 border-b border-white/5 flex justify-between items-center">
                     <h3 className="text-xl font-black text-white">آخر العمليات</h3>
-                    <button onClick={fetchData} className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors">
+                    <button onClick={fetchData} title="تحديث العمليات" aria-label="تحديث العمليات" className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-colors">
                         <RefreshCw className="w-4 h-4" />
                     </button>
                 </div>

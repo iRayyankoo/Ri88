@@ -30,7 +30,7 @@ export async function registerAction(formData: FormData) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 name,
                 email,
@@ -105,5 +105,5 @@ export async function verifyEmailAction(token: string) {
 }
 
 export async function handleSignOut() {
-    await signOut({ redirectTo: "https://www.ri88.info" });
+    await signOut({ redirectTo: "/" });
 }

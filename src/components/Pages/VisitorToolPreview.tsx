@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Zap, ArrowLeft, Star } from 'lucide-react';
+import { Lock, Zap, Star } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 import GlassCard from '../ui/GlassCard';
 

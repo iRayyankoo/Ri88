@@ -2,14 +2,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    MessageSquare,
     X,
     Send,
     Zap,
     Cpu,
     Sparkles,
-    Bot,
-    User,
     Cloud,
     Mic,
     MicOff
@@ -60,6 +57,7 @@ const FloatingAssistant = () => {
     const [saved, setSaved] = useState(false);
     useEffect(() => {
         if (messages.length > 1) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setSaved(true);
             const t = setTimeout(() => setSaved(false), 2000);
             return () => clearTimeout(t);
@@ -108,6 +106,7 @@ const FloatingAssistant = () => {
                                 </div>
                             </div>
                             <button
+                                title="إغلاق"
                                 onClick={() => setIsOpen(false)}
                                 className="p-2 hover:bg-white/10 rounded-full transition-colors group"
                             >
@@ -117,7 +116,7 @@ const FloatingAssistant = () => {
 
                         {/* Chat Content */}
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                            {messages.map((msg: any) => (
+                            {messages.map((msg: { id: number, role: string, text: string }) => (
                                 <div key={msg.id} className={`flex ${msg.role === 'ai' ? 'justify-start' : 'justify-end'}`}>
                                     <div className={`
                                         max-w-[85%] p-4 rounded-2xl text-xs font-medium leading-relaxed
@@ -170,6 +169,7 @@ const FloatingAssistant = () => {
                                 {/* Mic Button */}
                                 <button
                                     type="button"
+                                    title="تسجيل صوت"
                                     onClick={isListening ? stopListening : startListening}
                                     className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isListening ? 'text-red-500 hover:bg-red-500/10' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
                                 >
@@ -179,6 +179,7 @@ const FloatingAssistant = () => {
                                 {/* Send Button */}
                                 <button
                                     type="submit"
+                                    title="إرسال"
                                     disabled={!inputText.trim()}
                                     className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/30 hover:bg-brand-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                 >

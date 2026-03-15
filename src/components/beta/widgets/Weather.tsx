@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloudSun, Sun } from 'lucide-react';
+import { Sun } from 'lucide-react';
 
 export default function WeatherWidget() {
     // Mock data for Riyadh

@@ -1,26 +1,35 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import Logo from '../Brand/Logo';
 import {
-    Home,
     Zap,
     ShieldCheck,
     Cpu,
     User,
     Settings,
     LogOut,
-    ShoppingBag,
     Puzzle,
     ChevronRight,
     ChevronLeft,
     LayoutGrid,
+    Users,
+    CheckSquare,
+    LayoutDashboard,
+    Building,
+    Check,
+    PlusCircle,
+    Receipt
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigation } from '@/context/NavigationContext';
+import { useWorkspace } from '@/context/WorkspaceContext';
 import { useSession } from 'next-auth/react';
 import { handleSignOut } from '@/actions/auth';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import CreateWorkspaceModal from '../workspaces/CreateWorkspaceModal';
 
 const Sidebar = () => {
     const { isSidebarOpen, isSidebarCollapsed, setIsSidebarCollapsed, userRole } = useNavigation();
@@ -28,7 +37,20 @@ const Sidebar = () => {
     const { data: session, status } = useSession();
     const isLoggedIn = status === 'authenticated';
     const isLoading = status === 'loading';
-    const isAdmin = userRole === 'admin' || session?.user?.role === 'ADMIN';
+    const { currentWorkspace, workspaces, setCurrentWorkspace, permissions, workspaceRole } = useWorkspace();
+    const isAdmin = userRole === 'admin' || session?.user?.role === 'ADMIN' || workspaceRole === 'OWNER' || workspaceRole === 'ADMIN';
+    
+    console.log("Sidebar Auth Debug:", { 
+        userRole, 
+        sessionRole: session?.user?.role, 
+        workspaceRole, 
+        isAdmin,
+        workspaceId: currentWorkspace?.id
+    });
+
+    const [workspaceOpen, setWorkspaceOpen] = useState(false);
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const workspaceRef = useRef<HTMLDivElement>(null);
 
     const [profileOpen, setProfileOpen] = useState(false);
     const profileRef = useRef<HTMLDivElement>(null);
@@ -39,6 +61,9 @@ const Sidebar = () => {
             if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
                 setProfileOpen(false);
             }
+            if (workspaceRef.current && !workspaceRef.current.contains(e.target as Node)) {
+                setWorkspaceOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClick);
         return () => document.removeEventListener('mousedown', handleClick);
@@ -46,9 +71,11 @@ const Sidebar = () => {
 
     // ── قائمة العضو الأساسية ──────────────────────────────
     const navItems = [
-        { name: 'الرئيسية', icon: Home, href: '/' },
-        { name: 'دليل الأدوات', icon: Zap, href: '/pro/tools' },
-        { name: 'المتجر', icon: ShoppingBag, href: '/pro/store' },
+        { name: 'الرئيسية', icon: LayoutDashboard, href: '/' },
+        { name: 'العملاء (CRM)', icon: Users, href: '/pro/crm', permission: 'can_access_crm' },
+        { name: 'المهام (HR)', icon: CheckSquare, href: '/pro/hr', permission: 'can_manage_tasks' },
+        { name: 'المالية والفواتير', icon: Receipt, href: '/pro/finance', permission: 'can_access_finance' },
+        { name: 'مركز الأدوات', icon: Zap, href: '/pro/tools' },
         { name: 'الإعدادات', icon: Settings, href: '/pro/settings' },
     ];
 
@@ -99,15 +126,85 @@ const Sidebar = () => {
             </button>
 
             {/* Logo */}
-            <div className={`mb-10 px-2 flex items-center justify-center transition-all duration-300 ${isSidebarCollapsed ? 'scale-75' : ''}`}>
+            <div className={`mb-6 px-2 flex items-center justify-center transition-all duration-300 ${isSidebarCollapsed ? 'scale-75' : ''}`}>
                 <Logo size={isSidebarCollapsed ? "sm" : "md"} showText={!isSidebarCollapsed} />
             </div>
+
+            {/* Workspace Selector */}
+            {isLoggedIn && workspaces.length > 0 && (
+                <div className={`mb-6 px-2 relative ${isSidebarCollapsed ? 'flex justify-center' : ''}`} ref={workspaceRef}>
+                    <button
+                        onClick={() => setWorkspaceOpen(!workspaceOpen)}
+                        className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center p-2' : 'justify-between px-3 py-2'} rounded-xl bg-surface-raised border border-border-subtle hover:bg-surface-glass transition-colors`}
+                    >
+                        {isSidebarCollapsed ? (
+                            <Building className="w-5 h-5 text-brand-primary" />
+                        ) : (
+                            <>
+                                <div className="flex items-center gap-2 overflow-hidden text-right">
+                                    <div className="w-6 h-6 rounded bg-brand-primary/20 text-brand-primary flex flex-shrink-0 items-center justify-center font-bold text-xs uppercase">
+                                        {currentWorkspace?.name?.charAt(0) || 'W'}
+                                    </div>
+                                    <span className="text-sm font-bold text-text-primary truncate">{currentWorkspace?.name || 'اختر مساحة'}</span>
+                                </div>
+                                <ChevronRight className={`w-4 h-4 text-text-muted transition-transform ${workspaceOpen ? 'rotate-90' : ''}`} />
+                            </>
+                        )}
+                    </button>
+
+                    <AnimatePresence>
+                        {workspaceOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute top-full mt-2 left-2 right-2 bg-surface-raised border border-border-strong rounded-xl overflow-hidden shadow-2xl z-50 text-right"
+                            >
+                                <div className="max-h-48 overflow-y-auto no-scrollbar py-1">
+                                    {workspaces.map((ws) => (
+                                        <button
+                                            key={ws.id}
+                                            onClick={() => {
+                                                setCurrentWorkspace(ws);
+                                                setWorkspaceOpen(false);
+                                            }}
+                                            className={`w-full flex items-center justify-between px-3 py-2 hover:bg-surface-glass transition-colors ${currentWorkspace?.id === ws.id ? 'bg-surface-glass text-brand-primary' : 'text-text-primary'}`}
+                                        >
+                                            <span className="text-sm font-bold truncate">{ws.name}</span>
+                                            {currentWorkspace?.id === ws.id && <Check className="w-4 h-4 shrink-0" />}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="p-1 border-t border-border-subtle">
+                                    <button
+                                        onClick={() => {
+                                            setWorkspaceOpen(false);
+                                            setShowCreateModal(true);
+                                        }}
+                                        className="w-full flex items-center gap-2 px-3 py-2 hover:bg-brand-primary/10 text-brand-primary transition-colors rounded-lg"
+                                    >
+                                        <PlusCircle className="w-4 h-4" />
+                                        <span className="text-sm font-bold">إنشاء مساحة جديدة</span>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            )}
 
             {/* Navigation */}
             <nav className="flex-1 space-y-2 text-right overflow-y-auto no-scrollbar pb-6">
 
                 {/* عناصر العضو */}
-                {navItems.map((item) => <NavLink key={item.href} item={item} />)}
+                {navItems.map((item: { name: string; icon: React.ElementType; href: string; permission?: string }) => {
+                    // Admins/Owners see all modules
+                    if (isAdmin) return <NavLink key={item.href} item={item} />;
+
+                    if (item.permission && !permissions[item.permission]) return null;
+                    return <NavLink key={item.href} item={item} />;
+                })}
 
                 {/* قسم الأدمن */}
                 {isAdmin && (
@@ -228,6 +325,11 @@ const Sidebar = () => {
                     </Link>
                 )}
             </div>
+
+            <CreateWorkspaceModal
+                isOpen={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+            />
         </aside>
     );
 };

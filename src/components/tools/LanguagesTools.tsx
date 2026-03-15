@@ -2,13 +2,7 @@
 import React, { useState } from 'react';
 import { ToolShell } from './ToolShell';
 import { ToolButton } from './ToolUi';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { correctArabicText, correctEnglishText, anaIyzeTextStats } from '@/lib/tools/languages';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
 
 interface ToolProps {
     toolId: string;

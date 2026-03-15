@@ -12,7 +12,7 @@ export async function getTools() {
         });
 
         return { success: true, tools: toolsData };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Get Tools Error:", error);
         return { error: "حدث خطأ أثناء تحميل الأدوات." };
     }
@@ -102,7 +102,7 @@ export async function seedTools() {
         });
 
         return { success: "تمت إضافة الأدوات التجريبية بنجاح." };
-    } catch (error: any) {
+    } catch (error) {
         console.error("Seed Tools Error:", error);
         return { error: "حدث خطأ أثناء الإضافة." };
     }

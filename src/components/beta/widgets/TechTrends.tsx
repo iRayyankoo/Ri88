@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Zap } from 'lucide-react';
+import { Cpu } from 'lucide-react';
 
 export default function TechTrendsWidget() {
     return (

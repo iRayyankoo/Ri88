@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, User, Shield, MoreHorizontal, CheckCircle } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 
 export default function UsersView() {
     const mockUsers = [
@@ -34,7 +34,7 @@ export default function UsersView() {
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                     <span style={{ padding: '4px 10px', background: u.role === 'Owner' ? 'rgba(211, 91, 255, 0.1)' : 'rgba(255,255,255,0.05)', color: u.role === 'Owner' ? '#D35BFF' : '#aaa', borderRadius: '20px', fontSize: '0.75em' }}>{u.role}</span>
-                                    <button style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}><MoreHorizontal size={18} /></button>
+                                    <button title="خيارات" style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}><MoreHorizontal size={18} /></button>
                                 </div>
                             </div>
                         ))}

@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 // Map string names to Lucide components
-const IconMap: { [key: string]: any } = {
+const IconMap: Record<string, import('lucide-react').LucideIcon> = {
     'calculator': Calculator, 'percent': Percent, 'wallet': Wallet,
     'arrow-right-left': ArrowRightLeft, 'landmark': Landmark, 'hand-coins': HandCoins,
     'bitcoin': Bitcoin, 'moon': Moon, 'calendar-clock': CalendarClock, 'timer': Timer,

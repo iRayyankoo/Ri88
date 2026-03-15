@@ -6,7 +6,7 @@ import { FileDown, Table, Copy, Share2, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ResultExporterProps {
-    data: any; // Can be an object, array of objects, or string
+    data: unknown; // Can be an object, array of objects, or string
     fileName?: string;
     title?: string;
     type?: 'table' | 'text' | 'image';
