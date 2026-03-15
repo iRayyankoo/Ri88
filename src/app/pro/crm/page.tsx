@@ -173,7 +173,7 @@ function DroppableColumn({ id, children, className }: { id: string; children: Re
 }
 
 export default function CRMDashboard() {
-    const { currentWorkspace, permissions } = useWorkspace();
+    const { currentWorkspace, permissions, isLoading: isLoadingWorkspace } = useWorkspace();
     const router = useRouter();
     const [clients, setClients] = useState<Client[]>([]);
     const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -312,7 +312,10 @@ export default function CRMDashboard() {
     const groupColors = ['bg-[#579bfc]', 'bg-[#a25ddc]'];
 
     const fetchData = useCallback(async () => {
-        if (!currentWorkspace) return;
+        if (!currentWorkspace?.id) {
+            setIsLoading(false);
+            return;
+        }
         setIsLoading(true);
         try {
             const [clientRes, oppRes, taskRes, stageRes, membersRes] = await Promise.all([
@@ -367,12 +370,12 @@ export default function CRMDashboard() {
                 })));
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error fetching CRM data:", error);
             toast.error("حدث خطأ أثناء تحميل بيانات CRM");
         } finally {
             setIsLoading(false);
         }
-    }, [currentWorkspace]);
+    }, [currentWorkspace?.id]);
 
     const fetchOpportunityLogs = useCallback(async (oppId: string) => {
         if (!currentWorkspace) return;
@@ -414,8 +417,10 @@ export default function CRMDashboard() {
     useEffect(() => {
         if (currentWorkspace?.id) {
             fetchData();
+        } else if (!isLoadingWorkspace) {
+            setIsLoading(false);
         }
-    }, [currentWorkspace, fetchData]);
+    }, [currentWorkspace?.id, fetchData, isLoadingWorkspace]);
 
 
 
@@ -900,9 +905,20 @@ export default function CRMDashboard() {
             </div>
 
             {/* Main Content */}
-            {isLoading ? (
-                <div className="h-64 flex items-center justify-center">
+            {isLoading || isLoadingWorkspace ? (
+                <div className="h-64 flex flex-col items-center justify-center gap-4">
                     <div className="w-8 h-8 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin"></div>
+                    <p className="text-sm text-text-muted animate-pulse">جاري تحميل البيانات...</p>
+                </div>
+            ) : !currentWorkspace ? (
+                <div className="h-64 flex flex-col items-center justify-center gap-4 bg-surface-base border border-border-subtle rounded-3xl">
+                    <div className="w-16 h-16 rounded-2xl bg-surface-raised flex items-center justify-center border border-border-subtle text-text-muted">
+                        <Users size={32} />
+                    </div>
+                    <div className="text-center">
+                        <h3 className="text-lg font-bold text-white mb-1">لا توجد مساحة عمل نشطة</h3>
+                        <p className="text-sm text-text-muted">الرجاء اختيار مساحة عمل من القائمة الجانبية للمتابعة</p>
+                    </div>
                 </div>
             ) : view === 'clients' ? (
                 <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
