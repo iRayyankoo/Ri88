@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Save, ArrowRight, Plus, Trash2, Building } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import AccessDenied from '@/components/AccessControl/AccessDenied';
+import { useSession } from 'next-auth/react';
 
 interface InvoiceItem {
     id: string;
@@ -21,7 +23,8 @@ interface Client {
 }
 
 export default function NewInvoicePage() {
-    const { currentWorkspace } = useWorkspace();
+    const { currentWorkspace, permissions, workspaceRole } = useWorkspace();
+    const { data: session } = useSession();
     const router = useRouter();
 
     const [clients, setClients] = useState<Client[]>([]);
@@ -123,7 +126,14 @@ export default function NewInvoicePage() {
         }
     };
 
+    const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || permissions['can_access_finance'];
+
     if (!currentWorkspace) return null;
+
+    if (!canAccess) {
+        return <AccessDenied moduleName="إصدار فاتورة جديدة" />;
+    }
 
     return (
         <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-24">

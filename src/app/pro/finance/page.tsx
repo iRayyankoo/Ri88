@@ -4,6 +4,8 @@ import { useWorkspace } from '@/context/WorkspaceContext';
 import { Plus, Search, Receipt, TrendingUp, HandCoins, Calendar, MoreVertical, CheckCircle2, Clock, AlertCircle, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import AccessDenied from '@/components/AccessControl/AccessDenied';
+import { useSession } from 'next-auth/react';
 
 interface Invoice {
     id: string;
@@ -16,7 +18,8 @@ interface Invoice {
 }
 
 export default function FinanceDashboard() {
-    const { currentWorkspace } = useWorkspace();
+    const { currentWorkspace, permissions, workspaceRole } = useWorkspace();
+    const { data: session } = useSession();
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -76,6 +79,9 @@ export default function FinanceDashboard() {
     const pendingRevenue = invoices.filter(i => i.status === 'SENT').reduce((sum, inv) => sum + inv.totalAmount, 0);
     const draftedInvoicesCount = invoices.filter(i => i.status === 'DRAFT').length;
 
+    const isAdmin = session?.user?.role === 'ADMIN' || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || permissions['can_access_finance'];
+
     if (!currentWorkspace) {
         return (
             <div className="flex flex-col items-center justify-center h-[70vh]">
@@ -85,6 +91,10 @@ export default function FinanceDashboard() {
                 <h2 className="text-xl font-black text-white">الرجاء اختيار مساحة عمل أولاً</h2>
             </div>
         );
+    }
+
+    if (!canAccess) {
+        return <AccessDenied moduleName="الإدارة المالية والفواتير" />;
     }
 
     return (

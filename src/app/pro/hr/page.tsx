@@ -6,6 +6,8 @@ import { useWorkspace } from '@/context/WorkspaceContext';
 import { CheckSquare, Clock, Plus, LayoutDashboard, User, Calendar as CalendarIcon, LogIn, LogOut, CheckCircle2, Circle, Calculator, CalendarPlus, Wallet, Plane } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import AccessDenied from '@/components/AccessControl/AccessDenied';
+import { useSession } from 'next-auth/react';
 
 // Types
 type User = { id: string; name: string | null; image: string | null; email: string | null };
@@ -13,7 +15,7 @@ type Task = { id: string; title: string; description: string | null; status: str
 type Attendance = { id: string; date: string; checkIn: string; checkOut: string | null; status: string; notes: string | null; user: User };
 
 export default function HRDashboard() {
-    const { currentWorkspace, isLoading: wsLoading } = useWorkspace();
+    const { currentWorkspace, isLoading: wsLoading, permissions, workspaceRole } = useWorkspace();
 
     // UI State
     const [activeTab, setActiveTab] = useState<'tasks' | 'attendance'>('tasks');
@@ -124,6 +126,10 @@ export default function HRDashboard() {
         return new Date(dateString).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
     };
 
+    const { data: session } = useSession();
+    const isAdmin = session?.user?.role === 'ADMIN' || permissions['can_manage_tasks'] || workspaceRole === 'ADMIN' || workspaceRole === 'OWNER';
+    const canAccess = isAdmin || permissions['can_manage_tasks'];
+
     if (wsLoading) {
         return (
             <div className="flex h-[70vh] items-center justify-center">
@@ -136,12 +142,16 @@ export default function HRDashboard() {
         return (
             <div className="flex flex-col items-center justify-center h-[70vh]">
                 <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-4 text-slate-500">
-                    <LayoutDashboard size={32} />
+                    <User size={32} />
                 </div>
                 <h2 className="text-xl font-black text-white">الرجاء اختيار مساحة عمل أولاً</h2>
                 <p className="text-slate-500 text-sm mt-2">نظام الموارد البشرية يعمل تحت مظلة الشركة المحددة.</p>
             </div>
         );
+    }
+
+    if (!canAccess) {
+        return <AccessDenied moduleName="الموارد البشرية (HR)" />;
     }
 
     // Check if the current user has already checked in today

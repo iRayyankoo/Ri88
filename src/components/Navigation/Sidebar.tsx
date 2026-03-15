@@ -204,10 +204,6 @@ const Sidebar = () => {
 
                 {/* عناصر العضو */}
                 {navItems.map((item: { name: string; icon: React.ElementType; href: string; permission?: string }) => {
-                    // Admins/Owners see all modules
-                    if (isAdmin) return <NavLink key={item.href} item={item} />;
-
-                    if (item.permission && !permissions[item.permission]) return null;
                     return <NavLink key={item.href} item={item} />;
                 })}
 

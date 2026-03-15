@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, CartesianGrid } from 'recharts';
 import { Pencil } from 'lucide-react';
+import AccessDenied from '@/components/AccessControl/AccessDenied';
 
 // Dnd-kit imports
 import { 
@@ -920,6 +921,8 @@ export default function CRMDashboard() {
                         <p className="text-sm text-text-muted">الرجاء اختيار مساحة عمل من القائمة الجانبية للمتابعة</p>
                     </div>
                 </div>
+            ) : !canAccess ? (
+                <AccessDenied moduleName="إدارة العملاء (CRM)" />
             ) : view === 'clients' ? (
                 <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-surface-base p-4 rounded-2xl border border-border-subtle">
