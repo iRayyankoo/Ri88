@@ -70,6 +70,7 @@ const WorkgroupManagement = () => {
     const [groupDesc, setGroupDesc] = useState('');
     const [groupPermissions, setGroupPermissions] = useState<Record<string, boolean>>({});
     const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const fetchData = useCallback(async () => {
@@ -78,7 +79,7 @@ const WorkgroupManagement = () => {
         try {
             const [wgRes, memRes] = await Promise.all([
                 fetch(`/api/crm/workgroups?workspaceId=${currentWorkspace.id}`),
-                fetch(`/api/workspace/${currentWorkspace.id}/members`) // Assuming this exists or I'll create it
+                fetch(`/api/workspaces/${currentWorkspace.id}/members`)
             ]);
 
             if (wgRes.ok) {
@@ -190,6 +191,11 @@ const WorkgroupManagement = () => {
                 : [...prev, memberId]
         );
     };
+
+    const filteredMembers = workspaceMembers.filter(member => 
+        member.user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.role.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     if (isLoading) return <div className="text-center py-20 text-text-muted">جاري التحميل...</div>;
 
@@ -348,10 +354,16 @@ const WorkgroupManagement = () => {
                                     <div className="bg-surface-raised border border-border-subtle rounded-[2rem] overflow-hidden flex flex-col h-[400px]">
                                         <div className="p-4 border-b border-border-subtle bg-black/20 relative">
                                             <Search className="absolute right-7 top-1/2 -translate-y-1/2 text-text-muted w-4 h-4" />
-                                            <input type="text" placeholder="بحث عن عضو..." className="w-full bg-surface-base border border-border-subtle rounded-xl py-2 pr-10 pl-4 text-xs font-bold text-white outline-none focus:border-brand-primary/50" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="بحث عن عضو..." 
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="w-full bg-surface-base border border-border-subtle rounded-xl py-2 pr-10 pl-4 text-xs font-bold text-white outline-none focus:border-brand-primary/50" 
+                                            />
                                         </div>
                                         <div className="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar">
-                                            {workspaceMembers.map(member => (
+                                            {filteredMembers.map(member => (
                                                 <button 
                                                     key={member.id}
                                                     onClick={() => toggleMember(member.id)}
