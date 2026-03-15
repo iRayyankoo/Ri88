@@ -37,15 +37,12 @@ interface Workgroup {
     members: WorkgroupMember[];
 }
 
-interface WorkspaceMember {
+interface User {
     id: string;
-    userId: string;
+    name: string | null;
+    image: string | null;
+    email: string | null;
     role: string;
-    user: {
-        id: string;
-        name: string | null;
-        image: string | null;
-    }
 }
 
 const PERMISSION_KEYS = [
@@ -60,7 +57,7 @@ const PERMISSION_KEYS = [
 const WorkgroupManagement = () => {
     const { currentWorkspace } = useWorkspace();
     const [workgroups, setWorkgroups] = useState<Workgroup[]>([]);
-    const [workspaceMembers, setWorkspaceMembers] = useState<WorkspaceMember[]>([]);
+    const [allUsers, setAllUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingWorkgroup, setEditingWorkgroup] = useState<Workgroup | null>(null);
@@ -77,9 +74,9 @@ const WorkgroupManagement = () => {
         if (!currentWorkspace?.id) return;
         setIsLoading(true);
         try {
-            const [wgRes, memRes] = await Promise.all([
+            const [wgRes, usersRes] = await Promise.all([
                 fetch(`/api/crm/workgroups?workspaceId=${currentWorkspace.id}`),
-                fetch(`/api/workspaces/${currentWorkspace.id}/members`)
+                fetch(`/api/users`)
             ]);
 
             if (wgRes.ok) {
@@ -87,9 +84,9 @@ const WorkgroupManagement = () => {
                 setWorkgroups(data.workgroups);
             }
             
-            if (memRes.ok) {
-                const data = await memRes.json();
-                setWorkspaceMembers(data.members);
+            if (usersRes.ok) {
+                const data = await usersRes.json();
+                setAllUsers(data.users);
             }
         } catch (error) {
             console.error(error);
@@ -109,7 +106,7 @@ const WorkgroupManagement = () => {
             setGroupName(wg.name);
             setGroupDesc(wg.description || '');
             setGroupPermissions(wg.permissions || {});
-            setSelectedMemberIds(wg.members.map(m => m.id));
+            setSelectedMemberIds(wg.members.map(m => m.user.id));
         } else {
             setEditingWorkgroup(null);
             setGroupName('');
@@ -140,7 +137,7 @@ const WorkgroupManagement = () => {
                     name: groupName,
                     description: groupDesc,
                     permissions: groupPermissions,
-                    memberIds: selectedMemberIds
+                    userIds: selectedMemberIds
                 })
             });
 
@@ -192,9 +189,9 @@ const WorkgroupManagement = () => {
         );
     };
 
-    const filteredMembers = workspaceMembers.filter(member => 
-        member.user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.role.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredMembers = allUsers.filter(user => 
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (isLoading) return <div className="text-center py-20 text-text-muted">جاري التحميل...</div>;
@@ -363,22 +360,22 @@ const WorkgroupManagement = () => {
                                             />
                                         </div>
                                         <div className="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar">
-                                            {filteredMembers.map(member => (
+                                            {filteredMembers.map(user => (
                                                 <button 
-                                                    key={member.id}
-                                                    onClick={() => toggleMember(member.id)}
-                                                    className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${selectedMemberIds.includes(member.id) ? 'bg-brand-primary/10 border border-brand-primary/20' : 'bg-surface-base border border-transparent hover:border-white/5'}`}
+                                                    key={user.id}
+                                                    onClick={() => toggleMember(user.id)}
+                                                    className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${selectedMemberIds.includes(user.id) ? 'bg-brand-primary/10 border border-brand-primary/20' : 'bg-surface-base border border-transparent hover:border-white/5'}`}
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 rounded-full bg-surface-raised border border-white/5 flex items-center justify-center text-[10px] font-black group-hover:scale-110 transition-transform">
-                                                            {member.user.image ? <img src={member.user.image} alt={member.user.name || ''} className="w-full h-full rounded-full object-cover" /> : member.user.name?.[0]}
+                                                            {user.image ? <img src={user.image} alt={user.name || ''} className="w-full h-full rounded-full object-cover" /> : user.name?.[0]}
                                                         </div>
                                                         <div className="text-right">
-                                                            <div className={`text-xs font-bold ${selectedMemberIds.includes(member.id) ? 'text-white' : 'text-slate-400'}`}>{member.user.name}</div>
-                                                            <div className="text-[9px] text-text-muted font-mono">{member.role}</div>
+                                                            <div className={`text-xs font-bold ${selectedMemberIds.includes(user.id) ? 'text-white' : 'text-slate-400'}`}>{user.name || user.email}</div>
+                                                            <div className="text-[9px] text-text-muted font-mono">{user.role}</div>
                                                         </div>
                                                     </div>
-                                                    {selectedMemberIds.includes(member.id) && <div className="w-4 h-4 bg-brand-primary rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5)]"><Check size={10} className="text-black" /></div>}
+                                                    {selectedMemberIds.includes(user.id) && <div className="w-4 h-4 bg-brand-primary rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5)]"><Check size={10} className="text-black" /></div>}
                                                 </button>
                                             ))}
                                         </div>

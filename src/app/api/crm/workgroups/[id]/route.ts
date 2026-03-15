@@ -9,7 +9,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
         const { id: workgroupId } = await params;
         const body = await req.json();
-        const { workspaceId, name, description, permissions, memberIds } = body;
+        const { workspaceId, name, description, permissions, userIds } = body;
 
         if (!workspaceId) return NextResponse.json({ error: "workspaceId is required" }, { status: 400 });
         if (!workgroupId) return NextResponse.json({ error: "workgroupId is required" }, { status: 400 });
@@ -23,15 +23,28 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
+        // Ensure all users are workspace members
+        const finalMemberIds = [];
+        if (userIds && userIds.length > 0) {
+            for (const uId of userIds) {
+                const member = await prisma.workspaceMember.upsert({
+                    where: { workspaceId_userId: { workspaceId, userId: uId } },
+                    update: {},
+                    create: { workspaceId, userId: uId, role: 'MEMBER' }
+                });
+                finalMemberIds.push(member.id);
+            }
+        }
+
         const workgroup = await prisma.workgroup.update({
             where: { id: workgroupId },
             data: {
                 name,
                 description,
                 permissions,
-                members: memberIds ? {
-                    set: memberIds.map((id: string) => ({ id }))
-                } : undefined
+                members: {
+                    set: finalMemberIds.map((id: string) => ({ id }))
+                }
             },
             include: {
                 members: {

@@ -46,7 +46,7 @@ export async function POST(req: Request) {
         if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
-        const { workspaceId, name, description, permissions, memberIds } = body;
+        const { workspaceId, name, description, permissions, userIds } = body;
 
         if (!workspaceId || !name) {
             return NextResponse.json({ error: "workspaceId and name are required" }, { status: 400 });
@@ -61,14 +61,27 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Only admins can create workgroups" }, { status: 403 });
         }
 
+        // Ensure all users are workspace members
+        const finalMemberIds = [];
+        if (userIds && userIds.length > 0) {
+            for (const uId of userIds) {
+                const member = await prisma.workspaceMember.upsert({
+                    where: { workspaceId_userId: { workspaceId, userId: uId } },
+                    update: {},
+                    create: { workspaceId, userId: uId, role: 'MEMBER' }
+                });
+                finalMemberIds.push(member.id);
+            }
+        }
+
         const workgroup = await prisma.workgroup.create({
             data: {
                 workspaceId,
                 name,
                 description,
                 permissions: permissions || {},
-                members: memberIds ? {
-                    connect: memberIds.map((id: string) => ({ id }))
+                members: finalMemberIds.length > 0 ? {
+                    connect: finalMemberIds.map((id: string) => ({ id }))
                 } : undefined
             },
             include: {
