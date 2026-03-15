@@ -13,20 +13,22 @@ const ToolWorkspace = () => {
 
     // 2. Extract router ID if it's a DB tool with a valid internal URL component
     let routerId = activeToolId || tools[0].id;
-    if (activeDbTool?.url?.startsWith('/tools/')) {
-        routerId = activeDbTool.url.replace('/tools/', '');
+    const dbStr = (key: string): string => (typeof activeDbTool?.[key] === 'string' ? activeDbTool[key] as string : '');
+    const dbToolUrl = dbStr('url');
+    if (dbToolUrl.startsWith('/tools/')) {
+        routerId = dbToolUrl.replace('/tools/', '');
     }
 
     // 3. Construct unified tool object, preferring DbTool properties when available
     const tool = {
         id: routerId,
-        cat: activeDbTool ? activeDbTool.category : (staticTool?.cat || tools[0].cat),
-        icon: activeDbTool?.icon || staticTool?.icon || tools[0].icon,
+        cat: activeDbTool ? (dbStr('category') || staticTool?.cat || tools[0].cat) : (staticTool?.cat || tools[0].cat),
+        icon: dbStr('icon') || staticTool?.icon || tools[0].icon,
         status: staticTool?.status || 'existing',
-        title: activeDbTool ? activeDbTool.name : (staticTool?.title || tools[0].title),
-        titleAr: activeDbTool ? activeDbTool.name : (staticTool?.titleAr || tools[0].titleAr),
-        desc: activeDbTool ? activeDbTool.description : (staticTool?.desc || tools[0].desc),
-        descAr: activeDbTool ? activeDbTool.description : (staticTool?.descAr || tools[0].descAr),
+        title: activeDbTool ? (dbStr('name') || tools[0].title) : (staticTool?.title || tools[0].title),
+        titleAr: activeDbTool ? (dbStr('name') || tools[0].titleAr) : (staticTool?.titleAr || tools[0].titleAr),
+        desc: activeDbTool ? (dbStr('description') || tools[0].desc) : (staticTool?.desc || tools[0].desc),
+        descAr: activeDbTool ? (dbStr('description') || tools[0].descAr) : (staticTool?.descAr || tools[0].descAr),
     };
 
 
