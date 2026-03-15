@@ -26,9 +26,7 @@ const WalletActivity = () => {
             const data = await getWalletData();
             setBalance(data.balance);
             setCurrency(data.currency);
-            // @ts-expect-error: Prisma types missing strict bindings for transactions
             setTransactions(data.transactions);
-            // @ts-expect-error: Prisma types missing strict bindings for monthlySpending
             setMonthlySpending(data.monthlySpending);
         } catch (error) {
             console.error("Failed to fetch wallet data", error);
