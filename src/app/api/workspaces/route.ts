@@ -53,7 +53,7 @@ export async function GET() {
                         members: {
                             create: {
                                 userId: session.user.id,
-                                role: "OWNER"
+                                role: "MEMBER"
                             }
                         }
                     },
@@ -65,10 +65,11 @@ export async function GET() {
                     }
                 });
                 return NextResponse.json({ workspaces: [newWorkspace] });
-            } catch (createError: any) {
+            } catch (createError: unknown) {
+                const message = createError instanceof Error ? createError.message : String(createError);
                 console.error("[API/WORKSPACES] Failed to auto-create workspace:", {
-                    message: createError.message,
-                    code: createError.code
+                    message,
+                    code: (createError as any).code
                 });
                 // Continue to return empty workspaces so UI can show manual creation
                 return NextResponse.json({ workspaces: [], error: "Auto-creation failed" });
@@ -76,11 +77,13 @@ export async function GET() {
         }
 
         return NextResponse.json({ workspaces });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        const stack = error instanceof Error ? error.stack : undefined;
         console.error("[API/WORKSPACES] Detailed error fetching workspaces:", {
-            message: error.message,
-            stack: error.stack,
-            code: error.code
+            message,
+            stack,
+            code: (error as any).code
         });
         return NextResponse.json({ 
             error: "Internal error", 
@@ -127,7 +130,7 @@ export async function POST(req: Request) {
                 if (!existing) break;
                 slug = `${baseSlug}-${counter}`;
                 counter++;
-            } catch (e) {
+            } catch {
                 break; // Let the create call handle the failure if findUnique fails
             }
         }
@@ -139,7 +142,7 @@ export async function POST(req: Request) {
                 members: {
                     create: {
                         userId: session.user.id,
-                        role: "OWNER"
+                        role: "MEMBER"
                     }
                 }
             },
@@ -152,12 +155,14 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ workspace: newWorkspace, success: true });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        const stack = error instanceof Error ? error.stack : undefined;
         console.error("[API/WORKSPACES] Detailed error creating workspace:", {
-            message: error.message,
-            stack: error.stack,
-            code: error.code,
-            meta: error.meta
+            message,
+            stack,
+            code: (error as any).code,
+            meta: (error as any).meta
         });
         return NextResponse.json({ 
             error: "فشل إنشاء مساحة العمل", 
