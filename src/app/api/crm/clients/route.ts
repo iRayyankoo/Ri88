@@ -25,6 +25,9 @@ export async function GET(req: Request) {
             include: {
                 _count: {
                     select: { opportunities: true, activities: true }
+                },
+                invoices: {
+                    select: { totalAmount: true, status: true }
                 }
             }
         });
@@ -44,7 +47,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { 
             workspaceId, name, email, phone, company, status,
-            interestType, location, propertyType, financialCapacity, source 
+            interestType, location, propertyType, financialCapacity, source, metadata 
         } = body;
 
         if (!workspaceId || !name) {
@@ -70,7 +73,8 @@ export async function POST(req: Request) {
                 location,
                 propertyType,
                 financialCapacity,
-                source
+                source,
+                metadata: metadata || {}
             }
         });
 

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Logo from '../Brand/Logo';
 import { Settings, LogOut, User } from 'lucide-react';
 import { useSession, signIn } from 'next-auth/react';
-import { handleSignOut } from '@/actions/auth';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import NotificationsDropdown from './NotificationsDropdown';
@@ -89,15 +89,14 @@ const MobileHeader = () => {
                                         الإعدادات
                                     </Link>
 
-                                    <form action={handleSignOut}>
-                                        <button
-                                            type="submit"
-                                            className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            تسجيل الخروج
-                                        </button>
-                                    </form>
+                                    <button
+                                        onClick={() => signOut({ callbackUrl: '/' })}
+                                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        تسجيل الخروج
+                                    </button>
+
                                 </div>
                             </div>
                         )}

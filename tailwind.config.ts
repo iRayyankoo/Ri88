@@ -12,7 +12,7 @@ const config: Config = {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
                 brand: {
-                    primary: '#8B5CF6',
+                    primary: 'var(--brand-primary, #8B5CF6)',
                     secondary: '#22D3EE',
                     bg: "var(--brand-bg)",
                 },

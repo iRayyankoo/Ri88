@@ -36,6 +36,8 @@ export async function GET() {
                 name: true,
                 slug: true,
                 logoUrl: true,
+                branding: true,
+                customFieldsDefinition: true,
             },
             orderBy: {
                 createdAt: 'asc'
@@ -62,6 +64,8 @@ export async function GET() {
                         name: true,
                         slug: true,
                         logoUrl: true,
+                        branding: true,
+                        customFieldsDefinition: true,
                     }
                 });
                 return NextResponse.json({ workspaces: [newWorkspace] });
@@ -78,17 +82,18 @@ export async function GET() {
 
         return NextResponse.json({ workspaces });
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        const stack = error instanceof Error ? error.stack : undefined;
+        const prismaError = error as any;
         console.error("[API/WORKSPACES] Detailed error fetching workspaces:", {
-            message,
-            stack,
-            code: (error as any).code
+            message: prismaError.message,
+            code: prismaError.code,
+            meta: prismaError.meta,
+            stack: prismaError.stack
         });
+        
         return NextResponse.json({ 
-            error: "Internal error", 
-            details: message,
-            code: (error as any).code 
+            error: "فشل تحميل مساحات العمل", 
+            details: prismaError.message,
+            code: prismaError.code 
         }, { status: 500 });
     }
 }
@@ -151,6 +156,8 @@ export async function POST(req: Request) {
                 name: true,
                 slug: true,
                 logoUrl: true,
+                branding: true,
+                customFieldsDefinition: true,
             }
         });
 

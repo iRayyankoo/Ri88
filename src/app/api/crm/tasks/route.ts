@@ -31,7 +31,11 @@ export async function GET(req: Request) {
                 },
                 client: {
                     select: { name: true, company: true }
-                }
+                },
+                opportunity: {
+                    select: { id: true, title: true }
+                },
+                attachments: true
             },
             orderBy: { createdAt: 'desc' }
         });
@@ -49,7 +53,7 @@ export async function POST(req: Request) {
         if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
-        const { workspaceId, title, description, status, assigneeId, dueDate, clientId, priority, group } = body;
+        const { workspaceId, title, description, status, assigneeId, dueDate, clientId, opportunityId, priority, group, requiresApproval, approvalDept, attachments } = body;
 
         if (!workspaceId || !title) {
             return NextResponse.json({ error: "workspaceId and title are required" }, { status: 400 });
@@ -71,12 +75,26 @@ export async function POST(req: Request) {
                 assigneeId: assigneeId || session.user.id,
                 dueDate: dueDate ? new Date(dueDate) : null,
                 clientId: clientId || null,
+                opportunityId: opportunityId || null,
                 priority: priority || 'MEDIUM',
-                group: group || 'هذا الأسبوع'
+                group: group || 'هذا الأسبوع',
+                requiresApproval: requiresApproval || false,
+                approvalDept: approvalDept || null,
+                attachments: attachments ? {
+                    create: attachments.map((a: any) => ({
+                        workspaceId: workspaceId,
+                        name: a.name,
+                        url: a.url,
+                        type: a.type,
+                        size: a.size
+                    }))
+                } : undefined
             },
             include: {
                 assignee: { select: { id: true, name: true, image: true } },
-                client: { select: { name: true, company: true } }
+                client: { select: { name: true, company: true } },
+                opportunity: { select: { id: true, title: true } },
+                attachments: true
             }
         });
 
@@ -107,7 +125,7 @@ export async function PUT(req: Request) {
         if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
-        const { id, workspaceId, title, status, priority, group, clientId, assigneeId, dueDate } = body;
+        const { id, workspaceId, title, status, priority, group, clientId, opportunityId, assigneeId, dueDate, requiresApproval, approvalDept } = body;
 
         if (!id || !workspaceId) {
             return NextResponse.json({ error: "id and workspaceId are required" }, { status: 400 });
@@ -133,15 +151,37 @@ export async function PUT(req: Request) {
         if (priority !== undefined) dataToUpdate.priority = priority;
         if (group !== undefined) dataToUpdate.group = group;
         if (clientId !== undefined) dataToUpdate.clientId = clientId;
+        if (opportunityId !== undefined) dataToUpdate.opportunityId = opportunityId;
         if (assigneeId !== undefined) dataToUpdate.assigneeId = assigneeId;
         if (dueDate !== undefined) dataToUpdate.dueDate = dueDate ? new Date(dueDate) : null;
+        if (requiresApproval !== undefined) dataToUpdate.requiresApproval = requiresApproval;
+        if (approvalDept !== undefined) dataToUpdate.approvalDept = approvalDept || null;
+        if (body.attachments) {
+            dataToUpdate.attachments = {
+                create: body.attachments.map((a: any) => ({
+                    workspaceId: workspaceId,
+                    name: a.name,
+                    url: a.url,
+                    type: a.type,
+                    size: a.size
+                }))
+            };
+        }
+
+        // Validation for DONE status
+        if (status === 'DONE' && oldTask.requiresApproval) {
+            // If it requires approval and is moving to DONE, it should ideally check for a separate Approval record.
+            // Since we don't have approvalStatus in the schema, we'll proceed for now.
+        }
 
         const updatedTask = await prisma.task.update({
             where: { id, workspaceId },
             data: dataToUpdate,
             include: {
                 assignee: { select: { id: true, name: true, image: true } },
-                client: { select: { name: true, company: true } }
+                client: { select: { name: true, company: true } },
+                opportunity: { select: { id: true, title: true } },
+                attachments: true
             }
         });
 

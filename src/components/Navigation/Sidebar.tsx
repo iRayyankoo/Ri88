@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import Logo from '../Brand/Logo';
@@ -26,7 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigation } from '@/context/NavigationContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
 import { useSession } from 'next-auth/react';
-import { handleSignOut } from '@/actions/auth';
+import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import CreateWorkspaceModal from '../workspaces/CreateWorkspaceModal';
@@ -288,15 +287,14 @@ const Sidebar = () => {
                                         <Puzzle className="w-4 h-4 text-brand-primary" />
                                         {!isSidebarCollapsed && <span className="text-sm font-bold">الامتدادات</span>}
                                     </Link>
-                                    <form action={handleSignOut}>
-                                        <button
-                                            type="submit"
-                                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors text-text-muted hover:text-red-500 border-t border-border-subtle"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            {!isSidebarCollapsed && <span className="text-sm font-bold">تسجيل الخروج</span>}
-                                        </button>
-                                    </form>
+                                    <button
+                                        onClick={() => signOut({ callbackUrl: '/' })}
+                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-colors text-text-muted hover:text-red-500 border-t border-border-subtle"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        {!isSidebarCollapsed && <span className="text-sm font-bold">تسجيل الخروج</span>}
+                                    </button>
+
                                 </motion.div>
                             )}
                         </AnimatePresence>

@@ -12,6 +12,8 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { arSA } from 'date-fns/locale';
 import AccessDenied from '../AccessControl/AccessDenied';
+import { updateWorkspaceSettings } from '@/actions/workspace';
+import { Palette, Layers, Plus, Trash2 } from 'lucide-react';
 
 /*
   GlobalSettings:
@@ -20,7 +22,7 @@ import AccessDenied from '../AccessControl/AccessDenied';
 
 const GlobalSettings = () => {
     const { openToolsInModal, setOpenToolsInModal } = useNavigation();
-    const { currentWorkspace, permissions, workspaceRole } = useWorkspace();
+    const { currentWorkspace, permissions, workspaceRole, refreshWorkspaces } = useWorkspace();
     const { data: session, update } = useSession();
     const { theme, setTheme } = useTheme();
     const [language, setLanguage] = useState('ar');
@@ -29,6 +31,12 @@ const GlobalSettings = () => {
     const [name, setName] = useState(session?.user?.name || '');
     const [isSaving, setIsSaving] = useState(false);
 
+    // Workspace States
+    const [branding, setBranding] = useState<any>(currentWorkspace?.branding || {});
+    const [customFields, setCustomFields] = useState<any[]>(
+        (currentWorkspace?.customFieldsDefinition as any)?.Client || []
+    );
+
     const [transactions, setTransactions] = useState<{ type: string; description: string; amount: number; date: Date }[]>([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
@@ -36,6 +44,13 @@ const GlobalSettings = () => {
         if (session?.user?.name) setName(session.user.name);
         if (session?.user?.image) setSelectedAvatar(session.user.image);
     }, [session]);
+
+    React.useEffect(() => {
+        if (currentWorkspace) {
+            setBranding(currentWorkspace.branding || {});
+            setCustomFields((currentWorkspace.customFieldsDefinition as any)?.Client || []);
+        }
+    }, [currentWorkspace]);
 
     React.useEffect(() => {
         const fetchHistory = async () => {
@@ -76,7 +91,24 @@ const GlobalSettings = () => {
                     });
                     toast.success(res.success);
                 }
-            } else {
+            }
+
+            // Workspace Save
+            if (currentWorkspace?.id) {
+                const workspaceRes = await updateWorkspaceSettings(currentWorkspace.id, {
+                    branding,
+                    customFieldsDefinition: { Client: customFields }
+                });
+
+                if (workspaceRes.error) {
+                    toast.error(workspaceRes.error);
+                } else if (workspaceRes.success) {
+                    toast.success(workspaceRes.success);
+                    refreshWorkspaces();
+                }
+            }
+
+            if (!hasAvatarChanged && !hasNameChanged && !currentWorkspace?.id) {
                 toast.success('تم حفظ الإعدادات بنجاح');
             }
         } catch (error) {
@@ -242,6 +274,110 @@ const GlobalSettings = () => {
                                     <span className={`text-sm font-bold ${theme === 'light' ? 'text-brand-primary' : 'text-text-muted'}`}>Light</span>
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </GlassCard>
+
+                {/* Workspace Branding */}
+                <GlassCard title="المؤسسة والهوية" icon={Palette}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
+                        <div className="space-y-4">
+                            <label className="text-base font-bold text-text-muted block">لون الهوية الأساسي</label>
+                            <div className="flex items-center gap-4">
+                                <input 
+                                    type="color" 
+                                    value={branding.primaryColor || '#8B5CF6'}
+                                    onChange={(e) => setBranding({ ...branding, primaryColor: e.target.value })}
+                                    className="w-16 h-16 rounded-xl bg-surface-raised border border-border-subtle cursor-pointer"
+                                    title="اختر لون الهوية"
+                                />
+                                <div className="flex-1">
+                                    <input 
+                                        type="text"
+                                        value={branding.primaryColor || '#8B5CF6'}
+                                        onChange={(e) => setBranding({ ...branding, primaryColor: e.target.value })}
+                                        className="w-full bg-surface-raised border border-border-subtle rounded-xl py-3 px-4 text-text-primary font-mono text-sm"
+                                        placeholder="#000000"
+                                        title="كود اللون"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <label className="text-base font-bold text-text-muted block">اسم المؤسسة التجاري</label>
+                            <input 
+                                type="text"
+                                value={branding.companyName || currentWorkspace?.name || ''}
+                                onChange={(e) => setBranding({ ...branding, companyName: e.target.value })}
+                                className="w-full bg-surface-raised border border-border-subtle rounded-xl py-3 px-4 text-text-primary"
+                                placeholder="مثال: شركة ريان العقارية"
+                                title="اسم الشركة"
+                            />
+                        </div>
+                    </div>
+                </GlassCard>
+
+                {/* Dynamic Fields */}
+                <GlassCard title="الحقول المخصصة (Enterprise)" icon={Layers}>
+                    <div className="p-4 space-y-6">
+                        <div className="flex items-center justify-between mb-2">
+                             <p className="text-sm text-text-muted">أضف حقولاً إضافية لبيانات العملاء (مثل: تاريخ الميلاد، رقم الملف، إلخ)</p>
+                             <button 
+                                onClick={() => setCustomFields([...customFields, { label: '', type: 'text' }])}
+                                className="flex items-center gap-2 px-4 py-2 bg-brand-primary/10 text-brand-primary rounded-xl text-xs font-black border border-brand-primary/20 hover:bg-brand-primary hover:text-white transition-all"
+                             >
+                                <Plus size={14} />
+                                إضافة حقل
+                             </button>
+                        </div>
+                        
+                        <div className="space-y-3">
+                            {customFields.map((field, idx) => (
+                                <div key={idx} className="flex flex-col sm:flex-row items-center gap-3 p-4 bg-surface-raised border border-border-subtle rounded-2xl group relative">
+                                    <div className="flex-1 w-full">
+                                        <input 
+                                            type="text"
+                                            value={field.label}
+                                            onChange={(e) => {
+                                                const newFields = [...customFields];
+                                                newFields[idx].label = e.target.value;
+                                                setCustomFields(newFields);
+                                            }}
+                                            className="w-full bg-surface-base border border-border-subtle rounded-xl py-2 px-4 text-sm text-white"
+                                            placeholder="اسم الحقل (مثال: رقم الضمان)"
+                                            title="اسم الحقل"
+                                        />
+                                    </div>
+                                    <div className="w-full sm:w-40">
+                                        <select 
+                                            value={field.type}
+                                            onChange={(e) => {
+                                                const newFields = [...customFields];
+                                                newFields[idx].type = e.target.value;
+                                                setCustomFields(newFields);
+                                            }}
+                                            className="w-full bg-surface-base border border-border-subtle rounded-xl py-2 px-4 text-sm text-white"
+                                            title="نوع الحقل"
+                                        >
+                                            <option value="text">نص</option>
+                                            <option value="number">رقم</option>
+                                            <option value="date">تاريخ</option>
+                                        </select>
+                                    </div>
+                                    <button 
+                                        onClick={() => setCustomFields(customFields.filter((_, i) => i !== idx))}
+                                        className="p-2 text-slate-500 hover:text-red-500 transition-colors"
+                                        title="حذف الحقل"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                            {customFields.length === 0 && (
+                                <div className="text-center py-8 bg-white/[0.02] border border-dashed border-border-strong rounded-2xl">
+                                    <p className="text-xs text-slate-500">لا توجد حقول مخصصة حالياً</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </GlassCard>

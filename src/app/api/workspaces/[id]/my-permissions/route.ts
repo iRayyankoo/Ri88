@@ -17,8 +17,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             const permissions: Record<string, boolean> = {
                 'can_access_crm': true,
                 'can_manage_clients': true,
-                'can_manage_opportunities': true,
-                'can_manage_tasks': true,
+                'can_view_opportunities': true,
+                'can_create_opportunities': true,
+                'can_edit_opportunities': true,
+                'can_view_tasks': true,
+                'can_create_tasks': true,
+                'can_edit_tasks': true,
                 'can_access_finance': true,
                 'can_access_tools': true,
                 'can_access_settings': true,
@@ -56,8 +60,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         if (isWorkspaceAdmin) {
             permissions['can_access_crm'] = true;
             permissions['can_manage_clients'] = true;
-            permissions['can_manage_opportunities'] = true;
-            permissions['can_manage_tasks'] = true;
+            permissions['can_view_opportunities'] = true;
+            permissions['can_create_opportunities'] = true;
+            permissions['can_edit_opportunities'] = true;
+            permissions['can_view_tasks'] = true;
+            permissions['can_create_tasks'] = true;
+            permissions['can_edit_tasks'] = true;
             permissions['can_access_finance'] = true;
             permissions['can_access_tools'] = true;
             permissions['can_access_settings'] = true;

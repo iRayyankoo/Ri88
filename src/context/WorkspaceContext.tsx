@@ -8,6 +8,8 @@ interface Workspace {
     name: string;
     slug: string;
     logoUrl: string | null;
+    branding?: any;
+    customFieldsDefinition?: any;
 }
 
 interface WorkspaceContextType {
@@ -53,11 +55,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
-                console.error("Failed to fetch workspaces:", { 
-                    status: res.status, 
-                    statusText: res.statusText, 
-                    errorData 
-                });
+                console.error("Failed to fetch workspaces. Status:", res.status, res.statusText);
+                if (errorData.error) console.error("Error Detail:", errorData.error);
                 setIsLoading(false);
                 return;
             }
@@ -116,6 +115,16 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         refreshWorkspaces();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status]);
+
+    // Handle dynamic branding colors
+    useEffect(() => {
+        if (currentWorkspace?.branding?.primaryColor) {
+            document.documentElement.style.setProperty('--brand-primary', currentWorkspace.branding.primaryColor);
+        } else {
+            // Default color if no branding exists
+            document.documentElement.style.setProperty('--brand-primary', '#8B5CF6');
+        }
+    }, [currentWorkspace?.branding?.primaryColor]);
 
     return (
         <WorkspaceContext.Provider value={{ workspaces, currentWorkspace, setCurrentWorkspace, refreshWorkspaces, isLoading, permissions, workspaceRole }}>

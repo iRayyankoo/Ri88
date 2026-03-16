@@ -61,7 +61,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const { 
             workspaceId, name, email, phone, company, status,
-            interestType, location, propertyType, financialCapacity, source
+            interestType, location, propertyType, financialCapacity, source, metadata
         } = body;
 
         if (!workspaceId) return NextResponse.json({ error: "workspaceId is required" }, { status: 400 });
@@ -84,6 +84,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         if (propertyType !== undefined) dataToUpdate.propertyType = propertyType;
         if (financialCapacity !== undefined) dataToUpdate.financialCapacity = financialCapacity;
         if (source !== undefined) dataToUpdate.source = source;
+        if (metadata !== undefined) dataToUpdate.metadata = metadata;
 
         const client = await prisma.client.update({
             where: { id: clientId, workspaceId },

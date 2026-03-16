@@ -34,7 +34,7 @@ interface Workgroup {
     id: string;
     name: string;
     description: string | null;
-    permissions: Record<string, boolean>;
+    permissions: Record<string, any>;
     members: WorkgroupMember[];
 }
 
@@ -49,8 +49,12 @@ interface User {
 const PERMISSION_KEYS = [
     { key: 'can_access_crm', label: 'الوصول إلى CRM', icon: LayoutDashboard },
     { key: 'can_manage_clients', label: 'إدارة العملاء', icon: Users },
-    { key: 'can_manage_opportunities', label: 'إدارة الفرص البيعية', icon: Briefcase },
-    { key: 'can_manage_tasks', label: 'إدارة المهام', icon: Check },
+    { key: 'can_view_opportunities', label: 'مشاهدة الصفقات', icon: Briefcase },
+    { key: 'can_create_opportunities', label: 'إنشاء صفقات جديدة', icon: Plus },
+    { key: 'can_edit_opportunities', label: 'تعديل الصفقات', icon: Settings },
+    { key: 'can_view_tasks', label: 'متابعة المهام فقط', icon: Check },
+    { key: 'can_create_tasks', label: 'إنشاء مهام', icon: Plus },
+    { key: 'can_edit_tasks', label: 'تعديل المهام', icon: Settings },
     { key: 'can_access_finance', label: 'الوصول إلى المالية والمحاسبة', icon: Building },
     { key: 'can_access_tools', label: 'الوصول إلى مركز الأدوات', icon: Zap },
     { key: 'can_access_settings', label: 'الوصول إلى الإعدادات', icon: Settings },
@@ -67,7 +71,7 @@ const WorkgroupManagement = () => {
     // Form State
     const [groupName, setGroupName] = useState('');
     const [groupDesc, setGroupDesc] = useState('');
-    const [groupPermissions, setGroupPermissions] = useState<Record<string, boolean>>({});
+    const [groupPermissions, setGroupPermissions] = useState<Record<string, any>>({});
     const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -171,7 +175,7 @@ const WorkgroupManagement = () => {
                 toast.success("تم الحذف بنجاح");
                 fetchData();
             }
-        } catch (error) {
+        } catch (_error) {
             toast.error("فشل الحذف");
         }
     };
@@ -253,11 +257,27 @@ const WorkgroupManagement = () => {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mt-4">
-                                {Object.entries(wg.permissions || {}).map(([key, value]) => value && (
-                                    <span key={key} className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold">
-                                        {PERMISSION_KEYS.find(p => p.key === key)?.label || key}
-                                    </span>
-                                ))}
+                                {Object.entries(wg.permissions || {}).map(([key, value]) => {
+                                    if (typeof value !== 'boolean' || !value) return null;
+                                    const perm = PERMISSION_KEYS.find(p => p.key === key);
+                                    if (!perm) return null;
+                                    
+                                    const needsApproval = wg.permissions[`${key}_approval`];
+                                    const dept = wg.permissions[`${key}_dept`];
+
+                                    return (
+                                        <div key={key} className="flex flex-col gap-1">
+                                            <span className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold">
+                                                {perm.label}
+                                            </span>
+                                            {needsApproval && (
+                                                <span className="text-[8px] text-brand-primary font-black flex items-center gap-1 mr-1">
+                                                    <Lock size={8} /> موافقة: {dept}
+                                                </span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </motion.div>
@@ -322,22 +342,65 @@ const WorkgroupManagement = () => {
                                         <label className="text-xs font-black text-text-muted uppercase tracking-widest mr-2">مصفوفة الصلاحيات (Permissions)</label>
                                         <div className="grid grid-cols-1 gap-3">
                                             {PERMISSION_KEYS.map(perm => (
-                                                <button 
-                                                    key={perm.key}
-                                                    type="button"
-                                                    onClick={() => togglePermission(perm.key)}
-                                                    className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${groupPermissions[perm.key] ? 'bg-brand-primary/10 border-brand-primary/30' : 'bg-surface-raised border-border-subtle hover:border-white/10'}`}
-                                                >
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`p-2 rounded-lg ${groupPermissions[perm.key] ? 'bg-brand-primary text-black' : 'bg-surface-base text-text-muted'}`}>
-                                                            <perm.icon size={16} />
+                                                <div key={perm.key} className="space-y-2">
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => togglePermission(perm.key)}
+                                                        className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all ${groupPermissions[perm.key] ? 'bg-brand-primary/10 border-brand-primary/30' : 'bg-surface-raised border-border-subtle hover:border-white/10'}`}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`p-2 rounded-lg ${groupPermissions[perm.key] ? 'bg-brand-primary text-black' : 'bg-surface-base text-text-muted'}`}>
+                                                                <perm.icon size={16} />
+                                                            </div>
+                                                            <span className={`text-sm font-bold ${groupPermissions[perm.key] ? 'text-white' : 'text-text-muted'}`}>{perm.label}</span>
                                                         </div>
-                                                        <span className={`text-sm font-bold ${groupPermissions[perm.key] ? 'text-white' : 'text-text-muted'}`}>{perm.label}</span>
-                                                    </div>
-                                                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${groupPermissions[perm.key] ? 'bg-brand-primary border-brand-primary' : 'border-border-strong'}`}>
-                                                        {groupPermissions[perm.key] && <Check size={14} className="text-black" />}
-                                                    </div>
-                                                </button>
+                                                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${groupPermissions[perm.key] ? 'bg-brand-primary border-brand-primary' : 'border-border-strong'}`}>
+                                                            {groupPermissions[perm.key] && <Check size={14} className="text-black" />}
+                                                        </div>
+                                                    </button>
+
+                                                    {/* Approval Options for Sales and Tasks */}
+                                                    {groupPermissions[perm.key] && (perm.key === 'can_manage_opportunities' || perm.key === 'can_manage_tasks') && (
+                                                        <motion.div 
+                                                            initial={{ height: 0, opacity: 0 }}
+                                                            animate={{ height: 'auto', opacity: 1 }}
+                                                            className="px-4 pb-2 space-y-3"
+                                                        >
+                                                            <div className="flex items-center justify-between p-3 bg-black/20 rounded-xl border border-white/5">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></div>
+                                                                    <span className="text-xs font-bold text-white">موافقة مطلوبة</span>
+                                                                </div>
+                                                                <button 
+                                                                    type="button"
+                                                                    title="تفعيل الموافقة المطلوبة"
+                                                                    onClick={() => setGroupPermissions(prev => ({ ...prev, [`${perm.key}_approval`]: !prev[`${perm.key}_approval`] }))}
+                                                                    className={`w-10 h-5 rounded-full transition-all relative ${groupPermissions[`${perm.key}_approval`] ? 'bg-brand-primary' : 'bg-surface-base'}`}
+                                                                >
+                                                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${groupPermissions[`${perm.key}_approval`] ? 'left-6' : 'left-1'}`}></div>
+                                                                </button>
+                                                            </div>
+
+                                                            {groupPermissions[`${perm.key}_approval`] && (
+                                                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                                                                    <label className="text-[10px] font-black text-text-muted uppercase tracking-widest mr-2">جهة الموافقة</label>
+                                                                    <select 
+                                                                        title="اختر جهة الموافقة"
+                                                                        value={groupPermissions[`${perm.key}_dept`] || 'المالية'}
+                                                                        onChange={(e) => setGroupPermissions(prev => ({ ...prev, [`${perm.key}_dept`]: e.target.value }))}
+                                                                        className="w-full bg-black/40 border border-border-subtle rounded-xl p-2 text-xs text-white outline-none focus:border-brand-primary font-bold"
+                                                                    >
+                                                                        <option value="المالية">المالية</option>
+                                                                        <option value="الموارد البشرية">الموارد البشرية</option>
+                                                                        <option value="المشتريات">المشتريات</option>
+                                                                        <option value="إدارة العمليات">إدارة العمليات</option>
+                                                                        <option value="المدير المباشر">المدير المباشر</option>
+                                                                    </select>
+                                                                </div>
+                                                            )}
+                                                        </motion.div>
+                                                    )}
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
