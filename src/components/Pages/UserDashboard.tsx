@@ -190,18 +190,23 @@ const WidgetWrapper = ({ children, title, icon: Icon, onRemove, size = 'medium' 
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         className={`${size === 'large' ? 'col-span-1 md:col-span-2 lg:col-span-3' : size === 'medium' ? 'col-span-1' : 'col-span-1'}
-        relative overflow-hidden rounded-[24px] bg-surface-raised border border-border-subtle p-5 group flex flex-col h-full shadow-lg transition-colors`}
+        relative overflow-hidden rounded-2xl bg-surface-raised border border-border-subtle hover:border-brand-primary/40 p-5 group flex flex-col h-full shadow-sm transition-all`}
     >
         <div className="flex items-center justify-between mb-4 shrink-0">
             <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-surface-glass border border-border-subtle">
-                    <Icon className="w-4 h-4 text-brand-primary" />
+                <div className="window-dots mr-1">
+                    <span className="window-dot red" />
+                    <span className="window-dot yellow" />
+                    <span className="window-dot green" />
                 </div>
-                <h3 className="text-xs font-black text-text-primary font-cairo uppercase tracking-widest">{title}</h3>
+                <div className="p-1.5 rounded-lg bg-surface-glass border border-border-subtle">
+                    <Icon className="w-3.5 h-3.5 text-brand-primary" />
+                </div>
+                <h3 className="text-xs font-bold text-text-primary font-cairo tracking-wide">{title}</h3>
             </div>
             <div className="flex items-center gap-2">
                 <span title="اسحب لتغيير الترتيب" className="cursor-grab active:cursor-grabbing">
-                    <GripVertical className="w-4 h-4 text-text-muted hover:text-text-primary transition-colors" />
+                    <GripVertical className="w-3.5 h-3.5 text-text-muted hover:text-text-primary transition-colors" />
                 </span>
                 <button
                     onClick={onRemove}
@@ -343,27 +348,31 @@ const UserDashboard = () => {
             {/* 1. Header & Quick Search */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 px-1">
                 <div className="flex flex-col">
-                    <h1 className="text-xl font-black text-text-primary font-cairo">لوحة التحكم الذكية</h1>
-                    <p className="text-text-muted text-xs font-medium">مرحباً بك مجدداً، نظم عملك بذكاء.</p>
+                    <div className="section-tag mb-1">
+                        <span className="line" />
+                        <span>لوحة التحكم // DASHBOARD</span>
+                    </div>
+                    <h1 className="text-xl sm:text-2xl font-black text-text-primary font-cairo">منظومة العمل الذكية</h1>
+                    <p className="text-text-muted text-xs font-mono">WORKSPACE: ACTIVE · RIYADH DC · 18MS</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <div className="relative group flex-1 max-w-md hidden sm:block">
-                        <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-primary transition-colors" />
+                        <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-primary transition-colors" />
                         <input
                             type="text"
                             title="البحث عن أدوات"
                             aria-label="البحث عن أدوات"
-                            placeholder="ابحث عن أداة..."
-                            className="w-full h-11 bg-surface-raised border border-border-subtle rounded-xl pr-11 pl-4 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand-primary/50 transition-all font-medium shadow-sm"
+                            placeholder="ابحث عن أداة سريعة..."
+                            className="w-full h-10 bg-surface-raised border border-border-subtle rounded-xl pr-10 pl-4 text-xs font-mono text-text-primary placeholder:text-text-muted outline-none focus:border-brand-primary/50 transition-all shadow-sm"
                         />
                     </div>
                     <button
                         onClick={() => setIsGalleryOpen(true)}
-                        className="h-11 px-4 flex items-center gap-2 rounded-xl bg-brand-primary text-black font-black text-xs hover:bg-brand-primary/90 transition-all active:scale-95 shadow-lg shadow-brand-primary/20"
+                        className="btn-primary-accent text-xs py-2 px-3.5"
                     >
-                        <Plus size={16} strokeWidth={3} />
-                        تخصيص
+                        <Plus size={14} strokeWidth={3} />
+                        <span>تخصيص الصناديق</span>
                     </button>
                 </div>
             </div>
@@ -392,22 +401,28 @@ const UserDashboard = () => {
             {/* 3. Featured Tools (Static for now) */}
             <div className="space-y-4 pt-4">
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="text-sm font-black text-text-primary font-cairo uppercase tracking-widest opacity-80">الأدوات المفضلة</h2>
-                    <Link href="/pro/tools" className="text-[10px] font-black text-brand-primary hover:underline">عرض الكل</Link>
+                    <div className="section-tag mb-0">
+                        <span className="line" />
+                        <span>01 / الأدوات السريعة // QUICK LAUNCH</span>
+                    </div>
+                    <Link href="/pro/tools" className="text-xs font-mono text-brand-primary hover:underline flex items-center gap-1 font-bold">
+                        <span>عرض الكل</span>
+                        <span>&gt;</span>
+                    </Link>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
                     {tools.slice(0, 4).map((tool) => (
                         <div
                             key={tool.id}
                             onClick={() => launchTool(tool.id)}
-                            className="flex items-center gap-3 p-3 rounded-2xl bg-surface-raised border border-border-subtle hover:bg-surface-glass hover:border-brand-primary/40 transition-all cursor-pointer group/tool shadow-sm"
+                            className="p-3.5 rounded-xl bg-surface-raised border border-border-subtle hover:border-brand-primary/50 hover:bg-surface-glass transition-all cursor-pointer group/tool shadow-sm flex items-center gap-3"
                         >
-                            <div className="w-10 h-10 rounded-xl bg-surface-glass border border-border-subtle flex items-center justify-center text-slate-400 group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all">
-                                <Zap className="w-5 h-5" />
+                            <div className="w-9 h-9 rounded-lg bg-surface-glass border border-border-subtle flex items-center justify-center text-text-muted group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all shrink-0">
+                                <Zap className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0 text-right">
-                                <span className="text-text-primary text-[11px] font-bold font-cairo truncate">{tool.titleAr || tool.title}</span>
-                                <span className="text-[8px] text-text-muted font-bold uppercase tracking-widest">{tool.cat}</span>
+                                <span className="text-text-primary text-xs font-bold font-cairo truncate">{tool.titleAr || tool.title}</span>
+                                <span className="text-[9px] text-text-muted font-mono uppercase tracking-wider">{tool.cat}</span>
                             </div>
                         </div>
                     ))}

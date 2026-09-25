@@ -29,11 +29,9 @@ const MobileHeader = () => {
     return (
         <header className="lg:hidden h-16 px-4 flex items-center justify-between sticky top-0 z-40 bg-surface-base/90 backdrop-blur-xl border-b border-border-subtle">
             {/* Logo */}
-            <div className="flex items-center gap-2 scale-90 origin-right">
+            <div className="flex items-center gap-2">
                 <Logo size="sm" showText />
-                <span className="px-2 py-0.5 rounded-md bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[8px] font-black font-cairo animate-pulse">
-                    تجريبي
-                </span>
+                <span className="pulsing-dot"></span>
             </div>
 
             {/* Actions */}

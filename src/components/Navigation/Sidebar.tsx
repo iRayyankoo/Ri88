@@ -72,34 +72,39 @@ const Sidebar = () => {
 
     // ── قائمة العضو الأساسية ──────────────────────────────
     const navItems = [
-        { name: 'الرئيسية', icon: LayoutDashboard, href: '/' },
-        { name: 'مركز الأدوات', icon: Zap, href: '/pro/tools' },
-        { name: 'الإعدادات', icon: Settings, href: '/pro/settings' },
+        { num: '01', name: 'الرئيسية', icon: LayoutDashboard, href: '/' },
+        { num: '02', name: 'مركز الأدوات', icon: Zap, href: '/pro/tools' },
+        { num: '03', name: 'الإعدادات', icon: Settings, href: '/pro/settings' },
     ];
 
     // ── قائمة الأدمن الإضافية ────────────────────────────
     const adminItems = [
-        { name: 'إدارة النظام', icon: ShieldCheck, href: '/pro/admin' },
-        { name: 'بوابة المطورين', icon: Cpu, href: '/pro/dev' },
+        { num: '04', name: 'إدارة النظام', icon: ShieldCheck, href: '/pro/admin' },
+        { num: '05', name: 'بوابة المطورين', icon: Cpu, href: '/pro/dev' },
     ];
 
-    const NavLink = ({ item }: { item: { name: string; icon: React.ElementType; href: string } }) => {
+    const NavLink = ({ item }: { item: { num?: string; name: string; icon: React.ElementType; href: string } }) => {
         const isActive = pathname === item.href;
         return (
             <Link href={item.href} className="w-full block" title={isSidebarCollapsed ? item.name : undefined}>
                 <motion.div
-                    whileHover={{ x: isSidebarCollapsed ? 0 : -4 }}
-                    className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center px-0 py-3' : 'justify-start gap-4 px-4 py-3'} rounded-xl transition-all group relative overflow-hidden ${isActive ? 'text-white shadow-[0_0_25px_rgba(139,92,246,0.3)]' : 'text-text-muted hover:text-text-primary hover:bg-surface-glass'
-                        }`}
+                    whileHover={{ x: isSidebarCollapsed ? 0 : -3 }}
+                    className={`w-full flex items-center ${isSidebarCollapsed ? 'justify-center px-0 py-2.5' : 'justify-start gap-3 px-3.5 py-2.5'} rounded-xl transition-all group relative overflow-hidden ${
+                        isActive 
+                            ? 'bg-brand-primary/10 border border-brand-primary/30 text-brand-primary shadow-sm' 
+                            : 'text-text-muted hover:text-text-primary hover:bg-surface-glass border border-transparent'
+                    }`}
                 >
-                    {isActive && (
-                        <motion.div layoutId="sidebar-active" className="absolute inset-0 bg-brand-primary rounded-xl -z-10" />
-                    )}
-                    <item.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-white' : 'text-text-muted group-hover:text-brand-primary'}`} />
+                    <item.icon className={`w-4 h-4 relative z-10 shrink-0 ${isActive ? 'text-brand-primary' : 'text-text-muted group-hover:text-text-primary'}`} />
                     {!isSidebarCollapsed && (
-                        <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`font-bold text-sm relative z-10 ${isActive ? 'text-white' : ''}`}>
-                            {item.name}
-                        </motion.span>
+                        <div className="flex items-center justify-between flex-1 min-w-0">
+                            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`font-semibold text-xs relative z-10 truncate ${isActive ? 'text-brand-primary font-bold' : ''}`}>
+                                {item.name}
+                            </motion.span>
+                            {item.num && (
+                                <span className={`nav-num text-[10px] ${isActive ? 'text-brand-primary font-bold' : 'text-text-muted opacity-60'}`}>{item.num}</span>
+                            )}
+                        </div>
                     )}
                 </motion.div>
             </Link>

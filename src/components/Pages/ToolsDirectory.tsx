@@ -353,19 +353,19 @@ const ToolsDirectory = () => {
             <div className="space-y-12">
                 <header className="space-y-6 pt-4 px-2">
                     <div className="relative group max-w-2xl mx-auto">
-                        <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                            <Search className="w-5 h-5 text-text-muted group-focus-within:text-brand-primary transition-colors" />
+                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                            <Search className="w-4 h-4 text-text-muted group-focus-within:text-brand-primary transition-colors" />
                         </div>
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="ابحث في الأدوات..."
-                            className="w-full h-14 lg:h-16 bg-surface-glass backdrop-blur-[24px] border border-border-subtle rounded-[24px] lg:rounded-[32px] pr-14 pl-8 text-text-primary placeholder:text-text-muted outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all font-medium text-sm lg:text-base text-right font-cairo shadow-2xl"
+                            placeholder="ابحث في أكثر من 80 أداة ذكية..."
+                            className="w-full h-12 bg-surface-raised border border-border-subtle rounded-xl pr-12 pl-6 text-text-primary placeholder:text-text-muted outline-none focus:border-brand-primary/50 transition-all font-mono text-xs text-right shadow-sm"
                         />
                     </div>
                     {/* Category Chips */}
-                    <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x scroll-smooth">
+                    <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar snap-x scroll-smooth">
                         {categories.map(cat => {
                             const Icon = getIcon(cat.icon);
                             const isActive = activeCategory === cat.id;
@@ -373,12 +373,12 @@ const ToolsDirectory = () => {
                                 <button
                                     key={cat.id}
                                     onClick={() => setActiveCategory(cat.id)}
-                                    className={`flex items-center gap-2 lg:gap-3 px-5 lg:px-8 py-2.5 lg:py-4 rounded-[20px] lg:rounded-[24px] text-[11px] lg:text-xs font-black whitespace-nowrap transition-all border snap-start font-cairo ${isActive
-                                        ? 'bg-brand-primary border-brand-primary text-white shadow-xl shadow-brand-primary/30'
-                                        : 'bg-surface-glass backdrop-blur-[24px] border-border-subtle text-text-muted hover:border-border-strong hover:text-text-primary'
+                                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono whitespace-nowrap transition-all border snap-start ${isActive
+                                        ? 'bg-brand-primary text-black font-bold border-brand-primary shadow-sm'
+                                        : 'bg-surface-raised border-border-subtle text-text-muted hover:border-border-strong hover:text-text-primary'
                                         }`}
                                 >
-                                    {isActive && <Icon className="w-4 h-4" />}
+                                    <Icon className="w-3.5 h-3.5" />
                                     <span>{cat.nameAr}</span>
                                 </button>
                             );
