@@ -1,7 +1,12 @@
-/* eslint-disable @next/next/no-page-custom-font */
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { CinematicToaster } from "@/components/ui/CinematicToaster";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: "Ri88 | بوابة المبدع العربي الرقمية",

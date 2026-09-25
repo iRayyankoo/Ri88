@@ -64,6 +64,17 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
         setShowToolPopup(true);
     };
 
+    // Auto-launch tool from URL query parameter (e.g. /?tool=unit)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const toolParam = params.get('tool');
+            if (toolParam) {
+                launchTool(toolParam);
+            }
+        }
+    }, []);
+
     return (
         <NavigationContext.Provider value={{
             isLoggedIn,

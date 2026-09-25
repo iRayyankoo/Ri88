@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Maximize2, Minimize2, Star, Share2, Check } from 'lucide-react';
+import { X, Maximize2, Minimize2, Star, Share2, Check, ArrowRight } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { resolveActiveTool } from './Pages/ToolWorkspace';
@@ -70,8 +70,8 @@ const ToolPopup = () => {
     return createPortal(
         <AnimatePresence>
             {showToolPopup && (
-                <div className="fixed inset-0 z-[999999] flex items-center justify-center p-2 sm:p-4 lg:p-6 transition-all duration-300">
-                    {/* BACKDROP DIMMER - COVERS 100% OF VIEWPORT INCLUDING SIDEBAR */}
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center p-0 sm:p-4 lg:p-6 transition-all duration-300">
+                    {/* BACKDROP DIMMER - COVERS 100% OF VIEWPORT */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -83,7 +83,7 @@ const ToolPopup = () => {
                     {/* STUDIO WINDOW CONTAINER */}
                     <motion.div
                         ref={containerRef}
-                        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                        initial={{ opacity: 0, scale: 0.98, y: 16 }}
                         animate={{
                             opacity: 1,
                             scale: 1,
@@ -93,21 +93,21 @@ const ToolPopup = () => {
                         exit={{
                             opacity: 0,
                             scale: 0.98,
-                            y: 8,
+                            y: 12,
                             transition: { duration: 0.18 }
                         }}
                         className={`relative z-10 bg-surface-raised/95 backdrop-blur-2xl shadow-2xl overflow-hidden flex flex-col isolate border border-border-subtle transition-all duration-300 ease-out text-right ${
                             isFullScreen
                                 ? '!fixed !inset-0 !w-full !h-full !max-w-none !max-h-none rounded-none'
-                                : 'w-full max-w-5xl xl:max-w-6xl h-[92vh] sm:h-[88vh] max-h-[860px] rounded-2xl'
+                                : 'w-full h-full sm:h-[90vh] sm:max-w-5xl xl:max-w-6xl sm:max-h-[860px] rounded-none sm:rounded-2xl'
                         }`}
                         dir="rtl"
                     >
                         {/* Top Ambient Glow Line */}
                         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/40 to-transparent pointer-events-none" />
 
-                        {/* 1. WINDOW TITLE BAR (macOS Mockup + Monospace Path + Controls in LTR) */}
-                        <div className="relative z-20 flex items-center justify-between px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface-base/90 select-none" dir="ltr">
+                        {/* 1. DESKTOP WINDOW TITLE BAR (macOS Mockup + Monospace Path + Controls in LTR) */}
+                        <div className="hidden sm:flex relative z-20 items-center justify-between px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface-base/90 select-none" dir="ltr">
                             {/* Left: macOS Window Dots + Breadcrumbs */}
                             <div className="flex items-center gap-3">
                                 {/* Traffic light dots */}
@@ -181,7 +181,7 @@ const ToolPopup = () => {
                                     onClick={() => setIsFullScreen(!isFullScreen)}
                                     aria-label={isFullScreen ? "تصغير النافذة" : "ملء الشاشة"}
                                     title={isFullScreen ? "تصغير [F]" : "ملء الشاشة [F]"}
-                                    className="hidden sm:flex p-1.5 rounded-lg bg-surface-glass border border-border-subtle text-text-muted hover:text-text-primary hover:border-text-primary/30 transition-all"
+                                    className="p-1.5 rounded-lg bg-surface-glass border border-border-subtle text-text-muted hover:text-text-primary hover:border-text-primary/30 transition-all"
                                 >
                                     {isFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                                 </button>
@@ -198,8 +198,50 @@ const ToolPopup = () => {
                             </div>
                         </div>
 
-                        {/* 2. COMPACT TOOL IDENTITY STRIP (in RTL) */}
-                        <div className="relative z-10 px-4 sm:px-6 py-3.5 border-b border-border-subtle bg-surface-raised/40 flex flex-wrap items-center justify-between gap-3 shrink-0" dir="rtl">
+                        {/* 1. MOBILE NATIVE APP BAR (Header for Mobile Screens) */}
+                        <div className="sm:hidden relative z-20 flex items-center justify-between px-3.5 py-2.5 border-b border-border-subtle bg-surface-base/95 pt-[max(env(safe-area-inset-top,0px),8px)]">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setShowToolPopup(false)}
+                                    className="w-8 h-8 rounded-lg bg-surface-glass border border-border-subtle flex items-center justify-center text-text-primary active:scale-90 transition-transform touch-manipulation"
+                                    aria-label="رجوع"
+                                >
+                                    <ArrowRight className="w-4 h-4 rtl:rotate-0" />
+                                </button>
+                                <div className="flex flex-col min-w-0">
+                                    <h2 className="text-sm font-black text-text-primary font-cairo truncate">
+                                        {tool.titleAr || tool.title}
+                                    </h2>
+                                    <span className="text-[9px] font-mono text-brand-primary uppercase">
+                                        {tool.cat}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    onClick={() => toggleFavorite(tool.id, tool.titleAr || tool.title)}
+                                    className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all touch-manipulation active:scale-90 ${
+                                        isFav
+                                            ? "bg-amber-400/10 border-amber-400/30 text-amber-400"
+                                            : "bg-surface-glass border-border-subtle text-text-muted"
+                                    }`}
+                                    aria-label="المفضلة"
+                                >
+                                    <Star className={`w-4 h-4 ${isFav ? "fill-amber-400" : ""}`} />
+                                </button>
+                                <button
+                                    onClick={handleShareLink}
+                                    className="w-8 h-8 rounded-lg bg-surface-glass border border-border-subtle flex items-center justify-center text-text-muted active:scale-90 transition-transform touch-manipulation"
+                                    aria-label="مشاركة"
+                                >
+                                    {linkCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* 2. COMPACT TOOL IDENTITY STRIP (Desktop only) */}
+                        <div className="hidden sm:flex relative z-10 px-4 sm:px-6 py-3.5 border-b border-border-subtle bg-surface-raised/40 items-center justify-between gap-3 shrink-0" dir="rtl">
                             <div className="flex items-center gap-3.5 min-w-0">
                                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0 shadow-inner">
                                     <ToolIcon name={tool.icon} className="w-5 h-5" />
@@ -220,25 +262,25 @@ const ToolPopup = () => {
                             </div>
 
                             {/* Status Badge */}
-                            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                            <div className="flex items-center gap-1.5 font-mono text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                 <span>جاهز للتشغيل</span>
                             </div>
                         </div>
 
                         {/* 3. TOOL CONTENT CANVAS */}
-                        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6" dir="rtl">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-3.5 sm:p-6 pb-20 sm:pb-6" dir="rtl">
                             <ToolWorkspace />
                         </div>
 
-                        {/* 4. STUDIO STATUS FOOTER */}
-                        <div className="h-8 border-t border-border-subtle bg-surface-base/90 flex items-center justify-between px-4 sm:px-5 text-[11px] font-mono text-text-muted select-none shrink-0" dir="rtl">
+                        {/* 4. STUDIO STATUS FOOTER (Desktop only) */}
+                        <div className="hidden sm:flex h-8 border-t border-border-subtle bg-surface-base/90 items-center justify-between px-4 sm:px-5 text-[11px] font-mono text-text-muted select-none shrink-0" dir="rtl">
                             <div className="flex items-center gap-3">
                                 <span className="flex items-center gap-1">
                                     <kbd className="px-1.5 py-0.5 rounded bg-surface-glass border border-border-subtle text-[9px] text-text-primary">ESC</kbd>
                                     <span className="text-[10px] text-text-muted">إغلاق</span>
                                 </span>
-                                <span className="hidden sm:flex items-center gap-1">
+                                <span className="flex items-center gap-1">
                                     <kbd className="px-1.5 py-0.5 rounded bg-surface-glass border border-border-subtle text-[9px] text-text-primary">F</kbd>
                                     <span className="text-[10px] text-text-muted">ملء الشاشة</span>
                                 </span>

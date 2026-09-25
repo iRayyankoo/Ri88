@@ -1,9 +1,8 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import Logo from '../Brand/Logo';
-import { Settings, LogOut, User } from 'lucide-react';
-import { useSession, signIn } from 'next-auth/react';
-import { signOut } from 'next-auth/react';
+import { Settings, LogOut, User, Sparkles } from 'lucide-react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import NotificationsDropdown from './NotificationsDropdown';
@@ -27,29 +26,33 @@ const MobileHeader = () => {
     }, [menuOpen]);
 
     return (
-        <header className="lg:hidden h-16 px-4 flex items-center justify-between sticky top-0 z-40 bg-surface-base/90 backdrop-blur-xl border-b border-border-subtle">
-            {/* Logo */}
+        <header className="lg:hidden h-14 px-3.5 flex items-center justify-between sticky top-0 z-40 bg-surface-base/92 backdrop-blur-xl border-b border-border-subtle/80 select-none" dir="rtl">
+            {/* Right: App Identity */}
             <div className="flex items-center gap-2">
-                <Logo size="sm" showText />
-                <span className="pulsing-dot"></span>
+                <Link href="/" className="flex items-center gap-1.5 touch-manipulation active:scale-95 transition-transform">
+                    <Logo size="sm" showText />
+                </Link>
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-mono text-emerald-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>PRO</span>
+                </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-                <ThemeToggle className="w-9 h-9" />
+            {/* Left: Quick Actions */}
+            <div className="flex items-center gap-1.5" dir="ltr">
+                <ThemeToggle className="w-8 h-8 rounded-lg" />
 
                 {isLoggedIn && (
                     <NotificationsDropdown />
                 )}
 
                 {status === 'loading' ? (
-                    <div className="w-10 h-10 rounded-full bg-surface-raised animate-pulse" />
+                    <div className="w-8 h-8 rounded-full bg-surface-raised animate-pulse" />
                 ) : isLoggedIn ? (
                     <div ref={menuRef} className="relative">
-                        {/* Avatar button */}
                         <button
                             onClick={() => setMenuOpen(prev => !prev)}
-                            className="relative flex items-center justify-center w-10 h-10 rounded-full overflow-hidden border-2 border-brand-primary/40 active:scale-90 transition-all touch-manipulation shrink-0"
+                            className="relative flex items-center justify-center w-8 h-8 rounded-full overflow-hidden border border-brand-primary/40 active:scale-90 transition-all touch-manipulation shrink-0"
                             aria-label="قائمة الحساب"
                             type="button"
                         >
@@ -57,47 +60,44 @@ const MobileHeader = () => {
                                 <Image
                                     src={session.user.image}
                                     alt="User"
-                                    width={40}
-                                    height={40}
+                                    width={32}
+                                    height={32}
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
                                 <div className="w-full h-full bg-gradient-to-tr from-brand-primary to-cyan-500 flex items-center justify-center">
-                                    <span className="text-sm font-black text-black">
+                                    <span className="text-xs font-black text-black">
                                         {(session?.user?.name || 'R').charAt(0).toUpperCase()}
                                     </span>
                                 </div>
                             )}
                         </button>
 
-                        {/* Dropdown menu */}
+                        {/* Native App Dropdown sheet */}
                         {menuOpen && (
-                            <div className="absolute top-12 left-0 w-56 rounded-2xl bg-surface-raised border border-border-strong shadow-2xl shadow-black/50 overflow-hidden z-50">
-                                {/* User info */}
-                                <div className="px-4 py-3 border-b border-border-subtle">
+                            <div className="absolute top-10 left-0 w-60 rounded-2xl bg-surface-raised border border-border-strong shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150" dir="rtl">
+                                <div className="px-4 py-3 border-b border-border-subtle bg-surface-glass">
                                     <p className="text-text-primary font-bold text-sm truncate">{session?.user?.name || 'مستخدم'}</p>
-                                    <p className="text-text-muted text-xs truncate">{session?.user?.email}</p>
+                                    <p className="text-text-muted text-[11px] font-mono truncate">{session?.user?.email}</p>
                                 </div>
 
-                                {/* Menu items */}
-                                <div className="py-1">
+                                <div className="p-1.5">
                                     <Link
                                         href="/pro/settings"
                                         onClick={() => setMenuOpen(false)}
-                                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-text-primary hover:bg-surface-glass transition-colors"
+                                        className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-xs font-bold text-text-primary hover:bg-surface-glass active:bg-surface-glass transition-colors"
                                     >
                                         <Settings className="w-4 h-4 text-text-muted" />
-                                        الإعدادات
+                                        <span>الإعدادات</span>
                                     </Link>
 
                                     <button
                                         onClick={() => signOut({ callbackUrl: '/' })}
-                                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                                        className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 active:bg-rose-500/10 transition-colors"
                                     >
                                         <LogOut className="w-4 h-4" />
-                                        تسجيل الخروج
+                                        <span>تسجيل الخروج</span>
                                     </button>
-
                                 </div>
                             </div>
                         )}
@@ -106,10 +106,10 @@ const MobileHeader = () => {
                     <button
                         onClick={() => signIn()}
                         type="button"
-                        className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-black text-xs font-black rounded-xl shadow-lg shadow-brand-primary/20 touch-manipulation active:scale-95 transition-transform"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary text-black text-xs font-bold rounded-lg shadow-sm active:scale-95 transition-transform touch-manipulation"
                     >
                         <User className="w-3.5 h-3.5" />
-                        دخول
+                        <span>دخول</span>
                     </button>
                 )}
             </div>

@@ -343,20 +343,20 @@ const UserDashboard = () => {
     };
 
     return (
-        <div className="space-y-6 pb-24 relative">
+        <div className="space-y-4 sm:space-y-6 pb-28 sm:pb-24 relative">
 
             {/* 1. Header & Quick Search */}
-            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 px-1">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 px-1">
                 <div className="flex flex-col">
                     <div className="section-tag mb-1">
                         <span className="line" />
                         <span>لوحة التحكم // DASHBOARD</span>
                     </div>
-                    <h1 className="text-xl sm:text-2xl font-black text-text-primary font-cairo">منظومة العمل الذكية</h1>
-                    <p className="text-text-muted text-xs font-mono">WORKSPACE: ACTIVE · RIYADH DC · 18MS</p>
+                    <h1 className="text-lg sm:text-2xl font-black text-text-primary font-cairo">منظومة العمل الذكية</h1>
+                    <p className="text-text-muted text-[11px] sm:text-xs font-mono">WORKSPACE: ACTIVE · RIYADH DC · 18MS</p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 sm:gap-3">
                     <div className="relative group flex-1 max-w-md hidden sm:block">
                         <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-primary transition-colors" />
                         <input
@@ -369,7 +369,7 @@ const UserDashboard = () => {
                     </div>
                     <button
                         onClick={() => setIsGalleryOpen(true)}
-                        className="btn-primary-accent text-xs py-2 px-3.5"
+                        className="btn-primary-accent text-xs py-2 px-3 sm:px-3.5"
                     >
                         <Plus size={14} strokeWidth={3} />
                         <span>تخصيص الصناديق</span>
@@ -378,7 +378,7 @@ const UserDashboard = () => {
             </div>
 
             {/* 2. Widget Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
                 <AnimatePresence mode="popLayout">
                     {activeWidgetIds.map((id) => {
                         const def = AVAILABLE_WIDGETS.find(w => w.id === id);
@@ -399,7 +399,7 @@ const UserDashboard = () => {
             </div>
 
             {/* 3. Featured Tools (Static for now) */}
-            <div className="space-y-4 pt-4">
+            <div className="space-y-3 sm:space-y-4 pt-2 sm:pt-4">
                 <div className="flex items-center justify-between px-1">
                     <div className="section-tag mb-0">
                         <span className="line" />
@@ -410,14 +410,14 @@ const UserDashboard = () => {
                         <span>&gt;</span>
                     </Link>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-2.5 sm:gap-4">
                     {tools.slice(0, 4).map((tool) => (
                         <div
                             key={tool.id}
                             onClick={() => launchTool(tool.id)}
-                            className="p-3.5 rounded-xl bg-surface-raised border border-border-subtle hover:border-brand-primary/50 hover:bg-surface-glass transition-all cursor-pointer group/tool shadow-sm flex items-center gap-3"
+                            className="p-3 sm:p-3.5 rounded-xl bg-surface-raised border border-border-subtle hover:border-brand-primary/50 hover:bg-surface-glass transition-all cursor-pointer group/tool shadow-sm flex items-center gap-2.5 sm:gap-3 touch-manipulation active:scale-95"
                         >
-                            <div className="w-9 h-9 rounded-lg bg-surface-glass border border-border-subtle flex items-center justify-center text-text-muted group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all shrink-0">
+                            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-glass border border-border-subtle flex items-center justify-center text-text-muted group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all shrink-0">
                                 <Zap className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col min-w-0 text-right">
@@ -432,7 +432,7 @@ const UserDashboard = () => {
             {/* --- Widget Gallery Modal --- */}
             <AnimatePresence>
                 {isGalleryOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -444,7 +444,7 @@ const UserDashboard = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-2xl bg-surface-raised border border-border-subtle rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[80vh]"
+                            className="relative w-full max-w-2xl bg-surface-raised border border-border-subtle rounded-2xl sm:rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
                         >
                             <div className="p-6 border-b border-border-subtle flex items-center justify-between shrink-0">
                                 <div className="flex flex-col">

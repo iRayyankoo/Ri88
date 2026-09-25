@@ -159,6 +159,12 @@ html[data-theme="light"],
 }
 
 @layer base {
+  html {
+    overflow-x: clip !important;
+    max-width: 100vw;
+    width: 100%;
+  }
+
   body {
     background-color: var(--color-brand-bg);
     background-image:
@@ -168,7 +174,9 @@ html[data-theme="light"],
     font-family: var(--font-cairo);
     min-height: 100vh;
     @apply antialiased selection:bg-brand-primary/30;
-    overflow-x: hidden;
+    overflow-x: clip !important;
+    max-width: 100vw;
+    width: 100%;
   }
 
   [data-theme="light"] body,
@@ -185,6 +193,25 @@ html[data-theme="light"],
   }
 }
 
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(50%); }
+}
+
+[dir="rtl"] .animate-marquee {
+  animation: marquee-rtl 25s linear infinite;
+}
+
+@keyframes marquee-rtl {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(50%); }
+}
+
+.animate-marquee {
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
 @layer components {
 
   /* Portfolio Signature: Ambient Glow */
@@ -192,15 +219,13 @@ html[data-theme="light"],
     position: absolute;
     top: 25%;
     inset-inline-end: 0;
-    width: 36rem;
-    height: 36rem;
-    max-width: 100vw;
+    width: min(32rem, 90vw);
+    height: min(32rem, 90vw);
     background: var(--color-accent-glow);
     border-radius: 9999px;
-    filter: blur(140px);
+    filter: blur(120px);
     pointer-events: none;
     z-index: 0;
-    transform: translateY(-50%) translateX(20%);
     overflow: hidden;
   }
 

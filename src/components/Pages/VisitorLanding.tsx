@@ -163,16 +163,16 @@ export default function VisitorLanding() {
             </header>
 
             {/* ── HERO SECTION ── */}
-            <section className="relative z-10 pt-12 sm:pt-20 pb-16 px-4 sm:px-8 max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            <section className="relative z-10 pt-6 sm:pt-20 pb-10 sm:pb-16 px-4 sm:px-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
 
                     {/* Left Hero Column: Typography & CTAs */}
-                    <div className="lg:col-span-7 space-y-6 text-right">
+                    <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-right">
                         {/* Status Pill with Pulsing Dot */}
                         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                            <div className="status-pill">
+                            <div className="status-pill text-[11px] sm:text-xs">
                                 <span className="pulsing-dot" />
-                                <span>المنظومة الرقمية السحابية · الإصدار 2.4</span>
+                                <span>المنظومة السحابية · الإصدار 2.4</span>
                             </div>
                         </motion.div>
 
@@ -181,7 +181,7 @@ export default function VisitorLanding() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.1 }}
-                            className="text-3xl sm:text-5xl lg:text-6xl font-black font-cairo tracking-tight leading-[1.18] text-text-primary"
+                            className="text-2xl sm:text-5xl lg:text-6xl font-black font-cairo tracking-tight leading-[1.25] sm:leading-[1.18] text-text-primary"
                         >
                             أدوات رقمية ذكية، محولات أكواد، وتجارب ويب{' '}
                             <span className="text-brand-primary">مدعومة بالذكاء الاصطناعي.</span>
@@ -192,32 +192,32 @@ export default function VisitorLanding() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.2 }}
-                            className="text-text-muted text-base sm:text-lg leading-relaxed max-w-xl font-normal"
+                            className="text-text-muted text-xs sm:text-base sm:text-lg leading-relaxed max-w-xl font-normal"
                         >
                             نجمع أكثر من <em className="text-text-primary not-italic font-semibold">80 أداة متخصصة</em> في هندسة الإنتاجية، معالجة ملفات PDF، الحسابات المالية السعودية، وأتمتة المهام اليومية في بيئة سحابية فائقة الأمان والسرعة.
                         </motion.p>
 
-                        {/* Hero Actions */}
+                        {/* Hero Actions - Native App 2-Column Buttons on Mobile */}
                         <motion.div
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.3 }}
-                            className="flex flex-wrap items-center gap-3 pt-2"
+                            className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-3 pt-2"
                         >
                             <button
                                 onClick={handleStartFree}
-                                className="btn-primary-accent"
+                                className="btn-primary-accent w-full sm:w-auto justify-center text-xs sm:text-sm py-2.5 sm:py-2 px-3 sm:px-4"
                             >
-                                <span>ابدأ مجاناً الآن</span>
-                                <ArrowLeft size={16} />
+                                <span>ابدأ مجاناً</span>
+                                <ArrowLeft size={15} />
                             </button>
                             <a
                                 href="#tools"
-                                className="btn-outline-accent"
+                                className="btn-outline-accent w-full sm:w-auto justify-center text-xs sm:text-sm py-2.5 sm:py-2 px-3 sm:px-4"
                             >
-                                <span className="nav-num text-[11px]">01</span>
+                                <span className="nav-num text-[10px]">01</span>
                                 <span>استعراض الأدوات</span>
-                                <ArrowUpLeft size={14} />
+                                <ArrowUpLeft size={13} />
                             </a>
                         </motion.div>
 
@@ -226,19 +226,19 @@ export default function VisitorLanding() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.5, delay: 0.4 }}
-                            className="flex flex-wrap items-center gap-4 sm:gap-6 pt-6 border-t border-border-subtle text-xs font-mono text-text-muted"
+                            className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-6 pt-4 sm:pt-6 border-t border-border-subtle text-[10px] sm:text-xs font-mono text-text-muted"
                         >
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
-                                <span>EST. LATENCY: &lt; 20MS</span>
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-brand-primary shrink-0" />
+                                <span className="truncate">EST. LATENCY: &lt; 20MS</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                <span>NO CREDIT CARD REQUIRED</span>
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                                <span className="truncate">NO CREDIT CARD</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                                <span>100% IN-MEMORY PRIVACY</span>
+                            <div className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                                <span className="truncate">100% IN-MEMORY PRIVACY</span>
                             </div>
                         </motion.div>
                     </div>
@@ -288,8 +288,9 @@ export default function VisitorLanding() {
             </section>
 
             {/* ── MARQUEE INFINITE TICKER ── */}
-            <section className="relative z-10 py-5 border-y border-border-subtle bg-surface-raised/60 backdrop-blur-md overflow-hidden">
-                <div className="flex items-center gap-8 whitespace-nowrap animate-marquee">
+            <section className="relative z-10 py-5 border-y border-border-subtle bg-surface-raised/60 backdrop-blur-md overflow-hidden max-w-[100vw]">
+                <div className="w-full overflow-hidden">
+                    <div className="flex items-center gap-8 whitespace-nowrap animate-marquee">
                     {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, idx) => (
                         <div key={idx} className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-border-subtle bg-surface-glass text-xs font-mono text-text-muted">
                             <item.icon size={13} className="text-brand-primary" />
@@ -297,6 +298,7 @@ export default function VisitorLanding() {
                             <span className="text-[10px] text-brand-primary font-bold">{item.tag}</span>
                         </div>
                     ))}
+                </div>
                 </div>
             </section>
 
@@ -322,7 +324,7 @@ export default function VisitorLanding() {
                 </div>
 
                 {/* Window Mockup Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
                     {popularTools.slice(0, 6).map((tool) => (
                         <div
                             key={tool.id}
@@ -331,7 +333,7 @@ export default function VisitorLanding() {
                         >
                             <div>
                                 {/* Mockup Titlebar */}
-                                <div className="window-mockup-header">
+                                <div className="window-mockup-header py-2 px-3">
                                     <div className="window-dots">
                                         <span className="window-dot red" />
                                         <span className="window-dot yellow" />
@@ -343,11 +345,11 @@ export default function VisitorLanding() {
                                 </div>
 
                                 {/* Body */}
-                                <div className="p-5 space-y-3">
-                                    <div className="w-10 h-10 rounded-xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
-                                        <Zap size={20} />
+                                <div className="p-4 sm:p-5 space-y-2.5 sm:space-y-3">
+                                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
+                                        <Zap size={18} />
                                     </div>
-                                    <h3 className="text-base font-bold font-cairo text-text-primary group-hover:text-brand-primary transition-colors">
+                                    <h3 className="text-sm sm:text-base font-bold font-cairo text-text-primary group-hover:text-brand-primary transition-colors">
                                         {tool.titleAr || tool.title}
                                     </h3>
                                     <p className="text-xs text-text-muted leading-relaxed line-clamp-2">
@@ -357,8 +359,8 @@ export default function VisitorLanding() {
                             </div>
 
                             {/* Card Footer */}
-                            <div className="px-5 py-3 border-t border-border-subtle bg-surface-glass/40 flex items-center justify-between text-xs font-mono">
-                                <span className="text-[10px] text-text-muted">READY TO RUN</span>
+                            <div className="px-4 sm:px-5 py-2.5 sm:py-3 border-t border-border-subtle bg-surface-glass/40 flex items-center justify-between text-xs font-mono">
+                                <span className="text-[9px] sm:text-[10px] text-text-muted">READY TO RUN</span>
                                 <span className="text-brand-primary flex items-center gap-1 font-bold group-hover:translate-x-[-4px] transition-transform">
                                     <span>تشغيل الأداة</span>
                                     <ArrowLeft size={12} />
@@ -370,31 +372,31 @@ export default function VisitorLanding() {
             </section>
 
             {/* ── SECTION 2: TECHNICAL SPECS ── */}
-            <section id="specs" className="relative z-10 py-20 px-4 sm:px-8 border-y border-border-subtle bg-surface-glass/30">
+            <section id="specs" className="relative z-10 py-12 sm:py-20 px-4 sm:px-8 border-y border-border-subtle bg-surface-glass/30">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
+                    <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
                         <div className="section-tag justify-center">
                             <span className="line" />
                             <span>02 / المواصفات والمعايير</span>
                             <span className="line" />
                         </div>
-                        <h2 className="text-2xl sm:text-4xl font-black font-cairo text-text-primary">
+                        <h2 className="text-xl sm:text-4xl font-black font-cairo text-text-primary">
                             بنية تحتية مصممة لأقصى أداء.
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
                         {specs.map((item) => (
                             <div
                                 key={item.num}
-                                className="p-6 rounded-2xl bg-surface-raised border border-border-subtle hover:border-brand-primary/40 transition-all flex flex-col justify-between"
+                                className="p-3.5 sm:p-6 rounded-xl sm:rounded-2xl bg-surface-raised border border-border-subtle hover:border-brand-primary/40 transition-all flex flex-col justify-between"
                             >
                                 <div>
-                                    <span className="nav-num text-xs font-bold text-brand-primary mb-3 block">{item.num} //</span>
-                                    <h3 className="text-base font-bold font-cairo text-text-primary mb-2">{item.title}</h3>
-                                    <p className="text-xs text-text-muted leading-relaxed mb-6">{item.desc}</p>
+                                    <span className="nav-num text-[11px] sm:text-xs font-bold text-brand-primary mb-1.5 sm:mb-3 block">{item.num} //</span>
+                                    <h3 className="text-xs sm:text-base font-bold font-cairo text-text-primary mb-1 sm:mb-2">{item.title}</h3>
+                                    <p className="text-[11px] sm:text-xs text-text-muted leading-relaxed mb-3 sm:mb-6 line-clamp-3 sm:line-clamp-none">{item.desc}</p>
                                 </div>
-                                <span className="text-[9px] font-mono text-text-muted border border-border-subtle rounded px-2 py-1 w-fit">
+                                <span className="text-[8px] sm:text-[9px] font-mono text-text-muted border border-border-subtle rounded px-1.5 py-0.5 w-fit">
                                     {item.tag}
                                 </span>
                             </div>
@@ -404,24 +406,24 @@ export default function VisitorLanding() {
             </section>
 
             {/* ── SECTION 3: PRICING ── */}
-            <section id="pricing" className="relative z-10 py-20 px-4 sm:px-8 max-w-5xl mx-auto">
-                <div className="text-center max-w-2xl mx-auto mb-14">
+            <section id="pricing" className="relative z-10 py-12 sm:py-20 px-4 sm:px-8 max-w-5xl mx-auto">
+                <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
                     <div className="section-tag justify-center">
                         <span className="line" />
                         <span>03 / باقات الاشتراك</span>
                         <span className="line" />
                     </div>
-                    <h2 className="text-2xl sm:text-4xl font-black font-cairo text-text-primary mb-2">
+                    <h2 className="text-xl sm:text-4xl font-black font-cairo text-text-primary mb-2">
                         خطط واضحة بدون تعقيد.
                     </h2>
-                    <p className="text-text-muted text-sm font-normal">ابدأ مجاناً اليوم، وقم بالترقية عندما تكبر احتياجاتك.</p>
+                    <p className="text-text-muted text-xs sm:text-sm font-normal">ابدأ مجاناً اليوم، وقم بالترقية عندما تكبر احتياجاتك.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
                     {plans.map((p, idx) => (
                         <div
                             key={idx}
-                            className={`rounded-2xl p-7 flex flex-col justify-between border transition-all ${
+                            className={`rounded-xl sm:rounded-2xl p-5 sm:p-7 flex flex-col justify-between border transition-all ${
                                 p.primary
                                     ? 'bg-surface-raised border-brand-primary shadow-xl shadow-brand-primary/10 relative overflow-hidden'
                                     : 'bg-surface-raised border-border-subtle'
@@ -435,18 +437,18 @@ export default function VisitorLanding() {
 
                             <div className={p.badge ? 'pt-4' : ''}>
                                 <div className="flex items-baseline justify-between mb-2">
-                                    <h3 className="text-lg font-bold font-cairo text-text-primary">{p.name}</h3>
+                                    <h3 className="text-base sm:text-lg font-bold font-cairo text-text-primary">{p.name}</h3>
                                     <div className="flex items-baseline gap-1 font-mono">
-                                        <span className="text-3xl font-black text-text-primary">{p.price}</span>
+                                        <span className="text-2xl sm:text-3xl font-black text-text-primary">{p.price}</span>
                                         <span className="text-xs text-text-muted">{p.period}</span>
                                     </div>
                                 </div>
-                                <p className="text-xs text-text-muted mb-6 leading-relaxed">{p.desc}</p>
+                                <p className="text-xs text-text-muted mb-4 sm:mb-6 leading-relaxed">{p.desc}</p>
 
-                                <ul className="space-y-3 mb-8 border-t border-border-subtle pt-6">
+                                <ul className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8 border-t border-border-subtle pt-4 sm:pt-6">
                                     {p.features.map((feat, fIdx) => (
-                                        <li key={fIdx} className="flex items-center gap-2.5 text-xs text-text-primary">
-                                            <Check size={14} className="text-brand-primary shrink-0" />
+                                        <li key={fIdx} className="flex items-center gap-2 text-xs text-text-primary">
+                                            <Check size={13} className="text-brand-primary shrink-0" />
                                             <span>{feat}</span>
                                         </li>
                                     ))}
@@ -455,7 +457,7 @@ export default function VisitorLanding() {
 
                             <Link
                                 href="/auth"
-                                className={`w-full py-3 rounded-xl text-center text-xs font-bold transition-all ${
+                                className={`w-full py-2.5 sm:py-3 rounded-xl text-center text-xs font-bold transition-all ${
                                     p.primary
                                         ? 'bg-brand-primary text-black hover:brightness-110 shadow-lg shadow-brand-primary/20'
                                         : 'btn-outline-accent justify-center'
@@ -469,21 +471,21 @@ export default function VisitorLanding() {
             </section>
 
             {/* ── FOOTER ── */}
-            <footer className="relative z-10 border-t border-border-subtle py-10 px-4 sm:px-8 bg-surface-base">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+            <footer className="relative z-10 border-t border-border-subtle py-8 sm:py-10 px-4 sm:px-8 bg-surface-base pb-24 sm:pb-10">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-right">
                     <div className="flex items-center gap-3">
                         <Logo size="md" showText />
-                        <span className="text-xs font-mono text-text-muted">· RIYADH, SAUDI ARABIA</span>
+                        <span className="text-[11px] sm:text-xs font-mono text-text-muted">· RIYADH, SAUDI ARABIA</span>
                     </div>
 
-                    <div className="flex items-center gap-6 text-xs font-mono text-text-muted">
+                    <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 text-xs font-mono text-text-muted">
                         <a href="#tools" className="hover:text-text-primary transition-colors">الأدوات</a>
                         <a href="#specs" className="hover:text-text-primary transition-colors">المواصفات</a>
                         <a href="#pricing" className="hover:text-text-primary transition-colors">الأسعار</a>
                         <Link href="/auth" className="hover:text-brand-primary transition-colors">دخول المنصة</Link>
                     </div>
 
-                    <div className="text-[11px] font-mono text-text-muted">
+                    <div className="text-[10px] sm:text-[11px] font-mono text-text-muted">
                         © 2026 RI88.PRO · ALL RIGHTS RESERVED
                     </div>
                 </div>
