@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ri88 | بوابة المبدع العربي الرقمية",
     description: "أدوات ذكية ومعالجة ملفات متقدمة.",
-    url: "https://ri88.pro",
+    url: "https://ri88.info",
     siteName: "Ri88",
     locale: "ar_SA",
     type: "website",
@@ -45,6 +45,31 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+        <script
+          id="ri88-cache-killer"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(regs) {
+                      for (var i = 0; i < regs.length; i++) {
+                        regs[i].unregister();
+                      }
+                    });
+                  }
+                  if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                      for (var i = 0; i < names.length; i++) {
+                        caches.delete(names[i]);
+                      }
+                    });
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body>
         <SessionWrapper>
