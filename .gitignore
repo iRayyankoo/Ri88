@@ -43,3 +43,6 @@ next-env.d.ts
 legacy_backup/
 .vercel
 .env*.local
+
+archives/
+.cursor/
