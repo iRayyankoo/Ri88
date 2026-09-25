@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useVisitorLanding } from '@/hooks/useVisitorLanding';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const ToolIcon = ({ icon, className }: { icon: string; className?: string }) => {
     const icons: Record<string, React.ElementType> = {
@@ -92,7 +93,8 @@ const VisitorLanding = () => {
                             <a key={href} href={href} className="hover:text-white transition-colors">{label}</a>
                         ))}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
+                        <ThemeToggle className="w-9 h-9" />
                         <Link href="/auth" className="hidden sm:block px-4 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">دخول</Link>
                         <Link href="/auth" className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm bg-brand-primary hover:bg-brand-primary/90 text-black transition-all active:scale-95">
                             ابدأ مجاناً

@@ -5,7 +5,7 @@ import {
     Languages,
     Timer, Calendar, Cloud, Bitcoin,
     ListTodo, Palette, Gauge,
-    Globe, Trophy, Target, Sparkles,
+    Globe, Trophy, Target, Sparkles, Star,
     DollarSign, Moon,
     AlignLeft, StickyNote, Activity
 } from 'lucide-react';
@@ -24,6 +24,7 @@ export interface WidgetDefinition {
 
 export const AVAILABLE_WIDGETS: WidgetDefinition[] = [
     // --- Utility & Daily Help (User requested focus) ---
+    { id: 'favorites', title: 'الأدوات المفضلة', description: 'أدواتك المفضلة للوصول السريع', category: 'productivity', icon: Star, defaultSize: 'medium' },
     { id: 'world-clock', title: 'ساعة عالمية', description: 'توقيت المدن العالمية الكبرى', category: 'utility', icon: Globe, defaultSize: 'medium' },
     { id: 'weather', title: 'حالة الطقس', description: 'تنبؤات وتقارير الجو الحالية', category: 'utility', icon: Cloud, defaultSize: 'small' },
     { id: 'quote', title: 'إلهام اليوم', description: 'حكمة يومية متجددة لزيادة طاقتك', category: 'utility', icon: Sparkles, defaultSize: 'small' },

@@ -7,6 +7,7 @@ type Theme = 'dark' | 'light';
 interface ThemeContextType {
     theme: Theme;
     setTheme: (theme: Theme) => void;
+    toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -27,14 +28,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    const toggleTheme = (newTheme: Theme) => {
+    const handleSetTheme = (newTheme: Theme) => {
         setTheme(newTheme);
         localStorage.setItem('theme', newTheme);
         document.documentElement.setAttribute('data-theme', newTheme);
     };
 
+    const toggleTheme = () => {
+        const nextTheme = theme === 'dark' ? 'light' : 'dark';
+        handleSetTheme(nextTheme);
+    };
+
     return (
-        <ThemeContext.Provider value={{ theme, setTheme: toggleTheme }}>
+        <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme, toggleTheme }}>
             {children}
         </ThemeContext.Provider>
     );

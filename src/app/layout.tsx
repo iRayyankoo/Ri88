@@ -25,6 +25,7 @@ import SessionWrapper from "@/components/auth/SessionWrapper";
 import { NavigationProvider } from "@/context/NavigationContext";
 import { WorkspaceProvider } from "@/context/WorkspaceContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { FavoritesProvider } from "@/context/FavoritesContext";
 
 export default function RootLayout({
   children,
@@ -43,12 +44,14 @@ export default function RootLayout({
       <body>
         <SessionWrapper>
           <ThemeProvider>
-            <WorkspaceProvider>
-              <NavigationProvider>
-                {children}
-                <CinematicToaster />
-              </NavigationProvider>
-            </WorkspaceProvider>
+            <FavoritesProvider>
+              <WorkspaceProvider>
+                <NavigationProvider>
+                  {children}
+                  <CinematicToaster />
+                </NavigationProvider>
+              </WorkspaceProvider>
+            </FavoritesProvider>
           </ThemeProvider>
         </SessionWrapper>
       </body>

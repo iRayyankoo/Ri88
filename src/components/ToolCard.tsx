@@ -39,20 +39,34 @@ const IconMap: Record<string, import('lucide-react').LucideIcon> = {
     'calendar-heart': Calendar, 'align-left': AlignRight // Fallbacks
 };
 
+import { useFavorites } from '@/context/FavoritesContext';
+
 interface ToolCardProps {
     tool: Tool;
 }
 
 export default function ToolCard({ tool }: ToolCardProps) {
     const IconComponent = IconMap[tool.icon] || Box;
+    const { isFavorite, toggleFavorite } = useFavorites();
+    const isFav = isFavorite(tool.id);
 
     return (
         <div className="glass-panel tool-card animated-card">
             <div className="bg-blob"></div>
             <div className="card-content-wrapper">
-                {/* Favorite Button Stub */}
-                <button aria-label="Add to favorites" className="fav-btn absolute top-[15px] right-[15px] bg-transparent border-none cursor-pointer z-[5]">
-                    <Star size={20} color="rgba(255,255,255,0.3)" />
+                {/* Favorite Button */}
+                <button 
+                    aria-label={isFav ? "إزالة من المفضلة" : "إضافة للمفضلة"} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(tool.id, tool.titleAr || tool.title);
+                    }}
+                    className="fav-btn absolute top-[15px] right-[15px] bg-transparent border-none cursor-pointer z-[10] p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                >
+                    <Star 
+                        size={20} 
+                        className={`transition-colors ${isFav ? "text-yellow-400 fill-yellow-400" : "text-slate-400 hover:text-yellow-400"}`} 
+                    />
                 </button>
 
                 <div className="tool-icon animated-icon">

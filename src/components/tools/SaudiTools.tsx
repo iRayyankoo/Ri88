@@ -215,6 +215,130 @@ function SaudiHolidays() {
     );
 }
 
+// Saudi Real Estate Transaction Tax (RETT) Calculator
+function RETTCalculator() {
+    const [price, setPrice] = useState('');
+    const [isFirstHome, setIsFirstHome] = useState(true);
+    const [includeBrokerage, setIncludeBrokerage] = useState(true);
+    const [result, setResult] = useState<{
+        propertyPrice: number;
+        taxBeforeExemption: number;
+        exemptionAmount: number;
+        taxDue: number;
+        brokerageFee: number;
+        brokerageVat: number;
+        totalPayable: number;
+    } | null>(null);
+
+    const calculate = () => {
+        const p = parseFloat(price);
+        if (!p || p <= 0) return;
+
+        const taxRate = 0.05;
+        const taxBefore = p * taxRate;
+
+        let exemption = 0;
+        if (isFirstHome) {
+            const exemptValue = Math.min(p, 1000000);
+            exemption = exemptValue * taxRate;
+        }
+
+        const taxDue = Math.max(0, taxBefore - exemption);
+
+        let brokerage = 0;
+        let brokerageVat = 0;
+        if (includeBrokerage) {
+            brokerage = p * 0.025;
+            brokerageVat = brokerage * 0.15;
+        }
+
+        const total = p + taxDue + brokerage + brokerageVat;
+
+        setResult({
+            propertyPrice: p,
+            taxBeforeExemption: taxBefore,
+            exemptionAmount: exemption,
+            taxDue,
+            brokerageFee: brokerage,
+            brokerageVat,
+            totalPayable: total
+        });
+    };
+
+    return (
+        <ToolShell
+            description="حساب ضريبة التصرفات العقارية (5%) مع إعفاء المسكن الأول للمواطن وعمولة السعي."
+            results={result && (
+                <div className="h-full flex flex-col justify-center space-y-4 p-6 bg-white/5 rounded-3xl border border-white/10 text-right">
+                    <span className="text-xs font-bold text-gray-400">إجمالي المبلغ المطلوب لتملك العقار</span>
+                    <div className="text-3xl font-black text-brand-primary">{result.totalPayable.toLocaleString()} ريال</div>
+
+                    <div className="space-y-2 pt-4 border-t border-white/10 text-xs">
+                        <div className="flex justify-between py-1 border-b border-white/5">
+                            <span className="text-slate-400">قيمة العقار:</span>
+                            <span className="font-bold text-white">{result.propertyPrice.toLocaleString()} ر.س</span>
+                        </div>
+                        <div className="flex justify-between py-1 border-b border-white/5">
+                            <span className="text-slate-400">ضريبة التصرفات (5%):</span>
+                            <span className="font-bold text-white">{result.taxBeforeExemption.toLocaleString()} ر.س</span>
+                        </div>
+                        {result.exemptionAmount > 0 && (
+                            <div className="flex justify-between py-1 border-b border-white/5 text-emerald-400">
+                                <span>إعفاء الدولة للمسكن الأول:</span>
+                                <span className="font-bold">-{result.exemptionAmount.toLocaleString()} ر.س</span>
+                            </div>
+                        )}
+                        <div className="flex justify-between py-1 border-b border-white/5">
+                            <span className="text-slate-400">صافي الضريبة المستحقة:</span>
+                            <span className="font-bold text-yellow-400">{result.taxDue.toLocaleString()} ر.س</span>
+                        </div>
+                        {includeBrokerage && (
+                            <>
+                                <div className="flex justify-between py-1 border-b border-white/5">
+                                    <span className="text-slate-400">سعي الوساطة (2.5%):</span>
+                                    <span className="font-bold text-white">{result.brokerageFee.toLocaleString()} ر.س</span>
+                                </div>
+                                <div className="flex justify-between py-1 border-b border-white/5">
+                                    <span className="text-slate-400">ضريبة القيمة المضافة للسعي (15%):</span>
+                                    <span className="font-bold text-white">{result.brokerageVat.toLocaleString()} ر.س</span>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+        >
+            <ToolInputRow label="قيمة العقار أو الأرض (بالريال)">
+                <ToolInput type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="مثال: 1200000" />
+            </ToolInputRow>
+
+            <div className="space-y-3 mb-6">
+                <label className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+                    <input
+                        type="checkbox"
+                        checked={isFirstHome}
+                        onChange={e => setIsFirstHome(e.target.checked)}
+                        className="w-4 h-4 rounded text-brand-primary accent-brand-primary cursor-pointer"
+                    />
+                    <span className="text-sm font-bold text-white">إعفاء المسكن الأول للمواطن (تتحمل الدولة الضريبة حتى 1,000,000 ريال)</span>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+                    <input
+                        type="checkbox"
+                        checked={includeBrokerage}
+                        onChange={e => setIncludeBrokerage(e.target.checked)}
+                        className="w-4 h-4 rounded text-brand-primary accent-brand-primary cursor-pointer"
+                    />
+                    <span className="text-sm font-bold text-white">احتساب عمولة الوساطة العقارية (السعي 2.5% + ضريبة 15%)</span>
+                </label>
+            </div>
+
+            <ToolButton onClick={calculate} className="w-full text-lg">احسب التكاليف والضريبة</ToolButton>
+        </ToolShell>
+    );
+}
+
 export default function SaudiTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'saudi-eos': return <EOSCalculator />;
@@ -226,6 +350,7 @@ export default function SaudiTools({ toolId }: ToolProps) {
         case 'saudi-iban': return <IbanValidator />;
         case 'saudi-tafqeet': return <TafqeetTool />;
         case 'saudi-holiday': return <SaudiHolidays />;
+        case 'saudi-rett': return <RETTCalculator />;
         default: return null;
     }
 }

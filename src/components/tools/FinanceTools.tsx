@@ -779,6 +779,156 @@ function GoldZakatCalc() {
     );
 }
 
+function MortgageAffordability() {
+    const [salary, setSalary] = useState('15000');
+    const [existingLoans, setExistingLoans] = useState('0');
+    const [years, setYears] = useState('25');
+    const [profitRate, setProfitRate] = useState('4.5');
+    const [dbrLimit, setDbrLimit] = useState('55');
+
+    const sal = parseFloat(salary) || 0;
+    const loans = parseFloat(existingLoans) || 0;
+    const yr = parseFloat(years) || 20;
+    const rate = (parseFloat(profitRate) || 0) / 100;
+    const limit = (parseFloat(dbrLimit) || 55) / 100;
+
+    const maxTotalDeduction = sal * limit;
+    const maxInstallment = Math.max(0, maxTotalDeduction - loans);
+
+    const monthlyRate = rate / 12;
+    const months = yr * 12;
+    let maxFinancing = 0;
+    if (monthlyRate > 0 && months > 0) {
+        maxFinancing = maxInstallment * (1 - Math.pow(1 + monthlyRate, -months)) / monthlyRate;
+    } else if (months > 0) {
+        maxFinancing = maxInstallment * months;
+    }
+
+    return (
+        <ToolShell description="حاسبة التمويل العقاري والقدرة الشرائية: احسب الحد الأقصى للقسط الشهري ومبلغ التمويل العقاري المقدر.">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ToolInputRow label="الراتب الشهري الصافي (ريال)"><ToolInput type="number" value={salary} onChange={e => setSalary(e.target.value)} placeholder="مثال: 15000" /></ToolInputRow>
+                <ToolInputRow label="الالتزامات الشهرية القائمة (ريال)"><ToolInput type="number" value={existingLoans} onChange={e => setExistingLoans(e.target.value)} placeholder="مثال: 0" /></ToolInputRow>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                <ToolInputRow label="مدة التمويل (سنوات)"><ToolInput type="number" value={years} onChange={e => setYears(e.target.value)} placeholder="25" /></ToolInputRow>
+                <ToolInputRow label="هامش الربح السنوي (%)"><ToolInput type="number" value={profitRate} onChange={e => setProfitRate(e.target.value)} placeholder="4.5" /></ToolInputRow>
+                <ToolInputRow label="نسبة الاستقطاع القصوى (%)"><ToolInput type="number" value={dbrLimit} onChange={e => setDbrLimit(e.target.value)} placeholder="55" /></ToolInputRow>
+            </div>
+
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-6 bg-brand-primary/10 border border-brand-primary/20 rounded-2xl text-center">
+                    <div className="text-xs text-brand-secondary font-bold mb-1">الحد الأقصى للقسط العقاري الشهري</div>
+                    <div className="text-3xl font-black text-white font-mono">{Math.round(maxInstallment).toLocaleString()} ريال</div>
+                    <div className="text-[10px] text-slate-400 mt-1">استقطاع {dbrLimit}% بعد خصم الالتزامات</div>
+                </div>
+                <div className="p-6 bg-white/5 border border-white/10 rounded-2xl text-center">
+                    <div className="text-xs text-yellow-400 font-bold mb-1">مبلغ التمويل العقاري التقريبي</div>
+                    <div className="text-3xl font-black text-yellow-400 font-mono">{Math.round(maxFinancing).toLocaleString()} ريال</div>
+                    <div className="text-[10px] text-slate-400 mt-1">لمدة {years} سنة بهامش {profitRate}%</div>
+                </div>
+            </div>
+        </ToolShell>
+    );
+}
+
+function StockMarketZakat() {
+    const [portfolioValue, setPortfolioValue] = useState('50000');
+    const [investmentType, setInvestmentType] = useState<'speculation' | 'investment'>('speculation');
+    const [calendarType, setCalendarType] = useState<'hijri' | 'gregorian'>('hijri');
+    const [zakatablePercentage, setZakatablePercentage] = useState('20');
+
+    const val = parseFloat(portfolioValue) || 0;
+    const rate = calendarType === 'hijri' ? 0.025 : 0.02577;
+
+    let zakatBase = val;
+    if (investmentType === 'investment') {
+        const pct = (parseFloat(zakatablePercentage) || 20) / 100;
+        zakatBase = val * pct;
+    }
+
+    const zakatDue = zakatBase * rate;
+
+    return (
+        <ToolShell description="حاسبة زكاة الأسهم والمحافظ الاستثمارية: احسب زكاة أسهم المضاربة أو الاستثمار طويل الأجل حسب الضوابط الشرعية.">
+            <ToolInputRow label="إجمالي القيمة السوقية للمحفظة / الأسهم (ريال)">
+                <ToolInput type="number" value={portfolioValue} onChange={e => setPortfolioValue(e.target.value)} placeholder="مثال: 50000" />
+            </ToolInputRow>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <ToolInputRow label="الغرض من الأسهم">
+                    <div className="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setInvestmentType('speculation')}
+                            className={`p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                investmentType === 'speculation'
+                                    ? 'bg-brand-primary text-black border-brand-primary'
+                                    : 'bg-white/5 border-white/10 text-slate-300'
+                            }`}
+                        >
+                            مضاربة (تجارة وبيع)
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setInvestmentType('investment')}
+                            className={`p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                investmentType === 'investment'
+                                    ? 'bg-brand-primary text-black border-brand-primary'
+                                    : 'bg-white/5 border-white/10 text-slate-300'
+                            }`}
+                        >
+                            استثمار (عوائد ونماء)
+                        </button>
+                    </div>
+                </ToolInputRow>
+
+                <ToolInputRow label="الحول (التقويم)">
+                    <div className="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setCalendarType('hijri')}
+                            className={`p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                calendarType === 'hijri'
+                                    ? 'bg-brand-primary text-black border-brand-primary'
+                                    : 'bg-white/5 border-white/10 text-slate-300'
+                            }`}
+                        >
+                            سنة هجرية (2.5%)
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setCalendarType('gregorian')}
+                            className={`p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                calendarType === 'gregorian'
+                                    ? 'bg-brand-primary text-black border-brand-primary'
+                                    : 'bg-white/5 border-white/10 text-slate-300'
+                            }`}
+                        >
+                            سنة ميلادية (2.577%)
+                        </button>
+                    </div>
+                </ToolInputRow>
+            </div>
+
+            {investmentType === 'investment' && (
+                <div className="mt-3 p-4 bg-white/5 border border-white/10 rounded-xl">
+                    <ToolInputRow label="نسبة الأصول الزكوية للشركات المستثمر بها (%) - متوسط السوق التقريبي 20%">
+                        <ToolInput type="number" value={zakatablePercentage} onChange={e => setZakatablePercentage(e.target.value)} placeholder="20" />
+                    </ToolInputRow>
+                    <p className="text-[10px] text-slate-400 mt-1">في الاستثمار طويل الأجل، الزكاة تجب في الأصول المتداولة والنقدية فقط.</p>
+                </div>
+            )}
+
+            <div className="mt-8 p-6 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl text-center">
+                <div className="text-xs text-yellow-400 font-bold mb-1">مقدار الزكاة الواجب إخراجها</div>
+                <div className="text-4xl font-black text-yellow-400 font-mono my-2">{zakatDue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ريال</div>
+                <div className="text-[11px] text-slate-400">الوعاء الزكوي الخاضع: {Math.round(zakatBase).toLocaleString()} ريال</div>
+            </div>
+        </ToolShell>
+    );
+}
+
 export default function FinanceTools({ toolId }: ToolProps) {
     switch (toolId) {
         case 'fin-comm': return <CommissionCalc />;
@@ -805,6 +955,8 @@ export default function FinanceTools({ toolId }: ToolProps) {
         case 'fin-compare-offers': return <OfferComparison />;
         case 'fin-trip-cost': return <TripCostCalc />;
         case 'fin-gold-zakat': return <GoldZakatCalc />;
+        case 'saudi-mortgage': return <MortgageAffordability />;
+        case 'finance-stock-zakat': return <StockMarketZakat />;
         default: return null;
     }
 }

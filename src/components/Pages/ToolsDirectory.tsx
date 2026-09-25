@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Sparkles, ArrowRight, Code, Clock, Database, Grid, Wrench, Crown, AlertCircle, Image, FileText, ListOrdered, RotateCw, Stamp, Unlock, FileMinus, ArrowUpDown, Crop, ImageMinus, Maximize, Zap, Layers, Camera, Share2, Square, EyeOff, Sliders, Activity, Flame, Droplet, Braces, Binary, Fingerprint, Link, Regex, GitCompare, Key, Shield, Terminal, Monitor, CheckCircle2, Timer, Shuffle, Wind, Percent, Calendar } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Code, Clock, Database, Grid, Wrench, Crown, AlertCircle, Image, FileText, ListOrdered, RotateCw, Stamp, Unlock, FileMinus, ArrowUpDown, Crop, ImageMinus, Maximize, Zap, Layers, Camera, Share2, Square, EyeOff, Sliders, Activity, Flame, Droplet, Braces, Binary, Fingerprint, Link, Regex, GitCompare, Key, Shield, Terminal, Monitor, CheckCircle2, Timer, Shuffle, Wind, Percent, Calendar, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { categories, tools as staticTools } from '@/data/tools';
 import { useNavigation } from '@/context/NavigationContext';
 import { useWorkspace } from '@/context/WorkspaceContext';
+import { useFavorites } from '@/context/FavoritesContext';
 import { SectionBanner } from './SectionBanner';
 import { HeroBanner } from './HeroBanner';
 import { getTools, seedTools } from '@/actions/tools';
@@ -33,6 +34,7 @@ const ToolsDirectory = () => {
     const { launchTool } = useNavigation();
     const { currentWorkspace, permissions, workspaceRole } = useWorkspace();
     const { data: session } = useSession();
+    const { isFavorite, toggleFavorite } = useFavorites();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string>('all');
     const [dbTools, setDbTools] = useState<DbTool[]>([]);
@@ -155,11 +157,16 @@ const ToolsDirectory = () => {
 
     // --- Filter Logic ---
     const filteredTools = useMemo(() => {
-        return allTools.filter(tool =>
-            (tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || tool.description.includes(searchQuery)) &&
-            (activeCategory === 'all' || tool.category === activeCategory)
-        );
-    }, [searchQuery, activeCategory, allTools]);
+        return allTools.filter(tool => {
+            const matchesSearch = (tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || tool.description.includes(searchQuery));
+            const matchesCategory = activeCategory === 'all'
+                ? true
+                : activeCategory === 'favorites'
+                    ? isFavorite(tool.id)
+                    : tool.category === activeCategory;
+            return matchesSearch && matchesCategory;
+        });
+    }, [searchQuery, activeCategory, allTools, isFavorite]);
 
     // Grouping for "All" view
     const groupedTools = useMemo(() => {
@@ -308,6 +315,20 @@ const ToolsDirectory = () => {
                                     </div>
                                 ) : null}
 
+                                {/* Favorite button */}
+                                <button
+                                    type="button"
+                                    aria-label={isFavorite(tool.id) ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite(tool.id, tool.name);
+                                    }}
+                                    className="absolute top-4 left-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md hover:bg-black/60 text-slate-300 hover:text-yellow-400 transition-all border border-white/10 active:scale-90"
+                                    title={isFavorite(tool.id) ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+                                >
+                                    <Star className={`w-4 h-4 transition-colors ${isFavorite(tool.id) ? "text-yellow-400 fill-yellow-400" : "text-slate-300"}`} />
+                                </button>
+
                                 <div className="w-full aspect-video rounded-2xl lg:rounded-3xl bg-gradient-to-br from-[#2a1b4d] to-[#0f0f16] mb-4 lg:mb-6 relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity">
                                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_#8B5CF620,_transparent_70%)]" />
@@ -418,6 +439,20 @@ const ToolsDirectory = () => {
                                                     <Crown className="w-3 h-3" /> PRO
                                                 </div>
                                             ) : null}
+
+                                            {/* Favorite Button */}
+                                            <button
+                                                type="button"
+                                                aria-label={isFavorite(tool.id) ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleFavorite(tool.id, tool.name);
+                                                }}
+                                                className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 hover:text-yellow-400 transition-all border border-white/5 active:scale-90"
+                                                title={isFavorite(tool.id) ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+                                            >
+                                                <Star className={`w-3.5 h-3.5 transition-colors ${isFavorite(tool.id) ? "text-yellow-400 fill-yellow-400" : "text-slate-400"}`} />
+                                            </button>
 
                                             <div className="absolute -top-20 -right-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/20 to-transparent opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none" />
 

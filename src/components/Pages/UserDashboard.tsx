@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { tools } from '@/data/tools';
 import { useNavigation } from '@/context/NavigationContext';
+import { useFavorites } from '@/context/FavoritesContext';
 import { AVAILABLE_WIDGETS } from '@/data/widgets';
 import Link from 'next/link';
 
@@ -226,9 +227,9 @@ const UserDashboard = () => {
     const [activeWidgetIds, setActiveWidgetIds] = useState<string[]>(() => {
         if (typeof window !== 'undefined') {
             const savedIds = localStorage.getItem('ri88-active-widgets');
-            return savedIds ? JSON.parse(savedIds) : ['account', 'resource-usage', 'notes', 'todo'];
+            return savedIds ? JSON.parse(savedIds) : ['favorites', 'todo', 'notes', 'resource-usage'];
         }
-        return ['account', 'resource-usage', 'notes', 'todo'];
+        return ['favorites', 'todo', 'notes', 'resource-usage'];
     });
 
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -258,8 +259,40 @@ const UserDashboard = () => {
         saveWidgetConfig(activeWidgetIds.filter(wid => wid !== id));
     };
 
+    const FavoritesWidget = () => {
+        const { favorites } = useFavorites();
+        const { launchTool } = useNavigation();
+        const favTools = tools.filter(t => favorites.includes(t.id));
+
+        if (favTools.length === 0) {
+            return (
+                <div className="flex flex-col items-center justify-center h-full text-center py-4">
+                    <Star className="w-8 h-8 text-slate-600 mb-2" />
+                    <p className="text-xs text-slate-300 font-bold mb-1">لا توجد أدوات مفضلة بعد</p>
+                    <p className="text-[10px] text-slate-500">اضغط على رمز النجمة في أي أداة لإضافتها هنا</p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto no-scrollbar">
+                {favTools.slice(0, 8).map(t => (
+                    <button
+                        key={t.id}
+                        onClick={() => launchTool(t.id)}
+                        className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.03] hover:bg-brand-primary/10 border border-white/5 hover:border-brand-primary/30 transition-all text-right group"
+                    >
+                        <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
+                        <span className="text-xs font-bold text-slate-200 group-hover:text-brand-primary truncate">{t.titleAr || t.title}</span>
+                    </button>
+                ))}
+            </div>
+        );
+    };
+
     const renderWidgetContent = (id: string) => {
         switch (id) {
+            case 'favorites': return <FavoritesWidget />;
             case 'todo': return <TodoWidget />;
             case 'notes': return <NotesWidget notes={notes} setNotes={setNotes} onSave={() => localStorage.setItem('ri88-user-notes', notes)} />;
             case 'resource-usage': return <ResourceWidget />;

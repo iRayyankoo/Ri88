@@ -13,13 +13,10 @@ import {
     ChevronRight,
     ChevronLeft,
     LayoutGrid,
-    Users,
-    CheckSquare,
     LayoutDashboard,
     Building,
     Check,
-    PlusCircle,
-    Receipt
+    PlusCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigation } from '@/context/NavigationContext';
@@ -29,6 +26,7 @@ import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import CreateWorkspaceModal from '../workspaces/CreateWorkspaceModal';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const Sidebar = () => {
     const { isSidebarOpen, isSidebarCollapsed, setIsSidebarCollapsed, userRole } = useNavigation();
@@ -75,11 +73,8 @@ const Sidebar = () => {
     // ── قائمة العضو الأساسية ──────────────────────────────
     const navItems = [
         { name: 'الرئيسية', icon: LayoutDashboard, href: '/' },
-        { name: 'العملاء (CRM)', icon: Users, href: '/pro/crm', permission: 'can_access_crm' },
-        { name: 'المهام (HR)', icon: CheckSquare, href: '/pro/hr', permission: 'can_manage_tasks' },
-        { name: 'المالية والفواتير', icon: Receipt, href: '/pro/finance', permission: 'can_access_finance' },
-        { name: 'مركز الأدوات', icon: Zap, href: '/pro/tools', permission: 'can_access_tools' },
-        { name: 'الإعدادات', icon: Settings, href: '/pro/settings', permission: 'can_access_settings' },
+        { name: 'مركز الأدوات', icon: Zap, href: '/pro/tools' },
+        { name: 'الإعدادات', icon: Settings, href: '/pro/settings' },
     ];
 
     // ── قائمة الأدمن الإضافية ────────────────────────────
@@ -245,6 +240,11 @@ const Sidebar = () => {
                     </div>
                 )}
             </nav>
+
+            {/* Theme Toggle */}
+            <div className={`pt-2 mb-2 ${isSidebarCollapsed ? 'flex justify-center' : ''}`}>
+                <ThemeToggle variant={isSidebarCollapsed ? 'icon' : 'labeled'} />
+            </div>
 
             {/* Profile Footer */}
             <div className={`mt-auto pt-6 border-t border-border-subtle relative ${isSidebarCollapsed ? 'flex justify-center' : ''}`} ref={profileRef}>

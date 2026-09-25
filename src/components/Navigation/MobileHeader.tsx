@@ -7,6 +7,7 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import NotificationsDropdown from './NotificationsDropdown';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const MobileHeader = () => {
     const { data: session, status } = useSession();
@@ -37,6 +38,8 @@ const MobileHeader = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
+                <ThemeToggle className="w-9 h-9" />
+
                 {isLoggedIn && (
                     <NotificationsDropdown />
                 )}

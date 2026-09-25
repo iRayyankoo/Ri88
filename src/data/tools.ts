@@ -1030,6 +1030,21 @@ export const tools: Tool[] = [
         id: 'prod-reading-plan', cat: 'productivity', icon: 'book-open-check', status: 'new',
         title: 'Reading Plan', titleAr: 'خطة قراءة كتاب',
         desc: 'Plan pages per day to finish a book.', descAr: 'خطط لإنهاء كتاب بتحديد عدد الصفحات يومياً وموعد الانتهاء.'
+    },
+    {
+        id: 'saudi-rett', cat: 'saudi', icon: 'landmark', status: 'new',
+        title: 'Real Estate Tax (RETT)', titleAr: 'حاسبة التصرفات العقارية وإعفاء المسكن',
+        desc: 'Calculate 5% RETT tax with first-home buyer exemption.', descAr: 'حساب ضريبة التصرفات العقارية 5% مع إعفاء المسكن الأول للمواطن وعمولة السعي.'
+    },
+    {
+        id: 'saudi-mortgage', cat: 'finance', icon: 'calculator', status: 'new',
+        title: 'Mortgage Affordability', titleAr: 'حاسبة التمويل العقاري والقدرة الشرائية',
+        desc: 'Estimate maximum monthly installment and financing capacity.', descAr: 'تقدير أقصى قسط شهري ومبلغ التمويل العقاري التقريبي بناءً على الراتب والاستقطاع.'
+    },
+    {
+        id: 'finance-stock-zakat', cat: 'finance', icon: 'trending-up', status: 'new',
+        title: 'Stock Market Zakat', titleAr: 'حاسبة زكاة الأسهم والمحافظ الاستثمارية',
+        desc: 'Calculate Zakat on stocks for trading or long-term investment.', descAr: 'حساب زكاة المحفظة الاستثمارية وأسهم المضاربة أو الاستثمار طويل الأجل بدقة.'
     }
 ];
 

@@ -55,6 +55,7 @@ model User {
   purchases     Purchase[]
   transactions  Transaction[]
   savedItems    SavedItem[]
+  favorites     Favorite[]
   notifications Notification[]
 
   // ERP & CRM Relations
@@ -149,6 +150,18 @@ model SavedItem {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  toolId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, toolId])
+  @@index([userId])
 }
 
 model Notification {

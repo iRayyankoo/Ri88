@@ -7,6 +7,7 @@ import { useNavigation } from '@/context/NavigationContext';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import NotificationsDropdown from './NotificationsDropdown';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const Header = () => {
     const {
@@ -59,6 +60,9 @@ const Header = () => {
                     <Sparkles className="w-4 h-4" />
                     <span className="text-xs font-bold">ترقية الباقة</span>
                 </Link>
+
+                {/* Theme Toggle */}
+                <ThemeToggle />
 
                 {/* Notifications Dropdown */}
                 <NotificationsDropdown />
