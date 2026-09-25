@@ -53,9 +53,9 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
                             <div className="lg:hidden h-24 w-full shrink-0" aria-hidden="true" />
                         </div>
                     </main>
-                    <ToolPopup />
                     <BottomNav />
                 </div>
+                <ToolPopup />
             </div>
         );
     }
@@ -92,12 +92,12 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
                     </div>
                 </main>
 
-                {/* Tool Launcher Modal */}
-                <ToolPopup />
-
                 {/* Mobile Bottom Navigation */}
                 <BottomNav />
             </div>
+
+            {/* Tool Launcher Modal (Root Level) */}
+            <ToolPopup />
 
         </div>
     );

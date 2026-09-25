@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2, Minimize2, Star, Share2, Check } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
@@ -12,12 +13,17 @@ import { toast } from 'sonner';
 const ToolPopup = () => {
     const { showToolPopup, setShowToolPopup, activeToolId, activeDbTool } = useNavigation();
     const { isFavorite, toggleFavorite } = useFavorites();
+    const [mounted, setMounted] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const tool = resolveActiveTool(activeToolId, activeDbTool);
     const isFav = isFavorite(tool.id);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Keyboard Hotkeys: ESC to close, F to fullscreen (when not focused in inputs)
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -59,30 +65,30 @@ const ToolPopup = () => {
         }
     };
 
-    if (!showToolPopup) return null;
+    if (!mounted || !showToolPopup) return null;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {showToolPopup && (
-                <div className="fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-4 lg:p-6 transition-all duration-300">
-                    {/* BACKDROP DIMMER */}
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center p-2 sm:p-4 lg:p-6 transition-all duration-300">
+                    {/* BACKDROP DIMMER - COVERS 100% OF VIEWPORT INCLUDING SIDEBAR */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setShowToolPopup(false)}
-                        className="absolute inset-0 bg-[#050709]/80 backdrop-blur-md transition-all duration-300"
+                        className="fixed inset-0 bg-[#050709]/85 backdrop-blur-md transition-all duration-300 z-0"
                     />
 
                     {/* STUDIO WINDOW CONTAINER */}
                     <motion.div
                         ref={containerRef}
-                        initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                        initial={{ opacity: 0, scale: 0.96, y: 12 }}
                         animate={{
                             opacity: 1,
                             scale: 1,
                             y: 0,
-                            transition: { type: "spring", damping: 30, stiffness: 350 }
+                            transition: { type: "spring", damping: 30, stiffness: 360 }
                         }}
                         exit={{
                             opacity: 0,
@@ -90,56 +96,61 @@ const ToolPopup = () => {
                             y: 8,
                             transition: { duration: 0.18 }
                         }}
-                        className={`relative bg-surface-raised/95 backdrop-blur-2xl shadow-2xl overflow-hidden flex flex-col isolate border border-border-subtle transition-all duration-300 ease-out text-right ${
+                        className={`relative z-10 bg-surface-raised/95 backdrop-blur-2xl shadow-2xl overflow-hidden flex flex-col isolate border border-border-subtle transition-all duration-300 ease-out text-right ${
                             isFullScreen
-                                ? '!w-full !h-full !max-w-none !max-h-none rounded-none sm:rounded-2xl'
+                                ? '!fixed !inset-0 !w-full !h-full !max-w-none !max-h-none rounded-none'
                                 : 'w-full max-w-5xl xl:max-w-6xl h-[92vh] sm:h-[88vh] max-h-[860px] rounded-2xl'
                         }`}
                         dir="rtl"
                     >
                         {/* Top Ambient Glow Line */}
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/35 to-transparent pointer-events-none" />
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/40 to-transparent pointer-events-none" />
 
-                        {/* 1. WINDOW TITLE BAR (macOS Mockup + Monospace Path + Controls) */}
-                        <div className="relative z-20 flex items-center justify-between px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface-base/80 select-none">
-                            {/* Window Dots (macOS Style) */}
-                            <div className="flex items-center gap-2" dir="ltr">
-                                <button
-                                    onClick={() => setShowToolPopup(false)}
-                                    title="إغلاق [ESC]"
-                                    aria-label="إغلاق الأداة"
-                                    className="w-3.5 h-3.5 rounded-full bg-[#ff5f56] hover:brightness-110 flex items-center justify-center transition-all group/dot"
-                                >
-                                    <X className="w-2.5 h-2.5 text-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
-                                </button>
-                                <button
-                                    onClick={() => setIsFullScreen(false)}
-                                    title="استعادة الحجم"
-                                    aria-label="استعادة الحجم"
-                                    className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] hover:brightness-110 flex items-center justify-center transition-all group/dot"
-                                >
-                                    <span className="w-2 h-0.5 bg-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
-                                </button>
-                                <button
-                                    onClick={() => setIsFullScreen(!isFullScreen)}
-                                    title={isFullScreen ? "تصغير النافذة [F]" : "ملء الشاشة [F]"}
-                                    aria-label="ملء الشاشة"
-                                    className="w-3.5 h-3.5 rounded-full bg-[#27c93f] hover:brightness-110 flex items-center justify-center transition-all group/dot"
-                                >
-                                    <Maximize2 className="w-2 h-2 text-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
-                                </button>
+                        {/* 1. WINDOW TITLE BAR (macOS Mockup + Monospace Path + Controls in LTR) */}
+                        <div className="relative z-20 flex items-center justify-between px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface-base/90 select-none" dir="ltr">
+                            {/* Left: macOS Window Dots + Breadcrumbs */}
+                            <div className="flex items-center gap-3">
+                                {/* Traffic light dots */}
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setShowToolPopup(false)}
+                                        title="إغلاق [ESC]"
+                                        aria-label="إغلاق الأداة"
+                                        className="w-3.5 h-3.5 rounded-full bg-[#ff5f56] hover:brightness-110 flex items-center justify-center transition-all group/dot"
+                                    >
+                                        <X className="w-2.5 h-2.5 text-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsFullScreen(false)}
+                                        title="استعادة الحجم"
+                                        aria-label="استعادة الحجم"
+                                        className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] hover:brightness-110 flex items-center justify-center transition-all group/dot"
+                                    >
+                                        <span className="w-2 h-0.5 bg-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsFullScreen(!isFullScreen)}
+                                        title={isFullScreen ? "تصغير النافذة [F]" : "ملء الشاشة [F]"}
+                                        aria-label="ملء الشاشة"
+                                        className="w-3.5 h-3.5 rounded-full bg-[#27c93f] hover:brightness-110 flex items-center justify-center transition-all group/dot"
+                                    >
+                                        <Maximize2 className="w-2 h-2 text-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
+                                    </button>
+                                </div>
+
+                                <div className="h-4 w-px bg-border-subtle mx-0.5" />
+
+                                {/* Monospace Path */}
+                                <div className="flex items-center gap-1.5 font-mono text-[11px] text-text-muted">
+                                    <span className="text-brand-primary font-bold">ri88.studio</span>
+                                    <span className="opacity-40">/</span>
+                                    <span className="opacity-75">{tool.cat}</span>
+                                    <span className="opacity-40">/</span>
+                                    <span className="text-text-primary font-medium">{tool.id}</span>
+                                </div>
                             </div>
 
-                            {/* Monospace Path Indicator */}
-                            <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-text-muted">
-                                <span className="text-brand-primary/80 font-bold">ri88.studio</span>
-                                <span className="opacity-40">/</span>
-                                <span className="opacity-75">{tool.cat}</span>
-                                <span className="opacity-40">/</span>
-                                <span className="text-text-primary">{tool.id}</span>
-                            </div>
-
-                            {/* Action Buttons Toolbar */}
+                            {/* Right: Quick Action Controls */}
                             <div className="flex items-center gap-1.5">
                                 {/* Favorite Toggle */}
                                 <button
@@ -187,8 +198,8 @@ const ToolPopup = () => {
                             </div>
                         </div>
 
-                        {/* 2. COMPACT TOOL IDENTITY STRIP */}
-                        <div className="relative z-10 px-4 sm:px-6 py-3.5 border-b border-border-subtle bg-surface-raised/50 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                        {/* 2. COMPACT TOOL IDENTITY STRIP (in RTL) */}
+                        <div className="relative z-10 px-4 sm:px-6 py-3.5 border-b border-border-subtle bg-surface-raised/40 flex flex-wrap items-center justify-between gap-3 shrink-0" dir="rtl">
                             <div className="flex items-center gap-3.5 min-w-0">
                                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0 shadow-inner">
                                     <ToolIcon name={tool.icon} className="w-5 h-5" />
@@ -215,13 +226,13 @@ const ToolPopup = () => {
                             </div>
                         </div>
 
-                        {/* 3. TOOL CONTENT CANVAS (Maximized Viewport, Zero Waste) */}
-                        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6">
+                        {/* 3. TOOL CONTENT CANVAS */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6" dir="rtl">
                             <ToolWorkspace />
                         </div>
 
                         {/* 4. STUDIO STATUS FOOTER */}
-                        <div className="h-8 border-t border-border-subtle bg-surface-base/90 flex items-center justify-between px-4 sm:px-5 text-[11px] font-mono text-text-muted select-none shrink-0">
+                        <div className="h-8 border-t border-border-subtle bg-surface-base/90 flex items-center justify-between px-4 sm:px-5 text-[11px] font-mono text-text-muted select-none shrink-0" dir="rtl">
                             <div className="flex items-center gap-3">
                                 <span className="flex items-center gap-1">
                                     <kbd className="px-1.5 py-0.5 rounded bg-surface-glass border border-border-subtle text-[9px] text-text-primary">ESC</kbd>
@@ -233,7 +244,7 @@ const ToolPopup = () => {
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2" dir="ltr">
                                 <span className="text-[10px] text-brand-primary/80">LATENCY &lt; 15MS</span>
                                 <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
                             </div>
@@ -241,7 +252,8 @@ const ToolPopup = () => {
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 
