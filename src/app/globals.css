@@ -35,39 +35,41 @@
   --font-cairo: "Cairo", sans-serif;
 }
 
+/* Semantic Variables: Default Dark Theme */
+:root,
+[data-theme="dark"] {
+  --brand-bg: #0A0A0F;
+  --surface-base: #0A0A0F;
+  --surface-raised: #111118;
+  --surface-glass: rgba(255, 255, 255, 0.03);
+
+  --text-primary: #FFFFFF;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+}
+
+/* Semantic Variables: Light Theme Overrides */
+:root[data-theme="light"],
+[data-theme="light"],
+html[data-theme="light"],
+.light {
+  --brand-bg: #F8FAFC !important;
+  --surface-base: #F8FAFC !important;
+  --surface-raised: #FFFFFF !important;
+  --surface-glass: #F8FAFC !important;
+
+  --text-primary: #0F172A !important;
+  --text-muted: #475569 !important;
+  --text-dim: #94A3B8 !important;
+
+  --border-subtle: #E2E8F0 !important;
+  --border-strong: #CBD5E1 !important;
+}
+
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cairo:wght@400;600;700;900&display=swap');
-
-  /* default: Dark Theme */
-  :root {
-    --brand-bg: #0A0A0F;
-    --surface-base: #0A0A0F;
-    --surface-raised: #111118;
-    --surface-glass: rgba(255, 255, 255, 0.03);
-
-    --text-primary: #FFFFFF;
-    --text-muted: #94A3B8;
-    --text-dim: #64748B;
-
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.16);
-  }
-
-  /* Light Theme Overrides */
-  [data-theme="light"] {
-    --brand-bg: #F8FAFC;
-    --surface-base: #F8FAFC;
-    --surface-raised: #FFFFFF;
-    --surface-glass: rgba(255, 255, 255, 0.90);
-
-    --text-primary: #0F172A;
-    --text-muted: #475569;
-    --text-dim: #94A3B8;
-
-    --border-subtle: #E2E8F0;
-    --border-strong: #CBD5E1;
-  }
-
   body {
     background-color: var(--color-brand-bg);
     background-image:
@@ -80,7 +82,10 @@
     overflow-x: hidden;
   }
 
-  [data-theme="light"] body {
+  [data-theme="light"] body,
+  .light body {
+    background-color: #F8FAFC;
+    color: #0F172A;
     background-image:
       radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.03), transparent 30%),
       radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.02), transparent 30%);
@@ -118,8 +123,53 @@
   }
 
   /* =============================================
-     LIGHT MODE: Deep Tailwind Class Overrides
+     LIGHT MODE: Guaranteed Core Surface & Text Overrides
      ============================================= */
+  [data-theme="light"] .bg-surface-raised,
+  [data-theme="light"] [class*="bg-surface-raised"],
+  .light .bg-surface-raised,
+  .light [class*="bg-surface-raised"] {
+    background-color: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+    color: #0F172A !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  [data-theme="light"] .bg-surface-glass,
+  [data-theme="light"] [class*="bg-surface-glass"],
+  .light .bg-surface-glass,
+  .light [class*="bg-surface-glass"] {
+    background-color: #F8FAFC !important;
+    border-color: #E2E8F0 !important;
+  }
+
+  [data-theme="light"] .bg-surface-base,
+  [data-theme="light"] [class*="bg-surface-base"],
+  .light .bg-surface-base,
+  .light [class*="bg-surface-base"] {
+    background-color: #F8FAFC !important;
+  }
+
+  [data-theme="light"] .text-text-primary,
+  .light .text-text-primary {
+    color: #0F172A !important;
+  }
+
+  [data-theme="light"] .text-text-muted,
+  .light .text-text-muted {
+    color: #64748B !important;
+  }
+
+  [data-theme="light"] .border-border-subtle,
+  .light .border-border-subtle {
+    border-color: #E2E8F0 !important;
+  }
+
+  [data-theme="light"] .border-border-strong,
+  .light .border-border-strong {
+    border-color: #CBD5E1 !important;
+  }
+
   /* Hardcoded dark hex backgrounds become crisp white cards */
   [data-theme="light"] .bg-\[\#0F1115\],
   [data-theme="light"] .bg-\[\#0D0D0F\],

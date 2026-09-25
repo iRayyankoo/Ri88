@@ -266,9 +266,9 @@ const UserDashboard = () => {
         if (favTools.length === 0) {
             return (
                 <div className="flex flex-col items-center justify-center h-full text-center py-4">
-                    <Star className="w-8 h-8 text-slate-600 mb-2" />
-                    <p className="text-xs text-slate-300 font-bold mb-1">لا توجد أدوات مفضلة بعد</p>
-                    <p className="text-[10px] text-slate-500">اضغط على رمز النجمة في أي أداة لإضافتها هنا</p>
+                    <Star className="w-8 h-8 text-text-muted mb-2 opacity-40" />
+                    <p className="text-xs text-text-primary font-bold mb-1">لا توجد أدوات مفضلة بعد</p>
+                    <p className="text-[10px] text-text-muted">اضغط على رمز النجمة في أي أداة لإضافتها هنا</p>
                 </div>
             );
         }
@@ -279,10 +279,10 @@ const UserDashboard = () => {
                     <button
                         key={t.id}
                         onClick={() => launchTool(t.id)}
-                        className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.03] hover:bg-brand-primary/10 border border-white/5 hover:border-brand-primary/30 transition-all text-right group"
+                        className="flex items-center gap-2 p-2.5 rounded-xl bg-surface-glass hover:bg-brand-primary/10 border border-border-subtle hover:border-brand-primary/30 transition-all text-right group"
                     >
-                        <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
-                        <span className="text-xs font-bold text-slate-200 group-hover:text-brand-primary truncate">{t.titleAr || t.title}</span>
+                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                        <span className="text-xs font-bold text-text-primary group-hover:text-brand-primary truncate">{t.titleAr || t.title}</span>
                     </button>
                 ))}
             </div>
@@ -305,25 +305,25 @@ const UserDashboard = () => {
             case 'crypto': return (
                 <div className="grid grid-cols-1 gap-2">
                     {Object.entries(cryptoData).map(([coin, val]) => (
-                        <div key={coin} className="flex items-center justify-between p-2 rounded-xl bg-white/[0.02] border border-white/5">
-                            <span className="text-[10px] font-black text-white uppercase">{coin}</span>
-                            <span className="text-xs font-bold text-emerald-400 tabular-nums">${val}</span>
+                        <div key={coin} className="flex items-center justify-between p-2 rounded-xl bg-surface-glass border border-border-subtle">
+                            <span className="text-[10px] font-black text-text-primary uppercase">{coin}</span>
+                            <span className="text-xs font-bold text-emerald-500 tabular-nums">${val}</span>
                         </div>
                     ))}
                 </div>
             );
             case 'weather': return (
                 <div className="flex flex-col items-center justify-center h-full">
-                    <Sun className="w-8 h-8 text-yellow-500 mb-2 animate-pulse" />
-                    <span className="text-2xl font-black text-white">{weather.temp}</span>
-                    <span className="text-[10px] text-slate-500 font-bold">{weather.city} - {weather.condition}</span>
+                    <Sun className="w-8 h-8 text-amber-500 mb-2 animate-pulse" />
+                    <span className="text-2xl font-black text-text-primary">{weather.temp}</span>
+                    <span className="text-[10px] text-text-muted font-bold">{weather.city} - {weather.condition}</span>
                 </div>
             );
             case 'network-speed': return (
                 <div className="flex flex-col items-center justify-center h-full gap-2">
                     <Gauge size={24} className="text-brand-primary/40" />
                     <div className="text-center">
-                        <div className="text-xl font-black text-white">42 MB/s</div>
+                        <div className="text-xl font-black text-text-primary">42 MB/s</div>
                         <div className="text-[8px] text-emerald-500 font-bold uppercase tracking-widest">مستقر تماماً</div>
                     </div>
                 </div>
