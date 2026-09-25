@@ -22,8 +22,11 @@ const ToolIcon = ({ icon, className }: { icon: string; className?: string }) => 
 
 const CountUp = ({ end, suffix = '' }: { end: number; suffix?: string }) => {
     const [val, setVal] = useState(0);
+    const [mounted, setMounted] = useState(false);
     const ref = useRef<HTMLSpanElement>(null);
+
     useEffect(() => {
+        setMounted(true);
         const observer = new IntersectionObserver(([entry]) => {
             if (!entry.isIntersecting) return;
             let start = 0;
@@ -39,7 +42,12 @@ const CountUp = ({ end, suffix = '' }: { end: number; suffix?: string }) => {
         if (ref.current) observer.observe(ref.current);
         return () => observer.disconnect();
     }, [end]);
-    return <span ref={ref}>{val.toLocaleString()}{suffix}</span>;
+
+    return (
+        <span ref={ref} suppressHydrationWarning>
+            {mounted ? val.toLocaleString() : '0'}{suffix}
+        </span>
+    );
 };
 
 const VisitorLanding = () => {
