@@ -1,136 +1,241 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, Maximize2, Minimize2 } from 'lucide-react';
-
+import { X, Maximize2, Minimize2, Star, Share2, Check } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
+import { useFavorites } from '@/context/FavoritesContext';
+import { resolveActiveTool } from './Pages/ToolWorkspace';
+import { ToolIcon } from './tools/IconMap';
 import ToolWorkspace from './Pages/ToolWorkspace';
+import { toast } from 'sonner';
 
 const ToolPopup = () => {
-    const { showToolPopup, setShowToolPopup, isSidebarCollapsed } = useNavigation();
-    const containerRef = React.useRef<HTMLDivElement>(null);
-    const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
-    const [isFullScreen, setIsFullScreen] = React.useState(false);
+    const { showToolPopup, setShowToolPopup, activeToolId, activeDbTool } = useNavigation();
+    const { isFavorite, toggleFavorite } = useFavorites();
+    const [isFullScreen, setIsFullScreen] = useState(false);
+    const [linkCopied, setLinkCopied] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    React.useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!containerRef.current) return;
-            const rect = containerRef.current.getBoundingClientRect();
-            setMousePosition({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            });
-        };
+    const tool = resolveActiveTool(activeToolId, activeDbTool);
+    const isFav = isFavorite(tool.id);
 
+    // Keyboard Hotkeys: ESC to close, F to fullscreen (when not focused in inputs)
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (!showToolPopup) return;
+
+        const target = e.target as HTMLElement | null;
+        const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
+
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            setShowToolPopup(false);
+        } else if ((e.key === 'f' || e.key === 'F') && !isInput && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault();
+            setIsFullScreen(prev => !prev);
+        }
+    }, [showToolPopup, setShowToolPopup]);
+
+    useEffect(() => {
         if (showToolPopup) {
-            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('keydown', handleKeyDown);
             document.body.style.overflow = 'hidden';
         }
-
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = 'auto';
         };
-    }, [showToolPopup]);
+    }, [showToolPopup, handleKeyDown]);
+
+    // Copy Tool Link
+    const handleShareLink = async () => {
+        try {
+            const url = `${window.location.origin}/?tool=${encodeURIComponent(tool.id)}`;
+            await navigator.clipboard.writeText(url);
+            setLinkCopied(true);
+            toast.success('تم نسخ رابط الأداة بنجاح 🔗');
+            setTimeout(() => setLinkCopied(false), 2000);
+        } catch {
+            toast.error('تعذر نسخ الرابط');
+        }
+    };
 
     if (!showToolPopup) return null;
 
     return (
         <AnimatePresence>
             {showToolPopup && (
-                <div
-                    className={`fixed inset-0 z-[99999] flex items-center justify-center p-0 lg:p-4 transition-all duration-300
-                    ${isFullScreen
-                            ? (isSidebarCollapsed ? 'lg:pr-[100px] lg:pt-4 lg:pb-4' : 'lg:pr-[300px] lg:pt-4 lg:pb-4')
-                            : 'items-stretch lg:items-start lg:pt-[12vh]'}`}
-                >
-
-                    {/* 1. FOCUS DIMMER (Darkens the noise) */}
+                <div className="fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-4 lg:p-6 transition-all duration-300">
+                    {/* BACKDROP DIMMER */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setShowToolPopup(false)}
-                        className="absolute inset-0 bg-[#050505]/70 backdrop-blur-[8px] transition-all duration-500"
+                        className="absolute inset-0 bg-[#050709]/80 backdrop-blur-md transition-all duration-300"
                     />
 
-                    {/* 2. THE CONTROL DECK (Wide Dashboard Edition) */}
+                    {/* STUDIO WINDOW CONTAINER */}
                     <motion.div
                         ref={containerRef}
-                        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                        initial={{ opacity: 0, scale: 0.97, y: 10 }}
                         animate={{
                             opacity: 1,
                             scale: 1,
                             y: 0,
-                            transition: { type: "spring", damping: 35, stiffness: 400 }
+                            transition: { type: "spring", damping: 30, stiffness: 350 }
                         }}
                         exit={{
                             opacity: 0,
                             scale: 0.98,
-                            y: 10,
-                            transition: { duration: 0.2 }
+                            y: 8,
+                            transition: { duration: 0.18 }
                         }}
-                        /* max-w-7xl allows tools to spread horizontally. h-auto fits content exactly. */
-                        className={`relative bg-surface-raised backdrop-blur-[80px] shadow-2xl overflow-hidden flex flex-col group/lens isolate border border-border-subtle transition-all duration-500 ease-in-out
-                            ${isFullScreen
-                                ? '!w-full !h-full !max-w-none rounded-none lg:rounded-2xl'
-                                : 'w-full lg:w-auto h-full lg:h-auto min-w-0 lg:min-w-[60vw] max-w-none lg:max-w-7xl rounded-none lg:rounded-[24px]'
-                            }`}
+                        className={`relative bg-surface-raised/95 backdrop-blur-2xl shadow-2xl overflow-hidden flex flex-col isolate border border-border-subtle transition-all duration-300 ease-out text-right ${
+                            isFullScreen
+                                ? '!w-full !h-full !max-w-none !max-h-none rounded-none sm:rounded-2xl'
+                                : 'w-full max-w-5xl xl:max-w-6xl h-[92vh] sm:h-[88vh] max-h-[860px] rounded-2xl'
+                        }`}
+                        dir="rtl"
                     >
-                        {/* DYNAMIC BORDER GLOW (Mouse Tracking) */}
-                        <motion.div
-                            className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300 opacity-100 bg-[radial-gradient(1000px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(5,150,105,0.08),transparent_80%)]"
-                            style={{
-                                "--mouse-x": `${mousePosition.x}px`,
-                                "--mouse-y": `${mousePosition.y}px`,
-                            } as React.CSSProperties & { [key: string]: string }}
-                        />
-                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent opacity-50" />
+                        {/* Top Ambient Glow Line */}
+                        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/35 to-transparent pointer-events-none" />
 
-                        {/* ULTRA-COMPACT HEADER */}
-                        <div className="relative z-20 flex items-center justify-between px-4 lg:px-6 py-3 lg:py-4 shrink-0 bg-surface-glass border-b border-border-subtle">
-                            <div className="flex items-center gap-3">
-                                <div className="p-1.5 rounded-lg bg-brand-primary/10 border border-brand-primary/20 text-brand-primary">
-                                    <Search className="w-4 h-4" />
-                                </div>
-                                <span className="text-xs lg:text-sm font-bold text-text-primary font-cairo tracking-wide">منطقة العمل</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setIsFullScreen(!isFullScreen)}
-                                    className="hidden lg:flex w-7 h-7 rounded-full items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-glass transition-all"
-                                    aria-label={isFullScreen ? "Exit Full Screen" : "Full Screen"}
-                                >
-                                    {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-                                </button>
+                        {/* 1. WINDOW TITLE BAR (macOS Mockup + Monospace Path + Controls) */}
+                        <div className="relative z-20 flex items-center justify-between px-4 sm:px-5 py-3 border-b border-border-subtle bg-surface-base/80 select-none">
+                            {/* Window Dots (macOS Style) */}
+                            <div className="flex items-center gap-2" dir="ltr">
                                 <button
                                     onClick={() => setShowToolPopup(false)}
-                                    className="w-10 h-10 lg:w-7 lg:h-7 rounded-full flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-glass transition-all bg-surface-glass lg:bg-transparent"
-                                    aria-label="Close"
+                                    title="إغلاق [ESC]"
+                                    aria-label="إغلاق الأداة"
+                                    className="w-3.5 h-3.5 rounded-full bg-[#ff5f56] hover:brightness-110 flex items-center justify-center transition-all group/dot"
                                 >
-                                    <X className="w-6 h-6 lg:w-4 lg:h-4" />
+                                    <X className="w-2.5 h-2.5 text-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
+                                </button>
+                                <button
+                                    onClick={() => setIsFullScreen(false)}
+                                    title="استعادة الحجم"
+                                    aria-label="استعادة الحجم"
+                                    className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] hover:brightness-110 flex items-center justify-center transition-all group/dot"
+                                >
+                                    <span className="w-2 h-0.5 bg-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
+                                </button>
+                                <button
+                                    onClick={() => setIsFullScreen(!isFullScreen)}
+                                    title={isFullScreen ? "تصغير النافذة [F]" : "ملء الشاشة [F]"}
+                                    aria-label="ملء الشاشة"
+                                    className="w-3.5 h-3.5 rounded-full bg-[#27c93f] hover:brightness-110 flex items-center justify-center transition-all group/dot"
+                                >
+                                    <Maximize2 className="w-2 h-2 text-black/70 opacity-0 group-hover/dot:opacity-100 transition-opacity" />
+                                </button>
+                            </div>
+
+                            {/* Monospace Path Indicator */}
+                            <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-text-muted">
+                                <span className="text-brand-primary/80 font-bold">ri88.studio</span>
+                                <span className="opacity-40">/</span>
+                                <span className="opacity-75">{tool.cat}</span>
+                                <span className="opacity-40">/</span>
+                                <span className="text-text-primary">{tool.id}</span>
+                            </div>
+
+                            {/* Action Buttons Toolbar */}
+                            <div className="flex items-center gap-1.5">
+                                {/* Favorite Toggle */}
+                                <button
+                                    onClick={() => toggleFavorite(tool.id, tool.titleAr || tool.title)}
+                                    aria-label={isFav ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+                                    title={isFav ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+                                    className={`p-1.5 rounded-lg border transition-all ${
+                                        isFav
+                                            ? "bg-amber-400/10 border-amber-400/30 text-amber-400 hover:bg-amber-400/20"
+                                            : "bg-surface-glass border-border-subtle text-text-muted hover:text-amber-400 hover:border-amber-400/30"
+                                    }`}
+                                >
+                                    <Star className={`w-4 h-4 ${isFav ? "fill-amber-400" : ""}`} />
+                                </button>
+
+                                {/* Share Link */}
+                                <button
+                                    onClick={handleShareLink}
+                                    aria-label="نسخ رابط الأداة"
+                                    title="نسخ رابط الأداة"
+                                    className="p-1.5 rounded-lg bg-surface-glass border border-border-subtle text-text-muted hover:text-brand-primary hover:border-brand-primary/30 transition-all"
+                                >
+                                    {linkCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+                                </button>
+
+                                {/* Fullscreen Toggle Button */}
+                                <button
+                                    onClick={() => setIsFullScreen(!isFullScreen)}
+                                    aria-label={isFullScreen ? "تصغير النافذة" : "ملء الشاشة"}
+                                    title={isFullScreen ? "تصغير [F]" : "ملء الشاشة [F]"}
+                                    className="hidden sm:flex p-1.5 rounded-lg bg-surface-glass border border-border-subtle text-text-muted hover:text-text-primary hover:border-text-primary/30 transition-all"
+                                >
+                                    {isFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                                </button>
+
+                                {/* Close Button */}
+                                <button
+                                    onClick={() => setShowToolPopup(false)}
+                                    aria-label="إغلاق [ESC]"
+                                    title="إغلاق [ESC]"
+                                    className="p-1.5 rounded-lg bg-surface-glass border border-border-subtle text-text-muted hover:text-rose-400 hover:border-rose-400/30 transition-all"
+                                >
+                                    <X className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>
 
-                        {/* CONTENT AREA (Maximized Width, No Vertical Waste) */}
-                        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-6" dir="rtl">
-                            {/* Force content to expand width to avoid vertical stacking */}
-                            <div className="w-full">
-                                <ToolWorkspace />
+                        {/* 2. COMPACT TOOL IDENTITY STRIP */}
+                        <div className="relative z-10 px-4 sm:px-6 py-3.5 border-b border-border-subtle bg-surface-raised/50 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                            <div className="flex items-center gap-3.5 min-w-0">
+                                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0 shadow-inner">
+                                    <ToolIcon name={tool.icon} className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-2.5 flex-wrap">
+                                        <h2 className="text-base sm:text-lg font-black text-text-primary font-cairo tracking-tight truncate">
+                                            {tool.titleAr || tool.title}
+                                        </h2>
+                                        <span className="font-mono text-[10px] tracking-wider uppercase px-2 py-0.5 rounded bg-brand-primary/10 border border-brand-primary/20 text-brand-primary font-bold">
+                                            {tool.cat}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-text-muted font-cairo truncate max-w-md sm:max-w-xl mt-0.5">
+                                        {tool.descAr || tool.desc}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Status Badge */}
+                            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                <span>جاهز للتشغيل</span>
                             </div>
                         </div>
 
-                        {/* FOOTER METADATA (Raycast style) */}
-                        <div className="h-9 border-t border-white/5 bg-[#0A0A0C] flex items-center justify-between px-4 text-[10px] font-medium text-slate-600 select-none">
-                            <div className="flex gap-4">
-                                <span className="hover:text-slate-400 cursor-pointer transition-colors">Actions</span>
-                                <span className="hover:text-slate-400 cursor-pointer transition-colors">Configure Extension</span>
+                        {/* 3. TOOL CONTENT CANVAS (Maximized Viewport, Zero Waste) */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6">
+                            <ToolWorkspace />
+                        </div>
+
+                        {/* 4. STUDIO STATUS FOOTER */}
+                        <div className="h-8 border-t border-border-subtle bg-surface-base/90 flex items-center justify-between px-4 sm:px-5 text-[11px] font-mono text-text-muted select-none shrink-0">
+                            <div className="flex items-center gap-3">
+                                <span className="flex items-center gap-1">
+                                    <kbd className="px-1.5 py-0.5 rounded bg-surface-glass border border-border-subtle text-[9px] text-text-primary">ESC</kbd>
+                                    <span className="text-[10px] text-text-muted">إغلاق</span>
+                                </span>
+                                <span className="hidden sm:flex items-center gap-1">
+                                    <kbd className="px-1.5 py-0.5 rounded bg-surface-glass border border-border-subtle text-[9px] text-text-primary">F</kbd>
+                                    <span className="text-[10px] text-text-muted">ملء الشاشة</span>
+                                </span>
                             </div>
+
                             <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-brand-primary/50 animate-pulse" />
-                                <span>Ri88 Lens v1.0</span>
+                                <span className="text-[10px] text-brand-primary/80">LATENCY &lt; 15MS</span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
                             </div>
                         </div>
                     </motion.div>

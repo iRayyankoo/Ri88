@@ -1,10 +1,11 @@
 "use client";
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { ToolAnimationWrapper } from "@/components/ui/ToolAnimationWrapper";
-import { Save, Sparkles } from 'lucide-react';
+import { Save, Sparkles, Copy, Check, Terminal } from 'lucide-react';
 import { useSession } from "next-auth/react";
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ToolButton } from './ToolUi';
+import { toast } from 'sonner';
 
 interface ToolShellProps {
     title?: string;
@@ -15,7 +16,9 @@ interface ToolShellProps {
     results?: React.ReactNode;
     onSave?: () => void;
     isSaving?: boolean;
+    layout?: 'split' | 'single';
 }
+
 export function ToolShell({
     children,
     className = '',
@@ -23,86 +26,148 @@ export function ToolShell({
     results,
     onSave,
     isSaving,
-    layout = 'split'
-}: ToolShellProps & { layout?: 'split' | 'single' }) {
+    layout
+}: ToolShellProps) {
     const { data: session } = useSession();
-    const isSingle = layout === 'single';
+    const resultRef = useRef<HTMLDivElement>(null);
+    const [copied, setCopied] = useState(false);
+
+    // Intelligent layout detection:
+    // If results is explicitly provided (even if currently falsy), or layout === 'split', use split mode.
+    // If results is undefined and layout is not explicitly 'split', use single mode to avoid empty ghost canvas.
+    const isSingle = layout === 'single' || (results === undefined && layout !== 'split');
+
+    const handleCopyResult = async () => {
+        if (!resultRef.current) return;
+        try {
+            const text = resultRef.current.innerText?.trim();
+            if (!text) {
+                toast.error('لا توجد نتيجة لنسخها حالياً');
+                return;
+            }
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            toast.success('تم نسخ النتيجة إلى الحافظة 📋');
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            toast.error('تعذر النسخ إلى الحافظة');
+        }
+    };
 
     return (
         <ToolAnimationWrapper>
             <div className={`w-full ${className}`} dir="rtl">
-                {/* 1. LIQUID GLASS TOOL HEADER - HIDDEN */}
-
-                {/* 2. DUAL-PANEL WORKSPACE */}
-                <div className={isSingle ? "flex flex-col gap-6 lg:gap-10" : "grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start"}>
+                <div className={isSingle ? "flex flex-col gap-6 max-w-4xl mx-auto" : "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"}>
 
                     {/* INPUT CANVAS */}
                     <div className={isSingle ? "w-full" : "col-span-1 lg:col-span-7"}>
-                        <div className="p-6 lg:p-10 rounded-[28px] lg:rounded-[44px] bg-surface-raised border border-border-subtle shadow-sm min-h-[300px] lg:min-h-[500px] backdrop-blur-3xl relative overflow-hidden text-right">
-                            <div className="absolute top-0 right-0 w-48 h-48 lg:w-64 lg:h-64 bg-brand-primary/5 blur-[80px] rounded-full -mr-24 -mt-24 lg:-mr-32 lg:-mt-32 pointer-events-none" />
+                        <div className="p-5 sm:p-7 rounded-2xl bg-surface-raised border border-border-subtle shadow-sm backdrop-blur-2xl relative overflow-hidden text-right transition-all">
+                            {/* Subtle Ambient Light */}
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-brand-primary/5 blur-3xl rounded-full -mr-24 -mt-24 pointer-events-none" />
 
-                            <div className="relative z-10 space-y-10">
+                            <div className="relative z-10 space-y-6">
                                 {children}
                             </div>
 
                             {footer && (
-                                <div className="mt-12 pt-10 border-t border-border-subtle relative z-10">
+                                <div className="mt-8 pt-6 border-t border-border-subtle relative z-10">
                                     {footer}
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* RESULT CANVAS */}
-                    {/* In single mode: only show if results exist. In split mode: always show (placeholder). */}
+                    {/* RESULT CANVAS (Only shown if split layout OR results exist) */}
                     {(!isSingle || results) && (
                         <div className={isSingle ? "w-full" : "col-span-1 lg:col-span-5"}>
-                            <div className={isSingle ? "" : "sticky top-4 lg:top-10"}>
-                                <div className="rounded-[28px] lg:rounded-[44px] bg-surface-raised backdrop-blur-3xl border border-brand-primary/20 shadow-xl min-h-[350px] lg:min-h-[400px] flex flex-col relative overflow-hidden group/result-canvas isolate text-right">
-                                    {/* Cinematic Texture */}
-                                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                            <div className={isSingle ? "" : "sticky top-4"}>
+                                <div className="rounded-2xl bg-surface-raised backdrop-blur-2xl border border-brand-primary/20 shadow-lg flex flex-col relative overflow-hidden group/result-canvas isolate text-right transition-all">
+                                    {/* Top Accent Line */}
+                                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-primary/40 to-transparent" />
 
-                                    <div className="p-1.5 flex flex-col h-full">
-                                        <div className="flex items-center justify-between px-8 py-5 border-b border-border-subtle flex-row-reverse">
-                                            <span className="text-xs font-black text-text-muted uppercase tracking-[0.2em] font-cairo">النتيجة النهائية</span>
+                                    {/* Result Header Bar */}
+                                    <div className="flex items-center justify-between px-5 py-3.5 border-b border-border-subtle bg-surface-glass/40">
+                                        <div className="flex items-center gap-2 text-text-primary">
+                                            <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+                                            <span className="text-xs font-bold font-cairo tracking-wide text-text-primary">
+                                                النتيجة
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5">
+                                            {/* Quick Copy Button */}
+                                            {results && (
+                                                <button
+                                                    onClick={handleCopyResult}
+                                                    type="button"
+                                                    title="نسخ النتيجة"
+                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold font-cairo text-text-muted hover:text-brand-primary hover:bg-brand-primary/10 transition-colors border border-transparent hover:border-brand-primary/20"
+                                                >
+                                                    {copied ? (
+                                                        <>
+                                                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                                            <span className="text-emerald-400">تم النسخ</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Copy className="w-3.5 h-3.5" />
+                                                            <span>نسخ</span>
+                                                        </>
+                                                    )}
+                                                </button>
+                                            )}
+
+                                            {/* Save Button */}
                                             {results && session && onSave && (
                                                 <ToolButton
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={onSave}
                                                     disabled={isSaving}
-                                                    className="!bg-brand-primary/5 !border-brand-primary/10 hover:!bg-brand-primary/10 group/save"
+                                                    className="!px-2.5 !py-1 !text-xs !bg-brand-primary/5 !border-brand-primary/10 hover:!bg-brand-primary/10 group/save"
                                                 >
-                                                    {isSaving ? <Sparkles className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3 group-hover/save:scale-110 transition-transform" />}
-                                                    حفظ مجهودك
+                                                    {isSaving ? (
+                                                        <Sparkles className="w-3 h-3 animate-spin" />
+                                                    ) : (
+                                                        <Save className="w-3 h-3 group-hover/save:scale-110 transition-transform" />
+                                                    )}
+                                                    <span>حفظ</span>
                                                 </ToolButton>
-                                            )}
-                                        </div>
-
-                                        <div className="flex-1 p-4 lg:p-8 relative z-10 h-full flex flex-col justify-center">
-                                            {results ? (
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    className="h-full"
-                                                >
-                                                    {results}
-                                                </motion.div>
-                                            ) : (
-                                                <div className="h-full flex flex-col items-center justify-center text-text-muted py-12">
-                                                    <div className="w-24 h-24 rounded-full bg-surface-glass flex items-center justify-center mb-8 border border-border-subtle relative shadow-inner">
-                                                        <Sparkles className="w-10 h-10 opacity-30 animate-pulse text-brand-primary" />
-                                                        <div className="absolute inset-0 rounded-full border border-brand-primary/10 animate-ping [animation-duration:3s]" />
-                                                    </div>
-                                                    <h4 className="text-lg font-black text-text-primary mb-2 font-cairo">بانتظار مدخلاتك</h4>
-                                                    <p className="text-sm font-medium text-text-muted max-w-[200px] text-center leading-relaxed font-cairo">قم بتعبئة البيانات لتوليد أرقام ومعالجات ذكية فورا</p>
-                                                </div>
                                             )}
                                         </div>
                                     </div>
 
-                                    {/* Ambient Base Glow */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent blur-[1px]" />
+                                    {/* Result Content */}
+                                    <div ref={resultRef} className="p-5 sm:p-6 relative z-10 min-h-[160px] flex flex-col justify-center">
+                                        <AnimatePresence mode="wait">
+                                            {results ? (
+                                                <motion.div
+                                                    key="result-content"
+                                                    initial={{ opacity: 0, y: 8 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="h-full w-full"
+                                                >
+                                                    {results}
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div
+                                                    key="result-placeholder"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    className="flex flex-col items-center justify-center text-center py-6 px-4"
+                                                >
+                                                    <div className="w-10 h-10 rounded-xl bg-surface-glass border border-border-subtle flex items-center justify-center mb-3 text-text-muted">
+                                                        <Terminal className="w-5 h-5 text-brand-primary/60" />
+                                                    </div>
+                                                    <div className="text-xs font-mono text-text-muted tracking-tight">
+                                                        // بانتظار إدخال البيانات لحساب النتيجة
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +185,7 @@ export function ToolInputRow({ label, children, id, className = "" }: { label: s
     return (
         <div className={`group ${className} text-right`}>
             <label htmlFor={id} className="block w-full">
-                <span className="block mb-4 text-sm font-black text-text-primary group-focus-within:text-brand-primary transition-colors font-cairo uppercase tracking-widest">
+                <span className="block mb-2 text-xs sm:text-sm font-bold text-text-primary group-focus-within:text-brand-primary transition-colors font-cairo">
                     {label}
                 </span>
                 {children}
@@ -130,8 +195,29 @@ export function ToolInputRow({ label, children, id, className = "" }: { label: s
 }
 
 export function ToolOutput({ content }: { content: React.ReactNode }) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        if (typeof content === 'string' || typeof content === 'number') {
+            await navigator.clipboard.writeText(String(content));
+            setCopied(true);
+            toast.success('تم نسخ المحتوى');
+            setTimeout(() => setCopied(false), 2000);
+        }
+    };
+
     return (
-        <div className="bg-surface-glass p-8 rounded-[32px] border border-border-subtle text-text-primary font-bold leading-relaxed whitespace-pre-wrap font-cairo text-lg backdrop-blur-2xl shadow-inner">
+        <div className="relative group/output bg-surface-glass p-5 rounded-xl border border-border-subtle text-text-primary font-bold leading-relaxed whitespace-pre-wrap font-cairo text-base backdrop-blur-xl shadow-inner">
+            {(typeof content === 'string' || typeof content === 'number') && (
+                <button
+                    onClick={handleCopy}
+                    type="button"
+                    title="نسخ"
+                    className="absolute top-3 left-3 p-1.5 rounded-lg bg-surface-base/80 text-text-muted hover:text-brand-primary opacity-0 group-hover/output:opacity-100 transition-opacity border border-border-subtle"
+                >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+            )}
             {content}
         </div>
     );

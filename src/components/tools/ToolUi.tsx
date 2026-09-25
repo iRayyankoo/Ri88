@@ -18,12 +18,12 @@ export const ToolInput = React.memo(React.forwardRef<HTMLInputElement, ToolInput
                 <input
                     ref={ref}
                     className={cn(
-                        "w-full bg-surface-base border border-border-subtle rounded-[20px] px-5 py-4 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
+                        "w-full h-11 sm:h-12 bg-surface-base border border-border-subtle rounded-xl px-4 text-text-primary placeholder:text-text-muted/60 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15 transition-all font-cairo font-semibold text-sm sm:text-base backdrop-blur-md shadow-inner",
                         className
                     )}
                     {...props}
                 />
-                <div className="absolute inset-0 rounded-[20px] pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/20 transition-all duration-500" />
+                <div className="absolute inset-0 rounded-xl pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/30 transition-all duration-300" />
             </div>
         );
     }
@@ -40,12 +40,12 @@ export const ToolTextarea = React.memo(React.forwardRef<HTMLTextAreaElement, Too
                 <textarea
                     ref={ref}
                     className={cn(
-                        "w-full bg-surface-base border border-border-subtle rounded-[20px] px-5 py-4 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-cairo font-bold text-lg backdrop-blur-xl resize-none min-h-[120px]",
+                        "w-full bg-surface-base border border-border-subtle rounded-xl p-4 text-text-primary placeholder:text-text-muted/60 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15 transition-all font-cairo font-semibold text-sm sm:text-base backdrop-blur-md shadow-inner resize-none min-h-[110px]",
                         className
                     )}
                     {...props}
                 />
-                <div className="absolute inset-0 rounded-[20px] pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/20 transition-all duration-500" />
+                <div className="absolute inset-0 rounded-xl pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/30 transition-all duration-300" />
             </div>
         );
     }
@@ -59,18 +59,18 @@ interface ToolButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export const toolButtonVariants = {
-    primary: "bg-brand-primary text-white hover:bg-brand-primary/90 shadow-[0_20px_50px_rgba(5,150,105,0.2)] border border-brand-primary/50",
-    iridescent: "bg-gradient-to-br from-brand-primary via-emerald-500 to-teal-600 text-white shadow-[0_20px_60px_rgba(5,150,105,0.3)] border-t border-white/20 hover:scale-[1.02] hover:brightness-110",
+    primary: "bg-brand-primary text-white hover:bg-brand-primary/90 shadow-md shadow-brand-primary/20 border border-brand-primary/50",
+    iridescent: "bg-gradient-to-r from-brand-primary via-emerald-600 to-teal-500 text-white shadow-md shadow-brand-primary/25 border-t border-white/20 hover:brightness-110",
     secondary: "bg-surface-glass text-text-primary hover:bg-surface-raised border border-border-subtle backdrop-blur-md shadow-sm",
     outline: "bg-transparent border border-border-subtle text-text-primary hover:border-brand-primary/40 hover:bg-surface-glass backdrop-blur-sm",
     ghost: "bg-transparent text-text-muted hover:text-brand-primary hover:bg-brand-primary/5"
 };
 
 export const toolButtonSizes = {
-    sm: "px-4 py-2 text-xs font-black rounded-xl",
-    md: "px-8 py-3.5 text-sm font-black rounded-2xl",
-    lg: "px-10 py-5 text-base font-black rounded-[24px]",
-    xl: "px-12 py-6 text-xl font-black rounded-[28px] tracking-tight"
+    sm: "px-3.5 py-1.5 text-xs font-bold rounded-lg",
+    md: "px-5 py-2.5 text-sm font-bold rounded-xl",
+    lg: "px-7 py-3 text-base font-bold rounded-xl",
+    xl: "px-9 py-4 text-lg font-bold rounded-2xl"
 };
 
 export const ToolButton = React.memo(React.forwardRef<HTMLButtonElement, ToolButtonProps>(
@@ -78,10 +78,10 @@ export const ToolButton = React.memo(React.forwardRef<HTMLButtonElement, ToolBut
         return (
             <motion.button
                 ref={ref}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
                 className={cn(
-                    "flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none font-cairo uppercase tracking-tight",
+                    "flex items-center justify-center gap-2.5 transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none font-cairo font-bold cursor-pointer select-none",
                     toolButtonVariants[variant],
                     toolButtonSizes[size],
                     className
@@ -100,8 +100,7 @@ export const ToolSelect = React.memo(React.forwardRef<HTMLSelectElement, ToolSel
     (props, ref) => {
         const { className, children, title, "aria-label": ariaLabel, id, ...rest } = props;
 
-        // Ensure we always have an accessible name
-        const finalTitle = title || "قائمة خيارات الاختيار";
+        const finalTitle = title || "قائمة الخيارات";
         const finalAriaLabel = ariaLabel || (typeof title === 'string' ? title : finalTitle);
 
         return (
@@ -113,18 +112,18 @@ export const ToolSelect = React.memo(React.forwardRef<HTMLSelectElement, ToolSel
                     title={finalTitle}
                     aria-label={finalAriaLabel}
                     className={cn(
-                        "w-full bg-surface-base border border-border-subtle rounded-[20px] px-5 py-4 text-text-primary appearance-none cursor-pointer focus:outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
+                        "w-full h-11 sm:h-12 bg-surface-base border border-border-subtle rounded-xl px-4 text-text-primary appearance-none cursor-pointer focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15 transition-all font-cairo font-semibold text-sm sm:text-base backdrop-blur-md shadow-inner",
                         className
                     )}
                 >
                     {children}
                 </select>
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-focus-within/input:text-brand-primary transition-colors">
-                    <svg width="14" height="14" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-focus-within/input:text-brand-primary transition-colors">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </div>
-                <div className="absolute inset-0 rounded-[20px] pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/20 transition-all duration-500" />
+                <div className="absolute inset-0 rounded-xl pointer-events-none border border-brand-primary/0 group-focus-within/input:border-brand-primary/30 transition-all duration-300" />
             </div>
         );
     }
@@ -135,22 +134,22 @@ ToolSelect.displayName = "ToolSelect";
 export const ToolCheckbox = React.memo(({ label, checked, onChange }: { label: string, checked: boolean, onChange: (checked: boolean) => void }) => {
     return (
         <label className={cn(
-            "flex items-center gap-4 p-5 rounded-[22px] border transition-all cursor-pointer select-none backdrop-blur-xl",
+            "flex items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none backdrop-blur-md",
             checked
-                ? "bg-brand-primary/10 border-brand-primary/30 text-text-primary shadow-[0_10px_30px_rgba(5,150,105,0.1)]"
+                ? "bg-brand-primary/10 border-brand-primary/30 text-text-primary shadow-sm"
                 : "bg-surface-glass border-border-subtle text-text-muted hover:bg-surface-raised"
         )}>
             <div className={cn(
-                "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-500",
+                "w-5 h-5 rounded-md border flex items-center justify-center transition-all",
                 checked
-                    ? "bg-brand-primary border-brand-primary text-white scale-110 shadow-lg shadow-brand-primary/30"
-                    : "bg-black/40 border-white/20"
+                    ? "bg-brand-primary border-brand-primary text-white shadow-sm"
+                    : "bg-surface-base border-border-subtle"
             )}>
                 {checked && (
                     <motion.span
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="text-xs font-black"
+                        className="text-xs font-bold"
                     >
                         ✓
                     </motion.span>
@@ -162,7 +161,7 @@ export const ToolCheckbox = React.memo(({ label, checked, onChange }: { label: s
                 onChange={(e) => onChange(e.target.checked)}
                 className="hidden"
             />
-            <span className="text-base font-black font-cairo">{label}</span>
+            <span className="text-sm font-bold font-cairo">{label}</span>
         </label>
     );
 });

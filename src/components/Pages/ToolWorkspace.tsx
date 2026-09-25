@@ -5,13 +5,8 @@ import { tools } from '@/data/tools';
 import { ArrowRight } from 'lucide-react';
 import ToolRouter from '../tools/ToolRouter';
 
-const ToolWorkspace = () => {
-    const { activeToolId, activeDbTool, setCurrentView, showToolPopup } = useNavigation();
-
-    // 1. Find the static tool if it exists
+export const resolveActiveTool = (activeToolId: string | null, activeDbTool: Record<string, unknown> | null) => {
     const staticTool = tools.find(t => t.id === activeToolId);
-
-    // 2. Extract router ID if it's a DB tool with a valid internal URL component
     let routerId = activeToolId || tools[0].id;
     const dbStr = (key: string): string => (typeof activeDbTool?.[key] === 'string' ? activeDbTool[key] as string : '');
     const dbToolUrl = dbStr('url');
@@ -19,8 +14,7 @@ const ToolWorkspace = () => {
         routerId = dbToolUrl.replace('/tools/', '');
     }
 
-    // 3. Construct unified tool object, preferring DbTool properties when available
-    const tool = {
+    return {
         id: routerId,
         cat: activeDbTool ? (dbStr('category') || staticTool?.cat || tools[0].cat) : (staticTool?.cat || tools[0].cat),
         icon: dbStr('icon') || staticTool?.icon || tools[0].icon,
@@ -30,51 +24,51 @@ const ToolWorkspace = () => {
         desc: activeDbTool ? (dbStr('description') || tools[0].desc) : (staticTool?.desc || tools[0].desc),
         descAr: activeDbTool ? (dbStr('description') || tools[0].descAr) : (staticTool?.descAr || tools[0].descAr),
     };
+};
 
+const ToolWorkspace = () => {
+    const { activeToolId, activeDbTool, setCurrentView, showToolPopup } = useNavigation();
+    const tool = resolveActiveTool(activeToolId, activeDbTool);
 
     return (
-        <div className={`h-full flex flex-col lg:flex-row ${showToolPopup ? '' : 'px-6 lg:px-12 xl:px-20 pb-20'}`}>
-
-            {/* LEFT COLUMN: ACTIVE TOOL */}
+        <div className={`h-full flex flex-col w-full ${showToolPopup ? '' : 'px-4 lg:px-12 xl:px-20 pb-20'}`}>
             <main className="flex-1 flex flex-col overflow-hidden w-full max-w-7xl mx-auto">
-                {/* 1. CINEMATIC HEADER */}
-                <header className="flex items-center justify-between py-4 lg:py-8 mb-2 lg:mb-4 border-b border-border-subtle shrink-0">
-                    <div className="flex items-center gap-4 lg:gap-6">
-                        {!showToolPopup && (
+                {/* STANDALONE PAGE HEADER (Only shown when NOT inside popup) */}
+                {!showToolPopup && (
+                    <header className="flex items-center justify-between py-6 mb-6 border-b border-border-subtle shrink-0">
+                        <div className="flex items-center gap-4 lg:gap-6">
                             <button
                                 onClick={() => setCurrentView('directory')}
-                                className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-surface-raised hover:bg-surface-glass flex items-center justify-center text-text-primary transition-all border border-border-subtle shadow-md"
-                                aria-label="Back to directory"
+                                className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-surface-raised hover:bg-surface-glass flex items-center justify-center text-text-primary transition-all border border-border-subtle shadow-sm"
+                                aria-label="العودة للدليل"
                             >
-                                <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 rtl:rotate-180" />
+                                <ArrowRight className="w-5 h-5 rtl:rotate-180" />
                             </button>
-                        )}
 
-                        <div>
-                            <div className="flex items-center gap-3 lg:gap-4 mb-1 lg:mb-2">
-                                <h1 className="text-xl lg:text-4xl font-black text-text-primary font-cairo tracking-tight">
-                                    {tool.titleAr || tool.title}
-                                </h1>
-                                <div className="px-2 py-1 lg:px-3 lg:py-1.5 rounded-md lg:rounded-lg bg-brand-primary/10 border border-brand-primary/20 text-[8px] lg:text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(5,150,105,0.1)]">
-                                    {tool.cat}
+                            <div>
+                                <div className="flex items-center gap-3 mb-1">
+                                    <h1 className="text-xl lg:text-3xl font-black text-text-primary font-cairo tracking-tight">
+                                        {tool.titleAr || tool.title}
+                                    </h1>
+                                    <div className="px-2.5 py-1 rounded-md bg-brand-primary/10 border border-brand-primary/20 text-[10px] font-mono font-bold text-brand-primary uppercase tracking-wider">
+                                        {tool.cat}
+                                    </div>
                                 </div>
+                                <p className="text-xs lg:text-sm text-text-muted font-medium font-cairo max-w-2xl leading-relaxed">
+                                    {tool.descAr || tool.desc}
+                                </p>
                             </div>
-                            <p className="text-xs lg:text-base text-text-muted font-medium font-cairo max-w-2xl leading-relaxed line-clamp-1 lg:line-clamp-none">
-                                {tool.descAr || tool.desc}
-                            </p>
                         </div>
-                    </div>
-                </header>
+                    </header>
+                )}
 
-                {/* 2. TOOL CANVAS */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar relative pr-2 -mr-2">
-                    <div className="pb-8 pt-2">
+                {/* TOOL CANVAS */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+                    <div className="pb-6 pt-1">
                         <ToolRouter tool={tool} />
                     </div>
                 </div>
             </main>
-
-
         </div>
     );
 };
