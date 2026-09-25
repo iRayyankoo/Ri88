@@ -27,7 +27,7 @@ const BottomNav = () => {
                     <Link key={item.href} href={item.href} className="relative">
                         <motion.div
                             whileTap={{ scale: 0.9 }}
-                            className={`flex flex-col items-center gap-1.5 transition-all ${isActive ? 'text-brand-primary' : 'text-slate-500'}`}
+                            className={`flex flex-col items-center gap-1.5 transition-all ${isActive ? 'text-brand-primary' : 'text-text-muted'}`}
                         >
                             <div className={`p-2 rounded-xl transition-all ${isActive ? 'bg-brand-primary/10' : ''}`}>
                                 <item.icon className={`w-6 h-6 ${isActive ? 'fill-brand-primary text-brand-primary' : ''}`} />
@@ -48,7 +48,7 @@ const BottomNav = () => {
             <Link href={status === 'authenticated' ? '/pro/dashboard' : '/auth'} className="relative">
                 <motion.div
                     whileTap={{ scale: 0.9 }}
-                    className={`flex flex-col items-center gap-1.5 transition-all ${pathname === '/pro/dashboard' ? 'text-brand-primary' : 'text-slate-500'}`}
+                    className={`flex flex-col items-center gap-1.5 transition-all ${pathname === '/pro/dashboard' ? 'text-brand-primary' : 'text-text-muted'}`}
                 >
                     <div className={`p-1.5 rounded-xl ${pathname === '/pro/dashboard' ? 'bg-brand-primary/10' : ''}`}>
                         {session?.user?.image ? (

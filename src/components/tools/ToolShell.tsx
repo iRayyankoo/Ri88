@@ -38,7 +38,7 @@ export function ToolShell({
 
                     {/* INPUT CANVAS */}
                     <div className={isSingle ? "w-full" : "col-span-1 lg:col-span-7"}>
-                        <div className="p-6 lg:p-10 rounded-[28px] lg:rounded-[44px] bg-white/[0.01] border border-white/[0.03] shadow-[inset_0_0_40px_rgba(255,255,255,0.01)] min-h-[300px] lg:min-h-[500px] backdrop-blur-3xl relative overflow-hidden text-right">
+                        <div className="p-6 lg:p-10 rounded-[28px] lg:rounded-[44px] bg-surface-raised border border-border-subtle shadow-sm min-h-[300px] lg:min-h-[500px] backdrop-blur-3xl relative overflow-hidden text-right">
                             <div className="absolute top-0 right-0 w-48 h-48 lg:w-64 lg:h-64 bg-brand-primary/5 blur-[80px] rounded-full -mr-24 -mt-24 lg:-mr-32 lg:-mt-32 pointer-events-none" />
 
                             <div className="relative z-10 space-y-10">
@@ -46,7 +46,7 @@ export function ToolShell({
                             </div>
 
                             {footer && (
-                                <div className="mt-12 pt-10 border-t border-white/[0.05] relative z-10">
+                                <div className="mt-12 pt-10 border-t border-border-subtle relative z-10">
                                     {footer}
                                 </div>
                             )}
@@ -58,13 +58,13 @@ export function ToolShell({
                     {(!isSingle || results) && (
                         <div className={isSingle ? "w-full" : "col-span-1 lg:col-span-5"}>
                             <div className={isSingle ? "" : "sticky top-4 lg:top-10"}>
-                                <div className="rounded-[28px] lg:rounded-[44px] bg-[#050507]/60 backdrop-blur-3xl border border-brand-primary/20 shadow-[0_40px_100px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(139,92,246,0.1)] min-h-[350px] lg:min-h-[400px] flex flex-col relative overflow-hidden group/result-canvas isolate text-right">
+                                <div className="rounded-[28px] lg:rounded-[44px] bg-surface-raised backdrop-blur-3xl border border-brand-primary/20 shadow-xl min-h-[350px] lg:min-h-[400px] flex flex-col relative overflow-hidden group/result-canvas isolate text-right">
                                     {/* Cinematic Texture */}
                                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
                                     <div className="p-1.5 flex flex-col h-full">
-                                        <div className="flex items-center justify-between px-8 py-5 border-b border-white/[0.03] flex-row-reverse">
-                                            <span className="text-xs font-black text-slate-500 uppercase tracking-[0.2em] font-cairo">النتيجة النهائية</span>
+                                        <div className="flex items-center justify-between px-8 py-5 border-b border-border-subtle flex-row-reverse">
+                                            <span className="text-xs font-black text-text-muted uppercase tracking-[0.2em] font-cairo">النتيجة النهائية</span>
                                             {results && session && onSave && (
                                                 <ToolButton
                                                     variant="ghost"
@@ -89,13 +89,13 @@ export function ToolShell({
                                                     {results}
                                                 </motion.div>
                                             ) : (
-                                                <div className="h-full flex flex-col items-center justify-center text-slate-500 py-12">
-                                                    <div className="w-24 h-24 rounded-full bg-white/[0.02] flex items-center justify-center mb-8 border border-white/[0.05] relative shadow-inner">
-                                                        <Sparkles className="w-10 h-10 opacity-10 animate-pulse" />
+                                                <div className="h-full flex flex-col items-center justify-center text-text-muted py-12">
+                                                    <div className="w-24 h-24 rounded-full bg-surface-glass flex items-center justify-center mb-8 border border-border-subtle relative shadow-inner">
+                                                        <Sparkles className="w-10 h-10 opacity-30 animate-pulse text-brand-primary" />
                                                         <div className="absolute inset-0 rounded-full border border-brand-primary/10 animate-ping [animation-duration:3s]" />
                                                     </div>
-                                                    <h4 className="text-lg font-black text-slate-400 mb-2 font-cairo">بانتظار مدخلاتك</h4>
-                                                    <p className="text-sm font-medium text-slate-600 max-w-[200px] text-center leading-relaxed font-cairo">قم بتعبئة البيانات لتوليد أرقام ومعالجات ذكية فورا</p>
+                                                    <h4 className="text-lg font-black text-text-primary mb-2 font-cairo">بانتظار مدخلاتك</h4>
+                                                    <p className="text-sm font-medium text-text-muted max-w-[200px] text-center leading-relaxed font-cairo">قم بتعبئة البيانات لتوليد أرقام ومعالجات ذكية فورا</p>
                                                 </div>
                                             )}
                                         </div>
@@ -120,7 +120,7 @@ export function ToolInputRow({ label, children, id, className = "" }: { label: s
     return (
         <div className={`group ${className} text-right`}>
             <label htmlFor={id} className="block w-full">
-                <span className="block mb-4 text-sm font-black text-slate-400 group-focus-within:text-brand-primary transition-colors font-cairo uppercase tracking-widest">
+                <span className="block mb-4 text-sm font-black text-text-primary group-focus-within:text-brand-primary transition-colors font-cairo uppercase tracking-widest">
                     {label}
                 </span>
                 {children}
@@ -131,7 +131,7 @@ export function ToolInputRow({ label, children, id, className = "" }: { label: s
 
 export function ToolOutput({ content }: { content: React.ReactNode }) {
     return (
-        <div className="bg-[#050507]/60 p-8 rounded-[32px] border border-white/[0.05] text-slate-300 font-bold leading-relaxed whitespace-pre-wrap font-cairo text-lg backdrop-blur-2xl shadow-inner">
+        <div className="bg-surface-glass p-8 rounded-[32px] border border-border-subtle text-text-primary font-bold leading-relaxed whitespace-pre-wrap font-cairo text-lg backdrop-blur-2xl shadow-inner">
             {content}
         </div>
     );

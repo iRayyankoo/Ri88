@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @theme {
   /* STITCH DESIGN SYSTEM - RI88 PRO */
@@ -22,7 +22,9 @@
 
   /* Text Colors */
   --color-text-main: var(--text-primary);
+  --color-text-primary: var(--text-primary);
   --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
 
   /* Borders */
   --color-border-subtle: var(--border-subtle);
@@ -38,30 +40,32 @@
 
   /* default: Dark Theme */
   :root {
-    --brand-bg: #0D0D0F;
-    --surface-base: #0D0D0F;
+    --brand-bg: #0A0A0F;
+    --surface-base: #0A0A0F;
     --surface-raised: #111118;
     --surface-glass: rgba(255, 255, 255, 0.03);
 
     --text-primary: #FFFFFF;
     --text-muted: #94A3B8;
+    --text-dim: #64748B;
 
-    --border-subtle: rgba(255, 255, 255, 0.05);
-    --border-strong: rgba(255, 255, 255, 0.1);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
   }
 
   /* Light Theme Overrides */
   [data-theme="light"] {
-    --brand-bg: #F1F5F9;
-    --surface-base: #F1F5F9;
+    --brand-bg: #F8FAFC;
+    --surface-base: #F8FAFC;
     --surface-raised: #FFFFFF;
-    --surface-glass: rgba(255, 255, 255, 0.85);
+    --surface-glass: rgba(255, 255, 255, 0.90);
 
     --text-primary: #0F172A;
     --text-muted: #475569;
+    --text-dim: #94A3B8;
 
-    --border-subtle: rgba(0, 0, 0, 0.08);
-    --border-strong: rgba(0, 0, 0, 0.16);
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
   }
 
   body {
@@ -78,8 +82,8 @@
 
   [data-theme="light"] body {
     background-image:
-      radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.06), transparent 30%),
-      radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.04), transparent 30%);
+      radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.03), transparent 30%),
+      radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.02), transparent 30%);
   }
 
   /* Noise Texture Overlay */
@@ -115,47 +119,71 @@
 
   /* =============================================
      LIGHT MODE: Deep Tailwind Class Overrides
-     Fixes: bg-white/5 and bg-white/10 invisible on light bg
      ============================================= */
+  /* Hardcoded dark hex backgrounds become crisp white cards */
+  [data-theme="light"] .bg-\[\#0F1115\],
+  [data-theme="light"] .bg-\[\#0D0D0F\],
+  [data-theme="light"] .bg-\[\#0A0A0F\],
+  [data-theme="light"] .bg-\[\#0A0A0C\],
+  [data-theme="light"] .bg-\[\#050507\],
+  [data-theme="light"] .bg-\[\#050505\],
+  [data-theme="light"] .bg-\[\#13131A\],
+  [data-theme="light"] .bg-\[\#08090B\],
+  [data-theme="light"] .bg-\[\#16161a\],
+  [data-theme="light"] .bg-\[\#0D0D14\],
+  [data-theme="light"] .bg-\[\#0F0F1A\] {
+    background-color: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.03) !important;
+  }
+
+  /* Semi-transparent dark backgrounds become light card backgrounds */
+  [data-theme="light"] .bg-\[\#050507\]\/40,
+  [data-theme="light"] .bg-\[\#050507\]\/60,
+  [data-theme="light"] .bg-\[\#0A0A0C\]\/95,
+  [data-theme="light"] .bg-\[\#0A0A0F\]\/80 {
+    background-color: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+  }
+
+  /* Soft nested surfaces */
+  [data-theme="light"] .bg-white\/\[0\.01\],
+  [data-theme="light"] .bg-white\/\[0\.015\],
+  [data-theme="light"] .bg-white\/\[0\.02\],
+  [data-theme="light"] .bg-white\/\[0\.03\],
+  [data-theme="light"] .bg-white\/\[0\.04\],
   [data-theme="light"] .bg-white\/5 {
-    background-color: rgba(0, 0, 0, 0.04) !important;
+    background-color: #F8FAFC !important;
+    border-color: #E2E8F0 !important;
   }
 
   [data-theme="light"] .bg-white\/10 {
-    background-color: rgba(0, 0, 0, 0.07) !important;
+    background-color: #F1F5F9 !important;
+    border-color: #E2E8F0 !important;
   }
 
   [data-theme="light"] .bg-white\/20 {
-    background-color: rgba(0, 0, 0, 0.12) !important;
+    background-color: #E2E8F0 !important;
+    border-color: #CBD5E1 !important;
   }
 
-  [data-theme="light"] .bg-black\/20 {
-    background-color: rgba(0, 0, 0, 0.06) !important;
-  }
-
-  [data-theme="light"] .bg-black\/30 {
-    background-color: rgba(0, 0, 0, 0.06) !important;
-  }
-
-  [data-theme="light"] .bg-black\/40 {
-    background-color: rgba(0, 0, 0, 0.08) !important;
-  }
-
+  [data-theme="light"] .bg-black\/20,
+  [data-theme="light"] .bg-black\/30,
+  [data-theme="light"] .bg-black\/40,
   [data-theme="light"] .bg-black\/50 {
-    background-color: rgba(0, 0, 0, 0.10) !important;
+    background-color: rgba(0, 0, 0, 0.04) !important;
   }
 
   /* Borders */
-  [data-theme="light"] .border-white\/5 {
-    border-color: rgba(0, 0, 0, 0.07) !important;
-  }
-
-  [data-theme="light"] .border-white\/10 {
-    border-color: rgba(0, 0, 0, 0.12) !important;
-  }
-
-  [data-theme="light"] .border-white\/20 {
-    border-color: rgba(0, 0, 0, 0.18) !important;
+  [data-theme="light"] .border-white\/5,
+  [data-theme="light"] .border-white\/8,
+  [data-theme="light"] .border-white\/10,
+  [data-theme="light"] .border-white\/20,
+  [data-theme="light"] .border-white\/\[0\.03\],
+  [data-theme="light"] .border-white\/\[0\.04\],
+  [data-theme="light"] .border-white\/\[0\.05\],
+  [data-theme="light"] .border-white\/\[0\.08\] {
+    border-color: #E2E8F0 !important;
   }
 
   /* Text Colors — slate palette inversion */
@@ -175,7 +203,16 @@
     color: #1E293B !important;
   }
 
-  [data-theme="light"] .text-white {
+  [data-theme="light"] .text-gray-400 {
+    color: #64748B !important;
+  }
+
+  [data-theme="light"] .text-gray-500 {
+    color: #475569 !important;
+  }
+
+  /* Text white override: only for text on dark backgrounds, never for buttons or colored tags */
+  [data-theme="light"] .text-white:not(button):not(button *):not(a.bg-brand-primary):not(a.bg-brand-primary *):not(a[class*="bg-"]):not([class*="bg-brand"]):not([class*="bg-emerald"]):not([class*="bg-green"]):not([class*="bg-blue"]):not([class*="bg-orange"]):not([class*="bg-red"]):not([class*="bg-amber"]):not([class*="bg-violet"]):not([class*="bg-purple"]):not([class*="bg-gradient"]) {
     color: #0F172A !important;
   }
 
@@ -191,34 +228,26 @@
     color: #94A3B8 !important;
   }
 
-  [data-theme="light"] .text-gray-400 {
-    color: #64748B !important;
-  }
-
-  [data-theme="light"] .text-gray-500 {
-    color: #475569 !important;
-  }
-
   /* Inputs & selects */
   [data-theme="light"] input,
   [data-theme="light"] textarea,
   [data-theme="light"] select {
-    color: #0F172A;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-color: rgba(0, 0, 0, 0.15);
+    color: #0F172A !important;
+    background-color: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
   }
 
   [data-theme="light"] input::placeholder,
   [data-theme="light"] textarea::placeholder {
-    color: #94A3B8;
+    color: #94A3B8 !important;
   }
 
   [data-theme="light"] input:focus,
   [data-theme="light"] textarea:focus,
   [data-theme="light"] select:focus {
-    border-color: #6366f1;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    border-color: #059669 !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
   }
 
   /* Range sliders in light mode */

@@ -18,7 +18,7 @@ export const ToolInput = React.memo(React.forwardRef<HTMLInputElement, ToolInput
                 <input
                     ref={ref}
                     className={cn(
-                        "w-full bg-[#050507]/40 border border-white/10 rounded-[20px] px-5 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:ring-4 focus:ring-brand-primary/5 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
+                        "w-full bg-surface-base border border-border-subtle rounded-[20px] px-5 py-4 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
                         className
                     )}
                     {...props}
@@ -40,7 +40,7 @@ export const ToolTextarea = React.memo(React.forwardRef<HTMLTextAreaElement, Too
                 <textarea
                     ref={ref}
                     className={cn(
-                        "w-full bg-[#050507]/40 border border-white/10 rounded-[20px] px-5 py-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-primary/40 focus:ring-4 focus:ring-brand-primary/5 transition-all font-cairo font-bold text-lg backdrop-blur-xl resize-none min-h-[120px]",
+                        "w-full bg-surface-base border border-border-subtle rounded-[20px] px-5 py-4 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-cairo font-bold text-lg backdrop-blur-xl resize-none min-h-[120px]",
                         className
                     )}
                     {...props}
@@ -59,11 +59,11 @@ interface ToolButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export const toolButtonVariants = {
-    primary: "bg-brand-primary text-white hover:bg-brand-primary/90 shadow-[0_20px_50px_rgba(139,92,246,0.2)] border border-brand-primary/50",
-    iridescent: "bg-gradient-to-br from-brand-primary via-violet-500 to-indigo-600 text-white shadow-[0_20px_60px_rgba(139,92,246,0.3)] border-t border-white/20 hover:scale-[1.02] hover:brightness-110",
-    secondary: "bg-white/[0.03] text-slate-200 hover:bg-white/[0.08] border border-white/[0.05] backdrop-blur-md",
-    outline: "bg-transparent border border-white/10 text-slate-300 hover:border-white/30 hover:text-white backdrop-blur-sm",
-    ghost: "bg-transparent text-slate-400 hover:text-brand-primary hover:bg-brand-primary/5"
+    primary: "bg-brand-primary text-white hover:bg-brand-primary/90 shadow-[0_20px_50px_rgba(5,150,105,0.2)] border border-brand-primary/50",
+    iridescent: "bg-gradient-to-br from-brand-primary via-emerald-500 to-teal-600 text-white shadow-[0_20px_60px_rgba(5,150,105,0.3)] border-t border-white/20 hover:scale-[1.02] hover:brightness-110",
+    secondary: "bg-surface-glass text-text-primary hover:bg-surface-raised border border-border-subtle backdrop-blur-md shadow-sm",
+    outline: "bg-transparent border border-border-subtle text-text-primary hover:border-brand-primary/40 hover:bg-surface-glass backdrop-blur-sm",
+    ghost: "bg-transparent text-text-muted hover:text-brand-primary hover:bg-brand-primary/5"
 };
 
 export const toolButtonSizes = {
@@ -113,13 +113,13 @@ export const ToolSelect = React.memo(React.forwardRef<HTMLSelectElement, ToolSel
                     title={finalTitle}
                     aria-label={finalAriaLabel}
                     className={cn(
-                        "w-full bg-[#050507]/40 border border-white/10 rounded-[20px] px-5 py-4 text-white appearance-none cursor-pointer focus:outline-none focus:border-brand-primary/40 focus:ring-4 focus:ring-brand-primary/5 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
+                        "w-full bg-surface-base border border-border-subtle rounded-[20px] px-5 py-4 text-text-primary appearance-none cursor-pointer focus:outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all font-cairo font-bold text-lg backdrop-blur-xl",
                         className
                     )}
                 >
                     {children}
                 </select>
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within/input:text-brand-primary transition-colors">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted group-focus-within/input:text-brand-primary transition-colors">
                     <svg width="14" height="14" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -137,8 +137,8 @@ export const ToolCheckbox = React.memo(({ label, checked, onChange }: { label: s
         <label className={cn(
             "flex items-center gap-4 p-5 rounded-[22px] border transition-all cursor-pointer select-none backdrop-blur-xl",
             checked
-                ? "bg-brand-primary/10 border-brand-primary/30 text-white shadow-[0_10px_30px_rgba(139,92,246,0.1)]"
-                : "bg-white/[0.02] border-white/5 text-slate-400 hover:bg-white/[0.05] hover:border-white/10"
+                ? "bg-brand-primary/10 border-brand-primary/30 text-text-primary shadow-[0_10px_30px_rgba(5,150,105,0.1)]"
+                : "bg-surface-glass border-border-subtle text-text-muted hover:bg-surface-raised"
         )}>
             <div className={cn(
                 "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-500",

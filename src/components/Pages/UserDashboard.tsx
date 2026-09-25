@@ -32,14 +32,14 @@ interface WidgetWrapperProps {
 const TodoWidget = () => (
     <div className="space-y-2">
         {['تصميم واجهة المستخدم', 'كتابة المحتوى', 'تحديث السيرفر'].map((item, i) => (
-            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-white/[0.02] border border-white/5 group/todo">
+            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-surface-glass border border-border-subtle group/todo">
                 <input
                     type="checkbox"
                     title="تحديد المهمة كمكتملة"
                     aria-label="تحديد المهمة كمكتملة"
-                    className="w-3.5 h-3.5 rounded border-white/10 bg-transparent accent-brand-primary"
+                    className="w-3.5 h-3.5 rounded border-border-strong bg-transparent accent-brand-primary"
                 />
-                <span className="text-[10px] text-slate-300 font-medium">{item}</span>
+                <span className="text-[10px] text-text-primary font-medium">{item}</span>
             </div>
         ))}
     </div>
@@ -48,10 +48,10 @@ const TodoWidget = () => (
 const ResourceWidget = () => (
     <div className="space-y-4">
         <div className="flex items-end justify-between">
-            <span className="text-2xl font-black text-white tabular-nums">84%</span>
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">4.2 GB / 5.0 GB</span>
+            <span className="text-2xl font-black text-text-primary tabular-nums">84%</span>
+            <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">4.2 GB / 5.0 GB</span>
         </div>
-        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+        <div className="w-full h-2 bg-surface-glass rounded-full overflow-hidden border border-border-subtle">
             <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: '84%' }}
@@ -71,7 +71,7 @@ const NotesWidget = ({ notes, setNotes, onSave }: NotesWidgetProps) => (
             onChange={(e) => setNotes(e.target.value)}
             onBlur={onSave}
             placeholder="اكتب شيئاً هنا..."
-            className="w-full flex-1 bg-white/[0.02] rounded-xl p-3 text-xs text-slate-300 placeholder:text-slate-700 outline-none resize-none border border-white/5 focus:border-brand-primary/20 transition-all font-cairo"
+            className="w-full flex-1 bg-surface-glass rounded-xl p-3 text-xs text-text-primary placeholder:text-text-muted outline-none resize-none border border-border-subtle focus:border-brand-primary/40 transition-all font-cairo"
         />
     </div>
 );
@@ -81,16 +81,15 @@ const AccountWidget = () => (
         <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 flex items-center justify-center border border-brand-primary/20 text-brand-primary font-black">R</div>
             <div className="flex flex-col">
-                <span className="text-white text-xs font-bold font-cairo">ريان المطور</span>
+                <span className="text-text-primary text-xs font-bold font-cairo">ريان المطور</span>
                 <span className="text-[9px] text-brand-secondary font-black uppercase tracking-[0.1em]">عضوية برو ✦</span>
             </div>
         </div>
         <div className="p-3 rounded-xl bg-brand-primary/5 border border-brand-primary/10 flex items-center justify-between group/upgrade cursor-pointer hover:bg-brand-primary/10 transition-all">
             <div className="flex flex-col">
                 <span className="text-[10px] font-black text-brand-primary uppercase">الرصيد المتاح</span>
-                <span className="text-lg font-black text-white">$1,240.50</span>
+                <span className="text-lg font-black text-text-primary">$1,240.50</span>
             </div>
-            {/* ArrowLeft is removed from imports, using a generic arrow or removing it */}
             <span className="text-brand-primary group-hover:-translate-x-1 transition-transform">→</span>
         </div>
     </div>
@@ -99,15 +98,15 @@ const AccountWidget = () => (
 const ActivityWidget = () => (
     <div className="space-y-3">
         {[
-            { action: "تم ضغط صورة", time: "منذ دقيقتين", icon: Star }, // Using Star as a placeholder for ImageIcon
-            { action: "تحويل PDF إلى Word", time: "منذ ساعة", icon: Star }, // Using Star as a placeholder for FileText
-            { action: "تنسيق كود JSON", time: "أمس", icon: Star }, // Using Star as a placeholder for Code
+            { action: "تم ضغط صورة", time: "منذ دقيقتين", icon: Star },
+            { action: "تحويل PDF إلى Word", time: "منذ ساعة", icon: Star },
+            { action: "تنسيق كود JSON", time: "أمس", icon: Star },
         ].map((act, i) => (
-            <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.02] transition-colors">
-                <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-slate-500"><act.icon size={12} /></div>
+            <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-glass transition-colors">
+                <div className="w-7 h-7 rounded-lg bg-surface-glass border border-border-subtle flex items-center justify-center text-text-muted"><act.icon size={12} /></div>
                 <div className="flex flex-col">
-                    <span className="text-[10px] text-slate-300 font-medium">{act.action}</span>
-                    <span className="text-[8px] text-slate-600 font-bold">{act.time}</span>
+                    <span className="text-[10px] text-text-primary font-medium">{act.action}</span>
+                    <span className="text-[8px] text-text-muted font-bold">{act.time}</span>
                 </div>
             </div>
         ))}
@@ -117,10 +116,10 @@ const ActivityWidget = () => (
 const QuoteWidget = () => (
     <div className="h-full flex flex-col justify-center italic text-center p-2">
         <Sparkles className="w-5 h-5 text-brand-primary/40 mx-auto mb-2" />
-        <p className="text-xs text-slate-300 font-medium tracking-tight lh-relaxed">
+        <p className="text-xs text-text-primary font-medium tracking-tight lh-relaxed">
             &quot;النجاح ليس نهائياً، والفشل ليس قاتلاً؛ ما يهم هو الشجاعة للاستمرار.&quot;
         </p>
-        <span className="text-[9px] text-slate-600 font-bold mt-2">— وينستون تشرشل</span>
+        <span className="text-[9px] text-text-muted font-bold mt-2">— وينستون تشرشل</span>
     </div>
 );
 
@@ -133,9 +132,9 @@ const WorldClockWidget = () => {
     return (
         <div className="space-y-3 py-1">
             {times.map((t, i) => (
-                <div key={i} className="flex items-center justify-between border-b border-white/[0.03] pb-2 last:border-0 last:pb-0">
-                    <span className="text-[10px] font-bold text-slate-400">{t.city}</span>
-                    <span className="text-xs font-black text-white tabular-nums">{t.time}</span>
+                <div key={i} className="flex items-center justify-between border-b border-border-subtle pb-2 last:border-0 last:pb-0">
+                    <span className="text-[10px] font-bold text-text-muted">{t.city}</span>
+                    <span className="text-xs font-black text-text-primary tabular-nums">{t.time}</span>
                 </div>
             ))}
         </div>
@@ -144,40 +143,40 @@ const WorldClockWidget = () => {
 
 const DailyGoalWidget = () => (
     <div className="h-full flex flex-col justify-center gap-2">
-        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-text-muted uppercase">
             <Target size={12} className="text-brand-primary" />
             <span>الهدف اليومي</span>
         </div>
         <input
             type="text"
             placeholder="حدد هدفك لليوم..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-xs text-white outline-none focus:border-brand-primary/40 transition-all"
+            className="w-full bg-surface-glass border border-border-subtle rounded-lg p-2 text-xs text-text-primary outline-none focus:border-brand-primary/50 transition-all placeholder:text-text-muted"
         />
     </div>
 );
 
 const PrayerTimesWidget = () => (
     <div className="grid grid-cols-2 gap-2">
-        <div className="p-2 rounded-lg bg-white/[0.02] border border-white/5 flex flex-col items-center">
-            <span className="text-[8px] text-slate-500 font-bold">الفجر</span>
-            <span className="text-[11px] font-black text-white">4:52 AM</span>
+        <div className="p-2 rounded-lg bg-surface-glass border border-border-subtle flex flex-col items-center">
+            <span className="text-[8px] text-text-muted font-bold">الفجر</span>
+            <span className="text-[11px] font-black text-text-primary">4:52 AM</span>
         </div>
         <div className="p-2 rounded-lg bg-brand-primary/10 border border-brand-primary/20 flex flex-col items-center">
             <span className="text-[8px] text-brand-primary font-black">الظهر</span>
-            <span className="text-[11px] font-black text-white">12:12 PM</span>
+            <span className="text-[11px] font-black text-brand-primary">12:12 PM</span>
         </div>
     </div>
 );
 
 const CurrencyWidget = () => (
     <div className="space-y-2">
-        <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] border border-white/5">
-            <span className="text-[10px] text-slate-400 font-bold">1 USD</span>
-            <span className="text-xs font-black text-brand-secondary">3.75 SAR</span>
+        <div className="flex items-center justify-between p-2 rounded-lg bg-surface-glass border border-border-subtle">
+            <span className="text-[10px] text-text-muted font-bold">1 USD</span>
+            <span className="text-xs font-black text-brand-primary">3.75 SAR</span>
         </div>
-        <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] border border-white/5">
-            <span className="text-[10px] text-slate-400 font-bold">1 EUR</span>
-            <span className="text-xs font-black text-slate-300">3.94 SAR</span>
+        <div className="flex items-center justify-between p-2 rounded-lg bg-surface-glass border border-border-subtle">
+            <span className="text-[10px] text-text-muted font-bold">1 EUR</span>
+            <span className="text-xs font-black text-text-primary">3.94 SAR</span>
         </div>
     </div>
 );
@@ -191,24 +190,24 @@ const WidgetWrapper = ({ children, title, icon: Icon, onRemove, size = 'medium' 
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         className={`${size === 'large' ? 'col-span-1 md:col-span-2 lg:col-span-3' : size === 'medium' ? 'col-span-1' : 'col-span-1'}
-        relative overflow-hidden rounded-[24px] bg-[#0F1115] border border-white/5 p-5 group flex flex-col h-full shadow-2xl`}
+        relative overflow-hidden rounded-[24px] bg-surface-raised border border-border-subtle p-5 group flex flex-col h-full shadow-lg transition-colors`}
     >
         <div className="flex items-center justify-between mb-4 shrink-0">
             <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <div className="p-2 rounded-lg bg-surface-glass border border-border-subtle">
                     <Icon className="w-4 h-4 text-brand-primary" />
                 </div>
-                <h3 className="text-xs font-black text-white font-cairo uppercase tracking-widest opacity-80">{title}</h3>
+                <h3 className="text-xs font-black text-text-primary font-cairo uppercase tracking-widest">{title}</h3>
             </div>
             <div className="flex items-center gap-2">
                 <span title="اسحب لتغيير الترتيب" className="cursor-grab active:cursor-grabbing">
-                    <GripVertical className="w-4 h-4 text-slate-700 hover:text-slate-400 transition-colors" />
+                    <GripVertical className="w-4 h-4 text-text-muted hover:text-text-primary transition-colors" />
                 </span>
                 <button
                     onClick={onRemove}
                     title="إزالة الويدجت"
                     aria-label="إزالة الويدجت"
-                    className="p-1 px-1.5 rounded-lg bg-white/5 text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                    className="p-1 px-1.5 rounded-lg bg-surface-glass text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
                 >
                     <Trash2 size={12} />
                 </button>
@@ -344,19 +343,19 @@ const UserDashboard = () => {
             {/* 1. Header & Quick Search */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 px-1">
                 <div className="flex flex-col">
-                    <h1 className="text-xl font-black text-white font-cairo">لوحة التحكم الذكية</h1>
-                    <p className="text-slate-500 text-xs font-medium">مرحباً بك مجدداً، نظم عملك بذكاء.</p>
+                    <h1 className="text-xl font-black text-text-primary font-cairo">لوحة التحكم الذكية</h1>
+                    <p className="text-text-muted text-xs font-medium">مرحباً بك مجدداً، نظم عملك بذكاء.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <div className="relative group flex-1 max-w-md hidden sm:block">
-                        <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-brand-primary transition-colors" />
+                        <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-brand-primary transition-colors" />
                         <input
                             type="text"
                             title="البحث عن أدوات"
                             aria-label="البحث عن أدوات"
                             placeholder="ابحث عن أداة..."
-                            className="w-full h-11 bg-[#0F1115] border border-white/5 rounded-xl pr-11 pl-4 text-sm text-white placeholder:text-slate-600 outline-none focus:border-brand-primary/40 transition-all font-medium"
+                            className="w-full h-11 bg-surface-raised border border-border-subtle rounded-xl pr-11 pl-4 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand-primary/50 transition-all font-medium shadow-sm"
                         />
                     </div>
                     <button
@@ -393,7 +392,7 @@ const UserDashboard = () => {
             {/* 3. Featured Tools (Static for now) */}
             <div className="space-y-4 pt-4">
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="text-sm font-black text-white font-cairo uppercase tracking-widest opacity-60">الأدوات المفضلة</h2>
+                    <h2 className="text-sm font-black text-text-primary font-cairo uppercase tracking-widest opacity-80">الأدوات المفضلة</h2>
                     <Link href="/pro/tools" className="text-[10px] font-black text-brand-primary hover:underline">عرض الكل</Link>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
@@ -401,14 +400,14 @@ const UserDashboard = () => {
                         <div
                             key={tool.id}
                             onClick={() => launchTool(tool.id)}
-                            className="flex items-center gap-3 p-3 rounded-2xl bg-[#0F1115] border border-white/5 hover:bg-white/5 hover:border-brand-primary/20 transition-all cursor-pointer group/tool"
+                            className="flex items-center gap-3 p-3 rounded-2xl bg-surface-raised border border-border-subtle hover:bg-surface-glass hover:border-brand-primary/40 transition-all cursor-pointer group/tool shadow-sm"
                         >
-                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all">
+                            <div className="w-10 h-10 rounded-xl bg-surface-glass border border-border-subtle flex items-center justify-center text-slate-400 group-hover/tool:text-brand-primary group-hover/tool:scale-110 transition-all">
                                 <Zap className="w-5 h-5" />
                             </div>
                             <div className="flex flex-col min-w-0 text-right">
-                                <span className="text-white text-[11px] font-bold font-cairo truncate">{tool.titleAr || tool.title}</span>
-                                <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">{tool.cat}</span>
+                                <span className="text-text-primary text-[11px] font-bold font-cairo truncate">{tool.titleAr || tool.title}</span>
+                                <span className="text-[8px] text-text-muted font-bold uppercase tracking-widest">{tool.cat}</span>
                             </div>
                         </div>
                     ))}
@@ -430,18 +429,18 @@ const UserDashboard = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-2xl bg-[#0F1115] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[80vh]"
+                            className="relative w-full max-w-2xl bg-surface-raised border border-border-subtle rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[80vh]"
                         >
-                            <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
+                            <div className="p-6 border-b border-border-subtle flex items-center justify-between shrink-0">
                                 <div className="flex flex-col">
-                                    <h2 className="text-xl font-black text-white font-cairo">متجر الويدجت</h2>
-                                    <p className="text-slate-500 text-xs font-medium">اختر الصناديق التي تريد إضافتها للوحة التحكم</p>
+                                    <h2 className="text-xl font-black text-text-primary font-cairo">متجر الويدجت</h2>
+                                    <p className="text-text-muted text-xs font-medium">اختر الصناديق التي تريد إضافتها للوحة التحكم</p>
                                 </div>
                                 <button
                                     onClick={() => setIsGalleryOpen(false)}
                                     title="إغلاق المتجر"
                                     aria-label="إغلاق المتجر"
-                                    className="p-2 rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors"
+                                    className="p-2 rounded-full bg-surface-glass text-text-muted hover:text-text-primary transition-colors"
                                 >
                                     <X size={20} />
                                 </button>
@@ -456,18 +455,18 @@ const UserDashboard = () => {
                                             className={`p-4 rounded-2xl border transition-all cursor-pointer group/item
                                                 ${activeWidgetIds.includes(widget.id)
                                                     ? 'bg-brand-primary/5 border-brand-primary/20 opacity-50 pointer-events-none'
-                                                    : 'bg-white/[0.02] border-white/5 hover:border-brand-primary/40 hover:bg-white/[0.04]'}`}
+                                                    : 'bg-surface-glass border-border-subtle hover:border-brand-primary/40 hover:bg-surface-raised'}`}
                                         >
                                             <div className="flex items-center gap-3 mb-2">
-                                                <div className={`p-2 rounded-xl bg-white/5 border border-white/10 group-hover/item:text-brand-primary transition-colors`}>
-                                                    <widget.icon className="w-5 h-5" />
+                                                <div className="p-2 rounded-xl bg-surface-glass border border-border-subtle group-hover/item:text-brand-primary transition-colors">
+                                                    <widget.icon className="w-5 h-5 text-text-muted group-hover/item:text-brand-primary" />
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <h3 className="text-sm font-bold text-white font-cairo">{widget.title}</h3>
-                                                    <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">{widget.category}</span>
+                                                    <h3 className="text-sm font-bold text-text-primary font-cairo">{widget.title}</h3>
+                                                    <span className="text-[9px] text-text-muted uppercase font-black tracking-widest">{widget.category}</span>
                                                 </div>
                                             </div>
-                                            <p className="text-[10px] text-slate-400 font-medium leading-relaxed">{widget.description}</p>
+                                            <p className="text-[10px] text-text-muted font-medium leading-relaxed">{widget.description}</p>
                                             {activeWidgetIds.includes(widget.id) && (
                                                 <div className="mt-2 text-[9px] font-black text-brand-primary uppercase">مضاف حالياً</div>
                                             )}

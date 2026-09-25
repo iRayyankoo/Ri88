@@ -78,7 +78,7 @@ const VisitorLanding = () => {
     ];
 
     return (
-        <div className="bg-[#0A0A0F] min-h-screen text-white overflow-x-hidden" dir="rtl">
+        <div className="bg-brand-bg min-h-screen text-text-primary overflow-x-hidden transition-colors" dir="rtl">
 
             {/* ── MESH BACKGROUND ── */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -89,22 +89,22 @@ const VisitorLanding = () => {
             </div>
 
             {/* ── NAV ── */}
-            <nav className="relative z-50 border-b border-white/5 bg-[#0A0A0F]/80 backdrop-blur-xl sticky top-0">
+            <nav className="relative z-50 border-b border-border-subtle bg-surface-base/80 backdrop-blur-xl sticky top-0 transition-colors">
                 <div className="max-w-7xl mx-auto px-5 sm:px-10 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center font-black text-black text-sm">R</div>
-                        <span className="font-black text-xl tracking-tight">RI88</span>
-                        <span className="hidden sm:block px-2 py-0.5 text-[9px] font-black rounded-full bg-brand-primary/15 text-brand-primary border border-brand-primary/25 uppercase tracking-widest">beta</span>
+                        <div className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center font-black text-white text-sm">R</div>
+                        <span className="font-black text-xl tracking-tight text-text-primary">RI88</span>
+                        <span className="hidden sm:block px-2 py-0.5 text-[9px] font-black rounded-full bg-brand-primary/10 text-brand-primary border border-brand-primary/20 uppercase tracking-widest">beta</span>
                     </div>
-                    <div className="hidden md:flex items-center gap-8 text-slate-400 text-sm font-medium">
+                    <div className="hidden md:flex items-center gap-8 text-text-muted text-sm font-medium">
                         {[['#how', 'كيف يعمل'], ['#tools', 'الأدوات'], ['#pricing', 'الأسعار']].map(([href, label]) => (
-                            <a key={href} href={href} className="hover:text-white transition-colors">{label}</a>
+                            <a key={href} href={href} className="hover:text-text-primary transition-colors">{label}</a>
                         ))}
                     </div>
                     <div className="flex items-center gap-3">
                         <ThemeToggle className="w-9 h-9" />
-                        <Link href="/auth" className="hidden sm:block px-4 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">دخول</Link>
-                        <Link href="/auth" className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm bg-brand-primary hover:bg-brand-primary/90 text-black transition-all active:scale-95">
+                        <Link href="/auth" className="hidden sm:block px-4 py-2 text-sm font-semibold text-text-muted hover:text-text-primary transition-colors">دخول</Link>
+                        <Link href="/auth" className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm bg-brand-primary hover:bg-brand-primary/90 text-white transition-all active:scale-95 shadow-lg shadow-brand-primary/20">
                             ابدأ مجاناً
                         </Link>
                     </div>
@@ -119,11 +119,11 @@ const VisitorLanding = () => {
                         {/* Left: Text */}
                         <div className="flex-1 text-right space-y-8">
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-slate-300 mb-6">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-raised border border-border-subtle text-sm font-medium text-text-muted mb-6 shadow-sm">
                                     <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
                                     في تشغيل تجريبي · سجّل الآن مجاناً
                                 </div>
-                                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight">
+                                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-text-primary">
                                     المنصة التي<br />
                                     <span className="text-brand-primary">تغني عن</span><br />
                                     20 تطبيق آخر
@@ -131,20 +131,20 @@ const VisitorLanding = () => {
                             </motion.div>
 
                             <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
-                                className="text-slate-400 text-xl leading-relaxed max-w-lg mr-auto">
-                                أكثر من <strong className="text-white font-bold">50 أداة ذكية</strong> في مكان واحد.
+                                className="text-text-muted text-xl leading-relaxed max-w-lg mr-auto">
+                                أكثر من <strong className="text-text-primary font-bold">50 أداة ذكية</strong> في مكان واحد.
                                 حاسبات مالية، تحليلات فورية، وذكاء اصطناعي — كلها مجانية للبدء.
                             </motion.p>
 
                             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }}
                                 className="flex flex-wrap gap-3 justify-end">
                                 <button onClick={handleStartFree}
-                                    className="flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-base bg-brand-primary hover:bg-brand-primary/90 text-black transition-all hover:scale-105 active:scale-95 shadow-xl shadow-brand-primary/25">
+                                    className="flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-base bg-brand-primary hover:bg-brand-primary/90 text-white transition-all hover:scale-105 active:scale-95 shadow-xl shadow-brand-primary/25">
                                     <Sparkles className="w-5 h-5" />
                                     ابدأ مجاناً الآن
                                 </button>
                                 <a href="#tools"
-                                    className="flex items-center gap-2 px-7 py-4 rounded-2xl font-bold text-base text-slate-300 border border-white/10 hover:border-white/20 hover:text-white transition-all">
+                                    className="flex items-center gap-2 px-7 py-4 rounded-2xl font-bold text-base text-text-primary border border-border-strong hover:bg-surface-glass transition-all">
                                     استكشف الأدوات
                                     <ArrowLeft className="w-4 h-4" />
                                 </a>
@@ -152,16 +152,16 @@ const VisitorLanding = () => {
 
                             {/* Trust badges */}
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-                                className="flex flex-wrap items-center gap-5 justify-end pt-2 border-t border-white/5">
-                                <div className="flex items-center gap-2 text-sm text-slate-500">
+                                className="flex flex-wrap items-center gap-5 justify-end pt-2 border-t border-border-subtle">
+                                <div className="flex items-center gap-2 text-sm text-text-muted">
                                     <Lock className="w-3.5 h-3.5 text-brand-primary" />
                                     بدون بطاقة ائتمانية
                                 </div>
-                                <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                                <div className="flex items-center gap-1.5 text-sm text-text-muted">
                                     {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
-                                    <span className="mr-1 text-white font-bold">4.9</span> تقييم
+                                    <span className="mr-1 text-text-primary font-bold">4.9</span> تقييم
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-slate-500">
+                                <div className="flex items-center gap-2 text-sm text-text-muted">
                                     <Users className="w-3.5 h-3.5 text-cyan-400" />
                                     +1,000 مستخدم نشط
                                 </div>
@@ -175,23 +175,23 @@ const VisitorLanding = () => {
                                 {/* Glow behind card */}
                                 <div className="absolute inset-0 rounded-3xl bg-brand-primary/20 blur-3xl scale-95" />
                                 {/* Dashboard mockup */}
-                                <div className="relative rounded-3xl border border-white/10 bg-[#0F0F1A] overflow-hidden shadow-2xl">
+                                <div className="relative rounded-3xl border border-border-subtle bg-surface-raised overflow-hidden shadow-2xl">
                                     {/* Mockup top bar */}
-                                    <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                                    <div className="flex items-center gap-2 px-4 py-3 border-b border-border-subtle bg-surface-glass">
                                         <div className="flex gap-1.5">
                                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
                                             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
                                             <div className="w-2.5 h-2.5 rounded-full bg-brand-primary/60" />
                                         </div>
                                         <div className="flex-1 text-center">
-                                            <div className="inline-block px-3 py-0.5 rounded-md bg-white/5 text-slate-500 text-xs">ri88.info/pro</div>
+                                            <div className="inline-block px-3 py-0.5 rounded-md bg-surface-glass text-text-muted text-xs border border-border-subtle">ri88.info/pro</div>
                                         </div>
                                     </div>
                                     {/* Mockup content */}
                                     <div className="p-5 space-y-3">
                                         {/* Header row */}
                                         <div className="flex items-center justify-between">
-                                            <div className="text-slate-500 text-xs">لوحة التحكم</div>
+                                            <div className="text-text-muted text-xs font-bold">لوحة التحكم</div>
                                             <div className="w-6 h-6 rounded-full bg-brand-primary/20 flex items-center justify-center">
                                                 <span className="text-[8px] font-black text-brand-primary">R</span>
                                             </div>
@@ -200,29 +200,29 @@ const VisitorLanding = () => {
                                         <div className="grid grid-cols-2 gap-2">
                                             {[
                                                 { label: 'أدوات مستخدمة', val: '12', color: 'text-brand-primary' },
-                                                { label: 'توفير الوقت', val: '3h/يوم', color: 'text-cyan-400' },
+                                                { label: 'توفير الوقت', val: '3h/يوم', color: 'text-cyan-500' },
                                             ].map((s, i) => (
-                                                <div key={i} className="bg-white/[0.04] rounded-xl p-3 border border-white/5">
+                                                <div key={i} className="bg-surface-glass rounded-xl p-3 border border-border-subtle">
                                                     <div className={`text-xl font-black ${s.color}`}>{s.val}</div>
-                                                    <div className="text-slate-500 text-[10px] mt-0.5">{s.label}</div>
+                                                    <div className="text-text-muted text-[10px] mt-0.5">{s.label}</div>
                                                 </div>
                                             ))}
                                         </div>
                                         {/* Tool list */}
                                         <div className="space-y-2">
                                             {popularTools.slice(0, 3).map((tool, i) => (
-                                                <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                                                <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl bg-surface-glass border border-border-subtle">
                                                     <div className="w-7 h-7 rounded-lg bg-brand-primary/10 flex items-center justify-center border border-brand-primary/20">
                                                         <ToolIcon icon={tool.icon} className="w-3.5 h-3.5 text-brand-primary" />
                                                     </div>
-                                                    <span className="text-slate-300 text-xs font-medium">{tool.titleAr}</span>
+                                                    <span className="text-text-primary text-xs font-bold">{tool.titleAr}</span>
                                                     <div className="mr-auto w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
                                                 </div>
                                             ))}
                                         </div>
                                         {/* Chart bars */}
-                                        <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5">
-                                            <div className="text-slate-500 text-[10px] mb-2">نشاط هذا الأسبوع</div>
+                                        <div className="p-3 rounded-xl bg-surface-glass border border-border-subtle">
+                                            <div className="text-text-muted text-[10px] mb-2 font-bold">نشاط هذا الأسبوع</div>
                                             <div className="flex items-end gap-1 h-10">
                                                 {[40, 65, 50, 80, 55, 90, 70].map((h, i) => (
                                                     <div key={i} className="flex-1 rounded-sm bg-brand-primary/30 hover:bg-brand-primary/60 transition-colors"
@@ -234,11 +234,11 @@ const VisitorLanding = () => {
                                 </div>
                                 {/* Floating badge */}
                                 <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-                                    className="absolute -top-4 -right-4 bg-white text-black text-xs font-black px-3 py-1.5 rounded-full shadow-xl">
+                                    className="absolute -top-4 -right-4 bg-surface-raised border border-border-subtle text-text-primary text-xs font-black px-3 py-1.5 rounded-full shadow-xl">
                                     🚀 +50 أداة
                                 </motion.div>
                                 <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut', delay: 1 }}
-                                    className="absolute -bottom-3 -left-3 bg-brand-primary text-black text-xs font-black px-3 py-1.5 rounded-full shadow-xl">
+                                    className="absolute -bottom-3 -left-3 bg-brand-primary text-white text-xs font-black px-3 py-1.5 rounded-full shadow-xl">
                                     ✓ مجاني للبدء
                                 </motion.div>
                             </div>
@@ -248,16 +248,16 @@ const VisitorLanding = () => {
             </section>
 
             {/* ── BIG STATS ── */}
-            <section className="relative z-10 py-16 border-y border-white/5 bg-white/[0.015]">
-                <div className="max-w-5xl mx-auto px-5 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x sm:divide-x-reverse divide-white/8">
+            <section className="relative z-10 py-16 border-y border-border-subtle bg-surface-glass/40">
+                <div className="max-w-5xl mx-auto px-5 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x sm:divide-x-reverse divide-border-subtle">
                     {bigStats.map((s, i) => (
                         <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                             className="px-8 py-8 sm:py-6 text-center">
                             <div className="text-5xl sm:text-6xl font-black text-brand-primary font-mono mb-1">
                                 <CountUp end={s.val} suffix={s.suffix} />
                             </div>
-                            <div className="text-white font-bold text-lg">{s.label}</div>
-                            <div className="text-slate-500 text-sm mt-1">{s.sub}</div>
+                            <div className="text-text-primary font-bold text-lg">{s.label}</div>
+                            <div className="text-text-muted text-sm mt-1">{s.sub}</div>
                         </motion.div>
                     ))}
                 </div>
@@ -267,42 +267,42 @@ const VisitorLanding = () => {
             <section id="how" className="relative z-10 py-24 px-5 sm:px-10 max-w-5xl mx-auto">
                 <div className="text-center mb-16">
                     <p className="text-brand-primary text-sm font-bold uppercase tracking-widest mb-3">كيف يعمل</p>
-                    <h2 className="text-4xl sm:text-5xl font-black">في 3 خطوات فقط</h2>
+                    <h2 className="text-4xl sm:text-5xl font-black text-text-primary">في 3 خطوات فقط</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative">
                     {/* Connecting line */}
-                    <div className="hidden sm:block absolute top-16 right-[17%] left-[17%] h-px bg-gradient-to-l from-brand-primary/30 via-brand-primary/60 to-brand-primary/30" />
+                    <div className="hidden sm:block absolute top-16 right-[17%] left-[17%] h-px bg-gradient-to-l from-brand-primary/20 via-brand-primary/50 to-brand-primary/20" />
                     {steps.map((s, i) => (
                         <motion.div key={i} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
-                            className="relative text-center">
+                            className="relative text-center p-6 rounded-3xl bg-surface-raised border border-border-subtle shadow-sm">
                             <div className="w-14 h-14 rounded-2xl bg-brand-primary/10 border border-brand-primary/25 flex items-center justify-center mx-auto mb-5 relative z-10">
                                 <s.icon className="w-7 h-7 text-brand-primary" />
-                                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-brand-primary text-black text-[9px] font-black flex items-center justify-center">{i + 1}</div>
+                                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-brand-primary text-white text-[10px] font-black flex items-center justify-center shadow">{i + 1}</div>
                             </div>
-                            <h3 className="text-white font-black text-xl mb-2">{s.title}</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed max-w-[200px] mx-auto">{s.desc}</p>
+                            <h3 className="text-text-primary font-black text-xl mb-2">{s.title}</h3>
+                            <p className="text-text-muted text-sm leading-relaxed max-w-[200px] mx-auto">{s.desc}</p>
                         </motion.div>
                     ))}
                 </div>
             </section>
 
             {/* ── WHY US ── */}
-            <section className="relative z-10 py-24 px-5 sm:px-10 bg-white/[0.02] border-y border-white/5">
+            <section className="relative z-10 py-24 px-5 sm:px-10 bg-surface-glass/50 border-y border-border-subtle">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-16">
                         <p className="text-brand-primary text-sm font-bold uppercase tracking-widest mb-3">المميزات</p>
-                        <h2 className="text-4xl sm:text-5xl font-black">لماذا RI88 ؟</h2>
+                        <h2 className="text-4xl sm:text-5xl font-black text-text-primary">لماذا RI88 ؟</h2>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {whyUs.map((f, i) => (
                             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}
                                 whileHover={{ y: -4 }}
-                                className={`p-6 rounded-3xl border ${f.bg} text-right`}>
-                                <div className={`w-10 h-10 rounded-xl border ${f.bg} flex items-center justify-center mb-4`}>
+                                className="p-6 rounded-3xl border border-border-subtle bg-surface-raised shadow-sm text-right hover:border-brand-primary/30 transition-all">
+                                <div className="w-10 h-10 rounded-xl bg-surface-glass border border-border-subtle flex items-center justify-center mb-4">
                                     <f.icon className={`w-5 h-5 ${f.color}`} />
                                 </div>
-                                <h3 className="text-white font-bold text-lg mb-2">{f.title}</h3>
-                                <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
+                                <h3 className="text-text-primary font-bold text-lg mb-2">{f.title}</h3>
+                                <p className="text-text-muted text-sm leading-relaxed">{f.desc}</p>
                             </motion.div>
                         ))}
                     </div>
@@ -314,9 +314,9 @@ const VisitorLanding = () => {
                 <div className="flex items-end justify-between mb-12">
                     <div>
                         <p className="text-brand-primary text-sm font-bold uppercase tracking-widest mb-2">الأدوات</p>
-                        <h2 className="text-3xl sm:text-4xl font-black">جرّب الآن</h2>
+                        <h2 className="text-3xl sm:text-4xl font-black text-text-primary">جرّب الآن</h2>
                     </div>
-                    <Link href="/auth" className="hidden sm:flex items-center gap-2 text-slate-400 hover:text-white text-sm font-bold transition-colors group">
+                    <Link href="/auth" className="hidden sm:flex items-center gap-2 text-text-muted hover:text-text-primary text-sm font-bold transition-colors group">
                         <span>الكل (50+)</span>
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     </Link>
@@ -326,22 +326,22 @@ const VisitorLanding = () => {
                         <motion.div key={tool.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
                             onClick={() => launchTool(tool.id)}
                             whileHover={{ y: -4 }}
-                            className="group p-6 rounded-3xl border border-white/8 bg-white/[0.02] hover:border-brand-primary/30 hover:bg-brand-primary/[0.03] cursor-pointer transition-all duration-300">
+                            className="group p-6 rounded-3xl border border-border-subtle bg-surface-raised hover:border-brand-primary/40 hover:bg-surface-glass cursor-pointer transition-all duration-300 shadow-sm">
                             <div className="flex items-start gap-4">
                                 <div className="w-11 h-11 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <ToolIcon icon={tool.icon} className="w-5 h-5 text-brand-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-white font-bold text-base group-hover:text-brand-primary transition-colors">{tool.titleAr}</h3>
-                                    <p className="text-slate-500 text-xs mt-1 leading-relaxed line-clamp-2">{tool.descAr}</p>
+                                    <h3 className="text-text-primary font-bold text-base group-hover:text-brand-primary transition-colors">{tool.titleAr}</h3>
+                                    <p className="text-text-muted text-xs mt-1 leading-relaxed line-clamp-2">{tool.descAr}</p>
                                 </div>
-                                <div className="shrink-0 w-7 h-7 rounded-full border border-white/10 group-hover:border-brand-primary group-hover:bg-brand-primary flex items-center justify-center transition-all mt-0.5">
-                                    <ArrowLeft className="w-3.5 h-3.5 text-slate-500 group-hover:text-black transition-colors" />
+                                <div className="shrink-0 w-7 h-7 rounded-full border border-border-subtle group-hover:border-brand-primary group-hover:bg-brand-primary flex items-center justify-center transition-all mt-0.5">
+                                    <ArrowLeft className="w-3.5 h-3.5 text-text-muted group-hover:text-white transition-colors" />
                                 </div>
                             </div>
-                            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/15">مجانية</span>
-                                <span className="text-[10px] text-slate-600 font-medium">استخدام فوري</span>
+                            <div className="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between">
+                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-brand-primary/10 text-brand-primary border border-brand-primary/20">مجانية</span>
+                                <span className="text-[10px] text-text-muted font-medium">استخدام فوري</span>
                             </div>
                         </motion.div>
                     ))}
@@ -352,37 +352,37 @@ const VisitorLanding = () => {
             <section id="pricing" className="relative z-10 py-24 px-5 sm:px-10 max-w-4xl mx-auto">
                 <div className="text-center mb-14">
                     <p className="text-brand-primary text-sm font-bold uppercase tracking-widest mb-3">الأسعار</p>
-                    <h2 className="text-4xl sm:text-5xl font-black mb-3">بسيط وشفاف</h2>
-                    <p className="text-slate-400 text-lg">لا رسوم خفية. لا التزامات. ابدأ مجاناً.</p>
+                    <h2 className="text-4xl sm:text-5xl font-black mb-3 text-text-primary">بسيط وشفاف</h2>
+                    <p className="text-text-muted text-lg">لا رسوم خفية. لا التزامات. ابدأ مجاناً.</p>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-5">
                     {plans.map((plan, i) => (
                         <motion.div key={i} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                            className={`relative rounded-3xl p-8 border transition-all ${plan.primary ? 'border-brand-primary/40 bg-brand-primary/[0.07] shadow-2xl shadow-brand-primary/10' : 'border-white/8 bg-white/[0.02]'}`}>
+                            className={`relative rounded-3xl p-8 border transition-all ${plan.primary ? 'border-2 border-brand-primary bg-surface-raised shadow-xl shadow-brand-primary/10' : 'border-border-subtle bg-surface-raised shadow-sm'}`}>
                             {plan.badge && (
-                                <div className="absolute -top-4 right-8 px-5 py-1.5 rounded-full bg-brand-primary text-black text-xs font-black">
+                                <div className="absolute -top-4 right-8 px-5 py-1.5 rounded-full bg-brand-primary text-white text-xs font-black shadow-md">
                                     {plan.badge}
                                 </div>
                             )}
                             <div className="mb-8">
-                                <div className="text-slate-400 text-sm font-medium mb-1">{plan.name}</div>
+                                <div className="text-text-muted text-sm font-medium mb-1">{plan.name}</div>
                                 <div className="flex items-end gap-2">
-                                    <span className={`text-5xl font-black ${plan.primary ? 'text-brand-primary' : 'text-white'}`}>{plan.price}</span>
-                                    <div className="text-slate-500 text-sm mb-2">ر.س / {plan.period}</div>
+                                    <span className={`text-5xl font-black ${plan.primary ? 'text-brand-primary' : 'text-text-primary'}`}>{plan.price}</span>
+                                    <div className="text-text-muted text-sm mb-2">ر.س / {plan.period}</div>
                                 </div>
                             </div>
                             <ul className="space-y-3 mb-8">
                                 {plan.features.map((f, j) => (
-                                    <li key={j} className="flex items-center gap-3 text-sm text-slate-300">
-                                        <CheckCircle2 className={`w-4 h-4 shrink-0 ${plan.primary ? 'text-brand-primary' : 'text-slate-500'}`} />
+                                    <li key={j} className="flex items-center gap-3 text-sm text-text-primary">
+                                        <CheckCircle2 className="w-4 h-4 shrink-0 text-brand-primary" />
                                         {f}
                                     </li>
                                 ))}
                             </ul>
                             <Link href="/auth"
                                 className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95 ${plan.primary
-                                    ? 'bg-brand-primary hover:bg-brand-primary/90 text-black shadow-lg shadow-brand-primary/20'
-                                    : 'border border-white/10 text-white hover:bg-white/5'}`}>
+                                    ? 'bg-brand-primary hover:bg-brand-primary/90 text-white shadow-lg shadow-brand-primary/20'
+                                    : 'border border-border-strong text-text-primary hover:bg-surface-glass'}`}>
                                 {plan.cta}
                                 <ChevronLeft className="w-4 h-4" />
                             </Link>
@@ -392,38 +392,38 @@ const VisitorLanding = () => {
             </section>
 
             {/* ── FINAL CTA ── */}
-            <section className="relative z-10 mx-4 sm:mx-10 mb-10 rounded-3xl overflow-hidden">
-                <div className="absolute inset-0 bg-brand-primary" />
+            <section className="relative z-10 mx-4 sm:mx-10 mb-10 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-700" />
                 <div className="absolute inset-0 opacity-20"
                     style={{ backgroundImage: 'radial-gradient(circle at 70% 50%, rgba(255,255,255,0.3) 0%, transparent 50%)' }} />
-                <div className="relative text-center py-20 px-6 text-black">
-                    <h2 className="text-4xl sm:text-5xl font-black mb-4 leading-tight">
+                <div className="relative text-center py-20 px-6 text-white">
+                    <h2 className="text-4xl sm:text-5xl font-black mb-4 leading-tight text-white">
                         جاهز ترتقي بإنتاجيتك؟
                     </h2>
-                    <p className="text-black/70 text-xl mb-10 max-w-lg mx-auto">
+                    <p className="text-white/80 text-xl mb-10 max-w-lg mx-auto">
                         انضم لآلاف المحترفين الذين يستخدمون RI88 يومياً.
                     </p>
                     <button onClick={handleStartFree}
-                        className="inline-flex items-center gap-3 px-12 py-5 rounded-2xl font-black text-lg bg-black text-brand-primary hover:scale-105 active:scale-95 transition-all shadow-2xl">
+                        className="inline-flex items-center gap-3 px-12 py-5 rounded-2xl font-black text-lg bg-white text-emerald-800 hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all shadow-2xl">
                         <Sparkles className="w-5 h-5" />
                         ابدأ مجاناً — الآن
                     </button>
-                    <p className="text-black/50 text-sm mt-5">بدون بطاقة · بدون إعلانات · 100% خصوصية</p>
+                    <p className="text-white/60 text-sm mt-5">بدون بطاقة · بدون إعلانات · 100% خصوصية</p>
                 </div>
             </section>
 
             {/* ── FOOTER ── */}
-            <footer className="relative z-10 border-t border-white/5 py-8 px-5 sm:px-10">
+            <footer className="relative z-10 border-t border-border-subtle py-8 px-5 sm:px-10 bg-surface-base">
                 <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-md bg-brand-primary flex items-center justify-center font-black text-black text-xs">R</div>
-                        <span className="font-bold">RI88</span>
-                        <span className="text-slate-600">© 2025</span>
+                        <div className="w-6 h-6 rounded-md bg-brand-primary flex items-center justify-center font-black text-white text-xs">R</div>
+                        <span className="font-bold text-text-primary">RI88</span>
+                        <span className="text-text-muted">© 2025</span>
                     </div>
-                    <p className="text-slate-600 text-sm">صُنع بـ ❤️ للمحترف العربي</p>
-                    <div className="flex gap-5 text-slate-600 text-sm">
-                        <Link href="/auth" className="hover:text-white transition-colors">تسجيل دخول</Link>
-                        <Link href="/auth" className="hover:text-white transition-colors">إنشاء حساب</Link>
+                    <p className="text-text-muted text-sm">صُنع بـ ❤️ للمحترف العربي</p>
+                    <div className="flex gap-5 text-text-muted text-sm">
+                        <Link href="/auth" className="hover:text-text-primary transition-colors">تسجيل دخول</Link>
+                        <Link href="/auth" className="hover:text-text-primary transition-colors">إنشاء حساب</Link>
                     </div>
                 </div>
             </footer>

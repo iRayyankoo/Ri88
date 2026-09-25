@@ -323,18 +323,18 @@ const ToolsDirectory = () => {
                                         e.stopPropagation();
                                         toggleFavorite(tool.id, tool.name);
                                     }}
-                                    className="absolute top-4 left-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md hover:bg-black/60 text-slate-300 hover:text-yellow-400 transition-all border border-white/10 active:scale-90"
+                                    className="absolute top-4 left-4 z-20 p-2 rounded-full bg-surface-raised/80 backdrop-blur-md hover:bg-surface-raised text-text-muted hover:text-yellow-400 transition-all border border-border-subtle active:scale-90"
                                     title={isFavorite(tool.id) ? "إزالة من المفضلة" : "إضافة للمفضلة"}
                                 >
-                                    <Star className={`w-4 h-4 transition-colors ${isFavorite(tool.id) ? "text-yellow-400 fill-yellow-400" : "text-slate-300"}`} />
+                                    <Star className={`w-4 h-4 transition-colors ${isFavorite(tool.id) ? "text-yellow-400 fill-yellow-400" : "text-text-muted"}`} />
                                 </button>
 
-                                <div className="w-full aspect-video rounded-2xl lg:rounded-3xl bg-gradient-to-br from-[#2a1b4d] to-[#0f0f16] mb-4 lg:mb-6 relative overflow-hidden">
+                                <div className="w-full aspect-video rounded-2xl lg:rounded-3xl bg-surface-base border border-border-subtle mb-4 lg:mb-6 relative overflow-hidden">
                                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity">
-                                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_#8B5CF620,_transparent_70%)]" />
+                                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_#05966920,_transparent_70%)]" />
                                     </div>
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <Icon className="w-8 h-8 lg:w-12 lg:h-12 text-slate-500 group-hover:text-brand-primary transition-colors" />
+                                        <Icon className="w-8 h-8 lg:w-12 lg:h-12 text-text-muted group-hover:text-brand-primary transition-colors" />
                                     </div>
                                 </div>
 
@@ -423,8 +423,8 @@ const ToolsDirectory = () => {
                                             key={tool.id}
                                             whileHover={{ y: -4, scale: 1.01 }}
                                             onClick={() => handleToolClick(tool)}
-                                            className={`bg-white/[0.03] backdrop-blur-sm border p-4 lg:p-7 rounded-[24px] lg:rounded-[28px] cursor-pointer transition-all group relative overflow-hidden shadow-md flex flex-col items-start min-h-[160px]
-                                            ${tool.isMaintenance ? 'border-red-500/20 hover:border-red-500/40 opacity-80' : 'border-white/[0.08] hover:border-brand-primary/40 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]'}`}
+                                            className={`bg-surface-raised border p-4 lg:p-7 rounded-[24px] lg:rounded-[28px] cursor-pointer transition-all group relative overflow-hidden shadow-sm hover:shadow-md flex flex-col items-start min-h-[160px]
+                                            ${tool.isMaintenance ? 'border-red-500/20 hover:border-red-500/40 opacity-80' : 'border-border-subtle hover:border-brand-primary/40'}`}
                                         >
                                             {tool.isMaintenance ? (
                                                 <div className="absolute top-4 left-4 z-20 px-2 py-0.5 bg-red-500/20 border border-red-500/30 text-red-400 text-[10px] font-black tracking-widest rounded-md flex items-center gap-1">
@@ -448,28 +448,28 @@ const ToolsDirectory = () => {
                                                     e.stopPropagation();
                                                     toggleFavorite(tool.id, tool.name);
                                                 }}
-                                                className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 hover:text-yellow-400 transition-all border border-white/5 active:scale-90"
+                                                className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-surface-glass hover:bg-surface-raised text-text-muted hover:text-yellow-400 transition-all border border-border-subtle active:scale-90"
                                                 title={isFavorite(tool.id) ? "إزالة من المفضلة" : "إضافة للمفضلة"}
                                             >
-                                                <Star className={`w-3.5 h-3.5 transition-colors ${isFavorite(tool.id) ? "text-yellow-400 fill-yellow-400" : "text-slate-400"}`} />
+                                                <Star className={`w-3.5 h-3.5 transition-colors ${isFavorite(tool.id) ? "text-yellow-400 fill-yellow-400" : "text-text-muted"}`} />
                                             </button>
 
-                                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/20 to-transparent opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none" />
+                                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/10 to-transparent opacity-40 group-hover:opacity-80 transition-opacity pointer-events-none" />
 
                                             <div className="flex flex-col gap-3 lg:gap-6 text-right items-start flex-1 w-full">
-                                                <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner border border-white/5 group-hover:border-brand-primary/50 relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-surface-glass flex items-center justify-center text-text-muted group-hover:bg-brand-primary group-hover:text-white transition-all shadow-inner border border-border-subtle group-hover:border-brand-primary/50 relative overflow-hidden">
+                                                    <div className="absolute inset-0 bg-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                                                     <Icon className="w-5 h-5 lg:w-7 lg:h-7 relative z-10" />
                                                 </div>
 
                                                 <div className="w-full mt-auto">
-                                                    <h4 className="text-white font-black text-sm lg:text-lg mb-1 lg:mb-2 group-hover:text-brand-primary transition-colors font-cairo pr-1">{tool.name}</h4>
-                                                    <p className="text-slate-500 text-[10px] lg:text-[13px] font-medium leading-relaxed font-cairo line-clamp-2 pr-1">
+                                                    <h4 className="text-text-primary font-black text-sm lg:text-lg mb-1 lg:mb-2 group-hover:text-brand-primary transition-colors font-cairo pr-1">{tool.name}</h4>
+                                                    <p className="text-text-muted text-[10px] lg:text-[13px] font-medium leading-relaxed font-cairo line-clamp-2 pr-1">
                                                         {tool.description}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/10 to-transparent opacity-30 group-hover:opacity-60 transition-opacity pointer-events-none" />
+                                            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from),_transparent_70%)] from-brand-primary/5 to-transparent opacity-30 group-hover:opacity-60 transition-opacity pointer-events-none" />
                                         </motion.div>
                                     );
                                 })}
