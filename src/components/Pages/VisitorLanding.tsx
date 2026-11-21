@@ -486,7 +486,10 @@ export default function VisitorLanding() {
                     </div>
 
                     <div className="flex flex-col items-center sm:items-end gap-1.5 text-text-muted">
-                        <span lang="ar" dir="rtl" className="text-xs">صنع بواسطة <bdi dir="ltr" className="font-semibold text-text-primary">Ri88</bdi></span>
+                        <a href="https://irayyankoo.github.io/rayyan-portfolio/" lang="ar" dir="rtl" aria-label="صنع بواسطة Ri88، زيارة الموقع الشخصي" className="inline-flex items-center gap-2 rounded-sm text-xs leading-none hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-primary">
+                            <span>صنع بواسطة</span>
+                            <Logo size="sm" showText={false} />
+                        </a>
                         <span dir="ltr" className="text-[10px] sm:text-[11px] font-mono">© 2026 RI88.PRO · ALL RIGHTS RESERVED</span>
                     </div>
                 </div>
