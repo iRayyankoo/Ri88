@@ -485,8 +485,9 @@ export default function VisitorLanding() {
                         <Link href="/auth" className="hover:text-brand-primary transition-colors">دخول المنصة</Link>
                     </div>
 
-                    <div className="text-[10px] sm:text-[11px] font-mono text-text-muted">
-                        © 2026 RI88.PRO · ALL RIGHTS RESERVED
+                    <div className="flex flex-col items-center sm:items-end gap-1.5 text-text-muted">
+                        <span lang="ar" dir="rtl" className="text-xs">صنع بواسطة <bdi dir="ltr" className="font-semibold text-text-primary">Ri88</bdi></span>
+                        <span dir="ltr" className="text-[10px] sm:text-[11px] font-mono">© 2026 RI88.PRO · ALL RIGHTS RESERVED</span>
                     </div>
                 </div>
             </footer>
